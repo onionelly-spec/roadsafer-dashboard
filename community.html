@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>커뮤니티 - 로드세이프터 SYSTEM</title>
   <link rel="stylesheet" href="style.css?v=7" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="sub.css?v=7" />
   <style>
     .board-toolbar {
@@ -34,6 +35,7 @@
     .board-table .title-link:hover { color: var(--yellow); }
     .board-table .notice-row td { background: #fffbeb; }
     .board-table .notice-row:hover td { background: #fef3c7; }
+    .pin-icon { color: var(--yellow); font-size: 14px; }
     .notice-badge {
       display: inline-flex; align-items: center; padding: 2px 7px;
       background: var(--yellow); color: #fff;
@@ -225,7 +227,7 @@
           </thead>
           <tbody>
             <tr class="notice-row">
-              <td class="num-cell"><span class="notice-badge">공지</span></td>
+              <td class="num-cell"><i class="fa-solid fa-thumbtack pin-icon"></i></td>
               <td class="meta-cell">공지</td>
               <td class="title-cell" style="max-width:300px;">
                 <a href="community-detail.html" class="title-link"><span class="notice-badge" style="background:var(--yellow);">공지</span>커뮤니티 이용 규칙 안내</a>
