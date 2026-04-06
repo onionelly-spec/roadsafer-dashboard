@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로드세이프터 SYSTEM - 메인 대시보드</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===== WRAPPER ===== -->
+<div class="app-wrapper" id="appWrapper">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+
+      <!-- 로고 + 토글 -->
+      <div class="sidebar-logo-row">
+        <div class="sidebar-logo">
+          <span class="logo-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <rect width="28" height="28" rx="5" fill="#E8380D"/>
+              <text x="14" y="20" text-anchor="middle" font-size="16" font-weight="900" fill="white" font-family="Arial">R</text>
+            </svg>
+          </span>
+          <span class="logo-text">
+            <span class="logo-main">로드세이프터</span>
+            <span class="logo-sub">SYSTEM <span class="logo-badge">차단기업</span></span>
+          </span>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" title="메뉴 닫기">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 사용자 정보 -->
+      <div class="sidebar-user">
+        <div class="user-avatar">나</div>
+        <div class="user-info">
+          <div class="user-name">나잘난</div>
+          <div class="user-company">한국도로차단(주)</div>
+        </div>
+      </div>
+
+      <!-- 메뉴 -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">차단기업</div>
+        <ul class="nav-list">
+          <li class="nav-item active">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+              </span>
+              <span class="nav-label">메인 대시보드</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2"/>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                </svg>
+              </span>
+              <span class="nav-label">내 공사 현황</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </span>
+              <span class="nav-label">공사 정보</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+              </span>
+              <span class="nav-label">TMA 카드 관리</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+              </span>
+              <span class="nav-label">장터</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </span>
+              <span class="nav-label">커뮤니티</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </span>
+              <span class="nav-label">공지사항</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <rect x="7" y="7" width="10" height="10" rx="1"/>
+                </svg>
+              </span>
+              <span class="nav-label">광고</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- 하단 메뉴 -->
+      <div class="sidebar-bottom">
+        <a href="#" class="bottom-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/>
+          </svg>
+          <span>정보변경</span>
+        </a>
+        <a href="#" class="bottom-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          <span>로그아웃</span>
+        </a>
+      </div>
+
+    </div><!-- /sidebar-inner -->
+
+    <!-- 접힌 상태 토글 버튼 -->
+    <button class="sidebar-open-btn" id="sidebarOpenBtn" title="메뉴 열기">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main-area" id="mainArea">
+
+    <!-- 상단 헤더 -->
+    <header class="main-header">
+      <h1 class="page-title">메인 대시보드</h1>
+      <div class="header-user">
+        <div class="header-avatar">나</div>
+        <span class="header-username">나잘난</span>
+      </div>
+    </header>
+
+    <!-- 콘텐츠 영역 -->
+    <main class="main-content">
+
+      <!-- 상단 2컬럼 -->
+      <div class="top-row">
+
+        <!-- 회사 정보 카드 -->
+        <div class="card company-card">
+          <div class="company-logo-wrap">
+            <div class="company-logo">
+              <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                <rect width="60" height="60" rx="8" fill="#E8380D"/>
+                <text x="30" y="42" text-anchor="middle" font-size="36" font-weight="900" fill="white" font-family="Arial">R</text>
+              </svg>
+              <span class="company-badge">차단기업</span>
+            </div>
+          </div>
+          <div class="company-info">
+            <h2 class="company-name">한국도로차단(주)</h2>
+            <p class="company-detail"><span class="detail-label">대표자</span> : 나잘난</p>
+            <p class="company-detail"><span class="detail-label">승인인</span> : 김석진, 정호석, 박지민</p>
+            <div class="company-btns">
+              <a href="#" class="btn btn-outline-yellow">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                공사 현황
+              </a>
+              <a href="#" class="btn btn-outline-gray">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                공지사항
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 퀵메뉴 카드 -->
+        <div class="card quick-menu-card">
+          <div class="quick-menu-grid">
+            <a href="#" class="quick-item active">
+              <div class="quick-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+              </div>
+              <span class="quick-label">TMA카드 관리</span>
+            </a>
+            <a href="#" class="quick-item">
+              <div class="quick-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                </svg>
+              </div>
+              <span class="quick-label">내 공사 이력</span>
+            </a>
+            <a href="#" class="quick-item">
+              <div class="quick-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2"/>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                </svg>
+              </div>
+              <span class="quick-label">공사 정보</span>
+            </a>
+            <a href="#" class="quick-item">
+              <div class="quick-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+              </div>
+              <span class="quick-label">장터</span>
+            </a>
+            <a href="#" class="quick-item">
+              <div class="quick-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <span class="quick-label">커뮤니티</span>
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /top-row -->
+
+      <!-- 오늘 알림 -->
+      <div class="card notification-card">
+        <div class="card-header">
+          <div class="card-title-row">
+            <h3 class="card-title">오늘 알림</h3>
+            <span class="badge-count">2</span>
+          </div>
+          <a href="#" class="link-more">더보기 &gt;</a>
+        </div>
+        <ul class="notification-list">
+          <li class="noti-item active">
+            <span class="noti-dot active"></span>
+            <span class="noti-text">
+              <strong>[국도32번선 횡단보도 보수]</strong> 오늘 일정이 완료되었습니다. 다음 일정을 확인하세요.
+            </span>
+            <span class="noti-date">2026-06-12 11:45</span>
+          </li>
+          <li class="noti-item active">
+            <span class="noti-dot active"></span>
+            <span class="noti-text">
+              <strong>[중앙분리대 시공]</strong> 공사 정보와 일정이 변경되었습니다.
+            </span>
+            <span class="noti-date">2026-06-11 09:00</span>
+          </li>
+          <li class="noti-item inactive">
+            <span class="noti-dot inactive"></span>
+            <span class="noti-text">
+              <span class="noti-bracket">[경부선 포장공사]</span> 공사일정이 수정되었습니다.
+            </span>
+            <span class="noti-date">2026-06-10 09:00</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 광고 이미지 -->
+      <div class="card ad-card">
+        <div class="card-header">
+          <h3 class="card-title">광고 이미지</h3>
+          <a href="#" class="link-more">관리 &gt;</a>
+        </div>
+        <div class="ad-grid">
+          <div class="ad-img-wrap">
+            <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=220&fit=crop" alt="공사 현장" class="ad-img" />
+          </div>
+          <div class="ad-img-wrap">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=220&fit=crop" alt="전자 부품" class="ad-img" />
+          </div>
+          <div class="ad-img-wrap">
+            <img src="https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=400&h=220&fit=crop" alt="CCTV" class="ad-img" />
+          </div>
+          <div class="ad-add-wrap">
+            <a href="#" class="ad-add-btn">
+              <span class="ad-add-icon">+</span>
+              <span class="ad-add-label">광고 등록</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 공사현황 테이블 -->
+      <div class="card table-card">
+        <div class="card-header">
+          <a href="#" class="card-title-link">공사현황 &gt;</a>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>상태</th>
+                <th>공사명</th>
+                <th>발주업체명</th>
+                <th>기간</th>
+                <th>씨인카 수량</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="status-badge status-scheduled">예정</span></td>
+                <td>호남선 순천방향 포장공사</td>
+                <td>한국개발</td>
+                <td>2026-07-01 ~ 2026-07-03 <span class="period-days">(3일)</span></td>
+                <td>TMA-1 : 1대, TMA-3 : 2대, PLCS : 2대</td>
+                <td><a href="#" class="action-link">차단 취소</a></td>
+              </tr>
+              <tr>
+                <td><span class="status-badge status-progress">진행중</span></td>
+                <td>국도 32번선 횡단보도 보수</td>
+                <td>소망건설</td>
+                <td>2026-06-25 ~ 2026-06-25 <span class="period-days">(1일)</span></td>
+                <td>TMA-1 : 2대, TMA-3 : 1대</td>
+                <td><a href="#" class="action-link">오늘 완료</a></td>
+              </tr>
+              <tr>
+                <td><span class="status-badge status-progress">진행중</span></td>
+                <td>중앙분리대 시공</td>
+                <td>오봉도건</td>
+                <td>2026-06-12 ~ 2026-06-18 <span class="period-days">(7일)</span></td>
+                <td>TMA-3 : 2대, PLCS : 2대</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /main-area -->
+
+</div><!-- /app-wrapper -->
+
+<script src="script.js"></script>
+</body>
+</html>
