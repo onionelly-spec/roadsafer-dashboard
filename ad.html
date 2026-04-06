@@ -4,10 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>광고 - 로드세이프터 SYSTEM</title>
-  <link rel="stylesheet" href="common.css" />
   <link rel="stylesheet" href="style.css?v=7" />
   <link rel="stylesheet" href="sub.css?v=7" />
   <style>
+    /* 모달 스타일 */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow-md); width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto; transform: scale(0.95) translateY(10px); transition: transform 0.2s; }
+    .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--border); }
+    .modal-title { font-size: 16px; font-weight: 700; }
+    .modal-close { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: background 0.2s, color 0.2s; background: none; border: none; }
+    .modal-close:hover { background: #f3f4f6; color: var(--text-primary); }
+    .modal-body { padding: 20px; }
+    .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: center; gap: 10px; }
     .ad-section-title {
       font-size: 14px; font-weight: 700; color: var(--text-primary);
       margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
