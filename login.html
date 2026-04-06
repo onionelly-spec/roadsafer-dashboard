@@ -405,6 +405,206 @@
       color: var(--yellow);
     }
 
+    /* ===== 모달 오버레이 ===== */
+    .find-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .find-modal-overlay.open {
+      display: flex;
+    }
+    .find-modal {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+      animation: modalIn 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(-16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .find-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #f0ede6;
+    }
+    .find-modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a1f2e;
+    }
+    .find-modal-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #f5f2ea;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+    .find-modal-close:hover { background: #ede9df; }
+    .find-modal-body {
+      padding: 24px;
+    }
+    .find-modal-desc {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .find-form-group {
+      margin-bottom: 14px;
+    }
+    .find-form-label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    .find-form-label .required {
+      color: #F5A623;
+      margin-left: 2px;
+    }
+    .find-form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #ddd8cc;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: #1a1f2e;
+      background: #fdfcf9;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .find-form-control:focus {
+      border-color: #F5A623;
+      background: #fff;
+    }
+    .find-biz-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .find-biz-row .find-form-control { flex: 1; }
+    .find-biz-sep {
+      font-size: 16px;
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+    .find-email-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .find-email-row .find-form-control { flex: 1; }
+    .find-email-at {
+      font-size: 15px;
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+    .find-email-domain {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1.5px solid #ddd8cc;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: #1a1f2e;
+      background: #fdfcf9;
+      outline: none;
+      cursor: pointer;
+    }
+    .find-email-domain:focus { border-color: #F5A623; }
+    .find-modal-footer {
+      padding: 0 24px 24px;
+      display: flex;
+      gap: 8px;
+    }
+    .find-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .find-btn-primary {
+      background: #F5A623;
+      color: #fff;
+    }
+    .find-btn-primary:hover { background: #E09510; }
+    .find-btn-ghost {
+      background: #f5f2ea;
+      color: #6b7280;
+      border: 1.5px solid #e8e3d8;
+    }
+    .find-btn-ghost:hover { background: #ede9df; }
+
+    /* 결과 화면 */
+    .find-result-box {
+      background: #f9f8f5;
+      border: 1.5px solid #e8e3d8;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .find-result-label {
+      font-size: 12.5px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .find-result-id {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1f2e;
+      letter-spacing: 1px;
+    }
+    .find-result-msg {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .find-result-msg strong {
+      color: #F5A623;
+    }
+    .find-error-msg {
+      background: #fff5f5;
+      border: 1.5px solid #fca5a5;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #dc2626;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .find-error-msg.show { display: block; }
+
+    /* 스텝 전환 */
+    .find-step { display: none; }
+    .find-step.active { display: block; }
+
     /* 구분선 */
     .divider {
       display: flex;
@@ -668,8 +868,8 @@
             자동로그인
           </label>
           <div class="login-links">
-            <a href="#">아이디 찾기</a>
-            <a href="#">비밀번호 찾기</a>
+            <a href="#" onclick="openFindModal('find-id'); return false;">아이디 찾기</a>
+            <a href="#" onclick="openFindModal('find-pw'); return false;">비밀번호 찾기</a>
           </div>
         </div>
 
@@ -714,6 +914,157 @@
 
 </div>
 
+<!-- ===== 아이디 찾기 모달 ===== -->
+<div class="find-modal-overlay" id="find-id">
+  <div class="find-modal">
+    <div class="find-modal-header">
+      <span class="find-modal-title">아이디 찾기</span>
+      <button class="find-modal-close" onclick="closeFindModal('find-id')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- STEP 1: 입력 폼 -->
+    <div class="find-step active" id="find-id-step1">
+      <div class="find-modal-body">
+        <p class="find-modal-desc">가입 시 정보를 입력하고 확인을 누르세요.</p>
+        <div class="find-error-msg" id="find-id-error">일치하는 정보가 없습니다. 입력하신 정보를 다시 확인해 주세요.</div>
+        <div class="find-form-group">
+          <label class="find-form-label">상호 <span class="required">*</span></label>
+          <input type="text" class="find-form-control" id="find-id-company" placeholder="회사명을 입력하세요" />
+        </div>
+        <div class="find-form-group">
+          <label class="find-form-label">사업자등록번호 <span class="required">*</span></label>
+          <div class="find-biz-row">
+            <input type="text" class="find-form-control" id="find-id-biz1" placeholder="000" maxlength="3" />
+            <span class="find-biz-sep">–</span>
+            <input type="text" class="find-form-control" id="find-id-biz2" placeholder="00" maxlength="2" />
+            <span class="find-biz-sep">–</span>
+            <input type="text" class="find-form-control" id="find-id-biz3" placeholder="00000" maxlength="5" />
+          </div>
+        </div>
+        <div class="find-form-group">
+          <label class="find-form-label">이메일 주소 <span class="required">*</span></label>
+          <div class="find-email-row">
+            <input type="text" class="find-form-control" id="find-id-email-id" placeholder="아이디" />
+            <span class="find-email-at">@</span>
+            <input type="text" class="find-form-control" id="find-id-email-domain-input" placeholder="도메인" />
+            <select class="find-email-domain" id="find-id-email-domain-select" onchange="applyEmailDomain('find-id')">
+              <option value="">선택</option>
+              <option value="gmail.com">gmail.com</option>
+              <option value="naver.com">naver.com</option>
+              <option value="daum.net">daum.net</option>
+              <option value="kakao.com">kakao.com</option>
+              <option value="nate.com">nate.com</option>
+              <option value="direct">직접입력</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="find-modal-footer">
+        <button class="find-btn find-btn-ghost" onclick="closeFindModal('find-id')">취소</button>
+        <button class="find-btn find-btn-primary" onclick="submitFindId()">확인</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: 결과 화면 -->
+    <div class="find-step" id="find-id-step2">
+      <div class="find-modal-body">
+        <p class="find-modal-desc">가입된 아이디입니다.</p>
+        <div class="find-result-box">
+          <div class="find-result-label">아이디</div>
+          <div class="find-result-id" id="find-id-result-value">hoonjs80</div>
+        </div>
+      </div>
+      <div class="find-modal-footer">
+        <button class="find-btn find-btn-ghost" onclick="closeFindModal('find-id')">닫기</button>
+        <button class="find-btn find-btn-primary" onclick="closeFindModal('find-id'); return false;" style="" onclick="location.href='login.html'">로그인하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 비밀번호 찾기 모달 ===== -->
+<div class="find-modal-overlay" id="find-pw">
+  <div class="find-modal">
+    <div class="find-modal-header">
+      <span class="find-modal-title">비밀번호 찾기</span>
+      <button class="find-modal-close" onclick="closeFindModal('find-pw')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- STEP 1: 입력 폼 -->
+    <div class="find-step active" id="find-pw-step1">
+      <div class="find-modal-body">
+        <p class="find-modal-desc">가입 시 정보를 입력하고 확인을 누르세요. 이메일 주소로 임시비밀번호가 발송됩니다.</p>
+        <div class="find-error-msg" id="find-pw-error">일치하는 정보가 없습니다. 입력하신 정보를 다시 확인해 주세요.</div>
+        <div class="find-form-group">
+          <label class="find-form-label">상호 <span class="required">*</span></label>
+          <input type="text" class="find-form-control" id="find-pw-company" placeholder="회사명을 입력하세요" />
+        </div>
+        <div class="find-form-group">
+          <label class="find-form-label">아이디 <span class="required">*</span></label>
+          <input type="text" class="find-form-control" id="find-pw-userid" placeholder="아이디를 입력하세요" />
+        </div>
+        <div class="find-form-group">
+          <label class="find-form-label">사업자등록번호 <span class="required">*</span></label>
+          <div class="find-biz-row">
+            <input type="text" class="find-form-control" id="find-pw-biz1" placeholder="000" maxlength="3" />
+            <span class="find-biz-sep">–</span>
+            <input type="text" class="find-form-control" id="find-pw-biz2" placeholder="00" maxlength="2" />
+            <span class="find-biz-sep">–</span>
+            <input type="text" class="find-form-control" id="find-pw-biz3" placeholder="00000" maxlength="5" />
+          </div>
+        </div>
+        <div class="find-form-group">
+          <label class="find-form-label">이메일 <span class="required">*</span></label>
+          <div class="find-email-row">
+            <input type="text" class="find-form-control" id="find-pw-email-id" placeholder="아이디" />
+            <span class="find-email-at">@</span>
+            <input type="text" class="find-form-control" id="find-pw-email-domain-input" placeholder="도메인" />
+            <select class="find-email-domain" id="find-pw-email-domain-select" onchange="applyEmailDomain('find-pw')">
+              <option value="">선택</option>
+              <option value="gmail.com">gmail.com</option>
+              <option value="naver.com">naver.com</option>
+              <option value="daum.net">daum.net</option>
+              <option value="kakao.com">kakao.com</option>
+              <option value="nate.com">nate.com</option>
+              <option value="direct">직접입력</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="find-modal-footer">
+        <button class="find-btn find-btn-ghost" onclick="closeFindModal('find-pw')">취소</button>
+        <button class="find-btn find-btn-primary" onclick="submitFindPw()">확인</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: 임시비밀번호 발송 안내 -->
+    <div class="find-step" id="find-pw-step2">
+      <div class="find-modal-body">
+        <div style="text-align:center; margin-bottom:20px;">
+          <div style="width:56px;height:56px;border-radius:50%;background:#FFF8EC;border:2px solid #F5A623;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div style="font-size:16px;font-weight:700;color:#1a1f2e;margin-bottom:8px;">임시비밀번호 발송 완료</div>
+        </div>
+        <p class="find-result-msg">등록하신 이메일로 <strong>임시비밀번호</strong>가 발송되었습니다.<br>수신한 메일함을 확인하세요.</p>
+        <div class="find-result-box" style="background:#FFF8EC;border-color:#F5A623;">
+          <div class="find-result-label">수신 이메일</div>
+          <div class="find-result-id" id="find-pw-email-result" style="font-size:15px;letter-spacing:0;">user@example.com</div>
+        </div>
+        <p style="font-size:12px;color:#9ca3af;text-align:center;margin-top:12px;">임시비밀번호로 로그인 후 마이페이지에서 비밀번호를 변경해 주세요.</p>
+      </div>
+      <div class="find-modal-footer">
+        <button class="find-btn find-btn-ghost" onclick="closeFindModal('find-pw')">닫기</button>
+        <button class="find-btn find-btn-primary" onclick="closeFindModal('find-pw')">로그인하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // Enter 키로 로그인
   document.querySelectorAll('.form-input').forEach(function(input) {
@@ -730,6 +1081,98 @@
     this.style.transform = 'scale(0.96)';
     setTimeout(() => { this.style.transform = ''; }, 150);
   });
+
+  /* ===== 아이디/비밀번호 찾기 모달 ===== */
+  function openFindModal(id) {
+    document.getElementById(id).classList.add('open');
+    // 스텝 초기화
+    var step1 = document.getElementById(id + '-step1');
+    var step2 = document.getElementById(id + '-step2');
+    if (step1) { step1.classList.add('active'); }
+    if (step2) { step2.classList.remove('active'); }
+    // 에러 메시지 숨기기
+    var err = document.getElementById(id + '-error');
+    if (err) err.classList.remove('show');
+    // 입력값 초기화
+    var inputs = document.getElementById(id).querySelectorAll('input');
+    inputs.forEach(function(inp) { inp.value = ''; });
+    var selects = document.getElementById(id).querySelectorAll('select');
+    selects.forEach(function(sel) { sel.value = ''; });
+  }
+
+  function closeFindModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  // 오버레이 클릭 시 닫기
+  document.querySelectorAll('.find-modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.classList.remove('open');
+      }
+    });
+  });
+
+  // 이메일 도메인 선택시 입력필드에 적용
+  function applyEmailDomain(prefix) {
+    var sel = document.getElementById(prefix + '-email-domain-select');
+    var inp = document.getElementById(prefix + '-email-domain-input');
+    if (sel.value === 'direct') {
+      inp.value = '';
+      inp.focus();
+    } else if (sel.value !== '') {
+      inp.value = sel.value;
+    }
+  }
+
+  // 아이디 찾기 확인
+  function submitFindId() {
+    var company = document.getElementById('find-id-company').value.trim();
+    var biz1 = document.getElementById('find-id-biz1').value.trim();
+    var biz2 = document.getElementById('find-id-biz2').value.trim();
+    var biz3 = document.getElementById('find-id-biz3').value.trim();
+    var emailId = document.getElementById('find-id-email-id').value.trim();
+    var emailDomain = document.getElementById('find-id-email-domain-input').value.trim();
+    var errEl = document.getElementById('find-id-error');
+
+    if (!company || !biz1 || !biz2 || !biz3 || !emailId || !emailDomain) {
+      errEl.textContent = '모든 항목을 입력해 주세요.';
+      errEl.classList.add('show');
+      return;
+    }
+    errEl.classList.remove('show');
+
+    // 데모: 실제 서비스에서는 API 호출 후 결과 표시
+    // 여기서는 데모 아이디 표시
+    document.getElementById('find-id-result-value').textContent = 'hoonjs80';
+    document.getElementById('find-id-step1').classList.remove('active');
+    document.getElementById('find-id-step2').classList.add('active');
+  }
+
+  // 비밀번호 찾기 확인
+  function submitFindPw() {
+    var company = document.getElementById('find-pw-company').value.trim();
+    var userid = document.getElementById('find-pw-userid').value.trim();
+    var biz1 = document.getElementById('find-pw-biz1').value.trim();
+    var biz2 = document.getElementById('find-pw-biz2').value.trim();
+    var biz3 = document.getElementById('find-pw-biz3').value.trim();
+    var emailId = document.getElementById('find-pw-email-id').value.trim();
+    var emailDomain = document.getElementById('find-pw-email-domain-input').value.trim();
+    var errEl = document.getElementById('find-pw-error');
+
+    if (!company || !userid || !biz1 || !biz2 || !biz3 || !emailId || !emailDomain) {
+      errEl.textContent = '모든 항목을 입력해 주세요.';
+      errEl.classList.add('show');
+      return;
+    }
+    errEl.classList.remove('show');
+
+    // 데모: 이메일 주소 표시
+    var email = emailId + '@' + emailDomain;
+    document.getElementById('find-pw-email-result').textContent = email;
+    document.getElementById('find-pw-step1').classList.remove('active');
+    document.getElementById('find-pw-step2').classList.add('active');
+  }
 </script>
 
 </body>
