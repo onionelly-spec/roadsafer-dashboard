@@ -1,37 +1,29 @@
-/* ===== 사이드바 토글 ===== */
+/* ===== 사이드바 토글 (미니모드) ===== */
 (function () {
-  const sidebar = document.getElementById('sidebar');
-  const toggleBtn = document.getElementById('sidebarToggle');
-  const openBtn = document.getElementById('sidebarOpenBtn');
+  var wrapper = document.getElementById('appWrapper');
+  var toggleBtn = document.getElementById('sidebarToggle');
+  var headerToggle = document.getElementById('headerToggle');
 
-  function collapseSidebar() {
-    sidebar.classList.add('collapsed');
-    toggleBtn.title = '메뉴 열기';
-  }
-
-  function expandSidebar() {
-    sidebar.classList.remove('collapsed');
-    toggleBtn.title = '메뉴 닫기';
+  function toggleMini() {
+    if (wrapper.classList.contains('mini')) {
+      wrapper.classList.remove('mini');
+      if (toggleBtn) toggleBtn.title = '메뉴 닫기';
+    } else {
+      wrapper.classList.add('mini');
+      if (toggleBtn) toggleBtn.title = '메뉴 열기';
+    }
   }
 
   if (toggleBtn) {
-    toggleBtn.addEventListener('click', function () {
-      if (sidebar.classList.contains('collapsed')) {
-        expandSidebar();
-      } else {
-        collapseSidebar();
-      }
-    });
+    toggleBtn.addEventListener('click', toggleMini);
   }
 
-  if (openBtn) {
-    openBtn.addEventListener('click', function () {
-      expandSidebar();
-    });
+  if (headerToggle) {
+    headerToggle.addEventListener('click', toggleMini);
   }
 
   /* ===== 퀵메뉴 활성화 ===== */
-  const quickItems = document.querySelectorAll('.quick-item');
+  var quickItems = document.querySelectorAll('.quick-item');
   quickItems.forEach(function (item) {
     item.addEventListener('click', function (e) {
       e.preventDefault();
@@ -41,7 +33,7 @@
   });
 
   /* ===== 사이드바 메뉴 활성화 ===== */
-  const navItems = document.querySelectorAll('.nav-item');
+  var navItems = document.querySelectorAll('.nav-item');
   navItems.forEach(function (item) {
     item.addEventListener('click', function () {
       navItems.forEach(function (ni) { ni.classList.remove('active'); });
@@ -49,11 +41,11 @@
     });
   });
 
-  /* ===== 알림 클릭 ===== */
-  const notiItems = document.querySelectorAll('.noti-item');
+  /* ===== 알림 클릭 (읽음 처리) ===== */
+  var notiItems = document.querySelectorAll('.noti-item');
   notiItems.forEach(function (item) {
     item.addEventListener('click', function () {
-      const dot = item.querySelector('.noti-dot');
+      var dot = item.querySelector('.noti-dot');
       if (dot && dot.classList.contains('active')) {
         dot.classList.remove('active');
         dot.classList.add('inactive');
@@ -65,8 +57,8 @@
   });
 
   function updateBadgeCount() {
-    const activeDots = document.querySelectorAll('.noti-dot.active').length;
-    const badge = document.querySelector('.badge-count');
+    var activeDots = document.querySelectorAll('.noti-dot.active').length;
+    var badge = document.querySelector('.badge-count');
     if (badge) {
       badge.textContent = activeDots;
       badge.style.display = activeDots > 0 ? 'flex' : 'none';
@@ -74,7 +66,7 @@
   }
 
   /* ===== 광고 이미지 로드 실패 시 플레이스홀더 ===== */
-  const adImgs = document.querySelectorAll('.ad-img');
+  var adImgs = document.querySelectorAll('.ad-img');
   adImgs.forEach(function (img) {
     img.addEventListener('error', function () {
       img.style.display = 'none';
@@ -82,7 +74,7 @@
       img.parentElement.style.display = 'flex';
       img.parentElement.style.alignItems = 'center';
       img.parentElement.style.justifyContent = 'center';
-      const placeholder = document.createElement('span');
+      var placeholder = document.createElement('span');
       placeholder.style.cssText = 'color:#aaa;font-size:12px;';
       placeholder.textContent = '이미지';
       img.parentElement.appendChild(placeholder);
