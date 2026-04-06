@@ -1015,3 +1015,181 @@
     font-size: 9px;
   }
 }
+
+/* ===== PAGE BODY (서브 페이지 공통 레이아웃) ===== */
+.page-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+.page-body::-webkit-scrollbar { width: 6px; }
+.page-body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+.page-title-row {
+  margin-bottom: 4px;
+}
+.page-title-row .page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.page-title-row .page-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* 카드 공통 */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* 버튼 공통 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  border: none;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--yellow);
+  color: #fff;
+  border: 1.5px solid var(--yellow);
+}
+.btn-primary:hover {
+  background: var(--yellow-hover);
+  border-color: var(--yellow-hover);
+  box-shadow: 0 2px 8px rgba(245,166,35,0.25);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--yellow);
+  border: 1.5px solid var(--yellow);
+}
+.btn-outline:hover {
+  background: var(--yellow);
+  color: #fff;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
+}
+.btn-ghost:hover {
+  background: #f3f4f6;
+  color: var(--text-primary);
+}
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+  border: 1.5px solid #ef4444;
+}
+.btn-danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+/* 배지 공통 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badge-active { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+.badge-done   { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.badge-wait   { background: #FFF8EC; color: #D97706; border: 1px solid #F5A623; }
+.badge-cancel { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+
+/* 폼 공통 */
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.form-control {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus {
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 2px rgba(245,166,35,0.12);
+}
+.form-select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.form-select:focus { border-color: var(--yellow); }
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 0 8px;
+}
+.page-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.page-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+.page-btn.active { background: var(--yellow); border-color: var(--yellow); color: #fff; font-weight: 700; }
+
+/* 반응형 page-body */
+@media (max-width: 900px) {
+  .page-body { padding: 16px 16px; }
+}
+@media (max-width: 600px) {
+  .page-body { padding: 12px 12px; gap: 12px; }
+  .page-title-row .page-title { font-size: 16px; }
+}
