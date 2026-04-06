@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로드세이프터 SYSTEM - 로그인</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+      font-size: 14px;
+      background: #faf8f3;
+      color: #1a1f2e;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    input { font-family: inherit; }
+
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --yellow: #F5A623;
+      --yellow-hover: #E09510;
+      --yellow-light: #FFF8EC;
+      --yellow-border: #F5A623;
+      --bg: #faf8f3;
+      --bg-left: #f5f2ea;
+      --card-bg: #ffffff;
+      --border: #e8e3d8;
+      --border-input: #ddd8cc;
+      --text-primary: #1a1f2e;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --shadow: 0 8px 40px rgba(0,0,0,0.10);
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.07);
+      --radius: 14px;
+      --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ===== LAYOUT ===== */
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+    }
+
+    /* ===== LEFT PANEL ===== */
+    .left-panel {
+      flex: 1;
+      background: var(--bg-left);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 배경 장식 원 */
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,166,35,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* 플로팅 아이콘 */
+    .float-icon {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: var(--shadow-sm);
+      animation: floatY 3s ease-in-out infinite;
+    }
+    .float-icon-1 {
+      top: calc(50% - 160px);
+      right: calc(50% - 190px);
+      background: #fff;
+      color: var(--text-secondary);
+      animation-delay: 0s;
+    }
+    .float-icon-2 {
+      top: calc(50% + 60px);
+      left: calc(50% - 240px);
+      background: var(--yellow);
+      color: #fff;
+      animation-delay: 1.2s;
+    }
+    .float-icon-3 {
+      top: calc(50% - 20px);
+      right: calc(50% - 230px);
+      background: #fff3e0;
+      color: var(--yellow);
+      animation-delay: 0.6s;
+      width: 36px;
+      height: 36px;
+      font-size: 15px;
+    }
+
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* 로고 원형 컨테이너 */
+    .logo-circle-wrap {
+      position: relative;
+      margin-bottom: 36px;
+    }
+
+    .logo-circle {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 40px rgba(245,166,35,0.18), 0 2px 16px rgba(0,0,0,0.08);
+      transition: transform var(--transition), box-shadow var(--transition);
+      cursor: default;
+      position: relative;
+      z-index: 1;
+      animation: logoPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% {
+        box-shadow: 0 8px 40px rgba(245,166,35,0.18), 0 2px 16px rgba(0,0,0,0.08);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 12px 56px rgba(245,166,35,0.30), 0 4px 24px rgba(0,0,0,0.10);
+        transform: scale(1.03);
+      }
+    }
+
+    .logo-circle:hover {
+      animation: none;
+      transform: scale(1.07) rotate(-2deg);
+      box-shadow: 0 16px 60px rgba(245,166,35,0.35), 0 4px 24px rgba(0,0,0,0.12);
+    }
+
+    .logo-circle img {
+      width: 130px;
+      height: auto;
+      object-fit: contain;
+      transition: transform var(--transition);
+    }
+    .logo-circle:hover img {
+      transform: scale(1.05);
+    }
+
+    /* 링 장식 */
+    .logo-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      border: 2px dashed rgba(245,166,35,0.30);
+      animation: ringRotate 12s linear infinite;
+      pointer-events: none;
+    }
+    .logo-ring-2 {
+      width: 240px;
+      height: 240px;
+      border: 1.5px solid rgba(245,166,35,0.15);
+      animation: ringRotate 20s linear infinite reverse;
+    }
+
+    @keyframes ringRotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* 링 위 점 장식 */
+    .ring-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 210px;
+      height: 210px;
+      transform: translate(-50%, -50%);
+      animation: ringRotate 12s linear infinite;
+      pointer-events: none;
+    }
+    .ring-dot::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--yellow);
+      box-shadow: 0 0 8px rgba(245,166,35,0.6);
+    }
+
+    /* 왼쪽 텍스트 */
+    .left-text {
+      text-align: center;
+      z-index: 1;
+    }
+    .left-text h2 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+    .left-text p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+    }
+
+    /* ===== RIGHT PANEL ===== */
+    .right-panel {
+      width: 480px;
+      min-width: 380px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 32px;
+    }
+
+    /* ===== LOGIN CARD ===== */
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    /* 카드 상단 노란 바 */
+    .card-top-bar {
+      height: 5px;
+      background: linear-gradient(90deg, var(--yellow) 0%, #f7c06e 100%);
+    }
+
+    .card-body {
+      padding: 36px 32px 32px;
+    }
+
+    /* 카드 헤더 */
+    .card-title {
+      font-size: 22px;
+      font-weight: 800;
+      text-align: center;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* 입력 + 버튼 행 */
+    .input-btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      margin-bottom: 0;
+    }
+
+    .input-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-icon {
+      position: absolute;
+      left: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+    }
+    .form-input {
+      width: 100%;
+      padding: 13px 14px 13px 38px;
+      border: 1.5px solid var(--border-input);
+      border-radius: 9px;
+      font-size: 14px;
+      color: var(--text-primary);
+      background: #fdfcf9;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+    .form-input:focus {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 3px rgba(245,166,35,0.15);
+      background: #fff;
+    }
+
+    /* 로그인 버튼 */
+    .login-btn {
+      width: 80px;
+      min-width: 80px;
+      background: var(--yellow);
+      color: #fff;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 4px 16px rgba(245,166,35,0.30);
+      border: none;
+      line-height: 1.3;
+      padding: 0;
+    }
+    .login-btn:hover {
+      background: var(--yellow-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(245,166,35,0.40);
+    }
+    .login-btn:active {
+      transform: translateY(0);
+    }
+    .login-btn svg {
+      margin-top: 2px;
+    }
+
+    /* 자동로그인 + 찾기 */
+    .login-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      margin-bottom: 20px;
+    }
+    .auto-login {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+    .auto-login input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--yellow);
+      cursor: pointer;
+    }
+    .login-links {
+      display: flex;
+      gap: 14px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+    .login-links a {
+      transition: color var(--transition);
+    }
+    .login-links a:hover {
+      color: var(--yellow);
+    }
+
+    /* 구분선 */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* 회원가입 버튼 */
+    .signup-btn {
+      width: 100%;
+      padding: 13px;
+      border: 1.5px solid var(--border-input);
+      border-radius: 9px;
+      background: #fdfcf9;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition), color var(--transition);
+      margin-bottom: 14px;
+    }
+    .signup-btn:hover {
+      border-color: var(--yellow);
+      background: var(--yellow-light);
+      color: var(--yellow);
+    }
+
+    /* 안내 문구 */
+    .notice-box {
+      background: #faf8f3;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .notice-box strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* 테스트 로그인 */
+    .test-login-section {
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+    .test-login-label {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .test-btn-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .test-btn {
+      flex: 1;
+      padding: 9px 8px;
+      border: 1.5px solid var(--border-input);
+      border-radius: 8px;
+      background: #fdfcf9;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition), color var(--transition), transform var(--transition);
+      white-space: nowrap;
+    }
+    .test-btn:hover {
+      border-color: var(--yellow);
+      background: var(--yellow-light);
+      color: var(--yellow);
+      transform: translateY(-1px);
+    }
+
+    /* ===== 반응형 ===== */
+    @media (max-width: 860px) {
+      .login-page {
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .left-panel {
+        flex: none;
+        padding: 48px 24px 36px;
+        min-height: 320px;
+      }
+      .logo-circle {
+        width: 140px;
+        height: 140px;
+      }
+      .logo-circle img {
+        width: 100px;
+      }
+      .logo-ring { width: 170px; height: 170px; }
+      .logo-ring-2 { width: 196px; height: 196px; }
+      .ring-dot { width: 170px; height: 170px; }
+      .float-icon-1 { top: 30px; right: 40px; }
+      .float-icon-2 { bottom: 30px; left: 40px; top: auto; }
+      .float-icon-3 { display: none; }
+      .left-text h2 { font-size: 22px; }
+      .right-panel {
+        width: 100%;
+        min-width: unset;
+        padding: 32px 20px 40px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .left-panel {
+        padding: 36px 16px 28px;
+        min-height: 280px;
+      }
+      .logo-circle {
+        width: 120px;
+        height: 120px;
+      }
+      .logo-circle img { width: 85px; }
+      .logo-ring { width: 148px; height: 148px; }
+      .logo-ring-2 { width: 170px; height: 170px; }
+      .ring-dot { width: 148px; height: 148px; }
+      .logo-circle-wrap { margin-bottom: 24px; }
+      .left-text h2 { font-size: 20px; }
+      .left-text p { font-size: 13px; }
+      .card-body { padding: 28px 20px 24px; }
+      .card-title { font-size: 19px; }
+      .input-btn-row { flex-direction: column; gap: 8px; }
+      .login-btn {
+        width: 100%;
+        flex-direction: row;
+        padding: 13px;
+        gap: 6px;
+        font-size: 15px;
+      }
+      .test-btn-row { flex-direction: column; }
+      .test-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-page">
+
+  <!-- ===== LEFT PANEL ===== -->
+  <div class="left-panel">
+
+    <!-- 플로팅 아이콘들 -->
+    <div class="float-icon float-icon-1">
+      <!-- 헬멧 아이콘 -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2z"/>
+        <path d="M12 2a7 7 0 0 0-7 7v3h14V9a7 7 0 0 0-7-7z"/>
+      </svg>
+    </div>
+    <div class="float-icon float-icon-2">
+      <!-- 도로 아이콘 -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 17l3-10 3 10M15 7l3 10 3-10"/>
+        <line x1="12" y1="7" x2="12" y2="17"/>
+      </svg>
+    </div>
+    <div class="float-icon float-icon-3">
+      <!-- 경고 아이콘 -->
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </div>
+
+    <!-- 로고 원형 + 링 애니메이션 -->
+    <div class="logo-circle-wrap">
+      <div class="logo-ring"></div>
+      <div class="logo-ring logo-ring-2"></div>
+      <div class="ring-dot"></div>
+      <div class="logo-circle">
+        <img src="logo.png" alt="로드세이프터 로고" />
+      </div>
+    </div>
+
+    <!-- 텍스트 -->
+    <div class="left-text">
+      <h2>안전한 도로의 시작</h2>
+      <p>
+        로드세이프티시스템은<br>
+        신속하고 안전한 공사 현장을 위해<br>
+        최적의 파트너를 연결합니다.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- ===== RIGHT PANEL ===== -->
+  <div class="right-panel">
+    <div class="login-card">
+      <div class="card-top-bar"></div>
+      <div class="card-body">
+
+        <!-- 타이틀 -->
+        <div class="card-title">기업 로그인</div>
+        <div class="card-subtitle">서비스 이용을 위해 로그인해주세요.</div>
+
+        <!-- 입력 + 로그인 버튼 -->
+        <div class="input-btn-row">
+          <div class="input-group">
+            <!-- 아이디 -->
+            <div class="input-wrap">
+              <span class="input-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+              </span>
+              <input type="text" class="form-input" placeholder="아이디" value="block" />
+            </div>
+            <!-- 비밀번호 -->
+            <div class="input-wrap">
+              <span class="input-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </span>
+              <input type="password" class="form-input" placeholder="비밀번호" value="1234" />
+            </div>
+          </div>
+
+          <!-- 로그인 버튼 -->
+          <button class="login-btn" onclick="location.href='index.html'">
+            <span>로그인</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 자동로그인 + 찾기 -->
+        <div class="login-options">
+          <label class="auto-login">
+            <input type="checkbox" />
+            자동로그인
+          </label>
+          <div class="login-links">
+            <a href="#">아이디 찾기</a>
+            <a href="#">비밀번호 찾기</a>
+          </div>
+        </div>
+
+        <!-- 구분선 -->
+        <div class="divider">or</div>
+
+        <!-- 신규 기업 회원가입 -->
+        <button class="signup-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          신규 기업 회원가입
+        </button>
+
+        <!-- 안내 -->
+        <div class="notice-box">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          사업자번호를 보유한 <strong>기업회원</strong> 만 이용할 수 있습니다.
+        </div>
+
+        <!-- 테스트 빠른 로그인 -->
+        <div class="test-login-section">
+          <div class="test-login-label">테스트 빠른 로그인</div>
+          <div class="test-btn-row">
+            <button class="test-btn" onclick="location.href='index.html'">
+              🏢 차단기업
+            </button>
+            <button class="test-btn" onclick="location.href='index.html'">
+              🏗️ 발주기업
+            </button>
+            <button class="test-btn" onclick="location.href='index.html'">
+              👷 차단직원
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Enter 키로 로그인
+  document.querySelectorAll('.form-input').forEach(function(input) {
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        location.href = 'index.html';
+      }
+    });
+  });
+
+  // 로그인 버튼 클릭 시 살짝 흔들림 효과
+  const loginBtn = document.querySelector('.login-btn');
+  loginBtn.addEventListener('click', function() {
+    this.style.transform = 'scale(0.96)';
+    setTimeout(() => { this.style.transform = ''; }, 150);
+  });
+</script>
+
+</body>
+</html>
