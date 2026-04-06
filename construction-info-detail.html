@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공사 정보 상세 - 로드세이프터 SYSTEM</title>
+  <link rel="stylesheet" href="common.css" />
+  <style>
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-secondary);
+      margin-bottom: 14px; cursor: pointer;
+      transition: color var(--transition);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--yellow); }
+    .detail-page-title {
+      font-size: 20px; font-weight: 800; color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+    .detail-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      max-height: calc(100vh - 240px);
+      overflow-y: auto;
+    }
+    .detail-card::-webkit-scrollbar { width: 5px; }
+    .detail-card::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    .tab-container { padding: 0; }
+    .tab-nav { padding: 0 20px; margin-bottom: 0; }
+    .tab-panel { padding: 0 20px 20px; }
+    .status-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+    }
+    .status-label { font-size: 13px; color: var(--text-secondary); }
+    .edit-link { font-size: 12px; color: var(--text-muted); cursor: pointer; transition: color var(--transition); }
+    .edit-link:hover { color: var(--yellow); }
+    .highlight-yellow { color: var(--yellow); font-weight: 700; }
+    /* 진행상황 캘린더 */
+    .progress-notice {
+      background: #f8f9fb; border-radius: 8px; padding: 12px 16px;
+      font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.7;
+    }
+    .progress-total {
+      text-align: right; font-size: 13px; font-weight: 700;
+      color: var(--text-primary); margin-bottom: 10px;
+    }
+    .calendar-grid {
+      width: 100%; border-collapse: collapse; font-size: 12px;
+      table-layout: fixed;
+    }
+    .calendar-grid th {
+      background: #f8f9fb; padding: 8px 4px; text-align: center;
+      font-weight: 600; color: var(--text-secondary);
+      border: 1px solid var(--border); font-size: 11px;
+    }
+    .calendar-grid td {
+      border: 1px solid var(--border); padding: 6px 4px;
+      text-align: center; vertical-align: top; min-height: 56px;
+    }
+    .cal-date { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .cal-date.today { font-weight: 800; color: var(--text-primary); }
+    .cal-event {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 2px 6px; border-radius: 4px; font-size: 10px;
+      font-weight: 600; cursor: pointer; white-space: nowrap;
+      transition: opacity var(--transition);
+    }
+    .cal-event:hover { opacity: 0.8; }
+    .cal-event.done { background: #dbeafe; color: #1e40af; }
+    .cal-event.cancel { background: #fee2e2; color: #991b1b; }
+    .cal-event.complete { background: #d1fae5; color: #065f46; }
+    .cal-event.schedule { background: #f3f4f6; color: var(--text-secondary); }
+    .cal-event.none { background: transparent; color: var(--text-muted); font-size: 10px; }
+    .cal-btn-group { display: flex; gap: 3px; justify-content: center; flex-wrap: wrap; }
+    .cal-btn {
+      padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border); background: #fff;
+      color: var(--text-secondary); transition: all var(--transition);
+    }
+    .cal-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    /* 모바일 목록형 */
+    .progress-mobile-list { display: none; }
+    .progress-mobile-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .progress-mobile-item:last-child { border-bottom: none; }
+    .progress-mobile-date { width: 44px; font-size: 12px; color: var(--text-secondary); flex-shrink: 0; }
+    .progress-mobile-day { width: 28px; font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+    .progress-mobile-status { flex: 1; }
+    .progress-mobile-item.today .progress-mobile-date,
+    .progress-mobile-item.today .progress-mobile-day { font-weight: 800; color: var(--text-primary); }
+    /* 하단 버튼 */
+    .detail-actions {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-top: 1px solid var(--border);
+      flex-wrap: wrap; gap: 10px;
+    }
+    @media (max-width: 700px) {
+      .calendar-grid { display: none; }
+      .progress-mobile-list { display: block; }
+      .detail-card { max-height: none; overflow-y: visible; }
+    }
+    @media (max-width: 500px) {
+      .detail-actions { flex-direction: column; align-items: stretch; }
+      .detail-actions .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-mini">R</div>
+      <img src="logo.png" alt="로드세이프터" />
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar">나</div>
+      <div class="user-info">
+        <div class="user-name">나잘난</div>
+        <div class="user-company">한국도로차단(주)</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-group-label">차량기업</div>
+      <a href="index.html" class="nav-item" data-label="메인 대시보드">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+        <span class="nav-label">메인 대시보드</span>
+      </a>
+      <a href="construction-list.html" class="nav-item" data-label="내 공사 현황">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        <span class="nav-label">내 공사 현황</span>
+      </a>
+      <a href="construction-info.html" class="nav-item active" data-label="공사 정보">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        <span class="nav-label">공사 정보</span>
+      </a>
+      <a href="tma-card.html" class="nav-item" data-label="TMA 카드 관리">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
+        <span class="nav-label">TMA 카드 관리</span>
+      </a>
+      <a href="market.html" class="nav-item" data-label="장터">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
+        <span class="nav-label">장터</span>
+      </a>
+      <a href="community.html" class="nav-item" data-label="커뮤니티">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="nav-label">커뮤니티</span>
+      </a>
+      <a href="notice.html" class="nav-item" data-label="공지사항">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        <span class="nav-label">공지사항</span>
+      </a>
+      <a href="ad.html" class="nav-item" data-label="광고">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>
+        <span class="nav-label">광고</span>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <a href="profile.html" class="nav-item" data-label="정보변경">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        <span class="nav-label">정보변경</span>
+      </a>
+      <a href="login.html" class="nav-item" data-label="로그아웃">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+        <span class="nav-label">로그아웃</span>
+      </a>
+    </div>
+    <div class="sidebar-toggle" id="sidebarToggle">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content" id="mainContent">
+    <header class="main-header">
+      <div class="header-title">공사 정보 상세</div>
+      <div class="header-right">
+        <a href="profile.html" class="header-user">
+          <div class="header-user-avatar">나</div>
+          <span class="header-user-name">나잘난</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <a href="construction-info.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        목록으로
+      </a>
+      <div class="detail-page-title">한국도로차단 | 공사 정보</div>
+
+      <div class="detail-card tab-container">
+        <!-- 탭 네비게이션 -->
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="tab-info">공사 정보</button>
+          <button class="tab-btn" data-tab="tab-block">차단 정보</button>
+          <button class="tab-btn" data-tab="tab-progress">진행 상황</button>
+        </div>
+
+        <!-- 공사 정보 탭 -->
+        <div class="tab-panel active" id="tab-info">
+          <div class="status-row">
+            <div class="status-label">상태 : <span class="badge badge-active" style="margin-left:6px;">진행중</span></div>
+            <span class="edit-link">* 수정된 정보</span>
+          </div>
+          <table class="detail-table">
+            <tr><th>공사명</th><td>횡단보도 시공</td></tr>
+            <tr><th>발주업체명</th><td>용진토건</td></tr>
+            <tr><th>담당자</th><td><a href="#" class="link-yellow">송아홈</a> (010-5555-6666)</td></tr>
+            <tr><th>기간</th><td>2026-06-25 ~ 2026-06-30 (차단 기간 : 4일. <a href="#" class="link-yellow">공사없음</a> : 06/28, 06/29)</td></tr>
+            <tr><th>시간</th><td>주간, 야간 / 19시 차단 시작</td></tr>
+            <tr><th>도로 구분</th><td>국도</td></tr>
+            <tr><th>길 구분</th><td>본선</td></tr>
+            <tr><th>도로명</th><td>국도 32번</td></tr>
+            <tr><th>방향</th><td>대진</td></tr>
+            <tr><th>공사구간</th><td><span class="highlight-yellow">105.6km ~ 105.7km</span></td></tr>
+            <tr><th>품목 수량</th><td>TMA1 : 1대, TMA3 : 2대, PLCS : 2대, 신호수 : 2명</td></tr>
+            <tr><th>사연회</th><td>사연회 날짜 : 2026-06-22, 방공수 적용</td></tr>
+            <tr><th>관역</th><td>대전, 충남</td></tr>
+            <tr><th>책정 단가(1대당)</th><td>긴급 | TMA1 : 600,000, TMA3 : 1,000,000, PLCS : 900,000, 신호수 : 250,000</td></tr>
+          </table>
+        </div>
+
+        <!-- 차단 정보 탭 -->
+        <div class="tab-panel" id="tab-block">
+          <table class="detail-table">
+            <tr><th>담당자</th><td>김석진</td></tr>
+            <tr><th>차단 구간</th><td>32번 국도 대전방향 105.5km ~ 105.8km 400미터</td></tr>
+            <tr>
+              <th>TMA1</th>
+              <td>
+                1대<br>
+                <a href="#" class="link-yellow" style="font-size:12px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  11소11...pdf
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <th>TMA3</th>
+              <td>
+                2대<br>
+                <a href="#" class="link-yellow" style="font-size:12px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  11소11...pdf
+                </a><br>
+                <span style="font-size:12px;color:var(--text-muted);">1건 : 별도제출</span>
+              </td>
+            </tr>
+            <tr><th>PLCS</th><td>2대<br><span style="font-size:12px;color:var(--text-muted);">2건 : 별도제출</span></td></tr>
+            <tr><th>신호수</th><td>0명</td></tr>
+            <tr><th>의견</th><td><a href="#" class="link-yellow">신호수도 1명 필요해보입니다</a></td></tr>
+          </table>
+          <div class="detail-actions">
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-outline btn-sm">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                수정
+              </button>
+              <button class="btn btn-danger btn-sm">차단신청 취소</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 진행 상황 탭 -->
+        <div class="tab-panel" id="tab-progress">
+          <div class="progress-notice">
+            투입된 싸인카 수량이 바뀌었다면 콜센터(1566-0000)으로 연락해주세요.<br>
+            금액을 누르면 날짜별 공사 금액을 확인할 수 있습니다.
+          </div>
+          <div class="progress-total">현재 합계 : <strong>7,850,000</strong></div>
+
+          <!-- PC 캘린더 -->
+          <div style="overflow-x:auto;">
+            <table class="calendar-grid">
+              <thead>
+                <tr>
+                  <th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th style="background:#f0f0f0;">토</th><th>일</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="cal-date">6/22</div><div class="cal-event done" style="font-size:11px;">시연회(2,450,000)</div></td>
+                  <td><div class="cal-date">6/23</div></td>
+                  <td><div class="cal-date">6/24</div></td>
+                  <td><div class="cal-date">6/25</div><div class="cal-event done">공사완료(4,900,000)</div><span style="font-size:10px;background:#3b82f6;color:#fff;border-radius:50%;padding:1px 5px;margin-left:2px;">5</span></td>
+                  <td><div class="cal-date">6/26</div><div class="cal-event cancel">취소(500,000)</div><span style="font-size:10px;background:#3b82f6;color:#fff;border-radius:50%;padding:1px 5px;margin-left:2px;">6</span></td>
+                  <td style="background:#fafafa;">
+                    <div class="cal-date today">6/27</div>
+                    <div class="cal-btn-group">
+                      <button class="cal-btn" style="background:#d1fae5;color:#065f46;border-color:#a7f3d0;">완료</button>
+                      <button class="cal-btn">취소</button>
+                    </div>
+                    <span style="font-size:10px;background:#3b82f6;color:#fff;border-radius:50%;padding:1px 5px;margin-left:2px;">7</span>
+                  </td>
+                  <td><div class="cal-date">6/28</div><div class="cal-event none">공사없음</div></td>
+                </tr>
+                <tr>
+                  <td><div class="cal-date">6/29</div><div class="cal-event schedule">예정</div></td>
+                  <td><div class="cal-date">6/30</div><div class="cal-event schedule">예정</div></td>
+                  <td></td><td></td><td></td><td></td><td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 모바일 목록형 -->
+          <div class="progress-mobile-list">
+            <div class="progress-mobile-item">
+              <div class="progress-mobile-date">6/25</div>
+              <div class="progress-mobile-day">목</div>
+              <div class="progress-mobile-status"><a href="#" class="link-yellow">완료(4,900,000)</a></div>
+            </div>
+            <div class="progress-mobile-item">
+              <div class="progress-mobile-date">6/26</div>
+              <div class="progress-mobile-day">금</div>
+              <div class="progress-mobile-status"><a href="#" class="link-yellow">취소(500,000)</a></div>
+            </div>
+            <div class="progress-mobile-item today">
+              <div class="progress-mobile-date">6/27</div>
+              <div class="progress-mobile-day">토</div>
+              <div class="progress-mobile-status">
+                <div class="cal-btn-group" style="justify-content:flex-start;">
+                  <button class="cal-btn" style="background:#d1fae5;color:#065f46;border-color:#a7f3d0;">완료</button>
+                  <button class="cal-btn">취소</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;padding-top:14px;">
+            <a href="construction-info.html" class="btn btn-secondary btn-sm">
+              <span style="font-size:10px;background:#3b82f6;color:#fff;border-radius:50%;padding:1px 5px;margin-right:4px;">8</span>
+              목록
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      <div class="footer-links">
+        <a href="#">이용약관</a>
+        <a href="#">개인정보처리방침</a>
+      </div>
+      <div class="footer-company">(주)로드세이프티시스템</div>
+      <div class="footer-info">
+        부산광역시 진구 중앙대로969번길11, A/1503호 &nbsp; TEL. 051-851-2533 &nbsp; 대표자 : 박수만<br>
+        사업자등록번호 : 000-00-00000 &nbsp; 통신판매 0000-부산진구-0000호<br>
+        COPYRIGHTS ⓒ 2026 한국도로차단. ALL RIGHTS RESERVED
+      </div>
+    </footer>
+  </div>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

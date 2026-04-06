@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>장터 - 로드세이프터 SYSTEM</title>
+  <link rel="stylesheet" href="common.css" />
+  <style>
+    .market-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+    }
+    .market-toolbar-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .market-toolbar-right { display: flex; align-items: center; gap: 8px; }
+    .category-tabs {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;
+    }
+    .category-tab {
+      padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid var(--border-input);
+      background: #fff; color: var(--text-secondary);
+      transition: all var(--transition);
+    }
+    .category-tab:hover { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-light); }
+    .category-tab.active { background: var(--yellow); color: #fff; border-color: var(--yellow); }
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .market-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+      text-decoration: none; color: inherit;
+      display: block;
+    }
+    .market-item:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--yellow);
+      transform: translateY(-2px);
+    }
+    .market-item-img {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 12px;
+    }
+    .market-item-img svg { opacity: 0.3; }
+    .market-item-body { padding: 12px; }
+    .market-item-category {
+      font-size: 10px; font-weight: 700; color: var(--yellow);
+      margin-bottom: 4px; text-transform: uppercase;
+    }
+    .market-item-title {
+      font-size: 13px; font-weight: 700; color: var(--text-primary);
+      margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    }
+    .market-item-price {
+      font-size: 14px; font-weight: 800; color: var(--yellow);
+    }
+    .market-item-meta {
+      font-size: 11px; color: var(--text-muted); margin-top: 4px;
+    }
+    .my-badge {
+      display: inline-flex; align-items: center; padding: 2px 7px;
+      background: var(--yellow-light); color: var(--yellow);
+      font-size: 10px; font-weight: 700; border-radius: 4px;
+      margin-bottom: 4px;
+    }
+    @media (max-width: 900px) { .market-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) {
+      .market-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .market-toolbar { flex-direction: column; align-items: stretch; }
+      .market-toolbar-left, .market-toolbar-right { width: 100%; }
+      .market-toolbar-right { justify-content: flex-end; }
+    }
+    @media (max-width: 380px) { .market-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><div class="sidebar-logo-mini">R</div><img src="logo.png" alt="로드세이프터" /></div>
+    <div class="sidebar-user"><div class="user-avatar">나</div><div class="user-info"><div class="user-name">나잘난</div><div class="user-company">한국도로차단(주)</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-group-label">차량기업</div>
+      <a href="index.html" class="nav-item" data-label="메인 대시보드"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span><span class="nav-label">메인 대시보드</span></a>
+      <a href="construction-list.html" class="nav-item" data-label="내 공사 현황"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="nav-label">내 공사 현황</span></a>
+      <a href="construction-info.html" class="nav-item" data-label="공사 정보"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><span class="nav-label">공사 정보</span></a>
+      <a href="tma-card.html" class="nav-item" data-label="TMA 카드 관리"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">TMA 카드 관리</span></a>
+      <a href="market.html" class="nav-item active" data-label="장터"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span><span class="nav-label">장터</span></a>
+      <a href="community.html" class="nav-item" data-label="커뮤니티"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="nav-label">커뮤니티</span></a>
+      <a href="notice.html" class="nav-item" data-label="공지사항"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span class="nav-label">공지사항</span></a>
+      <a href="ad.html" class="nav-item" data-label="광고"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">광고</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+      <a href="profile.html" class="nav-item" data-label="정보변경"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nav-label">정보변경</span></a>
+      <a href="login.html" class="nav-item" data-label="로그아웃"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span><span class="nav-label">로그아웃</span></a>
+    </div>
+    <div class="sidebar-toggle" id="sidebarToggle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+  </aside>
+
+  <div class="main-content" id="mainContent">
+    <header class="main-header">
+      <div class="header-title">장터</div>
+      <div class="header-right">
+        <a href="profile.html" class="header-user"><div class="header-user-avatar">나</div><span class="header-user-name">나잘난</span></a>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="page-title-row">
+        <div class="page-title">장터</div>
+        <div class="page-subtitle">도로 안전 장비를 사고팔 수 있는 거래 공간입니다.</div>
+      </div>
+
+      <!-- 검색 + 버튼 -->
+      <div class="market-toolbar">
+        <div class="market-toolbar-left">
+          <div class="search-input-wrap" style="min-width:220px;">
+            <span class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" class="search-input" placeholder="상품명 검색..." />
+          </div>
+          <button class="btn btn-ghost btn-sm">내 글 보기</button>
+        </div>
+        <div class="market-toolbar-right">
+          <a href="market-write.html" class="btn btn-primary btn-sm">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            신규 등록
+          </a>
+        </div>
+      </div>
+
+      <!-- 카테고리 탭 -->
+      <div class="category-tabs">
+        <button class="category-tab active" data-cat="all">전체</button>
+        <button class="category-tab" data-cat="tma">씨인카</button>
+        <button class="category-tab" data-cat="sign">간판시설물</button>
+        <button class="category-tab" data-cat="safety">안전시설물</button>
+        <button class="category-tab" data-cat="board">씨인보드</button>
+        <button class="category-tab" data-cat="tma2">TMA</button>
+      </div>
+
+      <!-- 상품 그리드 -->
+      <div class="market-grid" id="marketGrid">
+        <a href="market-detail.html" class="market-item" data-cat="tma">
+          <div class="market-item-img" style="background:linear-gradient(135deg,#fef3c7,#fde68a);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+          <div class="market-item-body">
+            <div class="market-item-category">씨인카</div>
+            <div class="market-item-title">TMA1 싸인카 판매합니다 (상태 양호)</div>
+            <div class="market-item-price">3,500,000원</div>
+            <div class="market-item-meta">나잘난 · 2026-06-20</div>
+          </div>
+        </a>
+        <a href="market-detail.html" class="market-item" data-cat="sign">
+          <div class="market-item-img" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <div class="market-item-body">
+            <div class="market-item-category">간판시설물</div>
+            <div class="my-badge">내 글</div>
+            <div class="market-item-title">공사 안내 간판 세트 (대형 3개)</div>
+            <div class="market-item-price">850,000원</div>
+            <div class="market-item-meta">나잘난 · 2026-06-18</div>
+          </div>
+        </a>
+        <a href="market-detail.html" class="market-item" data-cat="safety">
+          <div class="market-item-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="market-item-body">
+            <div class="market-item-category">안전시설물</div>
+            <div class="market-item-title">라바콘 50개 일괄 판매</div>
+            <div class="market-item-price">200,000원</div>
+            <div class="market-item-meta">김철수 · 2026-06-15</div>
+          </div>
+        </a>
+        <a href="market-detail.html" class="market-item" data-cat="board">
+          <div class="market-item-img" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+          <div class="market-item-body">
+            <div class="market-item-category">씨인보드</div>
+            <div class="market-item-title">LED 씨인보드 2대 (야간용)</div>
+            <div class="market-item-price">1,200,000원</div>
+            <div class="market-item-meta">이영희 · 2026-06-12</div>
+          </div>
+        </a>
+        <a href="market-detail.html" class="market-item" data-cat="tma2">
+          <div class="market-item-img" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+          <div class="market-item-body">
+            <div class="market-item-category">TMA</div>
+            <div class="market-item-title">TMA3 충격흡수차량 판매 (2021년식)</div>
+            <div class="market-item-price">8,500,000원</div>
+            <div class="market-item-meta">박민준 · 2026-06-10</div>
+          </div>
+        </a>
+        <a href="market-detail.html" class="market-item" data-cat="safety">
+          <div class="market-item-img" style="background:linear-gradient(135deg,#fef9c3,#fef08a);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="market-item-body">
+            <div class="market-item-category">안전시설물</div>
+            <div class="market-item-title">안전 삼각대 20개 일괄</div>
+            <div class="market-item-price">150,000원</div>
+            <div class="market-item-meta">최수진 · 2026-06-08</div>
+          </div>
+        </a>
+        <a href="market-detail.html" class="market-item" data-cat="tma">
+          <div class="market-item-img" style="background:linear-gradient(135deg,#fef3c7,#fde68a);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+          <div class="market-item-body">
+            <div class="market-item-category">씨인카</div>
+            <div class="market-item-title">1톤 싸인카 (2020년식, 주행거리 낮음)</div>
+            <div class="market-item-price">2,800,000원</div>
+            <div class="market-item-meta">정도현 · 2026-06-05</div>
+          </div>
+        </a>
+        <a href="market-detail.html" class="market-item" data-cat="sign">
+          <div class="market-item-img" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <div class="market-item-body">
+            <div class="market-item-category">간판시설물</div>
+            <div class="market-item-title">공사 구간 안내 표지판 (소형 10개)</div>
+            <div class="market-item-price">320,000원</div>
+            <div class="market-item-meta">한지민 · 2026-06-01</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="pagination">
+        <button class="page-btn">&laquo;</button>
+        <button class="page-btn">&lsaquo;</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">&rsaquo;</button>
+        <button class="page-btn">&raquo;</button>
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      <div class="footer-links"><a href="#">이용약관</a><a href="#">개인정보처리방침</a></div>
+      <div class="footer-company">(주)로드세이프티시스템</div>
+      <div class="footer-info">부산광역시 진구 중앙대로969번길11, A/1503호 &nbsp; TEL. 051-851-2533 &nbsp; 대표자 : 박수만<br>사업자등록번호 : 000-00-00000 &nbsp; 통신판매 0000-부산진구-0000호<br>COPYRIGHTS ⓒ 2026 한국도로차단. ALL RIGHTS RESERVED</div>
+    </footer>
+  </div>
+</div>
+<script src="common.js"></script>
+<script>
+  document.querySelectorAll('.category-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.category-tab').forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      const cat = this.getAttribute('data-cat');
+      document.querySelectorAll('.market-item').forEach(function(item) {
+        item.style.display = (cat === 'all' || item.getAttribute('data-cat') === cat) ? '' : 'none';
+      });
+    });
+  });
+</script>
+</body>
+</html>

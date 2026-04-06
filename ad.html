@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>광고 - 로드세이프터 SYSTEM</title>
+  <link rel="stylesheet" href="common.css" />
+  <style>
+    .ad-section-title {
+      font-size: 14px; font-weight: 700; color: var(--text-primary);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .ad-section-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .ad-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+      cursor: pointer; text-decoration: none; color: inherit; display: block;
+    }
+    .ad-card:hover { box-shadow: var(--shadow-md); border-color: var(--yellow); transform: translateY(-2px); }
+    .ad-card-img {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .ad-card-img-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.4); font-size: 11px;
+    }
+    .ad-card-body { padding: 14px; }
+    .ad-card-company {
+      font-size: 11px; color: var(--yellow); font-weight: 700; margin-bottom: 4px;
+    }
+    .ad-card-title {
+      font-size: 14px; font-weight: 700; color: var(--text-primary);
+      margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    }
+    .ad-card-desc {
+      font-size: 12px; color: var(--text-secondary);
+      overflow: hidden; text-overflow: ellipsis;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    }
+    .ad-card-footer {
+      padding: 10px 14px; border-top: 1px solid #f3f4f6;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ad-card-region {
+      font-size: 11px; color: var(--text-muted);
+    }
+    .ad-card-date {
+      font-size: 11px; color: var(--text-muted);
+    }
+    /* 내 광고 관리 섹션 */
+    .my-ad-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+      transition: box-shadow var(--transition), border-color var(--transition);
+    }
+    .my-ad-card:hover { box-shadow: var(--shadow-md); border-color: #d1d5db; }
+    .my-ad-thumb {
+      width: 80px; height: 60px; border-radius: 6px; flex-shrink: 0;
+      background: linear-gradient(135deg, #1e293b, #334155);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.3);
+    }
+    .my-ad-info { flex: 1; min-width: 0; }
+    .my-ad-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; word-break: keep-all; }
+    .my-ad-meta { font-size: 11px; color: var(--text-muted); }
+    .my-ad-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .ad-status-active { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #065f46; }
+    .ad-status-active::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block; }
+    .ad-status-expired { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--text-muted); }
+    .ad-status-expired::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #d1d5db; display: inline-block; }
+    @media (max-width: 900px) { .ad-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) {
+      .ad-grid { grid-template-columns: 1fr; gap: 10px; }
+      .my-ad-card { flex-direction: column; align-items: flex-start; }
+      .my-ad-thumb { width: 100%; height: 120px; }
+      .my-ad-actions { width: 100%; justify-content: flex-end; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo"><div class="sidebar-logo-mini">R</div><img src="logo.png" alt="로드세이프터" /></div>
+    <div class="sidebar-user"><div class="user-avatar">나</div><div class="user-info"><div class="user-name">나잘난</div><div class="user-company">한국도로차단(주)</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-group-label">차량기업</div>
+      <a href="index.html" class="nav-item" data-label="메인 대시보드"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span><span class="nav-label">메인 대시보드</span></a>
+      <a href="construction-list.html" class="nav-item" data-label="내 공사 현황"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="nav-label">내 공사 현황</span></a>
+      <a href="construction-info.html" class="nav-item" data-label="공사 정보"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><span class="nav-label">공사 정보</span></a>
+      <a href="tma-card.html" class="nav-item" data-label="TMA 카드 관리"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><span class="nav-label">TMA 카드 관리</span></a>
+      <a href="market.html" class="nav-item" data-label="장터"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span><span class="nav-label">장터</span></a>
+      <a href="community.html" class="nav-item" data-label="커뮤니티"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="nav-label">커뮤니티</span></a>
+      <a href="notice.html" class="nav-item" data-label="공지사항"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span class="nav-label">공지사항</span></a>
+      <a href="ad.html" class="nav-item active" data-label="광고"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span><span class="nav-label">광고</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+      <a href="profile.html" class="nav-item" data-label="정보변경"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nav-label">정보변경</span></a>
+      <a href="login.html" class="nav-item" data-label="로그아웃"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span><span class="nav-label">로그아웃</span></a>
+    </div>
+    <div class="sidebar-toggle" id="sidebarToggle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+  </aside>
+
+  <div class="main-content" id="mainContent">
+    <header class="main-header">
+      <div class="header-title">광고</div>
+      <div class="header-right">
+        <a href="profile.html" class="header-user"><div class="header-user-avatar">나</div><span class="header-user-name">나잘난</span></a>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="page-title-row" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div class="page-title">광고</div>
+          <div class="page-subtitle">도로 안전 관련 업체의 광고를 확인하고, 내 광고를 관리합니다.</div>
+        </div>
+        <button class="btn btn-primary" data-modal-open="modalAdRegist">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          광고 등록
+        </button>
+      </div>
+
+      <!-- 전체 광고 -->
+      <div class="ad-section-title">전체 광고</div>
+      <div class="ad-grid">
+        <a href="ad-detail.html" class="ad-card">
+          <div class="ad-card-img" style="background:linear-gradient(135deg,#1e293b,#0f172a);">
+            <div class="ad-card-img-placeholder">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              광고 이미지
+            </div>
+          </div>
+          <div class="ad-card-body">
+            <div class="ad-card-company">한국도로차단(주)</div>
+            <div class="ad-card-title">TMA 차량 전문 임대 서비스 - 신속하고 안전하게</div>
+            <div class="ad-card-desc">24시간 긴급 출동 가능, 전국 서비스 지원</div>
+          </div>
+          <div class="ad-card-footer">
+            <span class="ad-card-region">대전, 충남</span>
+            <span class="ad-card-date">~2026-08-31</span>
+          </div>
+        </a>
+        <a href="ad-detail.html" class="ad-card">
+          <div class="ad-card-img" style="background:linear-gradient(135deg,#1e3a5f,#1e293b);">
+            <div class="ad-card-img-placeholder">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              광고 이미지
+            </div>
+          </div>
+          <div class="ad-card-body">
+            <div class="ad-card-company">대한건설(주)</div>
+            <div class="ad-card-title">도로 공사 전문 업체 - 20년 경력의 신뢰</div>
+            <div class="ad-card-desc">국도, 지방도, 고속도로 전 구간 시공 가능</div>
+          </div>
+          <div class="ad-card-footer">
+            <span class="ad-card-region">서울, 경기</span>
+            <span class="ad-card-date">~2026-09-30</span>
+          </div>
+        </a>
+        <a href="ad-detail.html" class="ad-card">
+          <div class="ad-card-img" style="background:linear-gradient(135deg,#3f1f00,#1e293b);">
+            <div class="ad-card-img-placeholder">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              광고 이미지
+            </div>
+          </div>
+          <div class="ad-card-body">
+            <div class="ad-card-company">소망건설(주)</div>
+            <div class="ad-card-title">안전 장비 렌탈 전문 - 라바콘, 안전 삼각대</div>
+            <div class="ad-card-desc">당일 배송 가능, 전국 어디든 신속 지원</div>
+          </div>
+          <div class="ad-card-footer">
+            <span class="ad-card-region">부산, 경남</span>
+            <span class="ad-card-date">~2026-07-31</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 내 광고 관리 -->
+      <div class="ad-section-title">내 광고 관리</div>
+      <div class="my-ad-card">
+        <div class="my-ad-thumb">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="my-ad-info">
+          <div class="my-ad-title">TMA 차량 전문 임대 서비스 - 신속하고 안전하게</div>
+          <div class="my-ad-meta">
+            <span class="ad-status-active">게재중</span>
+            &nbsp;·&nbsp; 게재 기간 : 2026-06-01 ~ 2026-08-31
+            &nbsp;·&nbsp; 조회수 : 1,234
+          </div>
+        </div>
+        <div class="my-ad-actions">
+          <button class="btn btn-ghost btn-sm" data-modal-open="modalAdRegist">수정</button>
+          <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 광고를 삭제하시겠습니까?', function(){})">삭제</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      <div class="footer-links"><a href="#">이용약관</a><a href="#">개인정보처리방침</a></div>
+      <div class="footer-company">(주)로드세이프티시스템</div>
+      <div class="footer-info">부산광역시 진구 중앙대로969번길11, A/1503호 &nbsp; TEL. 051-851-2533 &nbsp; 대표자 : 박수만<br>사업자등록번호 : 000-00-00000 &nbsp; 통신판매 0000-부산진구-0000호<br>COPYRIGHTS ⓒ 2026 한국도로차단. ALL RIGHTS RESERVED</div>
+    </footer>
+  </div>
+</div>
+
+<!-- 광고 등록 모달 -->
+<div class="modal-overlay" id="modalAdRegist">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">광고 등록</span>
+      <button class="modal-close" data-modal-close="modalAdRegist">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">광고 제목 *</label>
+        <input type="text" class="form-control" placeholder="광고 제목을 입력하세요" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">광고 설명</label>
+        <textarea class="form-control" rows="3" placeholder="광고 내용을 입력하세요"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">게재 기간 *</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <input type="date" class="form-control" />
+          <input type="date" class="form-control" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">광고 이미지 *</label>
+        <input type="file" class="form-control" accept="image/*" />
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">권장 크기: 1200 × 675px (16:9 비율)</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">링크 URL</label>
+        <input type="url" class="form-control" placeholder="https://example.com" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="alert('광고가 등록되었습니다.');document.getElementById('modalAdRegist').classList.remove('active');">등록</button>
+      <button class="btn btn-secondary" data-modal-close="modalAdRegist">취소</button>
+    </div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+</body>
+</html>
