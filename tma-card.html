@@ -7,83 +7,69 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="sub.css" />
   <style>
-    .tma-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    .tma-card {
+    /* TMA 게시판 테이블 */
+    .tma-table-wrap {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 20px;
+      overflow: hidden;
       box-shadow: var(--shadow);
-      transition: box-shadow var(--transition), border-color var(--transition);
+      overflow-x: auto;
     }
-    .tma-card:hover { box-shadow: var(--shadow-md); border-color: #d1d5db; }
-    .tma-card-header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: 14px;
+    .tma-table {
+      width: 100%; border-collapse: collapse; min-width: 600px;
     }
-    .tma-card-type {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--yellow-light); color: var(--yellow);
-      font-size: 11px; font-weight: 700; padding: 3px 10px;
-      border-radius: 20px; border: 1px solid #fde68a;
+    .tma-table thead tr {
+      background: #f8f9fa; border-bottom: 2px solid var(--border);
     }
-    .tma-card-actions { display: flex; gap: 6px; }
-    .tma-card-title {
-      font-size: 15px; font-weight: 700; color: var(--text-primary);
-      margin-bottom: 4px;
+    .tma-table thead th {
+      padding: 12px 14px; font-size: 12px; font-weight: 700;
+      color: var(--text-secondary); text-align: center; white-space: nowrap;
     }
-    .tma-card-sub {
-      font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;
+    .tma-table thead th:first-child { width: 40px; }
+    .tma-table tbody tr {
+      border-bottom: 1px solid #f3f4f6;
+      transition: background var(--transition);
     }
-    .tma-info-row {
-      display: flex; align-items: center; gap: 8px;
-      padding: 7px 0; border-bottom: 1px solid #f3f4f6;
-      font-size: 12px;
+    .tma-table tbody tr:last-child { border-bottom: none; }
+    .tma-table tbody tr:hover { background: #fafafa; }
+    .tma-table tbody td {
+      padding: 12px 14px; font-size: 13px; color: var(--text-primary);
+      text-align: center; vertical-align: middle;
     }
-    .tma-info-row:last-child { border-bottom: none; }
-    .tma-info-label {
-      width: 80px; min-width: 80px; color: var(--text-secondary); font-weight: 600;
+    .tma-table tbody td.td-file a {
+      color: var(--yellow); font-size: 12px; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 4px;
     }
-    .tma-info-value { flex: 1; color: var(--text-primary); word-break: keep-all; }
+    .tma-table tbody td.td-file a:hover { text-decoration: underline; }
+    .tma-table-actions { display: flex; gap: 6px; justify-content: center; }
+    .tma-type-badge {
+      display: inline-block; padding: 2px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      background: var(--yellow-light); color: var(--yellow); border: 1px solid #fde68a;
+    }
+    .tma-type-badge.plcs {
+      background: #f3f4f6; color: var(--text-secondary); border-color: var(--border);
+    }
     .tma-status-active {
       display: inline-flex; align-items: center; gap: 4px;
       font-size: 11px; font-weight: 700; color: #065f46;
     }
-    .tma-status-active::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%;
-      background: #10b981; display: inline-block;
-    }
+    .tma-status-active::before { content:''; width:6px; height:6px; border-radius:50%; background:#10b981; display:inline-block; }
     .tma-status-inactive {
       display: inline-flex; align-items: center; gap: 4px;
       font-size: 11px; font-weight: 700; color: var(--text-muted);
     }
-    .tma-status-inactive::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%;
-      background: #d1d5db; display: inline-block;
-    }
-    .add-card-btn {
-      background: var(--card-bg);
-      border: 2px dashed var(--border-input);
-      border-radius: var(--radius);
-      padding: 40px 20px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 10px; cursor: pointer; color: var(--text-muted);
-      transition: border-color var(--transition), color var(--transition), background var(--transition);
-      font-size: 13px; font-weight: 600;
-    }
-    .add-card-btn:hover {
-      border-color: var(--yellow); color: var(--yellow); background: var(--yellow-light);
+    .tma-status-inactive::before { content:''; width:6px; height:6px; border-radius:50%; background:#d1d5db; display:inline-block; }
+    .tma-bottom-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 12px; flex-wrap: wrap; gap: 8px;
     }
     /* 모달 폼 */
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 600px) {
-      .tma-grid { grid-template-columns: 1fr; }
+    @media (max-width: 700px) {
       .form-row { grid-template-columns: 1fr; }
+      .tma-table-actions { flex-direction: column; gap: 4px; }
     }
   </style>
 </head>
@@ -212,71 +198,110 @@
         </div>
         <button class="btn btn-primary" data-modal-open="modalAddTma">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          TMA 카드 등록
+          신규 등록
         </button>
       </div>
 
-      <div class="tma-grid">
-        <!-- TMA 카드 1 -->
-        <div class="tma-card">
-          <div class="tma-card-header">
-            <span class="tma-card-type">TMA1</span>
-            <div class="tma-card-actions">
-              <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
-              <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
-            </div>
-          </div>
-          <div class="tma-card-title">TMA-001 (1톤)</div>
-          <div class="tma-card-sub">한국도로차단(주) | 등록일 : 2025-03-15</div>
-          <div class="tma-info-row"><span class="tma-info-label">차량번호</span><span class="tma-info-value">12가 3456</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">차종</span><span class="tma-info-value">현대 포터 II</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">연식</span><span class="tma-info-value">2022년</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">관역</span><span class="tma-info-value">대전, 충남</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">상태</span><span class="tma-info-value"><span class="tma-status-active">운영중</span></span></div>
-        </div>
-
-        <!-- TMA 카드 2 -->
-        <div class="tma-card">
-          <div class="tma-card-header">
-            <span class="tma-card-type">TMA3</span>
-            <div class="tma-card-actions">
-              <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
-              <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
-            </div>
-          </div>
-          <div class="tma-card-title">TMA-002 (3톤)</div>
-          <div class="tma-card-sub">한국도로차단(주) | 등록일 : 2025-05-20</div>
-          <div class="tma-info-row"><span class="tma-info-label">차량번호</span><span class="tma-info-value">34나 7890</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">차종</span><span class="tma-info-value">기아 봉고 III</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">연식</span><span class="tma-info-value">2021년</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">관역</span><span class="tma-info-value">서울, 경기</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">상태</span><span class="tma-info-value"><span class="tma-status-active">운영중</span></span></div>
-        </div>
-
-        <!-- TMA 카드 3 -->
-        <div class="tma-card">
-          <div class="tma-card-header">
-            <span class="tma-card-type" style="background:#f3f4f6;color:var(--text-secondary);border-color:var(--border);">PLCS</span>
-            <div class="tma-card-actions">
-              <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
-              <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
-            </div>
-          </div>
-          <div class="tma-card-title">PLCS-001</div>
-          <div class="tma-card-sub">한국도로차단(주) | 등록일 : 2025-08-10</div>
-          <div class="tma-info-row"><span class="tma-info-label">차량번호</span><span class="tma-info-value">56다 1234</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">차종</span><span class="tma-info-value">현대 마이티</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">연식</span><span class="tma-info-value">2023년</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">관역</span><span class="tma-info-value">부산, 경남</span></div>
-          <div class="tma-info-row"><span class="tma-info-label">상태</span><span class="tma-info-value"><span class="tma-status-inactive">미운영</span></span></div>
-        </div>
-
-        <!-- 추가 버튼 -->
-        <button class="add-card-btn" data-modal-open="modalAddTma">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          새 TMA 카드 등록
-        </button>
+      <!-- 게시판 테이블 -->
+      <div class="tma-table-wrap">
+        <table class="tma-table">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="checkAll" onclick="document.querySelectorAll('.tma-row-check').forEach(c=>c.checked=this.checked)" /></th>
+              <th>번호</th>
+              <th>종류</th>
+              <th>차량번호</th>
+              <th>소유주</th>
+              <th>파일</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" class="tma-row-check" /></td>
+              <td>1</td>
+              <td><span class="tma-type-badge">TMA1</span></td>
+              <td>11누1111</td>
+              <td>한국도로차단</td>
+              <td class="td-file">
+                <a href="#">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  11누1111.pdf
+                </a>
+              </td>
+              <td>
+                <div class="tma-table-actions">
+                  <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
+                  <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="tma-row-check" /></td>
+              <td>2</td>
+              <td><span class="tma-type-badge">TMA3</span></td>
+              <td>11라2222</td>
+              <td>김석진</td>
+              <td class="td-file">
+                <a href="#">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  11라2222.pdf
+                </a>
+              </td>
+              <td>
+                <div class="tma-table-actions">
+                  <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
+                  <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="tma-row-check" /></td>
+              <td>3</td>
+              <td><span class="tma-type-badge plcs">PLCS</span></td>
+              <td>11머3333</td>
+              <td>한국도로차단</td>
+              <td class="td-file">
+                <a href="#">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  11머3333.pdf
+                </a>
+              </td>
+              <td>
+                <div class="tma-table-actions">
+                  <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
+                  <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="tma-row-check" /></td>
+              <td>4</td>
+              <td><span class="tma-type-badge">TMA1</span></td>
+              <td>11호5555</td>
+              <td style="color:var(--yellow);font-weight:600;">정호석</td>
+              <td class="td-file">
+                <a href="#">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  차량등록증.pdf
+                </a>
+              </td>
+              <td>
+                <div class="tma-table-actions">
+                  <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
+                  <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+
+      <!-- 하단 선택 삭제 버튼 -->
+      <div class="tma-bottom-bar">
+        <button class="btn btn-secondary btn-sm" onclick="confirmAction('선택한 항목을 삭제하시겠습니까?', function(){})">선택 삭제</button>
+      </div>
+
     </div>
 
     <footer class="page-footer">

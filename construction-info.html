@@ -7,24 +7,29 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="sub.css" />
   <style>
-    /* 공사 정보 목록 카드형 */
-    .construction-list { display: flex; flex-direction: column; gap: 10px; }
-    .construction-item {
+    /* 공사 정보 목록 - 단일 박스 안 리스트 */
+    .construction-list-box {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .construction-list { display: flex; flex-direction: column; }
+    .construction-item {
       padding: 16px 20px;
       display: flex;
       align-items: center;
       gap: 16px;
       cursor: pointer;
-      transition: box-shadow var(--transition), border-color var(--transition);
+      transition: background var(--transition), border-color var(--transition);
       text-decoration: none;
       color: inherit;
+      border-bottom: 1px solid #f3f4f6;
     }
+    .construction-item:last-child { border-bottom: none; }
     .construction-item:hover {
-      box-shadow: var(--shadow-md);
-      border-color: var(--yellow);
+      background: #fffbf0;
     }
     .construction-item-main { flex: 1; min-width: 0; }
     .construction-item-title {
@@ -208,6 +213,7 @@
       </div>
 
       <!-- 공사 목록 -->
+      <div class="construction-list-box">
       <div class="construction-list" id="constructionList">
 
         <a href="construction-info-detail.html" class="construction-item" data-status="active">
@@ -336,6 +342,7 @@
         </a>
 
       </div>
+      </div><!-- /.construction-list-box -->
 
       <!-- 페이지네이션 -->
       <div class="pagination">
