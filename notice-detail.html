@@ -15,11 +15,11 @@
     .post-title { font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px; line-height: 1.4; word-break: keep-all; }
     .post-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--text-muted); }
     .post-meta-item { display: flex; align-items: center; gap: 4px; }
-    .post-body { padding: 24px; font-size: 14px; color: var(--text-primary); line-height: 1.9; word-break: keep-all; min-height: 200px; }
+    .post-body { padding: 24px; padding-bottom: 40px; font-size: 14px; color: var(--text-primary); line-height: 1.9; word-break: keep-all; min-height: 200px; }
     .post-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
     @media (max-width: 600px) {
       .post-header { padding: 14px 16px; }
-      .post-body { padding: 16px; }
+      .post-body { padding: 16px; padding-bottom: 40px; }
       .post-footer { padding: 10px 16px; }
       .post-title { font-size: 16px; }
     }
@@ -180,10 +180,24 @@
       </div>
     </div>
 
-    <footer class="page-footer">
-      <div class="footer-links"><a href="#">이용약관</a><a href="#">개인정보처리방침</a></div>
-      <div class="footer-company">(주)로드세이프티시스템</div>
-      <div class="footer-info">부산광역시 진구 중앙대로969번길11, A/1503호 &nbsp; TEL. 051-851-2533 &nbsp; 대표자 : 박수만<br>사업자등록번호 : 000-00-00000 &nbsp; 통신판매 0000-부산진구-0000호<br>COPYRIGHTS ⓒ 2026 한국도로차단. ALL RIGHTS RESERVED</div>
+    <footer class="sub-footer">
+      <div class="footer-links">
+        <a href="#" class="footer-link">이용약관</a>
+        <span class="footer-sep">|</span>
+        <a href="#" class="footer-link">개인정보처리방침</a>
+      </div>
+      <div class="footer-company">
+        <strong>(주)로드세이프티시스템</strong>
+      </div>
+      <div class="footer-info">
+        부산광역시 진구 중앙대로969번길11, A/1503호 &nbsp; TEL. 051-851-2533 &nbsp; 대표자 : 박수만
+      </div>
+      <div class="footer-info">
+        사업자등록번호 : 000-00-00000 &nbsp; 통신판매 0000-부산진구-0000호
+      </div>
+      <div class="footer-copy">
+        COPYRIGHTS &copy; 2026 한국도로차단. ALL RIGHTS RESERVED
+      </div>
     </footer>
   </div>
 </div>

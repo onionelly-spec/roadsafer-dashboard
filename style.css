@@ -579,9 +579,12 @@ button { cursor: pointer; border: none; background: none; }
 .data-table tbody tr:hover { background: #fafafa; }
 .data-table td { padding: 12px 14px; color: var(--text-primary); vertical-align: middle; }
 
-.status-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.status-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 56px; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; white-space: nowrap; text-align: center; }
 .status-scheduled { background: #FFF8EC; color: #D97706; border: 1px solid #F5A623; }
 .status-progress { background: var(--green-light); color: var(--green-text); border: 1px solid #86efac; }
+.status-done { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.status-wait { background: #FFF8EC; color: #D97706; border: 1px solid #F5A623; }
+.status-cancel { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
 
 .period-days { color: var(--text-muted); font-size: 12px; }
 
