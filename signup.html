@@ -220,9 +220,29 @@
       justify-content: center;
     }
     .type-icon {
-      font-size: 32px;
-      margin-bottom: 10px;
-      display: block;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      background: #f5f5f5;
+      transition: background 0.2s;
+    }
+    .type-card:hover .type-icon,
+    .type-card.selected .type-icon {
+      background: rgba(245,166,35,0.15);
+    }
+    .type-icon svg {
+      width: 36px;
+      height: 36px;
+      color: #555;
+      transition: color 0.2s;
+    }
+    .type-card:hover .type-icon svg,
+    .type-card.selected .type-icon svg {
+      color: var(--yellow);
     }
     .type-name {
       font-size: 14px;
@@ -597,17 +617,51 @@
 
         <div class="type-grid">
           <div class="type-card" data-type="차단기업" onclick="selectType(this)">
-            <span class="type-icon">🚧</span>
+            <span class="type-icon">
+              <!-- 도로 차단 / 공사 배리어 아이콘 -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="4" rx="1"/>
+                <rect x="2" y="13" width="20" height="4" rx="1"/>
+                <line x1="6" y1="7" x2="6" y2="3"/>
+                <line x1="18" y1="7" x2="18" y2="3"/>
+                <line x1="6" y1="17" x2="6" y2="21"/>
+                <line x1="18" y1="17" x2="18" y2="21"/>
+                <line x1="2" y1="9" x2="7" y2="11"/>
+                <line x1="9" y1="9" x2="14" y2="11"/>
+                <line x1="16" y1="9" x2="22" y2="11"/>
+              </svg>
+            </span>
             <div class="type-name">차단기업</div>
             <div class="type-desc">도로 차단 공사를 수행하는 기업</div>
           </div>
           <div class="type-card" data-type="발주기업" onclick="selectType(this)">
-            <span class="type-icon">🏗️</span>
+            <span class="type-icon">
+              <!-- 크레인 / 건설 발주 아이콘 -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="21" x2="4" y2="4"/>
+                <line x1="4" y1="4" x2="16" y2="4"/>
+                <line x1="16" y1="4" x2="16" y2="8"/>
+                <line x1="4" y1="10" x2="12" y2="10"/>
+                <polyline points="12 7 12 13"/>
+                <line x1="12" y1="13" x2="8" y2="17"/>
+                <line x1="12" y1="13" x2="16" y2="17"/>
+                <rect x="6" y="17" width="4" height="4"/>
+                <rect x="14" y="17" width="4" height="4"/>
+              </svg>
+            </span>
             <div class="type-name">발주기업</div>
             <div class="type-desc">공사를 발주하는 건설·도로 관련 기업</div>
           </div>
           <div class="type-card" data-type="차단직원" onclick="selectType(this)">
-            <span class="type-icon">👷</span>
+            <span class="type-icon">
+              <!-- 안전모 / 현장 직원 아이콘 -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C8 2 5 5 5 9v1H3v1h18v-1h-2V9c0-4-3-7-7-7z"/>
+                <line x1="3" y1="11" x2="21" y2="11"/>
+                <path d="M5 21v-3a7 7 0 0 1 14 0v3"/>
+                <circle cx="12" cy="15" r="2"/>
+              </svg>
+            </span>
             <div class="type-name">차단직원</div>
             <div class="type-desc">차단 업무를 담당하는 현장 직원</div>
           </div>
