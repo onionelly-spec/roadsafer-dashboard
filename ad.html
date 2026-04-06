@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>광고 - 로드세이프터 SYSTEM</title>
+  <link rel="stylesheet" href="common.css" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="sub.css" />
   <style>
@@ -286,7 +287,7 @@
         </div>
         <div class="my-ad-actions">
           <button class="btn btn-ghost btn-sm" data-modal-open="modalAdRegist">수정</button>
-          <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 광고를 삭제하시겠습니까?', function(){})">삭제</button>
+          <button class="btn btn-danger-outline btn-sm" onclick="confirmAction('이 광고를 삭제하시겠습니까?', function(){})">삭제</button>
         </div>
       </div>
     </div>
@@ -349,12 +350,45 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" onclick="alert('광고가 등록되었습니다.');document.getElementById('modalAdRegist').classList.remove('active');">등록</button>
-      <button class="btn btn-secondary" data-modal-close="modalAdRegist">취소</button>
+      <button class="btn btn-primary" onclick="alert('광고가 등록되었습니다.');closeModal('modalAdRegist');">등록</button>
+      <button class="btn btn-ghost" data-modal-close="modalAdRegist">취소</button>
     </div>
   </div>
 </div>
 
+
+<script>
+// 모달 초기화
+(function() {
+  function openModal(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('open');
+  }
+  function closeModal(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('open');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+    });
+    document.querySelectorAll('[data-modal-open]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        openModal(this.getAttribute('data-modal-open'));
+      });
+    });
+    document.querySelectorAll('[data-modal-close]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        closeModal(this.getAttribute('data-modal-close'));
+      });
+    });
+  });
+  window.openModal = openModal;
+  window.closeModal = closeModal;
+})();
+</script>
 <script src="script.js"></script>
 </body>
 </html>

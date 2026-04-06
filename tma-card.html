@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TMA 카드 관리 - 로드세이프터 SYSTEM</title>
+  <link rel="stylesheet" href="common.css" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="sub.css" />
   <style>
@@ -182,11 +183,9 @@
         </button>
         <h1 class="page-title">TMA 카드 관리</h1>
       </div>
-      <div class="header-right">
-        <a href="profile.html" class="header-user">
-          <div class="header-user-avatar">나</div>
-          <span class="header-user-name">나잘난</span>
-        </a>
+      <div class="header-user">
+        <div class="header-avatar">나</div>
+        <span class="header-username">나잘난</span>
       </div>
     </header>
 
@@ -232,7 +231,7 @@
               <td>
                 <div class="tma-table-actions">
                   <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
-                  <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
+                  <button class="btn btn-danger-outline btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
                 </div>
               </td>
             </tr>
@@ -251,7 +250,7 @@
               <td>
                 <div class="tma-table-actions">
                   <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
-                  <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
+                  <button class="btn btn-danger-outline btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
                 </div>
               </td>
             </tr>
@@ -270,7 +269,7 @@
               <td>
                 <div class="tma-table-actions">
                   <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
-                  <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
+                  <button class="btn btn-danger-outline btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
                 </div>
               </td>
             </tr>
@@ -289,7 +288,7 @@
               <td>
                 <div class="tma-table-actions">
                   <button class="btn btn-ghost btn-sm" data-modal-open="modalEditTma">수정</button>
-                  <button class="btn btn-secondary btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
+                  <button class="btn btn-danger-outline btn-sm" onclick="confirmAction('이 TMA 카드를 삭제하시겠습니까?', function(){})">삭제</button>
                 </div>
               </td>
             </tr>
@@ -299,7 +298,7 @@
 
       <!-- 하단 선택 삭제 버튼 -->
       <div class="tma-bottom-bar">
-        <button class="btn btn-secondary btn-sm" onclick="confirmAction('선택한 항목을 삭제하시겠습니까?', function(){})">선택 삭제</button>
+        <button class="btn btn-danger-outline btn-sm" onclick="confirmAction('선택한 항목을 삭제하시겠습니까?', function(){})">선택 삭제</button>
       </div>
 
     </div>
@@ -435,6 +434,39 @@
   </div>
 </div>
 
+
+<script>
+// 모달 초기화
+(function() {
+  function openModal(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('open');
+  }
+  function closeModal(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('open');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+    });
+    document.querySelectorAll('[data-modal-open]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        openModal(this.getAttribute('data-modal-open'));
+      });
+    });
+    document.querySelectorAll('[data-modal-close]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        closeModal(this.getAttribute('data-modal-close'));
+      });
+    });
+  });
+  window.openModal = openModal;
+  window.closeModal = closeModal;
+})();
+</script>
 <script src="script.js"></script>
 </body>
 </html>
