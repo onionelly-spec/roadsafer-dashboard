@@ -135,7 +135,7 @@
       </div>
 
       <!-- 탭 + 내용 카드 -->
-      <div class="card detail-card">
+      <div class="card detail-card" id="detailCard">
 
         <!-- 탭 헤더 -->
         <div class="tab-header">
@@ -279,44 +279,124 @@
 
         <!-- ===== 탭 3: 진행 상황 ===== -->
         <div class="tab-content" id="tab-progress">
-          <div class="progress-timeline">
 
-            <div class="timeline-item done">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <div class="timeline-date">2026-06-22</div>
-                <div class="timeline-title">사연회 완료</div>
-                <div class="timeline-desc">방공수 적용 확정. 담당자 송아홈 확인 완료.</div>
+          <!-- 안내 문구 + 합계 -->
+          <div class="progress-top-row">
+            <p class="progress-notice">투입된 싸인카 수량이 바뀌었다면 콜센터(1566-0000)으로 연락해주세요.<br>금액을 누르면 날짜별 공사 금액을 확인할 수 있습니다.</p>
+            <div class="progress-total">현재 합계 : <strong>7,850,000</strong></div>
+          </div>
+
+          <!-- 데스크탑: 주간 캘린더 그리드 -->
+          <div class="progress-calendar" id="progressCalendar">
+            <!-- 요일 헤더 -->
+            <div class="cal-header">
+              <div class="cal-day-label">월</div>
+              <div class="cal-day-label">화</div>
+              <div class="cal-day-label">수</div>
+              <div class="cal-day-label">목</div>
+              <div class="cal-day-label">금</div>
+              <div class="cal-day-label cal-sat">토</div>
+              <div class="cal-day-label">일</div>
+            </div>
+            <!-- 1주차: 6/22 ~ 6/28 -->
+            <div class="cal-week">
+              <div class="cal-cell">
+                <div class="cal-date">6/22</div>
+                <div class="cal-event">
+                  <a href="#" class="cal-amount">시연회(2,450,000)</a>
+                </div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-date">6/23</div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-date">6/24</div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-date">6/25</div>
+                <div class="cal-event">
+                  <a href="#" class="cal-amount">공사완료(4,900,000)</a>
+                </div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-date">6/26</div>
+                <div class="cal-event">
+                  <a href="#" class="cal-amount cal-cancel">취소(500,000)</a>
+                </div>
+              </div>
+              <div class="cal-cell cal-today">
+                <div class="cal-date cal-date-bold">6/27</div>
+                <div class="cal-event cal-event-row">
+                  <button class="cal-btn cal-btn-done">완료</button>
+                  <button class="cal-btn cal-btn-cancel">취소</button>
+                </div>
+              </div>
+              <div class="cal-cell">
+                <div class="cal-date">6/28</div>
+                <div class="cal-event">
+                  <span class="cal-nowork">공사없음</span>
+                </div>
               </div>
             </div>
-
-            <div class="timeline-item done">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <div class="timeline-date">2026-06-24</div>
-                <div class="timeline-title">차단 신청 접수</div>
-                <div class="timeline-desc">TMA1 1대, TMA3 2대, PLCS 2대 신청 완료.</div>
+            <!-- 2주차: 6/29 ~ 6/30 -->
+            <div class="cal-week">
+              <div class="cal-cell">
+                <div class="cal-date">6/29</div>
+                <div class="cal-event"><span class="cal-scheduled">예정</span></div>
               </div>
-            </div>
-
-            <div class="timeline-item active">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <div class="timeline-date">2026-06-25</div>
-                <div class="timeline-title">공사 시작 (진행중)</div>
-                <div class="timeline-desc">국도 32번 105.6km ~ 105.7km 구간 차단 시작.</div>
+              <div class="cal-cell">
+                <div class="cal-date">6/30</div>
+                <div class="cal-event"><span class="cal-scheduled">예정</span></div>
               </div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell cal-sat"></div>
+              <div class="cal-cell"></div>
             </div>
+          </div>
 
-            <div class="timeline-item pending">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <div class="timeline-date">2026-06-30</div>
-                <div class="timeline-title">공사 완료 예정</div>
-                <div class="timeline-desc">전 구간 복구 및 차단 해제 예정.</div>
-              </div>
-            </div>
+          <!-- 모바일: 목록형 -->
+          <div class="progress-mobile-list" id="progressMobileList">
+            <table class="progress-table">
+              <thead>
+                <tr>
+                  <th>날짜</th>
+                  <th>요일</th>
+                  <th>진행상황</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>6/22</td>
+                  <td>월</td>
+                  <td><a href="#" class="cal-amount">시연회(2,450,000)</a></td>
+                </tr>
+                <tr>
+                  <td>6/25</td>
+                  <td>목</td>
+                  <td><a href="#" class="cal-amount">완료(4,900,000)</a></td>
+                </tr>
+                <tr>
+                  <td>6/26</td>
+                  <td>금</td>
+                  <td><a href="#" class="cal-amount cal-cancel">취소(500,000)</a></td>
+                </tr>
+                <tr class="progress-row-today">
+                  <td><strong>6/27</strong></td>
+                  <td><strong>토</strong></td>
+                  <td>
+                    <button class="cal-btn cal-btn-done">완료</button>
+                    <button class="cal-btn cal-btn-cancel">취소</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
+          <!-- 목록으로 버튼 -->
+          <div class="progress-footer-row">
+            <a href="construction-list.html" class="btn-progress-list">목록</a>
           </div>
         </div>
 

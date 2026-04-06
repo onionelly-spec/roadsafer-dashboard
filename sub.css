@@ -723,3 +723,295 @@
     font-size: 14px;
   }
 }
+
+/* ===== 상세 카드 내부 스크롤 (작은 해상도) ===== */
+.detail-card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 180px);
+  overflow: hidden;
+}
+
+.tab-header {
+  flex-shrink: 0;
+}
+
+.tab-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+/* 스크롤바 스타일 */
+.tab-content::-webkit-scrollbar {
+  width: 5px;
+}
+.tab-content::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+.tab-content::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background: var(--yellow);
+}
+
+/* ===== 진행 상황 탭 ===== */
+
+/* 상단 안내 + 합계 */
+.progress-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.progress-notice {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  word-break: keep-all;
+  flex: 1;
+  min-width: 0;
+}
+
+.progress-total {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.progress-total strong {
+  font-weight: 700;
+}
+
+/* 캘린더 그리드 */
+.progress-calendar {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f9fafb;
+  border-bottom: 1px solid var(--border);
+}
+
+.cal-day-label {
+  padding: 8px 6px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-right: 1px solid var(--border);
+}
+.cal-day-label:last-child {
+  border-right: none;
+}
+.cal-day-label.cal-sat {
+  color: #2563eb;
+}
+
+.cal-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid var(--border);
+  min-height: 70px;
+}
+.cal-week:last-child {
+  border-bottom: none;
+}
+
+.cal-cell {
+  padding: 8px 6px;
+  border-right: 1px solid var(--border);
+  min-height: 70px;
+  vertical-align: top;
+}
+.cal-cell:last-child {
+  border-right: none;
+}
+.cal-cell.cal-sat {
+  background: #f0f5ff;
+}
+.cal-cell.cal-today {
+  background: #fffbf0;
+}
+
+.cal-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.cal-date-bold {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.cal-event {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cal-event-row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.cal-amount {
+  font-size: 11px;
+  color: #2563eb;
+  font-weight: 500;
+  line-height: 1.4;
+  word-break: break-all;
+  transition: color 0.2s;
+}
+.cal-amount:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+.cal-amount.cal-cancel {
+  color: #6b7280;
+}
+.cal-amount.cal-cancel:hover {
+  color: #374151;
+}
+
+.cal-nowork {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.cal-scheduled {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.cal-btn {
+  padding: 3px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.cal-btn-done {
+  background: #2563eb;
+  color: #fff;
+}
+.cal-btn-done:hover {
+  background: #1d4ed8;
+}
+
+.cal-btn-cancel {
+  background: #f3f4f6;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.cal-btn-cancel:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* 모바일 목록형 */
+.progress-mobile-list {
+  display: none;
+  margin-bottom: 16px;
+}
+
+.progress-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.progress-table th {
+  padding: 8px 10px;
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.progress-table td {
+  padding: 10px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.progress-row-today td {
+  background: #fffbf0;
+}
+
+/* 목록 버튼 */
+.progress-footer-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn-progress-list {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 18px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.btn-progress-list:hover {
+  border-color: var(--yellow);
+  color: var(--yellow);
+  background: var(--yellow-light);
+}
+
+/* ===== 반응형: 진행 상황 탭 ===== */
+@media (max-width: 700px) {
+  .progress-calendar {
+    display: none;
+  }
+  .progress-mobile-list {
+    display: block;
+  }
+  .progress-top-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 500px) {
+  .cal-cell {
+    padding: 5px 3px;
+    min-height: 55px;
+  }
+  .cal-amount {
+    font-size: 10px;
+  }
+  .cal-btn {
+    padding: 2px 5px;
+    font-size: 9px;
+  }
+}
