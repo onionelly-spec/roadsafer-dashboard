@@ -321,6 +321,13 @@
 .tab-content.active {
   display: block;
 }
+/* tab-panel (construction-info-detail) */
+.tab-panel {
+  display: none;
+}
+.tab-panel.active {
+  display: block;
+}
 
 /* 상태 행 */
 .detail-status-row {
