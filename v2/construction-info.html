@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공사 정보 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* 공사 정보 카드 그리드 */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      padding: 16px 20px 20px;
+    }
+    @media (max-width: 1100px) { .info-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .info-grid { grid-template-columns: 1fr; } }
+
+    /* 공사 정보 카드 */
+    .info-card {
+      display: block;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .info-card:hover {
+      border-color: #F59E0B;
+      box-shadow: 0 4px 16px rgba(245,158,11,0.12);
+      transform: translateY(-2px);
+    }
+    .info-card__header {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .info-card__title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #1a1c23;
+      line-height: 1.45;
+      flex: 1;
+    }
+    .info-card__body {
+      padding: 12px 16px 14px;
+    }
+    .info-card__row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 12.5px;
+    }
+    .info-card__row:last-child { margin-bottom: 0; }
+    .info-card__label {
+      color: #9ca3af;
+      font-size: 11.5px;
+      font-weight: 600;
+      flex-shrink: 0;
+      min-width: 52px;
+    }
+    .info-card__value {
+      color: #374151;
+      line-height: 1.5;
+    }
+    .info-card__footer {
+      padding: 10px 16px;
+      border-top: 1px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <!-- ── 사이드바 (공통) ── -->
+  <aside class="rss-sidebar" id="rssSidebar">
+    <a href="index.html" class="rss-sidebar__logo">
+      <img src="https://placehold.co/32x32/F59E0B/ffffff?text=R" alt="RSS 로고" class="rss-sidebar__logo-img" />
+      <div class="rss-sidebar__logo-text">
+        <span class="rss-sidebar__logo-main">(주)로드세이프티시스템</span>
+        <span class="rss-sidebar__logo-sub">Road Safety System</span>
+      </div>
+    </a>
+    <div class="rss-sidebar__user">
+      <div class="rss-sidebar__user-avatar">나</div>
+      <div class="rss-sidebar__user-info">
+        <div class="rss-sidebar__user-name">나잘난</div>
+        <div class="rss-sidebar__user-company">한국도로차단(주)</div>
+      </div>
+    </div>
+    <nav class="rss-nav">
+      <p class="rss-nav__section-label">차단기업</p>
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li><a href="index.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="layout-dashboard"></i></span><span class="rss-nav__label">메인 대시보드</span></a></li>
+        <li><a href="construction-list.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="hard-hat"></i></span><span class="rss-nav__label">내 공사 현황</span></a></li>
+        <li><a href="construction-info.html" class="rss-nav__link active"><span class="rss-nav__icon"><i data-lucide="file-text"></i></span><span class="rss-nav__label">공사 정보</span></a></li>
+        <li><a href="tma-card.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="credit-card"></i></span><span class="rss-nav__label">TMA 카드 관리</span></a></li>
+        <li><a href="market.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="shopping-bag"></i></span><span class="rss-nav__label">장터</span></a></li>
+        <li><a href="community.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="users"></i></span><span class="rss-nav__label">커뮤니티</span></a></li>
+        <li><a href="notice.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="bell"></i></span><span class="rss-nav__label">공지사항</span></a></li>
+        <li><a href="ad.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="megaphone"></i></span><span class="rss-nav__label">광고</span></a></li>
+      </ul>
+    </nav>
+    <div class="rss-sidebar__bottom">
+      <a href="profile.html" class="rss-sidebar__bottom-link"><span class="rss-nav__icon"><i data-lucide="settings"></i></span><span class="rss-nav__label">정보변경</span></a>
+      <a href="login.html" class="rss-sidebar__bottom-link"><span class="rss-nav__icon"><i data-lucide="log-out"></i></span><span class="rss-nav__label">로그아웃</span></a>
+    </div>
+  </aside>
+  <div class="rss-overlay" id="rssOverlay"></div>
+
+  <!-- ── 메인 ── -->
+  <div class="rss-main" id="rssMain">
+
+    <header class="rss-header">
+      <div class="rss-header__left">
+        <button class="rss-header__toggle" id="rssSidebarToggle" aria-label="사이드바 토글">
+          <i data-lucide="menu" style="width:18px;height:18px;"></i>
+        </button>
+        <h1 class="rss-header__title">공사 정보</h1>
+      </div>
+      <div class="rss-header__right">
+        <div class="rss-header__avatar">나</div>
+        <span class="rss-header__username">나잘난</span>
+      </div>
+    </header>
+
+    <main class="rss-content">
+      <div class="rss-card">
+
+        <!-- 툴바 -->
+        <!-- [Java] 검색 파라미터: keyword, status, region → /construction-info?keyword=&status=&region= -->
+        <div class="rss-board-toolbar">
+          <div class="rss-board-toolbar__left">
+            <!-- 상태 필터 -->
+            <!-- [DB] 컬럼: construction.status ('recruiting'|'progress'|'complete') -->
+            <select name="status" id="infoStatus" class="rss-input" style="width:auto; padding:7px 10px; font-size:13px;">
+              <option value="">전체 상태</option>
+              <option value="recruiting">모집중</option>
+              <option value="progress">진행중</option>
+              <option value="complete">완료</option>
+            </select>
+            <!-- 지역 필터 -->
+            <!-- [DB] 컬럼: construction.region -->
+            <select name="region" id="infoRegion" class="rss-input" style="width:auto; padding:7px 10px; font-size:13px;">
+              <option value="">전체 지역</option>
+              <option value="seoul">서울</option>
+              <option value="gyeonggi">경기</option>
+              <option value="chungcheong">충청</option>
+              <option value="jeolla">전라</option>
+              <option value="gyeongsang">경상</option>
+            </select>
+            <!-- 검색 -->
+            <div class="rss-search-wrap">
+              <input type="text" name="keyword" id="infoKeyword" placeholder="공사명 검색" />
+              <button type="button" aria-label="검색">
+                <i data-lucide="search" style="width:15px;height:15px;"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 공사 정보 카드 그리드 -->
+        <!-- [DB] 테이블: construction WHERE status != 'complete' ORDER BY created_at DESC -->
+        <!-- [Java] th:each="info : ${constructionInfoList}" -->
+        <div class="info-grid">
+
+          <!-- 카드 1 -->
+          <a href="construction-info-detail.html" class="info-card">
+            <div class="info-card__header">
+              <h3 class="info-card__title">호남선 순천방향 포장공사</h3>
+              <!-- [Java] ${info.constructionName} -->
+              <span class="rss-badge rss-badge--scheduled flex-shrink-0">모집중</span>
+              <!-- [Java] ${info.statusLabel} -->
+            </div>
+            <div class="info-card__body">
+              <div class="info-card__row">
+                <span class="info-card__label">발주사</span>
+                <span class="info-card__value">한국개발(주)</span>
+                <!-- [Java] ${info.orderCompanyName} -->
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">기간</span>
+                <span class="info-card__value">2026-07-01 ~ 2026-07-03</span>
+                <!-- [Java] ${info.startDate} ~ ${info.endDate} -->
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">지역</span>
+                <span class="info-card__value">전라남도 순천시</span>
+                <!-- [Java] ${info.region} -->
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">장비</span>
+                <span class="info-card__value">TMA-1 : 1대, TMA-3 : 2대, PLCS : 2대</span>
+                <!-- [Java] ${info.equipmentSummary} -->
+              </div>
+            </div>
+            <div class="info-card__footer">
+              <span class="text-xs text-gray-400">등록일: 2026-06-15</span>
+              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
+            </div>
+          </a>
+
+          <!-- 카드 2 -->
+          <a href="construction-info-detail.html" class="info-card">
+            <div class="info-card__header">
+              <h3 class="info-card__title">국도 32번선 횡단보도 보수</h3>
+              <span class="rss-badge rss-badge--progress flex-shrink-0">진행중</span>
+            </div>
+            <div class="info-card__body">
+              <div class="info-card__row">
+                <span class="info-card__label">발주사</span>
+                <span class="info-card__value">소망건설</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">기간</span>
+                <span class="info-card__value">2026-06-25 ~ 2026-06-25</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">지역</span>
+                <span class="info-card__value">경기도 수원시</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">장비</span>
+                <span class="info-card__value">TMA-1 : 2대, TMA-3 : 1대</span>
+              </div>
+            </div>
+            <div class="info-card__footer">
+              <span class="text-xs text-gray-400">등록일: 2026-06-10</span>
+              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
+            </div>
+          </a>
+
+          <!-- 카드 3 -->
+          <a href="construction-info-detail.html" class="info-card">
+            <div class="info-card__header">
+              <h3 class="info-card__title">중앙분리대 시공 — 경부선 오산IC 구간</h3>
+              <span class="rss-badge rss-badge--progress flex-shrink-0">진행중</span>
+            </div>
+            <div class="info-card__body">
+              <div class="info-card__row">
+                <span class="info-card__label">발주사</span>
+                <span class="info-card__value">오봉도건</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">기간</span>
+                <span class="info-card__value">2026-06-12 ~ 2026-06-18</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">지역</span>
+                <span class="info-card__value">경기도 오산시</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">장비</span>
+                <span class="info-card__value">TMA-3 : 2대, PLCS : 2대</span>
+              </div>
+            </div>
+            <div class="info-card__footer">
+              <span class="text-xs text-gray-400">등록일: 2026-06-05</span>
+              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
+            </div>
+          </a>
+
+          <!-- 카드 4 -->
+          <a href="construction-info-detail.html" class="info-card">
+            <div class="info-card__header">
+              <h3 class="info-card__title">서해안고속도로 갓길 포장 보수</h3>
+              <span class="rss-badge rss-badge--scheduled flex-shrink-0">모집중</span>
+            </div>
+            <div class="info-card__body">
+              <div class="info-card__row">
+                <span class="info-card__label">발주사</span>
+                <span class="info-card__value">한국도로공사</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">기간</span>
+                <span class="info-card__value">2026-07-10 ~ 2026-07-12</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">지역</span>
+                <span class="info-card__value">충청남도 당진시</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">장비</span>
+                <span class="info-card__value">TMA-1 : 3대, PLCS : 1대</span>
+              </div>
+            </div>
+            <div class="info-card__footer">
+              <span class="text-xs text-gray-400">등록일: 2026-06-18</span>
+              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
+            </div>
+          </a>
+
+          <!-- 카드 5 -->
+          <a href="construction-info-detail.html" class="info-card">
+            <div class="info-card__header">
+              <h3 class="info-card__title">부산외곽순환고속도로 터널 조명 교체</h3>
+              <span class="rss-badge rss-badge--scheduled flex-shrink-0">모집중</span>
+            </div>
+            <div class="info-card__body">
+              <div class="info-card__row">
+                <span class="info-card__label">발주사</span>
+                <span class="info-card__value">부산시설공단</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">기간</span>
+                <span class="info-card__value">2026-07-20 ~ 2026-07-22</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">지역</span>
+                <span class="info-card__value">부산광역시 기장군</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">장비</span>
+                <span class="info-card__value">TMA-3 : 1대, PLCS : 3대</span>
+              </div>
+            </div>
+            <div class="info-card__footer">
+              <span class="text-xs text-gray-400">등록일: 2026-06-20</span>
+              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
+            </div>
+          </a>
+
+          <!-- 카드 6 -->
+          <a href="construction-info-detail.html" class="info-card">
+            <div class="info-card__header">
+              <h3 class="info-card__title">대전-통영 고속도로 가드레일 교체</h3>
+              <span class="rss-badge rss-badge--complete flex-shrink-0">완료</span>
+            </div>
+            <div class="info-card__body">
+              <div class="info-card__row">
+                <span class="info-card__label">발주사</span>
+                <span class="info-card__value">국토교통부</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">기간</span>
+                <span class="info-card__value">2026-06-01 ~ 2026-06-05</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">지역</span>
+                <span class="info-card__value">경상남도 함양군</span>
+              </div>
+              <div class="info-card__row">
+                <span class="info-card__label">장비</span>
+                <span class="info-card__value">TMA-1 : 2대, TMA-3 : 2대</span>
+              </div>
+            </div>
+            <div class="info-card__footer">
+              <span class="text-xs text-gray-400">등록일: 2026-05-25</span>
+              <span class="rss-btn rss-btn--outline rss-btn--sm">상세보기</span>
+            </div>
+          </a>
+
+        </div><!-- /info-grid -->
+
+        <!-- 페이지네이션 -->
+        <div class="rss-pagination">
+          <button class="rss-pagination__btn" aria-label="이전"><i data-lucide="chevron-left" style="width:14px;height:14px;"></i></button>
+          <button class="rss-pagination__btn active">1</button>
+          <button class="rss-pagination__btn">2</button>
+          <button class="rss-pagination__btn">3</button>
+          <button class="rss-pagination__btn" aria-label="다음"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></button>
+        </div>
+
+      </div><!-- /rss-card -->
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공사 정보 상세 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* 탭 스타일 */
+    .detail-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid #e5e7eb;
+      padding: 0 20px;
+      margin-bottom: 0;
+      overflow-x: auto;
+    }
+    .detail-tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #9ca3af;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      white-space: nowrap;
+      transition: color 0.15s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .detail-tab:hover { color: #374151; }
+    .detail-tab.active { color: #F59E0B; border-bottom-color: #F59E0B; }
+
+    /* 탭 패널 */
+    .tab-panel { display: none; padding: 24px 20px 28px; }
+    .tab-panel.active { display: block; }
+
+    /* 정보 그리드 */
+    .info-dl {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .info-dl dt {
+      background: #f9fafb;
+      padding: 11px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #6b7280;
+      border-bottom: 1px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+    }
+    .info-dl dd {
+      padding: 11px 14px;
+      font-size: 13px;
+      color: #1f2937;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .info-dl dt:last-of-type,
+    .info-dl dd:last-of-type { border-bottom: none; }
+    @media (max-width: 560px) {
+      .info-dl { grid-template-columns: 90px 1fr; }
+      .detail-tab { padding: 10px 14px; font-size: 13px; }
+    }
+
+    /* 장비 테이블 */
+    .equip-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .equip-table th {
+      background: #f9fafb;
+      padding: 9px 12px;
+      text-align: center;
+      font-weight: 600;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+      font-size: 12px;
+    }
+    .equip-table td {
+      padding: 9px 12px;
+      text-align: center;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+    }
+    .equip-table tr:hover td { background: #fffbf0; }
+
+    /* 진행상황 캘린더 */
+    .cal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .cal-table th {
+      background: #f9fafb;
+      padding: 9px 6px;
+      text-align: center;
+      font-weight: 600;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+      font-size: 12px;
+    }
+    .cal-table td {
+      padding: 10px 8px;
+      text-align: center;
+      border: 1px solid #e5e7eb;
+      vertical-align: top;
+      min-width: 60px;
+    }
+    .cal-table .cal-date { font-size: 11px; color: #9ca3af; margin-bottom: 4px; }
+    .cal-table .cal-date.today { font-weight: 700; color: #1f2937; }
+    .cal-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.1s;
+    }
+    .cal-badge:hover { opacity: 0.8; }
+    .cal-badge--demo   { background: #dbeafe; color: #1d4ed8; }
+    .cal-badge--done   { background: #dcfce7; color: #15803d; }
+    .cal-badge--cancel { background: #fee2e2; color: #dc2626; }
+    .cal-badge--plan   { background: #f3f4f6; color: #6b7280; }
+    .cal-total {
+      text-align: right;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 700px) {
+      .cal-table { font-size: 11px; }
+      .cal-table th, .cal-table td { padding: 7px 4px; min-width: 40px; }
+      .cal-badge { padding: 2px 4px; font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <!-- ── 사이드바 (공통) ── -->
+  <aside class="rss-sidebar" id="rssSidebar">
+    <a href="index.html" class="rss-sidebar__logo">
+      <img src="https://placehold.co/32x32/F59E0B/ffffff?text=R" alt="RSS 로고" class="rss-sidebar__logo-img" />
+      <div class="rss-sidebar__logo-text">
+        <span class="rss-sidebar__logo-main">(주)로드세이프티시스템</span>
+        <span class="rss-sidebar__logo-sub">Road Safety System</span>
+      </div>
+    </a>
+    <div class="rss-sidebar__user">
+      <div class="rss-sidebar__user-avatar">나</div>
+      <div class="rss-sidebar__user-info">
+        <div class="rss-sidebar__user-name">나잘난</div>
+        <div class="rss-sidebar__user-company">한국도로차단(주)</div>
+      </div>
+    </div>
+    <nav class="rss-nav">
+      <p class="rss-nav__section-label">차단기업</p>
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li><a href="index.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="layout-dashboard"></i></span><span class="rss-nav__label">메인 대시보드</span></a></li>
+        <li><a href="construction-list.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="hard-hat"></i></span><span class="rss-nav__label">내 공사 현황</span></a></li>
+        <li><a href="construction-info.html" class="rss-nav__link active"><span class="rss-nav__icon"><i data-lucide="file-text"></i></span><span class="rss-nav__label">공사 정보</span></a></li>
+        <li><a href="tma-card.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="credit-card"></i></span><span class="rss-nav__label">TMA 카드 관리</span></a></li>
+        <li><a href="market.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="shopping-bag"></i></span><span class="rss-nav__label">장터</span></a></li>
+        <li><a href="community.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="users"></i></span><span class="rss-nav__label">커뮤니티</span></a></li>
+        <li><a href="notice.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="bell"></i></span><span class="rss-nav__label">공지사항</span></a></li>
+        <li><a href="ad.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="megaphone"></i></span><span class="rss-nav__label">광고</span></a></li>
+      </ul>
+    </nav>
+    <div class="rss-sidebar__bottom">
+      <a href="profile.html" class="rss-sidebar__bottom-link"><span class="rss-nav__icon"><i data-lucide="settings"></i></span><span class="rss-nav__label">정보변경</span></a>
+      <a href="login.html" class="rss-sidebar__bottom-link"><span class="rss-nav__icon"><i data-lucide="log-out"></i></span><span class="rss-nav__label">로그아웃</span></a>
+    </div>
+  </aside>
+  <div class="rss-overlay" id="rssOverlay"></div>
+
+  <!-- ── 메인 ── -->
+  <div class="rss-main" id="rssMain">
+
+    <header class="rss-header">
+      <div class="rss-header__left">
+        <button class="rss-header__toggle" id="rssSidebarToggle" aria-label="사이드바 토글">
+          <i data-lucide="menu" style="width:18px;height:18px;"></i>
+        </button>
+        <h1 class="rss-header__title">공사 정보 상세</h1>
+      </div>
+      <div class="rss-header__right">
+        <div class="rss-header__avatar">나</div>
+        <span class="rss-header__username">나잘난</span>
+      </div>
+    </header>
+
+    <main class="rss-content">
+
+      <!-- 공사 상세 카드 -->
+      <!-- [DB] 테이블: construction WHERE construction_id = ? -->
+      <div class="rss-card">
+
+        <!-- 탭 네비게이션 -->
+        <div class="detail-tabs" role="tablist">
+          <button class="detail-tab active" role="tab" data-tab="tab-info"   aria-selected="true">공사 정보</button>
+          <button class="detail-tab"        role="tab" data-tab="tab-block"  aria-selected="false">차단 정보</button>
+          <button class="detail-tab"        role="tab" data-tab="tab-status" aria-selected="false">진행 상황</button>
+        </div>
+
+        <!-- ───────────────────────────────────────────────
+             탭 1: 공사 정보
+             [DB] 테이블: construction
+        ─────────────────────────────────────────────── -->
+        <div id="tab-info" class="tab-panel active" role="tabpanel">
+
+          <dl class="info-dl">
+            <dt>공사명</dt>
+            <dd>국도 32번선 횡단보도 보수 공사<!-- [Java] ${construction.constructionName} --></dd>
+
+            <dt>발주사</dt>
+            <dd>소망건설<!-- [Java] ${construction.orderCompanyName} --></dd>
+
+            <dt>공사 기간</dt>
+            <dd>2026-06-25 ~ 2026-06-25<!-- [Java] ${construction.startDate} ~ ${construction.endDate} --></dd>
+
+            <dt>공사 지역</dt>
+            <dd>경기도 수원시 팔달구 인계동<!-- [Java] ${construction.region} --></dd>
+
+            <dt>공사 상태</dt>
+            <dd>
+              <span class="rss-badge rss-badge--progress">진행중</span>
+              <!-- [Java] ${construction.statusLabel} -->
+            </dd>
+
+            <dt>공사 유형</dt>
+            <dd>도로 보수<!-- [Java] ${construction.constructionType} --></dd>
+
+            <dt>담당자</dt>
+            <dd>김담당 (010-1234-5678)<!-- [Java] ${construction.managerName} (${construction.managerPhone}) --></dd>
+
+            <dt>비고</dt>
+            <dd>야간 작업 포함 (22:00 ~ 06:00)<!-- [Java] ${construction.remark} --></dd>
+          </dl>
+
+          <!-- 첨부파일 -->
+          <!-- [DB] 테이블: construction_attachment WHERE construction_id = ? -->
+          <div class="mb-5">
+            <p class="text-xs font-semibold text-gray-400 mb-2">첨부파일</p>
+            <div class="flex flex-wrap gap-2">
+              <a href="#" class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline bg-blue-50 px-3 py-1.5 rounded-md">
+                <i data-lucide="paperclip" style="width:13px;height:13px;"></i>
+                <span class="truncate" style="max-width:140px;" title="공사계획서_수원_횡단보도.pdf">공사계획서_수원_횡...</span>.pdf
+                <!-- [Java] ${attachment.originalFileName} -->
+              </a>
+              <a href="#" class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline bg-blue-50 px-3 py-1.5 rounded-md">
+                <i data-lucide="paperclip" style="width:13px;height:13px;"></i>
+                <span class="truncate" style="max-width:140px;" title="현장배치도.jpg">현장배치도</span>.jpg
+              </a>
+            </div>
+          </div>
+
+          <!-- 하단 버튼 -->
+          <div class="rss-post-footer">
+            <a href="construction-info.html" class="rss-btn rss-btn--outline">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
+            </a>
+          </div>
+
+        </div><!-- /tab-info -->
+
+        <!-- ───────────────────────────────────────────────
+             탭 2: 차단 정보
+             [DB] 테이블: construction_block WHERE construction_id = ?
+        ─────────────────────────────────────────────── -->
+        <div id="tab-block" class="tab-panel" role="tabpanel">
+
+          <!-- 안내 문구 -->
+          <div class="mb-5 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800 leading-relaxed">
+            투입될 씨인카 수량이 바뀌었다면 콜센터(1566-0000)로 연락해주세요.
+          </div>
+
+          <!-- 차단 장비 목록 -->
+          <!-- [DB] 테이블: construction_block_equipment WHERE construction_id = ? -->
+          <div class="overflow-x-auto mb-6">
+            <table class="equip-table">
+              <thead>
+                <tr>
+                  <th>장비 유형<!-- [DB] block_equipment.equip_type --></th>
+                  <th>장비 번호<!-- [DB] block_equipment.equip_no --></th>
+                  <th>씨인카 수량<!-- [DB] block_equipment.sinca_count --></th>
+                  <th>소유주<!-- [DB] block_equipment.owner_name --></th>
+                  <th>TMA 카드<!-- [DB] block_equipment.tma_card_no --></th>
+                  <th>상태<!-- [DB] block_equipment.status --></th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- [Java] th:each="equip : ${blockEquipList}" -->
+                <tr>
+                  <td>TMA-1</td>
+                  <td>12가 3456</td>
+                  <td>3</td>
+                  <td>나잘난</td>
+                  <td>TMA-2024-001</td>
+                  <td><span class="rss-badge rss-badge--progress">배치완료</span></td>
+                </tr>
+                <tr>
+                  <td>TMA-3</td>
+                  <td>34나 5678</td>
+                  <td>2</td>
+                  <td>한국도로차단(주)</td>
+                  <td>TMA-2024-032</td>
+                  <td><span class="rss-badge rss-badge--scheduled">대기중</span></td>
+                </tr>
+                <tr>
+                  <td>PLCS</td>
+                  <td>56다 7890</td>
+                  <td>—</td>
+                  <td>나잘난</td>
+                  <td>—</td>
+                  <td><span class="rss-badge rss-badge--progress">배치완료</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 하단 버튼 -->
+          <div class="rss-post-footer">
+            <a href="construction-info.html" class="rss-btn rss-btn--outline">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
+            </a>
+          </div>
+
+        </div><!-- /tab-block -->
+
+        <!-- ───────────────────────────────────────────────
+             탭 3: 진행 상황
+             [DB] 테이블: construction_progress WHERE construction_id = ?
+        ─────────────────────────────────────────────── -->
+        <div id="tab-status" class="tab-panel" role="tabpanel">
+
+          <!-- 안내 문구 -->
+          <div class="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800 leading-relaxed">
+            투입될 씨인카 수량이 바뀌었다면 콜센터(1566-0000)로 연락해주세요.<br>
+            금액을 누르면 날짜별 공사 금액을 확인할 수 있습니다.
+          </div>
+
+          <!-- 현재 합계 -->
+          <!-- [DB] SUM(construction_progress.amount) WHERE construction_id = ? AND status = 'done' -->
+          <div class="cal-total">현재 합계 : <span id="calTotal">7,850,000</span></div>
+
+          <!-- 주간 캘린더 -->
+          <!-- [DB] 테이블: construction_progress WHERE construction_id = ? -->
+          <!-- [Java] 날짜별로 그룹핑하여 요일 기준 캘린더 렌더링 -->
+          <div class="overflow-x-auto mb-6">
+            <table class="cal-table">
+              <thead>
+                <tr>
+                  <th>월</th><th>화</th><th>수</th><th>목</th>
+                  <th>금</th><th style="background:#f0f0f0;">토</th><th>일</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 1주차 -->
+                <tr>
+                  <td>
+                    <div class="cal-date">6/22</div>
+                    <!-- [DB] progress.work_date = '2026-06-22', status = 'demo' -->
+                    <span class="cal-badge cal-badge--demo"
+                          onclick="alert('시연회\n금액: 2,450,000원')"
+                          title="시연회 2,450,000원">시연회(2,450,000)</span>
+                  </td>
+                  <td><div class="cal-date">6/23</div></td>
+                  <td><div class="cal-date">6/24</div></td>
+                  <td>
+                    <div class="cal-date">6/25</div>
+                    <!-- [DB] progress.work_date = '2026-06-25', status = 'done' -->
+                    <span class="cal-badge cal-badge--done"
+                          onclick="alert('공사완료\n금액: 4,900,000원')"
+                          title="공사완료 4,900,000원">공사완료(4,900,000)</span>
+                  </td>
+                  <td>
+                    <div class="cal-date">6/26</div>
+                    <!-- [DB] progress.work_date = '2026-06-26', status = 'cancel' -->
+                    <span class="cal-badge cal-badge--cancel"
+                          onclick="alert('취소\n금액: -500,000원')"
+                          title="취소 -500,000원">취소(-500,000)</span>
+                  </td>
+                  <td style="background:#fafafa;">
+                    <div class="cal-date today">6/27</div>
+                    <!-- [DB] progress.work_date = '2026-06-27', status = 'done' + 'cancel' -->
+                    <div class="flex flex-col gap-1 items-center">
+                      <span class="cal-badge cal-badge--done">완료</span>
+                      <span class="cal-badge cal-badge--cancel">취소</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cal-date">6/28</div>
+                    <span class="text-xs text-gray-400">공사없음</span>
+                  </td>
+                </tr>
+                <!-- 2주차 -->
+                <tr>
+                  <td>
+                    <div class="cal-date">6/29</div>
+                    <span class="cal-badge cal-badge--plan">예정</span>
+                  </td>
+                  <td>
+                    <div class="cal-date">6/30</div>
+                    <span class="cal-badge cal-badge--plan">예정</span>
+                  </td>
+                  <td><div class="cal-date">7/1</div></td>
+                  <td><div class="cal-date">7/2</div></td>
+                  <td><div class="cal-date">7/3</div></td>
+                  <td style="background:#fafafa;"><div class="cal-date">7/4</div></td>
+                  <td><div class="cal-date">7/5</div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 하단 버튼 -->
+          <div class="rss-post-footer">
+            <a href="construction-info.html" class="rss-btn rss-btn--outline">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
+            </a>
+          </div>
+
+        </div><!-- /tab-status -->
+
+      </div><!-- /rss-card -->
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  /* ── 탭 전환 ── */
+  document.querySelectorAll('.detail-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      /* 탭 버튼 활성화 */
+      document.querySelectorAll('.detail-tab').forEach(function(t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      this.classList.add('active');
+      this.setAttribute('aria-selected', 'true');
+
+      /* 패널 활성화 */
+      var target = this.getAttribute('data-tab');
+      document.querySelectorAll('.tab-panel').forEach(function(p) {
+        p.classList.remove('active');
+      });
+      document.getElementById(target).classList.add('active');
+    });
+  });
+
+  lucide.createIcons();
+</script>
+</body>
+</html>

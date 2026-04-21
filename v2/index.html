@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>메인 대시보드 — 로드세이프티시스템</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- 공통 커스텀 CSS -->
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* 대시보드 전용 스타일 */
+    .dash-grid {
+      display: grid;
+      gap: 16px;
+    }
+    /* 상단 2컬럼 */
+    .dash-top {
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 768px) {
+      .dash-top { grid-template-columns: 1fr; }
+    }
+
+    /* 회사 카드 */
+    .company-badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 10px; border-radius: 99px;
+      font-size: 11px; font-weight: 700;
+      background: rgba(245,158,11,0.12); color: #d97706;
+      margin-top: 6px;
+    }
+
+    /* 퀵메뉴 그리드 */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 480px) {
+      .quick-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .quick-item {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; padding: 16px 8px;
+      border: 1.5px solid #e5e7eb; border-radius: 10px;
+      cursor: pointer; transition: border-color 0.15s, background 0.15s;
+      text-decoration: none; color: inherit;
+    }
+    .quick-item:hover {
+      border-color: #F59E0B;
+      background: rgba(245,158,11,0.04);
+    }
+    .quick-item.active {
+      border-color: #F59E0B;
+      background: rgba(245,158,11,0.08);
+    }
+    .quick-item__icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: #f9fafb;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .quick-item.active .quick-item__icon {
+      background: rgba(245,158,11,0.12);
+    }
+    .quick-item__label {
+      font-size: 12px; font-weight: 600; color: #374151;
+      text-align: center; line-height: 1.3;
+    }
+
+    /* 알림 목록 */
+    .noti-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      flex-shrink: 0; margin-top: 5px;
+    }
+    .noti-dot--active   { background: #F59E0B; }
+    .noti-dot--inactive { background: #d1d5db; }
+
+    /* 광고 그리드 */
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 900px) { .ad-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .ad-grid { grid-template-columns: 1fr 1fr; } }
+
+    .ad-img-wrap { border-radius: 8px; overflow: hidden; aspect-ratio: 16/9; }
+    .ad-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .ad-add-btn {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 6px; border: 2px dashed #e5e7eb;
+      border-radius: 8px; aspect-ratio: 16/9;
+      cursor: pointer; transition: border-color 0.15s;
+      text-decoration: none;
+    }
+    .ad-add-btn:hover { border-color: #F59E0B; }
+    .ad-add-btn span:first-child { font-size: 22px; color: #9ca3af; }
+    .ad-add-btn span:last-child  { font-size: 12px; color: #9ca3af; }
+
+    /* 모바일 카드형 공사현황 */
+    .mobile-construction-list { display: none; }
+    @media (max-width: 768px) {
+      .desktop-table { display: none; }
+      .mobile-construction-list { display: block; }
+    }
+    .mobile-construction-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .mobile-construction-item:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     앱 래퍼
+══════════════════════════════════════════════════════════ -->
+<div class="rss-app">
+
+  <!-- ══════════════════════════════════════════════════════
+       사이드바 (공통 컴포넌트 — 모든 내부 페이지 동일)
+  ══════════════════════════════════════════════════════ -->
+  <aside class="rss-sidebar" id="rssSidebar" role="navigation" aria-label="주 메뉴">
+
+    <!-- 로고 -->
+    <a href="index.html" class="rss-sidebar__logo">
+      <img src="https://placehold.co/32x32/F59E0B/ffffff?text=R" alt="RSS 로고" class="rss-sidebar__logo-img" />
+      <div class="rss-sidebar__logo-text">
+        <span class="rss-sidebar__logo-main">(주)로드세이프티시스템</span>
+        <span class="rss-sidebar__logo-sub">Road Safety System</span>
+      </div>
+    </a>
+
+    <!-- 로그인 사용자 정보 -->
+    <!-- [Java] session 또는 SecurityContext에서 사용자 정보 바인딩 -->
+    <!-- [DB] 컬럼: member.user_name, company.company_name -->
+    <div class="rss-sidebar__user">
+      <div class="rss-sidebar__user-avatar" aria-hidden="true">나</div>
+      <div class="rss-sidebar__user-info">
+        <div class="rss-sidebar__user-name">나잘난</div><!-- [Java] ${loginUser.userName} -->
+        <div class="rss-sidebar__user-company">한국도로차단(주)</div><!-- [Java] ${loginUser.companyName} -->
+      </div>
+    </div>
+
+    <!-- 네비게이션 메뉴 -->
+    <nav class="rss-nav" aria-label="사이드바 메뉴">
+      <p class="rss-nav__section-label">차단기업</p>
+      <ul style="list-style:none; padding:0; margin:0;">
+        <li class="rss-nav__item">
+          <a href="index.html" class="rss-nav__link active">
+            <span class="rss-nav__icon"><i data-lucide="layout-dashboard"></i></span>
+            <span class="rss-nav__label">메인 대시보드</span>
+          </a>
+        </li>
+        <li class="rss-nav__item">
+          <a href="construction-list.html" class="rss-nav__link">
+            <span class="rss-nav__icon"><i data-lucide="hard-hat"></i></span>
+            <span class="rss-nav__label">내 공사 현황</span>
+          </a>
+        </li>
+        <li class="rss-nav__item">
+          <a href="construction-info.html" class="rss-nav__link">
+            <span class="rss-nav__icon"><i data-lucide="file-text"></i></span>
+            <span class="rss-nav__label">공사 정보</span>
+          </a>
+        </li>
+        <li class="rss-nav__item">
+          <a href="tma-card.html" class="rss-nav__link">
+            <span class="rss-nav__icon"><i data-lucide="credit-card"></i></span>
+            <span class="rss-nav__label">TMA 카드 관리</span>
+          </a>
+        </li>
+        <li class="rss-nav__item">
+          <a href="market.html" class="rss-nav__link">
+            <span class="rss-nav__icon"><i data-lucide="shopping-bag"></i></span>
+            <span class="rss-nav__label">장터</span>
+          </a>
+        </li>
+        <li class="rss-nav__item">
+          <a href="community.html" class="rss-nav__link">
+            <span class="rss-nav__icon"><i data-lucide="users"></i></span>
+            <span class="rss-nav__label">커뮤니티</span>
+          </a>
+        </li>
+        <li class="rss-nav__item">
+          <a href="notice.html" class="rss-nav__link">
+            <span class="rss-nav__icon"><i data-lucide="bell"></i></span>
+            <span class="rss-nav__label">공지사항</span>
+          </a>
+        </li>
+        <li class="rss-nav__item">
+          <a href="ad.html" class="rss-nav__link">
+            <span class="rss-nav__icon"><i data-lucide="megaphone"></i></span>
+            <span class="rss-nav__label">광고</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- 하단 메뉴 -->
+    <div class="rss-sidebar__bottom">
+      <a href="profile.html" class="rss-sidebar__bottom-link">
+        <span class="rss-nav__icon"><i data-lucide="settings"></i></span>
+        <span class="rss-nav__label">정보변경</span>
+      </a>
+      <a href="login.html" class="rss-sidebar__bottom-link">
+        <span class="rss-nav__icon"><i data-lucide="log-out"></i></span>
+        <span class="rss-nav__label">로그아웃</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- 모바일 오버레이 -->
+  <div class="rss-overlay" id="rssOverlay" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════
+       메인 영역
+  ══════════════════════════════════════════════════════ -->
+  <div class="rss-main" id="rssMain">
+
+    <!-- 상단 헤더 -->
+    <header class="rss-header">
+      <div class="rss-header__left">
+        <button class="rss-header__toggle" id="rssSidebarToggle" aria-label="사이드바 토글">
+          <i data-lucide="menu" style="width:18px;height:18px;"></i>
+        </button>
+        <h1 class="rss-header__title">메인 대시보드</h1>
+      </div>
+      <div class="rss-header__right">
+        <div class="rss-header__avatar" aria-hidden="true">나</div><!-- [Java] 이니셜 -->
+        <span class="rss-header__username">나잘난</span><!-- [Java] ${loginUser.userName} -->
+      </div>
+    </header>
+
+    <!-- ── 콘텐츠 ── -->
+    <main class="rss-content">
+
+      <!-- ── 상단 2컬럼: 회사정보 + 퀵메뉴 ── -->
+      <div class="dash-grid dash-top mb-4">
+
+        <!-- 회사 정보 카드 -->
+        <!-- [DB] 테이블: company, member -->
+        <div class="rss-card">
+          <div class="rss-card__body flex gap-4">
+            <!-- 회사 로고 -->
+            <div class="flex-shrink-0">
+              <img src="https://placehold.co/80x80/F59E0B/ffffff?text=RSS"
+                alt="회사 로고" class="w-20 h-20 rounded-xl object-cover" />
+              <!-- [Java] <img src="${company.logoUrl}" alt="회사 로고" /> -->
+              <div class="text-center mt-2">
+                <span class="company-badge">차단기업</span>
+                <!-- [Java] ${company.companyType} -->
+              </div>
+            </div>
+            <!-- 회사 정보 -->
+            <div class="flex-1 min-w-0">
+              <h2 class="text-base font-bold text-gray-900 mb-2">한국도로차단(주)</h2>
+              <!-- [Java] ${company.companyName} -->
+              <p class="text-sm text-gray-600 mb-1">
+                <span class="text-gray-400 text-xs font-semibold mr-1">대표자</span>
+                나잘난<!-- [Java] ${company.ceoName} -->
+              </p>
+              <p class="text-sm text-gray-600 mb-4">
+                <span class="text-gray-400 text-xs font-semibold mr-1">승인인</span>
+                김석진, 정호석, 박지민<!-- [Java] ${company.approvers} -->
+              </p>
+              <div class="flex gap-2 flex-wrap">
+                <a href="construction-list.html" class="rss-btn rss-btn--outline-amber rss-btn--sm">
+                  <i data-lucide="list" style="width:13px;height:13px;"></i>공사 현황
+                </a>
+                <a href="notice.html" class="rss-btn rss-btn--outline rss-btn--sm">
+                  <i data-lucide="bell" style="width:13px;height:13px;"></i>공지사항
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 퀵메뉴 카드 -->
+        <div class="rss-card">
+          <div class="rss-card__body">
+            <div class="quick-grid">
+              <a href="tma-card.html" class="quick-item active">
+                <div class="quick-item__icon">
+                  <i data-lucide="credit-card" style="width:22px;height:22px;color:#F59E0B;"></i>
+                </div>
+                <span class="quick-item__label">TMA카드<br>관리</span>
+              </a>
+              <a href="construction-list.html" class="quick-item">
+                <div class="quick-item__icon">
+                  <i data-lucide="hard-hat" style="width:22px;height:22px;color:#6b7280;"></i>
+                </div>
+                <span class="quick-item__label">내 공사<br>이력</span>
+              </a>
+              <a href="construction-info.html" class="quick-item">
+                <div class="quick-item__icon">
+                  <i data-lucide="file-text" style="width:22px;height:22px;color:#6b7280;"></i>
+                </div>
+                <span class="quick-item__label">공사<br>정보</span>
+              </a>
+              <a href="market.html" class="quick-item">
+                <div class="quick-item__icon">
+                  <i data-lucide="shopping-bag" style="width:22px;height:22px;color:#6b7280;"></i>
+                </div>
+                <span class="quick-item__label">장터</span>
+              </a>
+              <a href="community.html" class="quick-item">
+                <div class="quick-item__icon">
+                  <i data-lucide="users" style="width:22px;height:22px;color:#6b7280;"></i>
+                </div>
+                <span class="quick-item__label">커뮤니티</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dash-top -->
+
+      <!-- ── 오늘 알림 ── -->
+      <!-- [DB] 테이블: notification WHERE member_id = ? AND DATE(created_at) = CURDATE() -->
+      <div class="rss-card mb-4">
+        <div class="rss-card__header">
+          <div class="flex items-center gap-2">
+            <h3 class="rss-card__title">오늘 알림</h3>
+            <!-- [Java] 미읽 알림 수 -->
+            <span class="rss-badge rss-badge--new">2</span>
+          </div>
+          <a href="notice.html" class="rss-card__more">더보기 &gt;</a>
+        </div>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <!-- [Java] th:each="noti : ${todayNotifications}" -->
+
+          <!-- 알림 아이템 1 (읽지 않음) -->
+          <li class="flex items-start gap-3 px-5 py-3.5 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors"
+              onclick="location.href='construction-detail.html'">
+            <span class="noti-dot noti-dot--active mt-1.5"></span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm text-gray-800 leading-relaxed">
+                <strong>[국도32번선 횡단보도 보수]</strong> 오늘 일정이 완료되었습니다. 다음 일정을 확인하세요.
+                <!-- [Java] ${noti.message} -->
+              </p>
+            </div>
+            <span class="text-xs text-gray-400 flex-shrink-0 mt-0.5">2026-06-12 11:45</span>
+            <!-- [Java] ${#temporals.format(noti.createdAt, 'yyyy-MM-dd HH:mm')} -->
+          </li>
+
+          <!-- 알림 아이템 2 (읽지 않음) -->
+          <li class="flex items-start gap-3 px-5 py-3.5 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors"
+              onclick="location.href='construction-detail.html'">
+            <span class="noti-dot noti-dot--active mt-1.5"></span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm text-gray-800 leading-relaxed">
+                <strong>[중앙분리대 시공]</strong> 공사 정보와 일정이 변경되었습니다.
+              </p>
+            </div>
+            <span class="text-xs text-gray-400 flex-shrink-0 mt-0.5">2026-06-11 09:00</span>
+          </li>
+
+          <!-- 알림 아이템 3 (읽음) -->
+          <li class="flex items-start gap-3 px-5 py-3.5 hover:bg-gray-50 cursor-pointer transition-colors"
+              onclick="location.href='construction-detail.html'">
+            <span class="noti-dot noti-dot--inactive mt-1.5"></span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm text-gray-500 leading-relaxed">
+                [경부선 포장공사] 공사일정이 수정되었습니다.
+              </p>
+            </div>
+            <span class="text-xs text-gray-400 flex-shrink-0 mt-0.5">2026-06-10 09:00</span>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- ── 광고 이미지 ── -->
+      <!-- [DB] 테이블: advertisement WHERE company_id = ? AND status = 'active' -->
+      <div class="rss-card mb-4">
+        <div class="rss-card__header">
+          <h3 class="rss-card__title">광고 이미지</h3>
+          <a href="ad.html" class="rss-card__more">관리 &gt;</a>
+        </div>
+        <div class="rss-card__body">
+          <div class="ad-grid">
+            <!-- [Java] th:each="ad : ${advertisements}" -->
+            <div class="ad-img-wrap">
+              <a href="ad-detail.html">
+                <img src="https://placehold.co/400x220/e5e7eb/9ca3af?text=광고+이미지+1" alt="광고 1" />
+                <!-- [Java] <img src="${ad.imageUrl}" alt="${ad.title}" /> -->
+              </a>
+            </div>
+            <div class="ad-img-wrap">
+              <a href="ad-detail.html">
+                <img src="https://placehold.co/400x220/e5e7eb/9ca3af?text=광고+이미지+2" alt="광고 2" />
+              </a>
+            </div>
+            <div class="ad-img-wrap">
+              <a href="ad-detail.html">
+                <img src="https://placehold.co/400x220/e5e7eb/9ca3af?text=광고+이미지+3" alt="광고 3" />
+              </a>
+            </div>
+            <!-- 광고 등록 버튼 -->
+            <a href="ad.html" class="ad-add-btn">
+              <span style="font-size:24px; color:#d1d5db;">+</span>
+              <span style="font-size:12px; color:#9ca3af;">광고 등록</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 공사현황 테이블 ── -->
+      <!-- [DB] 테이블: construction JOIN company ON construction.order_company_id = company.id
+                       WHERE construction.block_company_id = ? ORDER BY start_date DESC LIMIT 10 -->
+      <div class="rss-card">
+        <div class="rss-card__header">
+          <a href="construction-list.html" class="text-sm font-bold text-gray-900 hover:text-amber-600 transition-colors">
+            공사현황 &gt;
+          </a>
+        </div>
+
+        <!-- PC 테이블 (769px 이상) -->
+        <div class="rss-table-wrap desktop-table">
+          <table class="rss-table">
+            <thead>
+              <tr>
+                <th>상태</th>
+                <th>공사명</th>
+                <th>발주업체명</th>
+                <th>기간</th>
+                <th>씨인카 수량</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- [Java] th:each="item : ${constructionList}" -->
+
+              <tr>
+                <!-- [DB] construction.status: 'scheduled'|'progress'|'complete'|'cancel' -->
+                <td><span class="rss-badge rss-badge--scheduled">예정</span></td>
+                <td>호남선 순천방향 포장공사</td><!-- [Java] ${item.constructionName} -->
+                <td>한국개발</td><!-- [Java] ${item.orderCompanyName} -->
+                <td>
+                  2026-07-01 ~ 2026-07-03
+                  <span class="text-xs text-gray-400">(3일)</span>
+                  <!-- [Java] ${item.startDate} ~ ${item.endDate} -->
+                </td>
+                <td class="text-xs">TMA-1 : 1대, TMA-3 : 2대, PLCS : 2대</td>
+                <!-- [Java] ${item.equipmentSummary} -->
+                <td>
+                  <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">차단 취소</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td><span class="rss-badge rss-badge--progress">진행중</span></td>
+                <td><a href="construction-detail.html" class="hover:text-amber-600">국도 32번선 횡단보도 보수</a></td>
+                <td>소망건설</td>
+                <td>2026-06-25 ~ 2026-06-25 <span class="text-xs text-gray-400">(1일)</span></td>
+                <td class="text-xs">TMA-1 : 2대, TMA-3 : 1대</td>
+                <td>
+                  <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm" style="border-color:#F59E0B; color:#d97706;">오늘 완료</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td><span class="rss-badge rss-badge--progress">진행중</span></td>
+                <td>중앙분리대 시공</td>
+                <td>오봉도건</td>
+                <td>2026-06-12 ~ 2026-06-18 <span class="text-xs text-gray-400">(7일)</span></td>
+                <td class="text-xs">TMA-3 : 2대, PLCS : 2대</td>
+                <td></td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 모바일 카드형 목록 (768px 이하) -->
+        <div class="mobile-construction-list">
+          <!-- [Java] th:each="item : ${constructionList}" -->
+
+          <div class="mobile-construction-item">
+            <div class="flex items-center justify-between mb-2">
+              <span class="rss-badge rss-badge--scheduled">예정</span>
+              <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">차단 취소</a>
+            </div>
+            <p class="text-sm font-semibold text-gray-900 mb-1">호남선 순천방향 포장공사</p>
+            <p class="text-xs text-gray-500">발주: 한국개발 | 2026-07-01 ~ 2026-07-03 (3일)</p>
+            <p class="text-xs text-gray-400 mt-1">TMA-1 : 1대, TMA-3 : 2대, PLCS : 2대</p>
+          </div>
+
+          <div class="mobile-construction-item">
+            <div class="flex items-center justify-between mb-2">
+              <span class="rss-badge rss-badge--progress">진행중</span>
+              <a href="construction-detail.html" class="rss-btn rss-btn--sm" style="border:1.5px solid #F59E0B; color:#d97706; background:transparent; border-radius:6px; padding:4px 10px; font-size:12px; font-weight:600;">오늘 완료</a>
+            </div>
+            <p class="text-sm font-semibold text-gray-900 mb-1">국도 32번선 횡단보도 보수</p>
+            <p class="text-xs text-gray-500">발주: 소망건설 | 2026-06-25 ~ 2026-06-25 (1일)</p>
+            <p class="text-xs text-gray-400 mt-1">TMA-1 : 2대, TMA-3 : 1대</p>
+          </div>
+
+          <div class="mobile-construction-item">
+            <div class="flex items-center justify-between mb-2">
+              <span class="rss-badge rss-badge--progress">진행중</span>
+            </div>
+            <p class="text-sm font-semibold text-gray-900 mb-1">중앙분리대 시공</p>
+            <p class="text-xs text-gray-500">발주: 오봉도건 | 2026-06-12 ~ 2026-06-18 (7일)</p>
+            <p class="text-xs text-gray-400 mt-1">TMA-3 : 2대, PLCS : 2대</p>
+          </div>
+
+        </div><!-- /mobile-construction-list -->
+
+      </div><!-- /공사현황 카드 -->
+
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+
+<!-- 공통 JS -->
+<script src="rss-common.js"></script>
+<script>
+  /* Lucide 아이콘 초기화 */
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

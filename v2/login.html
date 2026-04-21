@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로그인 — 로드세이프티시스템</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- 공통 커스텀 CSS -->
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* 로그인 전용 스타일 */
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      background: #f4f5f7;
+    }
+
+    /* ── 왼쪽 비주얼 패널 ── */
+    .login-visual {
+      display: none; /* 모바일 기본 숨김 */
+      flex-direction: column;
+      width: 45%;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (min-width: 1024px) {
+      .login-visual { display: flex; }
+    }
+    .login-visual__bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .login-visual__overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(249,249,251,0.96) 0%, rgba(249,249,251,0.80) 55%, rgba(249,249,251,0.55) 100%);
+    }
+    .login-visual__content {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      height: 100%; padding: 48px;
+    }
+    .login-visual__logo { display: flex; align-items: center; gap: 10px; }
+    .login-visual__logo img { height: 36px; width: auto; }
+    .login-visual__logo-main { font-size: 15px; font-weight: 700; color: #1a1c23; }
+    .login-visual__logo-sub  { font-size: 9px; color: #9ca3af; letter-spacing: 0.1em; text-transform: uppercase; font-family: monospace; }
+    .login-visual__center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .amber-accent-line { display: block; width: 32px; height: 2px; background: #F59E0B; margin-bottom: 20px; }
+    .login-visual__headline { font-size: 30px; font-weight: 800; color: #1a1c23; line-height: 1.35; letter-spacing: -0.02em; margin-bottom: 14px; }
+    .login-visual__desc { font-size: 13.5px; color: #6b7280; line-height: 1.8; margin-bottom: 36px; }
+    .login-visual__feature { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .login-visual__feature-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(245,158,11,0.14); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .login-visual__feature-text { font-size: 13.5px; color: #6b7280; }
+    .login-visual__footer { font-size: 12px; color: #9ca3af; }
+
+    /* ── 오른쪽 폼 패널 ── */
+    .login-form-panel {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px 48px;
+    }
+    @media (max-width: 640px) {
+      .login-form-panel { padding: 24px 20px; }
+    }
+    .login-form-wrap { width: 100%; max-width: 380px; }
+
+    /* 모바일 로고 */
+    .login-mobile-logo {
+      display: flex; align-items: center; gap: 10px;
+      justify-content: center; margin-bottom: 32px;
+    }
+    .login-mobile-logo img { height: 32px; }
+    .login-mobile-logo span { font-size: 15px; font-weight: 700; color: #1a1c23; }
+    @media (min-width: 1024px) { .login-mobile-logo { display: none; } }
+
+    /* 테스트 로그인 버튼 */
+    .test-btn {
+      flex: 1; padding: 9px 6px;
+      border: 1.5px solid #e5e7eb; border-radius: 8px;
+      font-size: 12px; font-weight: 600; color: #6b7280;
+      background: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .test-btn:hover { border-color: #F59E0B; color: #1a1c23; }
+  </style>
+</head>
+<body>
+
+<div class="login-page">
+
+  <!-- ══════════════════════════════════════════════════════
+       왼쪽 비주얼 패널 (PC 1024px 이상에서만 표시)
+  ══════════════════════════════════════════════════════ -->
+  <aside class="login-visual" aria-hidden="true">
+    <!-- 배경 이미지 -->
+    <img
+      class="login-visual__bg"
+      src="https://d2xsxph8kpxj0f.cloudfront.net/310519663446502781/TcBZffuD5xQ8UzeJVYWBAq/hero-main_05cb9239.jpg"
+      alt="도로 공사 현장 배경"
+    />
+    <div class="login-visual__overlay"></div>
+
+    <div class="login-visual__content">
+      <!-- 로고 -->
+      <a href="index.html" class="login-visual__logo">
+        <img src="https://placehold.co/36x36/F59E0B/ffffff?text=R" alt="RSS 로고" />
+        <div>
+          <p class="login-visual__logo-main">(주)로드세이프티시스템</p>
+          <p class="login-visual__logo-sub">Road Safety System</p>
+        </div>
+      </a>
+
+      <!-- 중앙 텍스트 -->
+      <div class="login-visual__center">
+        <span class="amber-accent-line"></span>
+        <h2 class="login-visual__headline">도로차단 공사<br>매칭의 새로운 기준</h2>
+        <p class="login-visual__desc">
+          발주기업과 차단기업을 연결하는<br>
+          전문 B2B 플랫폼에 오신 것을 환영합니다.
+        </p>
+
+        <!-- 기능 목록 -->
+        <div>
+          <div class="login-visual__feature">
+            <div class="login-visual__feature-icon">
+              <i data-lucide="shield" style="width:13px;height:13px;color:#F59E0B;stroke:#F59E0B;"></i>
+            </div>
+            <span class="login-visual__feature-text">안전하고 신뢰할 수 있는 매칭 시스템</span>
+          </div>
+          <div class="login-visual__feature">
+            <div class="login-visual__feature-icon">
+              <i data-lucide="arrow-right" style="width:13px;height:13px;color:#F59E0B;stroke:#F59E0B;"></i>
+            </div>
+            <span class="login-visual__feature-text">선착순 실시간 차단 신청</span>
+          </div>
+          <div class="login-visual__feature">
+            <div class="login-visual__feature-icon">
+              <i data-lucide="arrow-right" style="width:13px;height:13px;color:#F59E0B;stroke:#F59E0B;"></i>
+            </div>
+            <span class="login-visual__feature-text">TMA 카드 검증 및 장비 관리</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="login-visual__footer">© 2026 (주)로드세이프티시스템. All rights reserved.</p>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════════════════════
+       오른쪽 폼 패널
+  ══════════════════════════════════════════════════════ -->
+  <main class="login-form-panel">
+
+    <!-- 모바일 전용 로고 -->
+    <div class="login-mobile-logo">
+      <img src="https://placehold.co/32x32/F59E0B/ffffff?text=R" alt="RSS 로고" />
+      <span>(주)로드세이프티시스템</span>
+    </div>
+
+    <div class="login-form-wrap">
+
+      <!-- 폼 헤더 -->
+      <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-1.5" style="letter-spacing:-0.02em;">로그인</h1>
+        <p class="text-sm text-gray-500">계정 정보를 입력하여 로그인하세요.</p>
+      </div>
+
+      <!-- ── 에러 메시지 (서버 오류 또는 유효성 오류 시 표시) ── -->
+      <!-- [Java] 로그인 실패 시 model.addAttribute("loginError", "...") 로 전달 -->
+      <div id="loginErrorBar" class="hidden items-center gap-2 px-4 py-3 rounded-lg text-sm mb-4"
+           style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); color:#dc2626;">
+        <i data-lucide="shield-alert" style="width:16px;height:16px;flex-shrink:0;"></i>
+        <span id="loginErrorMsg">아이디와 비밀번호를 입력해주세요.</span>
+      </div>
+
+      <!-- ── 로그인 폼 ── -->
+      <!-- [Java] action="/api/auth/login" method="POST" 로 변경 -->
+      <!-- [Java] th:action="@{/login}" (Thymeleaf 사용 시) -->
+      <form id="loginForm" name="loginForm" novalidate>
+
+        <!-- 아이디 입력 -->
+        <!-- [DB] 컬럼: member.user_id (VARCHAR 50) -->
+        <div class="rss-form-group">
+          <label class="rss-label" for="user_id">아이디</label>
+          <input
+            type="text"
+            id="user_id"
+            name="user_id"
+            class="rss-input"
+            placeholder="아이디를 입력하세요"
+            autocomplete="username"
+            maxlength="50"
+            value="block"
+          />
+        </div>
+
+        <!-- 비밀번호 입력 -->
+        <!-- [DB] 컬럼: member.user_pw (VARCHAR 255, BCrypt 해시) -->
+        <div class="rss-form-group">
+          <label class="rss-label" for="user_pw">비밀번호</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="user_pw"
+              name="user_pw"
+              class="rss-input"
+              placeholder="비밀번호를 입력하세요"
+              autocomplete="current-password"
+              maxlength="100"
+              style="padding-right:40px;"
+              value="1234"
+            />
+            <!-- 비밀번호 표시/숨김 토글 -->
+            <button type="button" id="pwToggleBtn"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
+              aria-label="비밀번호 표시/숨김">
+              <i data-lucide="eye" id="pwToggleIcon" style="width:16px;height:16px;"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 자동로그인 체크 -->
+        <!-- [DB] 컬럼: member_session.auto_login (TINYINT 1) -->
+        <div class="flex items-center gap-2 mb-4">
+          <input type="checkbox" id="auto_login" name="auto_login" value="1"
+            class="w-4 h-4 rounded accent-amber-500 cursor-pointer" />
+          <label for="auto_login" class="text-sm text-gray-600 cursor-pointer">자동로그인</label>
+        </div>
+
+        <!-- 로그인 버튼 -->
+        <button type="submit" id="loginSubmitBtn"
+          class="rss-btn rss-btn--amber rss-btn--full rss-btn--lg">
+          <i data-lucide="log-in" style="width:16px;height:16px;"></i>
+          로
+그인
+        </button>
+      </form>
+
+      <!-- 링크 영역 -->
+      <div class="flex items-center justify-center gap-4 mt-5">
+        <a href="#" onclick="openFindModal(); return false;"
+          class="text-sm text-gray-500 hover:text-gray-800 transition-colors">
+          아이디 / 비밀번호 찾기
+        </a>
+        <span class="text-gray-300 text-xs">|</span>
+        <a href="signup.html"
+          class="text-sm font-semibold hover:underline"
+          style="color:#d97706;">
+          회원가입
+        </a>
+      </div>
+
+      <!-- 안내 박스 -->
+      <div class="mt-8 p-4 rounded-xl" style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.18);">
+        <p class="text-sm text-gray-500 leading-relaxed">
+          <strong class="text-gray-800">안내:</strong> 본 서비스는 기업 회원 전용입니다.<br>
+          개인 사업자 포함 사업자등록증 보유 기업만 가입 가능합니다.
+        </p>
+      </div>
+
+      <!-- 테스트 빠른 로그인 (개발/데모용, 실서비스 제거 필요) -->
+      <div class="mt-5 pt-5" style="border-top:1px solid #e5e7eb;">
+        <p class="text-xs text-gray-400 text-center mb-2.5 tracking-wide">스트 빠른 로그인</p>
+        <div class="flex gap-2">
+          <button class="test-btn" onclick="testLogin('block')">🚧 차단기업</button>
+          <button class="test-btn" onclick="testLogin('order')">🏗️ 발주기업</button>
+          <button class="test-btn" onclick="testLogin('worker')">👷 차단직원</button>
+        </div>
+      </div>
+
+      <!-- 하단 링크 -->
+      <div class="flex justify-center gap-4 mt-8">
+        <a href="terms.html" class="text-xs text-gray-400 hover:text-gray-600">이용약관</a>
+        <a href="privacy.html" class="text-xs text-gray-400 hover:text-gray-600">개인정보처리방침</a>
+      </div>
+
+    </div><!-- /login-form-wrap -->
+  </main>
+
+</div><!-- /login-page -->
+
+
+<!-- ══════════════════════════════════════════════════════
+     아이디/비밀번호 찾기 모달
+     [Java] 실제 구현 시 /api/auth/find-account API 연동
+══════════════════════════════════════════════════════ -->
+<div id="findModal" class="rss-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.45); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:20px;">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" style="animation:rssToastIn 0.22s ease;">
+    <!-- 모달 헤더 -->
+    <div class="flex items-center justify-between px-6 py-5" style="border-bottom:1px solid #f0ede6;">
+      <h2 class="text-base font-bold text-gray-900">계정 찾기</h2>
+      <button data-modal-close class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" onclick="closeFindModal()">
+        <i data-lucide="x" style="width:14px;height:14px;color:#6b7280;"></i>
+      </button>
+    </div>
+    <!-- 모달 바디 -->
+    <div class="p-6">
+      <p class="text-sm text-gray-500 mb-5 leading-relaxed">가입 시 등록한 정보를 입력하여 계정을 찾으세요.</p>
+
+      <!-- [DB] 컬럼: company.company_name (VARCHAR 100) -->
+      <div class="rss-form-group">
+        <label class="rss-label" for="find_company_name">
+          회사명 <span style="color:#F59E0B;">*</span>
+        </label>
+        <input type="text" id="find_company_name" name="find_company_name"
+          class="rss-input" placeholder="회사명을 입력하세요" maxlength="100" />
+      </div>
+
+      <!-- [DB] 컬럼: member.phone (VARCHAR 20) -->
+      <div class="rss-form-group">
+        <label class="rss-label" for="find_phone">
+          담당자 연락처 <span style="color:#F59E0B;">*</span>
+        </label>
+        <input type="tel" id="find_phone" name="find_phone"
+          class="rss-input" placeholder="010-0000-0000" maxlength="20" />
+      </div>
+
+      <button type="button" onclick="closeFindModal()"
+        class="rss-btn rss-btn--amber rss-btn--full">
+        확인
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  /* ── 비밀번호 표시/숨김 ── */
+  document.getElementById('pwToggleBtn').addEventListener('click', function() {
+    const input = document.getElementById('user_pw');
+    const icon  = document.getElementById('pwToggleIcon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.setAttribute('data-lucide', 'eye-off');
+    } else {
+      input.type = 'password';
+      icon.setAttribute('data-lucide', 'eye');
+    }
+    lucide.createIcons(); /* 아이콘 재렌더 */
+  });
+
+  /* ── 로그인 폼 유효성 검사 ── */
+  /* [Java] 실제 서버 로그인 처리 시 form action/method 변경 후 이 JS 제거 가능 */
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const id  = document.getElementById('user_id').value.trim();
+    const pw  = document.getElementById('user_pw').value.trim();
+    const bar = document.getElementById('loginErrorBar');
+    const msg = document.getElementById('loginErrorMsg');
+
+    if (!id || !pw) {
+      msg.textContent = '아이디와 비밀번호를 입력해주세요.';
+      bar.classList.remove('hidden');
+      bar.classList.add('flex');
+      return;
+    }
+    bar.classList.add('hidden');
+    bar.classList.remove('flex');
+
+    /* [Java] 서버 로그인 처리 후 리다이렉트 — 아래 라인 제거 */
+    location.href = 'index.html';
+  });
+
+  /* ── 테스트 로그인 (데모용) ── */
+  function testLogin(type) {
+    const map = { block: 'block', order: 'order', worker: 'worker' };
+    document.getElementById('user_id').value = map[type] || type;
+    document.getElementById('user_pw').value = '1234';
+    location.href = 'index.html';
+  }
+
+  /* ── 찾기 모달 ── */
+  function openFindModal() {
+    const m = document.getElementById('findModal');
+    m.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFindModal() {
+    const m = document.getElementById('findModal');
+    m.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('findModal').addEventListener('click', function(e) {
+    if (e.target === this) closeFindModal();
+  });
+
+  /* ── Lucide 아이콘 초기화 ── */
+  lucide.createIcons();
+</script>
+
+</body>
+</html>
