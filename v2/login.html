@@ -22,13 +22,13 @@
       background: #f0ede6; /* 전체 크림/베이지 배경 — 앰버 메인 컬러를 은은하게 표현 */
     }
 
-    /* ── 왼쪽 비주얼 패널 ── */
+    /* ── 왼쪽 비주얼 패널 — 비율 1 (flex: 2) ── */
     .login-visual {
       display: none; /* 모바일 기본 숨김 */
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 55%;
+      flex: 2;          /* 왼쪽 비율 2 */
       position: relative;
       overflow: hidden;
       background: #f0ede6;
@@ -107,7 +107,7 @@
 
     /* 헤드라인 */
     .login-visual__headline {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 800;
       color: #1a1c23;
       line-height: 1.35;
@@ -117,22 +117,22 @@
 
     /* 설명 문구 */
     .login-visual__desc {
-      font-size: 13.5px;
+      font-size: 15px;
       color: #7c7c7c;
       line-height: 1.9;
     }
 
     /* 저작권 */
     .login-visual__footer {
-      font-size: 11.5px;
+      font-size: 13px;
       color: #b8b2a8;
       position: absolute;
       bottom: 28px;
     }
 
-    /* ── 오른쪽 폼 패널 ── */
+    /* ── 오른쪽 폼 패널 — 비율 1.5 (flex: 3) ── */
     .login-form-panel {
-      flex: 1;
+      flex: 3;          /* 오른쪽 비율 3 → 왼쪽 2 : 오른쪽 3 = 1 : 1.5 */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -147,7 +147,7 @@
     /* ── 로그인 카드 ── */
     .login-card {
       width: 100%;
-      max-width: 340px;
+      max-width: 420px;  /* 오른쪽 패널이 넓어졌으므로 카드도 확장 */
       background: #ffffff;
       border-radius: 16px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
@@ -167,7 +167,7 @@
 
     /* 카드 타이틀 */
     .login-card__title {
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 800;
       color: #1a1c23;
       text-align: center;
@@ -175,7 +175,7 @@
       letter-spacing: -0.02em;
     }
     .login-card__subtitle {
-      font-size: 12px;
+      font-size: 14px;
       color: #9ca3af;
       text-align: center;
       margin-bottom: 20px;
@@ -204,10 +204,10 @@
     }
     .login-input-field {
       width: 100%;
-      padding: 10px 12px 10px 34px;
+      padding: 11px 13px 11px 36px;
       border: 1.5px solid #e5e7eb;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 15px;
       color: #1a1c23;
       background: #fafafa;
       outline: none;
@@ -238,10 +238,10 @@
     /* 로그인 버튼 (앰버) */
     .login-submit-btn {
       width: 100%;
-      padding: 11px;
+      padding: 13px;
       background: #F59E0B;
       color: #ffffff;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 700;
       border: none;
       border-radius: 8px;
@@ -264,7 +264,7 @@
       margin-bottom: 16px;
     }
     .login-meta-row label {
-      font-size: 12px;
+      font-size: 14px;
       color: #6b7280;
       display: flex;
       align-items: center;
@@ -276,7 +276,7 @@
       gap: 10px;
     }
     .login-meta-row .find-links a {
-      font-size: 11.5px;
+      font-size: 13px;
       color: #9ca3af;
       text-decoration: none;
       transition: color 0.15s;
@@ -289,7 +289,7 @@
       align-items: center;
       gap: 10px;
       margin: 4px 0 14px;
-      font-size: 11.5px;
+      font-size: 13px;
       color: #c4c9d4;
     }
     .login-divider::before,
@@ -303,11 +303,11 @@
     /* 회원가입 버튼 */
     .login-signup-btn {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background: #ffffff;
       border: 1.5px solid #e5e7eb;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 600;
       color: #374151;
       cursor: pointer;
@@ -323,11 +323,11 @@
     /* 안내 박스 */
     .login-notice-box {
       margin-top: 12px;
-      padding: 10px 14px;
+      padding: 11px 15px;
       background: rgba(245,158,11,0.06);
       border: 1px solid rgba(245,158,11,0.18);
       border-radius: 8px;
-      font-size: 11.5px;
+      font-size: 13px;
       color: #7c7c7c;
       text-align: center;
       line-height: 1.6;
@@ -341,7 +341,7 @@
       border-top: 1px solid #f0ede6;
     }
     .login-test-label {
-      font-size: 11px;
+      font-size: 13px;
       color: #b8b2a8;
       text-align: center;
       margin-bottom: 8px;
@@ -353,10 +353,10 @@
     }
     .login-test-btn {
       flex: 1;
-      padding: 7px 4px;
+      padding: 8px 4px;
       border: 1.5px solid #e5e7eb;
       border-radius: 7px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 600;
       color: #6b7280;
       background: #fff;
