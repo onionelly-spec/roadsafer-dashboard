@@ -26,39 +26,80 @@
     .login-visual {
       display: none; /* 모바일 기본 숨김 */
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
       width: 45%;
       position: relative;
       overflow: hidden;
+      /* 신규 추가 스타일: 구 버전 — 단색 그라디언트 배경 (이미지 없음) */
+      background: linear-gradient(145deg, #1a1d27 0%, #23263a 60%, #2a1a00 100%);
     }
     @media (min-width: 1024px) {
       .login-visual { display: flex; }
     }
-    .login-visual__bg {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-    }
-    .login-visual__overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(249,249,251,0.96) 0%, rgba(249,249,251,0.80) 55%, rgba(249,249,251,0.55) 100%);
-    }
+
+    /* 신규 추가 스타일: 구 버전 왼쪽 패널 내부 콘텐츠 */
     .login-visual__content {
       position: relative; z-index: 1;
       display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       height: 100%; padding: 48px;
+      text-align: center;
     }
-    .login-visual__logo { display: flex; align-items: center; gap: 10px; }
-    .login-visual__logo img { height: 36px; width: auto; }
-    .login-visual__logo-main { font-size: 15px; font-weight: 700; color: #1a1c23; }
-    .login-visual__logo-sub  { font-size: 9px; color: #9ca3af; letter-spacing: 0.1em; text-transform: uppercase; font-family: monospace; }
-    .login-visual__center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-    .amber-accent-line { display: block; width: 32px; height: 2px; background: #F59E0B; margin-bottom: 20px; }
-    .login-visual__headline { font-size: 30px; font-weight: 800; color: #1a1c23; line-height: 1.35; letter-spacing: -0.02em; margin-bottom: 14px; }
-    .login-visual__desc { font-size: 13.5px; color: #6b7280; line-height: 1.8; margin-bottom: 36px; }
-    .login-visual__feature { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-    .login-visual__feature-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(245,158,11,0.14); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .login-visual__feature-text { font-size: 13.5px; color: #6b7280; }
-    .login-visual__footer { font-size: 12px; color: #9ca3af; }
+
+    /* 신규 추가 스타일: 구 버전 로고 원형 애니메이션 */
+    .login-logo-ring {
+      position: relative;
+      width: 140px; height: 140px;
+      margin-bottom: 36px;
+    }
+    .login-logo-ring__circle {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      animation: ringRotate 3s linear infinite;
+    }
+    .login-logo-ring__circle--outer {
+      border-top-color: rgba(245,158,11,0.7);
+      border-right-color: rgba(245,158,11,0.2);
+      animation-duration: 3s;
+    }
+    .login-logo-ring__circle--mid {
+      inset: 12px;
+      border-top-color: rgba(245,158,11,0.4);
+      border-left-color: rgba(245,158,11,0.15);
+      animation-duration: 2.2s;
+      animation-direction: reverse;
+    }
+    .login-logo-ring__circle--inner {
+      inset: 24px;
+      border-bottom-color: rgba(245,158,11,0.25);
+      animation-duration: 1.8s;
+    }
+    .login-logo-ring__core {
+      position: absolute;
+      inset: 36px;
+      border-radius: 50%;
+      background: rgba(245,158,11,0.12);
+      border: 1.5px solid rgba(245,158,11,0.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-logo-ring__letter {
+      font-size: 26px; font-weight: 900;
+      color: #F59E0B;
+      letter-spacing: -0.03em;
+    }
+    @keyframes ringRotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .login-visual__logo-main { font-size: 15px; font-weight: 700; color: #ffffff; margin-bottom: 4px; }
+    .login-visual__logo-sub  { font-size: 9px; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; font-family: monospace; }
+    .amber-accent-line { display: block; width: 32px; height: 2px; background: #F59E0B; margin: 24px auto 20px; }
+    .login-visual__headline { font-size: 28px; font-weight: 800; color: #ffffff; line-height: 1.35; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .login-visual__desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.8; }
+    .login-visual__footer { font-size: 11.5px; color: rgba(255,255,255,0.25); position: absolute; bottom: 28px; }
 
     /* ── 오른쪽 폼 패널 ── */
     .login-form-panel {
@@ -99,58 +140,43 @@
 
   <!-- ══════════════════════════════════════════════════════
        왼쪽 비주얼 패널 (PC 1024px 이상에서만 표시)
+       [구 버전] 로고 원형 애니메이션 + "안전한 도로의 시작" 헤드라인 + 기능 설명 없음
   ══════════════════════════════════════════════════════ -->
   <aside class="login-visual" aria-hidden="true">
-    <!-- 배경 이미지 -->
-    <img
-      class="login-visual__bg"
-      src="https://d2xsxph8kpxj0f.cloudfront.net/310519663446502781/TcBZffuD5xQ8UzeJVYWBAq/hero-main_05cb9239.jpg"
-      alt="도로 공사 현장 배경"
-    />
-    <div class="login-visual__overlay"></div>
 
     <div class="login-visual__content">
-      <!-- 로고 -->
-      <a href="index.html" class="login-visual__logo">
-        <img src="https://placehold.co/36x36/F59E0B/ffffff?text=R" alt="RSS 로고" />
-        <div>
-          <p class="login-visual__logo-main">(주)로드세이프티시스템</p>
-          <p class="login-visual__logo-sub">Road Safety System</p>
-        </div>
-      </a>
 
-      <!-- 중앙 텍스트 -->
-      <div class="login-visual__center">
-        <span class="amber-accent-line"></span>
-        <h2 class="login-visual__headline">도로차단 공사<br>매칭의 새로운 기준</h2>
-        <p class="login-visual__desc">
-          발주기업과 차단기업을 연결하는<br>
-          전문 B2B 플랫폼에 오신 것을 환영합니다.
-        </p>
-
-        <!-- 기능 목록 -->
-        <div>
-          <div class="login-visual__feature">
-            <div class="login-visual__feature-icon">
-              <i data-lucide="shield" style="width:13px;height:13px;color:#F59E0B;stroke:#F59E0B;"></i>
-            </div>
-            <span class="login-visual__feature-text">안전하고 신뢰할 수 있는 매칭 시스템</span>
-          </div>
-          <div class="login-visual__feature">
-            <div class="login-visual__feature-icon">
-              <i data-lucide="arrow-right" style="width:13px;height:13px;color:#F59E0B;stroke:#F59E0B;"></i>
-            </div>
-            <span class="login-visual__feature-text">선착순 실시간 차단 신청</span>
-          </div>
-          <div class="login-visual__feature">
-            <div class="login-visual__feature-icon">
-              <i data-lucide="arrow-right" style="width:13px;height:13px;color:#F59E0B;stroke:#F59E0B;"></i>
-            </div>
-            <span class="login-visual__feature-text">TMA 카드 검증 및 장비 관리</span>
-          </div>
+      <!-- 로고 원형 애니메이션 (구 버전) -->
+      <div class="login-logo-ring" role="img" aria-label="로드세이프티시스템 로고">
+        <!-- 바깥쪽 회전 링 -->
+        <div class="login-logo-ring__circle login-logo-ring__circle--outer"></div>
+        <!-- 중간 역방향 링 -->
+        <div class="login-logo-ring__circle login-logo-ring__circle--mid"></div>
+        <!-- 안쪽 링 -->
+        <div class="login-logo-ring__circle login-logo-ring__circle--inner"></div>
+        <!-- 중앙 코어 -->
+        <div class="login-logo-ring__core">
+          <span class="login-logo-ring__letter">R</span>
         </div>
       </div>
 
+      <!-- 로고 텍스트 -->
+      <p class="login-visual__logo-main">(주)로드세이프티시스템</p>
+      <p class="login-visual__logo-sub">Road Safety System</p>
+
+      <!-- 구분선 -->
+      <span class="amber-accent-line"></span>
+
+      <!-- 헤드라인 (구 버전: "안전한 도로의 시작") -->
+      <h2 class="login-visual__headline">안전한 도로의 시작</h2>
+
+      <!-- 설명 문구 (기능 목록 없음 — 구 버전) -->
+      <p class="login-visual__desc">
+        발주기업과 차단기업을 연결하는<br>
+        전문 B2B 플랫폼입니다.
+      </p>
+
+      <!-- 저작권 -->
       <p class="login-visual__footer">© 2026 (주)로드세이프티시스템. All rights reserved.</p>
     </div>
   </aside>
