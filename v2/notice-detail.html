@@ -124,8 +124,8 @@
         <!-- 첨부파일 (있을 경우) -->
         <!-- [DB] 테이블: notice_attachment WHERE notice_id = ? -->
         <div class="px-6 pb-4">
-          <p class="text-xs font-semibold text-gray-400 mb-2">첨부파일</p>
-          <a href="#" class="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline">
+          <p class="text-base font-semibold text-gray-400 mb-2">첨부파일</p>
+          <a href="#" class="inline-flex items-center gap-2 text-base text-blue-600 hover:underline">
             <i data-lucide="paperclip" style="width:14px;height:14px;"></i>
             2026_하반기_정책변경_안내문.pdf
             <!-- [Java] ${attachment.originalFileName} -->
@@ -148,14 +148,14 @@
       <div class="rss-card mt-3">
         <div class="flex items-center gap-3 px-5 py-3.5 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors"
              onclick="location.href='notice-detail.html'">
-          <span class="text-xs text-gray-400 flex-shrink-0 w-10">이전글</span>
-          <span class="text-sm text-gray-700 truncate">TMA 카드 신규 등록 절차 간소화 안내</span>
+          <span class="text-base text-gray-400 flex-shrink-0 w-10">이전글</span>
+          <span class="text-base text-gray-700 truncate">TMA 카드 신규 등록 절차 간소화 안내</span>
           <!-- [Java] ${prevNotice.title} -->
         </div>
         <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50 cursor-pointer transition-colors"
              onclick="location.href='notice-detail.html'">
-          <span class="text-xs text-gray-400 flex-shrink-0 w-10">다음글</span>
-          <span class="text-sm text-gray-500 truncate">다음 글이 없습니다.</span>
+          <span class="text-base text-gray-400 flex-shrink-0 w-10">다음글</span>
+          <span class="text-base text-gray-500 truncate">다음 글이 없습니다.</span>
           <!-- [Java] th:text="${nextNotice != null ? nextNotice.title : '다음 글이 없습니다.'}" -->
         </div>
       </div>

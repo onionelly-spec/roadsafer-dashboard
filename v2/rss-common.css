@@ -4,6 +4,15 @@
  * Tailwind CSS CDN 방식과 함께 사용
  * 작성일: 2026-04
  * 개발환경: Java + MariaDB (프레임워크 비종속)
+ *
+ * 폰트 크기 체계 (v2 상향 조정)
+ *   xs   : 12px   (구 10~11px)
+ *   sm   : 13px   (구 11~12px)
+ *   base : 15px   (구 13~14px)  ← 기본 본문
+ *   md   : 16px   (구 14~15px)
+ *   lg   : 18px   (구 16px)
+ *   xl   : 20px   (구 18px)
+ *   2xl  : 24px   (구 20~22px)
  */
 
 /* ─── 폰트 ─────────────────────────────────────────────── */
@@ -18,7 +27,7 @@
   --rss-sidebar-bg:   #1a1d27;
   --rss-sidebar-w:    220px;
   --rss-sidebar-w-sm: 64px;
-  --rss-header-h:     56px;
+  --rss-header-h:     60px;
   --rss-radius:       8px;
   --rss-radius-lg:    12px;
   --rss-border:       #e5e7eb;
@@ -28,6 +37,15 @@
   --rss-card:         #ffffff;
   --rss-shadow:       0 1px 4px rgba(0,0,0,0.08);
   --rss-shadow-md:    0 4px 16px rgba(0,0,0,0.10);
+
+  /* 폰트 크기 토큰 */
+  --rss-font-xs:   12px;
+  --rss-font-sm:   13px;
+  --rss-font-base: 15px;
+  --rss-font-md:   16px;
+  --rss-font-lg:   18px;
+  --rss-font-xl:   20px;
+  --rss-font-2xl:  24px;
 }
 
 /* ─── 기본 리셋 ────────────────────────────────────────── */
@@ -35,7 +53,8 @@
 html { scroll-behavior: smooth; }
 body {
   font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  font-size: 14px;
+  font-size: var(--rss-font-base);   /* 15px — 기본 본문 */
+  line-height: 1.65;
   color: var(--rss-text);
   background: var(--rss-bg);
   -webkit-font-smoothing: antialiased;
@@ -90,8 +109,8 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 .rss-sidebar__logo-img {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -101,7 +120,7 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 .rss-sidebar__logo-main {
-  font-size: 12.5px;
+  font-size: var(--rss-font-sm);   /* 13px */
   font-weight: 700;
   color: #fff;
   white-space: nowrap;
@@ -109,7 +128,7 @@ img { max-width: 100%; display: block; }
   text-overflow: ellipsis;
 }
 .rss-sidebar__logo-sub {
-  font-size: 9px;
+  font-size: var(--rss-font-xs);   /* 12px */
   color: rgba(255,255,255,0.4);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -132,12 +151,12 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 .rss-sidebar__user-avatar {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--rss-amber);
   color: #1a0a00;
-  font-size: 13px;
+  font-size: var(--rss-font-sm);   /* 13px */
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -145,13 +164,13 @@ img { max-width: 100%; display: block; }
   flex-shrink: 0;
 }
 .rss-sidebar__user-name {
-  font-size: 13px;
+  font-size: var(--rss-font-base); /* 15px */
   font-weight: 600;
   color: #fff;
   white-space: nowrap;
 }
 .rss-sidebar__user-company {
-  font-size: 11px;
+  font-size: var(--rss-font-sm);   /* 13px */
   color: rgba(255,255,255,0.45);
   white-space: nowrap;
   overflow: hidden;
@@ -169,7 +188,7 @@ img { max-width: 100%; display: block; }
 .rss-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
 
 .rss-nav__section-label {
-  font-size: 10px;
+  font-size: var(--rss-font-xs);   /* 12px */
   font-weight: 600;
   color: rgba(255,255,255,0.3);
   letter-spacing: 0.08em;
@@ -182,9 +201,9 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 16px;
+  padding: 10px 16px;
   color: rgba(255,255,255,0.55);
-  font-size: 13.5px;
+  font-size: var(--rss-font-base); /* 15px */
   font-weight: 500;
   border-radius: 6px;
   margin: 1px 8px;
@@ -218,9 +237,9 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 8px;
+  padding: 9px 8px;
   color: rgba(255,255,255,0.45);
-  font-size: 12.5px;
+  font-size: var(--rss-font-sm);   /* 13px */
   border-radius: 6px;
   transition: background 0.15s, color 0.15s;
   white-space: nowrap;
@@ -267,8 +286,8 @@ img { max-width: 100%; display: block; }
   gap: 12px;
 }
 .rss-header__toggle {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 6px;
   border: 1px solid var(--rss-border);
   background: transparent;
@@ -280,7 +299,7 @@ img { max-width: 100%; display: block; }
 }
 .rss-header__toggle:hover { background: #f3f4f6; }
 .rss-header__title {
-  font-size: 16px;
+  font-size: var(--rss-font-lg);   /* 18px */
   font-weight: 700;
   color: var(--rss-text);
 }
@@ -290,19 +309,19 @@ img { max-width: 100%; display: block; }
   gap: 10px;
 }
 .rss-header__avatar {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: var(--rss-amber);
   color: #1a0a00;
-  font-size: 12px;
+  font-size: var(--rss-font-sm);   /* 13px */
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .rss-header__username {
-  font-size: 13px;
+  font-size: var(--rss-font-base); /* 15px */
   font-weight: 600;
   color: var(--rss-text);
 }
@@ -313,10 +332,10 @@ img { max-width: 100%; display: block; }
 /* ─── 콘텐츠 영역 ──────────────────────────────────────── */
 .rss-content {
   flex: 1;
-  padding: 20px;
+  padding: 24px;
 }
 @media (max-width: 640px) {
-  .rss-content { padding: 14px; }
+  .rss-content { padding: 16px; }
 }
 
 /* ─── 카드 ─────────────────────────────────────────────── */
@@ -330,22 +349,22 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 12px;
+  padding: 18px 22px 14px;
   border-bottom: 1px solid var(--rss-border);
 }
 .rss-card__title {
-  font-size: 14px;
+  font-size: var(--rss-font-md);   /* 16px */
   font-weight: 700;
   color: var(--rss-text);
 }
 .rss-card__more {
-  font-size: 12px;
+  font-size: var(--rss-font-sm);   /* 13px */
   color: var(--rss-muted);
   transition: color 0.15s;
 }
 .rss-card__more:hover { color: var(--rss-amber); }
 .rss-card__body {
-  padding: 16px 20px;
+  padding: 18px 22px;
 }
 
 /* ─── 버튼 ─────────────────────────────────────────────── */
@@ -354,14 +373,15 @@ img { max-width: 100%; display: block; }
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 16px;
+  padding: 9px 18px;
   border-radius: var(--rss-radius);
-  font-size: 13px;
+  font-size: var(--rss-font-base); /* 15px */
   font-weight: 600;
   border: none;
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
+  line-height: 1.4;
 }
 .rss-btn--amber {
   background: var(--rss-amber);
@@ -391,36 +411,37 @@ img { max-width: 100%; display: block; }
   background: var(--rss-amber-light);
 }
 .rss-btn--sm {
-  padding: 5px 12px;
-  font-size: 12px;
+  padding: 6px 13px;
+  font-size: var(--rss-font-sm);   /* 13px */
 }
 .rss-btn--lg {
-  padding: 12px 24px;
-  font-size: 15px;
+  padding: 13px 28px;
+  font-size: var(--rss-font-lg);   /* 18px */
 }
 .rss-btn--full { width: 100%; }
 
 /* ─── 폼 요소 ──────────────────────────────────────────── */
 .rss-label {
   display: block;
-  font-size: 12.5px;
+  font-size: var(--rss-font-sm);   /* 13px */
   font-weight: 600;
   color: var(--rss-text);
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   letter-spacing: 0.01em;
 }
 .rss-input,
 .rss-select,
 .rss-textarea {
   width: 100%;
-  padding: 9px 12px;
+  padding: 10px 13px;
   border: 1.5px solid var(--rss-border);
   border-radius: var(--rss-radius);
-  font-size: 13.5px;
+  font-size: var(--rss-font-base); /* 15px */
   color: var(--rss-text);
   background: #fff;
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
+  line-height: 1.5;
 }
 .rss-input:focus,
 .rss-select:focus,
@@ -432,16 +453,16 @@ img { max-width: 100%; display: block; }
 .rss-textarea::placeholder {
   color: #9ca3af;
 }
-.rss-textarea { resize: vertical; min-height: 120px; }
-.rss-form-group { margin-bottom: 16px; }
+.rss-textarea { resize: vertical; min-height: 130px; }
+.rss-form-group { margin-bottom: 18px; }
 
 /* ─── 배지 / 상태 ──────────────────────────────────────── */
 .rss-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
+  padding: 3px 11px;
   border-radius: 99px;
-  font-size: 11.5px;
+  font-size: var(--rss-font-sm);   /* 13px */
   font-weight: 600;
   white-space: nowrap;
 }
@@ -460,23 +481,24 @@ img { max-width: 100%; display: block; }
 .rss-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: var(--rss-font-base); /* 15px */
 }
 .rss-table th {
-  padding: 10px 14px;
+  padding: 11px 15px;
   background: #f9fafb;
   border-bottom: 1px solid var(--rss-border);
-  font-size: 12px;
+  font-size: var(--rss-font-sm);   /* 13px */
   font-weight: 600;
   color: var(--rss-muted);
   text-align: left;
   white-space: nowrap;
 }
 .rss-table td {
-  padding: 11px 14px;
+  padding: 12px 15px;
   border-bottom: 1px solid #f3f4f6;
   color: var(--rss-text);
   vertical-align: middle;
+  line-height: 1.5;
 }
 .rss-table tr:last-child td { border-bottom: none; }
 .rss-table tr:hover td { background: #fafafa; }
@@ -488,7 +510,7 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 13px 20px;
+  padding: 14px 22px;
   border-bottom: 1px solid #f3f4f6;
   transition: background 0.12s;
   cursor: pointer;
@@ -496,15 +518,15 @@ img { max-width: 100%; display: block; }
 .rss-board-item:last-child { border-bottom: none; }
 .rss-board-item:hover { background: #fafafa; }
 .rss-board-item__num {
-  width: 36px;
-  font-size: 12px;
+  width: 38px;
+  font-size: var(--rss-font-sm);   /* 13px */
   color: var(--rss-muted);
   text-align: center;
   flex-shrink: 0;
 }
 .rss-board-item__title {
   flex: 1;
-  font-size: 13.5px;
+  font-size: var(--rss-font-base); /* 15px */
   color: var(--rss-text);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -516,12 +538,12 @@ img { max-width: 100%; display: block; }
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: var(--rss-font-sm);   /* 13px */
   color: var(--rss-muted);
 }
 @media (max-width: 640px) {
   .rss-board-item { flex-wrap: wrap; gap: 6px; }
-  .rss-board-item__meta { width: 100%; padding-left: 48px; }
+  .rss-board-item__meta { width: 100%; padding-left: 50px; }
 }
 
 /* ─── 게시판 툴바 ───────────────────────────────────────── */
@@ -530,7 +552,7 @@ img { max-width: 100%; display: block; }
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 14px 20px;
+  padding: 15px 22px;
   border-bottom: 1px solid var(--rss-border);
   flex-wrap: wrap;
 }
@@ -560,14 +582,14 @@ img { max-width: 100%; display: block; }
 .rss-search-wrap input {
   border: none;
   outline: none;
-  padding: 7px 10px;
-  font-size: 13px;
-  width: 180px;
+  padding: 8px 11px;
+  font-size: var(--rss-font-base); /* 15px */
+  width: 200px;
   background: transparent;
 }
 .rss-search-wrap button {
-  padding: 0 10px;
-  height: 34px;
+  padding: 0 11px;
+  height: 38px;
   background: transparent;
   border: none;
   color: var(--rss-muted);
@@ -582,22 +604,22 @@ img { max-width: 100%; display: block; }
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 16px;
+  padding: 18px;
 }
 .rss-pagination__btn {
-  min-width: 32px;
-  height: 32px;
+  min-width: 34px;
+  height: 34px;
   border-radius: 6px;
   border: 1px solid var(--rss-border);
   background: #fff;
-  font-size: 13px;
+  font-size: var(--rss-font-base); /* 15px */
   color: var(--rss-muted);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.12s;
-  padding: 0 6px;
+  padding: 0 7px;
 }
 .rss-pagination__btn:hover {
   border-color: var(--rss-amber);
@@ -617,8 +639,8 @@ img { max-width: 100%; display: block; }
   gap: 0;
 }
 .rss-tab {
-  padding: 10px 20px;
-  font-size: 13.5px;
+  padding: 11px 22px;
+  font-size: var(--rss-font-base); /* 15px */
   font-weight: 500;
   color: var(--rss-muted);
   border-bottom: 2px solid transparent;
@@ -638,34 +660,34 @@ img { max-width: 100%; display: block; }
 
 /* ─── 상세 페이지 공통 ──────────────────────────────────── */
 .rss-post-header {
-  padding: 20px 24px 16px;
+  padding: 22px 26px 18px;
   border-bottom: 1px solid var(--rss-border);
 }
 .rss-post-title {
-  font-size: 18px;
+  font-size: var(--rss-font-xl);   /* 20px */
   font-weight: 700;
   color: var(--rss-text);
   line-height: 1.5;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .rss-post-meta {
   display: flex;
   align-items: center;
   gap: 16px;
-  font-size: 12.5px;
+  font-size: var(--rss-font-sm);   /* 13px */
   color: var(--rss-muted);
   flex-wrap: wrap;
 }
 .rss-post-body {
-  padding: 24px;
-  font-size: 14px;
+  padding: 26px;
+  font-size: var(--rss-font-base); /* 15px */
   color: var(--rss-text);
   line-height: 1.9;
   min-height: 160px;
   padding-bottom: 40px;
 }
 .rss-post-footer {
-  padding: 16px 24px;
+  padding: 18px 26px;
   border-top: 1px solid var(--rss-border);
   display: flex;
   justify-content: flex-end;
@@ -688,11 +710,11 @@ img { max-width: 100%; display: block; }
   background: var(--rss-border);
   margin: 0;
 }
-.rss-text-amber { color: var(--rss-amber-dark); }
-.rss-text-muted { color: var(--rss-muted); }
-.rss-text-sm    { font-size: 12.5px; }
-.rss-text-xs    { font-size: 11.5px; }
-.rss-fw-bold    { font-weight: 700; }
+.rss-text-amber  { color: var(--rss-amber-dark); }
+.rss-text-muted  { color: var(--rss-muted); }
+.rss-text-sm     { font-size: var(--rss-font-sm); }
+.rss-text-xs     { font-size: var(--rss-font-xs); }
+.rss-fw-bold     { font-weight: 700; }
 .rss-mt-1  { margin-top: 4px; }
 .rss-mt-2  { margin-top: 8px; }
 .rss-mt-3  { margin-top: 12px; }
