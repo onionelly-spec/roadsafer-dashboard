@@ -572,6 +572,35 @@ img { max-width: 100%; display: block; }
 .rss-table a { color: var(--rss-amber-dark); }
 .rss-table a:hover { text-decoration: underline; }
 
+/* 상세 테이블 변형 (키/값 형태, th가 좌측 레이블) */
+.rss-table--detail th {
+  width: 130px;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border: 1px solid var(--rss-border);
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+  color: var(--rss-muted);
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--rss-border);
+}
+.rss-table--detail td {
+  padding: 12px 16px;
+  border: 1px solid var(--rss-border);
+  border-bottom: 1px solid var(--rss-border);
+  color: var(--rss-text);
+  vertical-align: middle;
+  line-height: 1.6;
+}
+.rss-table--detail tr:hover td { background: #fafafa; }
+.rss-table--detail tr:last-child td { border-bottom: 1px solid var(--rss-border); }
+@media (max-width: 640px) {
+  .rss-table--detail th { width: 90px; padding: 10px 10px; font-size: var(--rss-font-xs); }
+  .rss-table--detail td { padding: 10px 10px; font-size: var(--rss-font-sm); }
+}
+
 /* ─── 게시판 목록 ───────────────────────────────────────── */
 .rss-board-item {
   display: flex;
@@ -944,3 +973,23 @@ img { max-width: 100%; display: block; }
     display: block;
   }
 }
+
+/* ─── 공통 테이블 열(col) 스타일 ──────────────────────────── */
+/* 공사명/발주업체명 등 긴 텍스트 열 */
+.rss-col-nm    { text-align: left; min-width: 180px; }
+/* 기간 열 */
+.rss-col-period { min-width: 210px; white-space: nowrap; }
+/* 장비/품목 열 */
+.rss-col-equip  { text-align: left; min-width: 200px;
+                  font-size: var(--rss-font-sm); color: var(--rss-muted); }
+/* 도로명 열 */
+.rss-col-road   { min-width: 100px; }
+/* 방향 열 */
+.rss-col-dir    { min-width: 60px; }
+/* 번호 열 */
+.rss-col-no     { width: 50px; text-align: center; }
+
+/* 긴급 행 강조 */
+.rss-table tr.row-urgent td           { background: #fff7f7; }
+.rss-table tr.row-urgent:hover td     { background: #fff0f0; }
+.rss-table tr.row-urgent .rss-col-nm  { color: #dc2626; font-weight: 700; }

@@ -22,46 +22,12 @@
       border-bottom: 1px solid var(--rss-border);
     }
 
-    /* 테이블 래퍼 */
-    .apv-table-wrap {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* 테이블 — 두 섹션 동일 스타일 */
-    .apv-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--rss-font-base);  /* 15px — 공통 본문 기준 */
-    }
-    .apv-table thead th {
-      background: #f9fafb;
-      color: var(--rss-muted);
-      font-size: var(--rss-font-sm);    /* 13px — th는 한 단계 작게 */
-      font-weight: 600;
-      padding: 12px 20px;
-      text-align: center;
-      border-bottom: 1px solid var(--rss-border);
-      white-space: nowrap;
-    }
-    .apv-table tbody tr {
-      border-bottom: 1px solid #f3f4f6;
-      transition: background 0.12s;
-    }
-    .apv-table tbody tr:last-child { border-bottom: none; }
-    .apv-table tbody tr:hover { background: #fffbf0; }
-    .apv-table tbody td {
-      padding: 15px 20px;
-      text-align: center;
-      color: var(--rss-text);
-      vertical-align: middle;
-      font-size: var(--rss-font-base);  /* 15px — 두 섹션 동일 */
-    }
-    .apv-table tbody td.apv-td-name {
+    /* 테이블 td 전용 스타일 (.rss-table 사용, .apv-table 제거) */
+    .apv-td-name {
       font-weight: 600;
       color: var(--rss-text);
     }
-    .apv-table tbody td.apv-td-tel {
+    .apv-td-tel {
       color: var(--rss-muted);
       letter-spacing: 0.02em;
     }
@@ -82,9 +48,7 @@
     /* 반응형 */
     @media (max-width: 640px) {
       .apv-section-title { padding: 16px 16px 8px; font-size: var(--rss-font-base); }
-      .apv-table thead th { padding: 10px 12px; font-size: var(--rss-font-xs); }
-      .apv-table tbody td { padding: 12px 12px; font-size: var(--rss-font-sm); }
-    }
+}
   </style>
 </head>
 <body>
@@ -116,8 +80,8 @@
         ──────────────────────────────────────────────── -->
         <p class="apv-section-title">승인 요청</p>
 
-        <div class="apv-table-wrap">
-          <table class="apv-table" aria-label="승인 요청 목록">
+        <div class="rss-table-wrap">
+          <table class="rss-table" aria-label="승인 요청 목록">
             <thead>
               <tr>
                 <th>이름</th>
@@ -196,8 +160,8 @@
         <div class="apv-section-divider"></div>
         <p class="apv-section-title">승인 직원(부서)</p>
 
-        <div class="apv-table-wrap">
-          <table class="apv-table" aria-label="승인 완료 직원 목록">
+        <div class="rss-table-wrap">
+          <table class="rss-table" aria-label="승인 완료 직원 목록">
             <thead>
               <tr>
                 <th>이름</th>

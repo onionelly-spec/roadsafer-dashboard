@@ -57,37 +57,9 @@
     .list-toolbar select:focus { outline: none; border-color: var(--rss-amber); }
 
     /* ── 공사현황 테이블 ── */
-    .clist-table-wrap { overflow-x: auto; }
-    .clist-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--rss-font-base);
-    }
-    .clist-table thead tr {
-      background: #f9fafb;
-      border-top: 2px solid #e5e7eb;
-      border-bottom: 2px solid #e5e7eb;
-    }
-    .clist-table th {
-      padding: 11px 14px;
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: #6b7280;
-      text-align: center;
-      white-space: nowrap;
-    }
-    .clist-table td {
-      padding: 12px 14px;
-      border-bottom: 1px solid #f3f4f6;
-      color: #374151;
-      text-align: center;
-      vertical-align: middle;
-    }
-    .clist-table tr:last-child td { border-bottom: none; }
-    .clist-table tr:hover td { background: #fffbf0; }
-    .clist-table .col-nm { text-align: left; min-width: 180px; }
-    .clist-table .col-period { min-width: 200px; white-space: nowrap; }
-    .clist-table .col-equip { text-align: left; min-width: 180px; font-size: var(--rss-font-sm); color: #6b7280; }
+    .rss-col-nm { text-align: left; min-width: 180px; }
+    .rss-col-period { min-width: 200px; white-space: nowrap; }
+    .rss-col-equip { text-align: left; min-width: 180px; font-size: var(--rss-font-sm); color: #6b7280; }
     .clist-nm-link {
       color: #374151;
       font-weight: 500;
@@ -95,14 +67,9 @@
     }
     .clist-nm-link:hover { color: var(--rss-amber-dark); text-decoration: underline; }
     .clist-nm-link.urgent { color: #dc2626; font-weight: 700; }
-    .clist-table tr.row-urgent td { background: #fff7f7; }
-    .clist-table tr.row-urgent:hover td { background: #fff0f0; }
-
     /* ── 모바일 카드형 (768px 이하) ── */
-    .clist-table-wrap { display: block; }
     .clist-mobile { display: none; }
     @media (max-width: 768px) {
-      .clist-table-wrap { display: none; }
       .clist-mobile { display: block; padding: 12px 16px; }
       .clist-mobile-card {
         border: 1.5px solid #e5e7eb;
@@ -174,8 +141,8 @@
              [DB] 정렬: ORDER BY reg_dtm DESC
              [Java] th:each="item : ${constructionList}"
         ─────────────────────────────────────────────────── -->
-        <div class="clist-table-wrap">
-          <table class="clist-table">
+        <div class="rss-table-wrap">
+          <table class="rss-table">
             <thead>
               <tr>
                 <th style="width:52px;">번호</th>

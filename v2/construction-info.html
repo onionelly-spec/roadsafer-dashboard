@@ -61,38 +61,7 @@
     }
     .info-toolbar select:focus { outline: none; border-color: var(--rss-amber); }
 
-    /* ── 공사 정보 테이블 ── */
-    .info-table-wrap { overflow-x: auto; }
-    .info-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--rss-font-base);
-    }
-    .info-table thead tr {
-      background: #f9fafb;
-      border-top: 2px solid #e5e7eb;
-      border-bottom: 2px solid #e5e7eb;
-    }
-    .info-table th {
-      padding: 11px 14px;
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: #6b7280;
-      text-align: center;
-      white-space: nowrap;
-    }
-    .info-table td {
-      padding: 12px 14px;
-      border-bottom: 1px solid #f3f4f6;
-      color: #374151;
-      text-align: center;
-      vertical-align: middle;
-    }
-    .info-table tr:last-child td { border-bottom: none; }
-    .info-table tr:hover td { background: #fffbf0; }
-    .info-table .col-nm { text-align: left; min-width: 180px; }
-    .info-table .col-period { min-width: 210px; white-space: nowrap; }
-    .info-table .col-equip { text-align: left; min-width: 200px; font-size: var(--rss-font-sm); color: #6b7280; }
+    /* ── 공사 정보 테이블 col 스타일 (공통 .rss-col-* 재선언) ── */
     .info-nm-link {
       color: #374151;
       font-weight: 500;
@@ -100,15 +69,11 @@
     }
     .info-nm-link:hover { color: var(--rss-amber-dark); text-decoration: underline; }
     .info-nm-link.urgent { color: #dc2626; font-weight: 700; }
-    .info-table tr.row-urgent td { background: #fff7f7; }
-    .info-table tr.row-urgent:hover td { background: #fff0f0; }
-
     /* ── 반응형 ── */
     @media (max-width: 768px) {
       .road-tabs { padding: 12px 16px 0; }
       .road-tab { padding: 7px 14px; font-size: var(--rss-font-sm); }
       .info-toolbar { padding: 10px 16px; }
-      .info-table th, .info-table td { padding: 10px 10px; font-size: var(--rss-font-sm); }
     }
   </style>
 </head>
@@ -163,8 +128,8 @@
              [DB] 정렬: ORDER BY reg_dtm DESC
              [Java] th:each="info : ${constructionInfoList}"
         ─────────────────────────────────────────────────── -->
-        <div class="info-table-wrap">
-          <table class="info-table">
+        <div class="rss-table-wrap">
+          <table class="rss-table">
             <thead>
               <tr>
                 <th style="width:52px;">번호<!-- [DB] row_number() --></th>

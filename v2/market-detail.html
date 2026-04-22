@@ -78,29 +78,8 @@
       margin-bottom: 18px;
     }
 
-    /* ── 상품 스펙 테이블 ── */
-    .spec-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--rss-font-base);
-      margin-bottom: 18px;
-    }
-    .spec-table th {
-      width: 100px;
-      padding: 10px 14px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: #6b7280;
-      text-align: center;
-      white-space: nowrap;
-    }
-    .spec-table td {
-      padding: 10px 14px;
-      border: 1px solid #e5e7eb;
-      color: #374151;
-    }
+    /* 상품 스펙 테이블: .rss-table--detail 공통 클래스 사용 (.spec-table 제거) */
+    .rss-table--detail { margin-bottom: 18px; }
 
     /* ── 상품 내용 ── */
     .market-info__content {
@@ -198,7 +177,7 @@
             <p class="market-info__price">3,500,000원</p>
 
             <!-- 스펙 테이블 -->
-            <table class="spec-table">
+            <table class="rss-table rss-table--detail">
               <tbody>
                 <tr>
                   <th scope="row">수량</th>

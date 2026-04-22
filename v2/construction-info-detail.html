@@ -8,40 +8,11 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
   <style>
-    /* ── 상세 정보 테이블 ── */
-    .detail-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--rss-font-base);
-    }
-    .detail-table th {
-      width: 130px;
-      padding: 13px 18px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: #6b7280;
-      text-align: center;
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-    .detail-table td {
-      padding: 13px 18px;
-      border: 1px solid #e5e7eb;
-      color: #374151;
-      vertical-align: middle;
-      line-height: 1.6;
-    }
     /* 공사없음 날짜 강조 */
-    .no-work-date {
-      color: #dc2626;
-      font-weight: 600;
-    }
+    .no-work-date { color: #dc2626; font-weight: 600; }
     /* 방공소 적용 강조 */
     .text-highlight { color: #d97706; font-weight: 600; }
-
-    /* ── 하단 버튼 영역 ── */
+    /* 하단 버튼 영역 */
     .detail-footer {
       display: flex;
       align-items: center;
@@ -50,11 +21,7 @@
       padding: 20px 24px;
       border-top: 1px solid #f3f4f6;
     }
-
-    /* ── 반응형 ── */
     @media (max-width: 640px) {
-      .detail-table th { width: 90px; padding: 10px 12px; font-size: var(--rss-font-xs); }
-      .detail-table td { padding: 10px 12px; font-size: var(--rss-font-sm); }
       .detail-footer { flex-direction: column; }
       .detail-footer .rss-btn { width: 100%; justify-content: center; }
     }
@@ -80,7 +47,7 @@
              [Java] Model: construction (ConstructionDto)
         ══════════════════════════════════════════════════ -->
         <div style="overflow-x:auto; padding: 20px 24px 0;">
-          <table class="detail-table">
+          <table class="rss-table rss-table--detail">
             <tbody>
 
               <!-- 공사명 -->

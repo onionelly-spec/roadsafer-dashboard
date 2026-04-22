@@ -33,56 +33,7 @@
     .tab-panel { display: none; padding: 24px; }
     .tab-panel.active { display: block; }
 
-    /* ── 상세 테이블 ── */
-    .detail-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--rss-font-base);
-    }
-    .detail-table th {
-      width: 130px;
-      padding: 12px 16px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: #6b7280;
-      text-align: center;
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-    .detail-table td {
-      padding: 12px 16px;
-      border: 1px solid #e5e7eb;
-      color: #374151;
-      vertical-align: middle;
-      line-height: 1.6;
-    }
-
-    /* ── 차단정보 탭 — 장비 테이블 ── */
-    .equip-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--rss-font-base);
-    }
-    .equip-table th {
-      padding: 10px 12px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: #6b7280;
-      text-align: center;
-      white-space: nowrap;
-    }
-    .equip-table td {
-      padding: 11px 12px;
-      border: 1px solid #e5e7eb;
-      color: #374151;
-      text-align: center;
-      vertical-align: middle;
-    }
-    .equip-table tr:hover td { background: #fffbf0; }
+    /* ── 상세/장비 테이블 ── (.detail-table, .equip-table 제거 → .rss-table 공통 클래스 사용) */
 
     /* ── 진행상황 탭 — 주간 캘린더 ── */
     .cal-table {
@@ -124,8 +75,6 @@
       .detail-tabs { padding: 12px 16px 0; }
       .detail-tab { padding: 8px 14px; font-size: var(--rss-font-sm); }
       .tab-panel { padding: 16px; }
-      .detail-table th { width: 90px; padding: 10px 10px; font-size: var(--rss-font-xs); }
-      .detail-table td { padding: 10px 10px; font-size: var(--rss-font-sm); }
       .cal-table { font-size: var(--rss-font-xs); }
       .cal-table th, .cal-table td { padding: 8px 4px; min-width: 44px; }
     }
@@ -158,7 +107,7 @@
         ══════════════════════════════════════════════════ -->
         <div id="tab-info" class="tab-panel active" role="tabpanel">
           <div style="overflow-x:auto;">
-            <table class="detail-table">
+            <table class="rss-table rss-table--detail">
               <tbody>
                 <tr>
                   <th scope="row">공사명</th>
@@ -263,7 +212,7 @@
 
           <!-- 차단 기본 정보 -->
           <div style="overflow-x:auto;margin-bottom:20px;">
-            <table class="detail-table">
+            <table class="rss-table rss-table--detail">
               <tbody>
                 <tr>
                   <th scope="row">담당자</th>
@@ -294,7 +243,7 @@
           <!-- 장비 목록 -->
           <!-- [DB] 테이블: construction_block_equipment WHERE construction_seq = #{constructionSeq} -->
           <div style="overflow-x:auto;">
-            <table class="equip-table">
+            <table class="rss-table">
               <thead>
                 <tr>
                   <th>장비 유형<!-- [DB] block_equipment.equip_type --></th>
