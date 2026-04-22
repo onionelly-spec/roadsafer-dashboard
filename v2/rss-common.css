@@ -993,7 +993,7 @@ img { max-width: 100%; display: block; }
 /* ─── 공통 테이블 열(col) 스타일 ──────────────────────────── */
 /* 공사명/발주업체명 등 긴 텍스트 열 */
 /* .rss-col-nm: text-align은 .rss-table td center 상속 */
-.rss-col-nm    { min-width: 180px; text-align: left; } /* 공사명은 긴 텍스트라 left 유지 */
+.rss-col-nm    { min-width: 180px; }
 /* 기간 열 */
 .rss-col-period { min-width: 210px; white-space: nowrap; }
 /* 장비/품목 열 */
