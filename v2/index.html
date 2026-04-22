@@ -36,6 +36,19 @@
       min-width: 44px;
     }
 
+    /* ① 회사정보 + 퀵메뉴 1줄 래퍼 (데스크탑) */
+    .dash-top-row {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    @media (max-width: 768px) {
+      .dash-top-row { grid-template-columns: 1fr; }
+    }
+    /* 회사정보 카드 높이 100% */
+    .dash-top-row .rss-card { height: 100%; }
+
     /* 퀵메뉴 — 5개 1줄 */
     .quick-grid {
       display: grid;
@@ -84,6 +97,11 @@
       white-space: nowrap;   /* 한 줄 */
     }
 
+    /* 모바일 알림 날짜 숨김 */
+    @media (max-width: 640px) {
+      .noti-item__date { display: none; }
+    }
+
     /* 알림 목록 — 읽음/읽지않음 구분 없이 통일 */
     .noti-list {
       list-style: none;
@@ -120,14 +138,33 @@
       white-space: nowrap;
     }
 
-    /* 광고 그리드 */
+    /* 광고 그리드 — 데스크탑 4개 1줄 */
     .ad-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 16px;   /* 상하좌우 동일 여백 */
+      gap: 16px;
     }
     @media (max-width: 900px) { .ad-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 480px) { .ad-grid { grid-template-columns: 1fr 1fr; } }
+
+    /* 광고 모바일 슬라이더 */
+    @media (max-width: 640px) {
+      .ad-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 12px;
+        padding-bottom: 6px;
+        /* 스크롤바 숨김 */
+        scrollbar-width: none;
+      }
+      .ad-grid::-webkit-scrollbar { display: none; }
+      .ad-grid .ad-thumb,
+      .ad-grid .ad-more-btn {
+        flex: 0 0 calc(100% - 24px);
+        scroll-snap-align: start;
+      }
+    }
 
     .ad-thumb {
       border-radius: 8px;
@@ -265,35 +302,36 @@
     <main class="rss-content">
 
       <!-- ══════════════════════════════════════════════════
-           ① 회사 정보 카드
+           ① 회사 정보 + ② 퀵메뉴 — 1줄 배치 (데스크탑)
            [DB] company, member
            [Java] ${company.companyNm}, ${company.ceoNm}, ${company.approverNm}
            [Java] 로그인 계정 유형: ${loginType} = 'company' | 'employee'
       ══════════════════════════════════════════════════ -->
-      <div class="rss-card mb-4">
-        <div class="rss-card__body">
-          <div class="company-card">
-            <!-- [Java] th:text="${company.companyNm}" -->
-            <h2 class="company-card__name">한국도로차단(주)</h2>
-            <div class="company-card__meta">
-              <strong>대표자</strong>
-              <span>나잘난<!-- [Java] ${company.ceoNm} --></span>
-            </div>
-            <div class="company-card__meta">
-              <strong>승인자</strong>
-              <!-- [Java] th:text="${company.approverNm}" -->
-              <span>김석진, 정호석, 박지민</span>
+      <div class="dash-top-row mb-4">
+
+        <!-- 회사 정보 카드 -->
+        <div class="rss-card">
+          <div class="rss-card__body">
+            <div class="company-card">
+              <!-- [Java] th:text="${company.companyNm}" -->
+              <h2 class="company-card__name">한국도로차단(주)</h2>
+              <div class="company-card__meta">
+                <strong>대표자</strong>
+                <span>나잘난<!-- [Java] ${company.ceoNm} --></span>
+              </div>
+              <div class="company-card__meta">
+                <strong>승인자</strong>
+                <!-- [Java] th:text="${company.approverNm}" -->
+                <span>김석진, 정호석, 박지민</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- ══════════════════════════════════════════════════
-           ② 퀵메뉴 — 5개 1줄 (모바일 3열)
-      ══════════════════════════════════════════════════ -->
-      <div class="rss-card mb-4">
-        <div class="rss-card__body">
-          <div class="quick-grid">
+        <!-- 퀵메뉴 카드 — 5개 1줄 (모바일 3열) -->
+        <div class="rss-card">
+          <div class="rss-card__body">
+            <div class="quick-grid">
 
             <a href="tma-card.html" class="quick-item active">
               <div class="quick-item__icon">
@@ -332,7 +370,9 @@
 
           </div>
         </div>
-      </div>
+        </div><!-- /퀵메뉴 카드 -->
+
+      </div><!-- /dash-top-row -->
 
       <!-- ══════════════════════════════════════════════════
            ③ 오늘 알림 — 읽음/읽지않음 구분 없이 통일
@@ -409,14 +449,30 @@
             <a href="ad-detail.html" class="ad-thumb">
               <img src="https://placehold.co/400x250/e5e7eb/9ca3af?text=광고+3" alt="광고 3" />
             </a>
+            <!-- [Java] th:if="${adList.size() >= 4}" -->
+            <a href="ad-detail.html" class="ad-thumb">
+              <img src="https://placehold.co/400x250/e5e7eb/9ca3af?text=광고+4" alt="광고 4" />
+            </a>
 
-            <!-- + 더보기 → 광고 메뉴 이동 -->
-            <a href="ad.html" class="ad-more-btn">
+            <!-- 더보기 카드 — 모바일 슬라이더 마지막 / 데스크탑 숨김 -->
+            <a href="ad.html" class="ad-more-btn" style="display:none;" id="adMoreCard">
               <span class="ad-more-btn__icon">+</span>
               <span class="ad-more-btn__label">더보기</span>
             </a>
 
           </div>
+          <script>
+            /* 모바일(640px 이하)에서만 더보기 카드 표시 */
+            (function(){
+              function toggleAdMore(){
+                var el = document.getElementById('adMoreCard');
+                if(!el) return;
+                el.style.display = window.innerWidth <= 640 ? 'flex' : 'none';
+              }
+              toggleAdMore();
+              window.addEventListener('resize', toggleAdMore);
+            })();
+          </script>
         </div>
       </div>
 
@@ -442,9 +498,9 @@
           <table class="rss-table">
             <colgroup>
               <col style="width:90px;" />
-              <col />
-              <col style="width:130px;" />
-              <col style="width:220px;" />
+              <col style="width:200px;" />
+              <col style="width:120px;" />
+              <col style="min-width:260px; white-space:nowrap;" />
               <!--
                 [Java] th:if="${loginType == 'company'}"  → 금액 열
                 [Java] th:if="${loginType == 'employee'}" → 씨인카 수량 열
@@ -533,7 +589,7 @@
                       onclick="openCancelModal(this)" data-nm="호남선 순천방향 포장공사">차단 취소</button>
             </div>
             <p class="text-base font-semibold text-gray-900 mb-1">호남선 순천방향 포장공사</p>
-            <p class="text-sm text-gray-500">발주: 한국개발 | 2026-07-01 ~ 2026-07-03 (3일)</p>
+            <p class="text-sm text-gray-500">한국개발 | 2026-07-01 ~ 2026-07-03 (3일)</p>
           </div>
 
           <div class="mobile-construction-item">
@@ -543,7 +599,7 @@
                       onclick="openCompleteModal(this)" data-nm="국도 32번선 횡단보도 보수">오늘 완료</button>
             </div>
             <p class="text-base font-semibold text-gray-900 mb-1">국도 32번선 횡단보도 보수</p>
-            <p class="text-sm text-gray-500">발주: 소망건설 | 2026-06-25 ~ 2026-06-25 (1일)</p>
+            <p class="text-sm text-gray-500">소망건설 | 2026-06-25 ~ 2026-06-25 (1일)</p>
           </div>
 
           <div class="mobile-construction-item">
@@ -551,7 +607,7 @@
               <span class="rss-badge rss-badge--progress">진행중</span>
             </div>
             <p class="text-base font-semibold text-gray-900 mb-1">중앙분리대 시공</p>
-            <p class="text-sm text-gray-500">발주: 오봉도건 | 2026-06-12 ~ 2026-06-18 (7일)</p>
+            <p class="text-sm text-gray-500">오봉도건 | 2026-06-12 ~ 2026-06-18 (7일)</p>
           </div>
 
         </div>
