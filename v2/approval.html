@@ -38,10 +38,7 @@
       text-align: center;
     }
 
-    /* 두 섹션 공통 colgroup 너비 */
-    .apv-col-nm   { width: 160px; }
-    .apv-col-tel  { width: auto; }
-    .apv-col-act  { width: 160px; }
+    /* apv-col-* 제거 → rss-common.css .rss-col-* 공통 클래스 사용 */
 
     /* 빈 상태 */
     .apv-empty {
@@ -62,8 +59,8 @@
     /* 반응형 */
     @media (max-width: 640px) {
       .apv-section-title { padding: 14px 16px 10px; font-size: var(--rss-font-base); }
-      .apv-col-nm  { width: 80px; }
-      .apv-col-act { width: 120px; }
+      .rss-col-nm  { width: 80px; }
+      .rss-col-mgmt { width: 120px; }
     }
   </style>
 </head>
@@ -99,15 +96,15 @@
         <div class="rss-table-wrap">
           <table class="rss-table" aria-label="승인 요청 목록">
             <colgroup>
-              <col class="apv-col-nm" />
-              <col class="apv-col-tel" />
-              <col class="apv-col-act" />
+              <col class="rss-col-nm" />
+              <col class="rss-col-tel" />
+              <col class="rss-col-mgmt" />
             </colgroup>
             <thead>
               <tr>
-                <th style="text-align:center;">이름</th>
-                <th style="text-align:center;">휴대폰 번호</th>
-                <th style="text-align:center;">관리</th>
+                <th>이름</th>
+                <th>휴대폰 번호</th>
+                <th>관리</th>
               </tr>
             </thead>
             <tbody id="approveReqList">
@@ -175,15 +172,15 @@
         <div class="rss-table-wrap">
           <table class="rss-table" aria-label="승인 완료 직원 목록">
             <colgroup>
-              <col class="apv-col-nm" />
-              <col class="apv-col-tel" />
-              <col class="apv-col-act" />
+              <col class="rss-col-nm" />
+              <col class="rss-col-tel" />
+              <col class="rss-col-mgmt" />
             </colgroup>
             <thead>
               <tr>
-                <th style="text-align:center;">이름</th>
-                <th style="text-align:center;">휴대폰 번호</th>
-                <th style="text-align:center;">관리</th>
+                <th>이름</th>
+                <th>휴대폰 번호</th>
+                <th>관리</th>
               </tr>
             </thead>
             <tbody id="approvedMberList">

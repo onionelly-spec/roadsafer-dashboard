@@ -9,14 +9,7 @@
   <link rel="stylesheet" href="rss-common.css" />
 
   <style>
-    /* 커뮤니티 목록 테이블 col 너비 */
-    /* 링크 스타일: rss-common.css .rss-link 공통 클래스 사용 */
-    .comm-col-no    { width: 60px; }
-    .comm-col-title { /* auto */ }
-    .comm-col-author{ width: 110px; }
-    .comm-col-date  { width: 120px; white-space: nowrap; }
-
-    /* 제목 열: 공통 center 상속 */
+    /* comm-col-* 제거 → rss-common.css .rss-col-* 공통 클래스 사용 */
 
     /* 댓글 수 뱃지 */
     .comm-cmt-badge {
@@ -27,8 +20,8 @@
     }
 
     @media (max-width: 640px) {
-      .comm-col-no    { display: none; }
-      .comm-col-date  { width: 90px; }
+      .rss-col-no    { display: none; }
+      .rss-col-date  { width: 90px; }
     }
   </style>
 </head>
@@ -77,10 +70,10 @@
         <div class="rss-table-wrap">
           <table class="rss-table" aria-label="커뮤니티 목록">
             <colgroup>
-              <col class="comm-col-no" />
-              <col class="comm-col-title" />
-              <col class="comm-col-author" />
-              <col class="comm-col-date" />
+              <col class="rss-col-no" />
+              <col class="rss-col-nm" />
+              <col class="rss-col-author" />
+              <col class="rss-col-date" />
             </colgroup>
             <thead>
               <tr>

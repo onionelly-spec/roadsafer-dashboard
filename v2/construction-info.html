@@ -115,15 +115,24 @@
         ─────────────────────────────────────────────────── -->
         <div class="rss-table-wrap">
           <table class="rss-table">
+            <colgroup>
+              <col class="rss-col-no" />
+              <col class="rss-col-nm" />
+              <col class="rss-col-owner" />
+              <col class="rss-col-period" />
+              <col class="rss-col-road" />
+              <col class="rss-col-dir" />
+              <col class="rss-col-equip" />
+            </colgroup>
             <thead>
               <tr>
-                <th style="width:52px;">번호<!-- [DB] row_number() --></th>
-                <th class="rss-col-nm">공사명<!-- [DB] construction.constructionNm --></th>
+                <th>번호<!-- [DB] row_number() --></th>
+                <th>공사명<!-- [DB] construction.constructionNm --></th>
                 <th>발주업체명<!-- [DB] construction.orderCompanyNm --></th>
-                <th class="rss-col-period">기간<!-- [DB] construction.startDt ~ endDt --></th>
+                <th>기간<!-- [DB] construction.startDt ~ endDt --></th>
                 <th>도로명<!-- [DB] construction.roadNm --></th>
                 <th>방향<!-- [DB] construction.direction --></th>
-                <th class="rss-col-equip">품목별 수량<!-- [DB] construction.equipSummary --></th>
+                <th>품목별 수량<!-- [DB] construction.equipSummary --></th>
               </tr>
             </thead>
             <tbody>

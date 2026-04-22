@@ -561,6 +561,7 @@ img { max-width: 100%; display: block; }
 .rss-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;             /* 열 너비 고정: colgroup 기준으로 균일 배분 */
   font-size: var(--rss-font-base); /* 15px */
 }
 .rss-table th {
@@ -581,6 +582,9 @@ img { max-width: 100%; display: block; }
   line-height: 1.6;
   text-align: center;
   font-size: var(--rss-font-base); /* 15px */
+  overflow: hidden;                /* 말줄임 처리 */
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .rss-table tr:last-child td { border-bottom: none; }
 .rss-table tr:hover td { background: #fafafa; }
@@ -1006,20 +1010,36 @@ img { max-width: 100%; display: block; }
 }
 
 /* ─── 공통 테이블 열(col) 스타일 ──────────────────────────── */
-/* 공사명/발주업체명 등 긴 텍스트 열 */
-/* .rss-col-nm: text-align은 .rss-table td center 상속 */
-.rss-col-nm    { min-width: 180px; }
-/* 기간 열 */
-.rss-col-period { min-width: 210px; white-space: nowrap; }
+/* table-layout: fixed 기반으로 colgroup에서 너비를 지정.
+   아래 클래스는 <col class="rss-col-*"> 에 적용하며,
+   명시되지 않은 열은 나머지 공간을 자동 배분(auto)합니다. */
+
+/* 번호 열 — 고정 좁은 너비 */
+.rss-col-no     { width: 54px; }
+/* 상태 열 — 배지 표시용 */
+.rss-col-status { width: 80px; }
+/* 공사명/제목 등 주요 데이터 열 — 나머지 공간 차지 (auto) */
+.rss-col-nm     { /* width: auto — colgroup에서 지정 안 하면 자동 */ }
+/* 발주업체명 열 */
+.rss-col-owner  { width: 130px; }
+/* 기간 열 — 날짜 범위가 1줄로 들어갈 너비 */
+.rss-col-period { width: 230px; }
+/* 금액 열 */
+.rss-col-price  { width: 110px; }
+/* 관리 열 — 버튼 1~2개 */
+.rss-col-mgmt   { width: 110px; }
+/* 작성자 열 */
+.rss-col-author { width: 90px; }
+/* 전화번호 열 */
+.rss-col-tel    { width: 150px; }
+/* 작성일 열 */
+.rss-col-date   { width: 100px; }
 /* 장비/품목 열 */
-.rss-col-equip  { min-width: 200px;
-                  font-size: var(--rss-font-sm); color: var(--rss-muted); text-align: center; }
+.rss-col-equip  { width: 160px; }
 /* 도로명 열 */
-.rss-col-road   { min-width: 100px; }
+.rss-col-road   { width: 120px; }
 /* 방향 열 */
-.rss-col-dir    { min-width: 60px; }
-/* 번호 열 */
-.rss-col-no     { width: 50px; text-align: center; }
+.rss-col-dir    { width: 70px; }
 
 /* 긴급 행 강조 */
 .rss-table tr.row-urgent td           { background: #fff7f7; }
