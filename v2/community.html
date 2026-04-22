@@ -10,51 +10,26 @@
 
   <style>
     /* 커뮤니티 목록 테이블 col 너비 */
+    /* 링크 스타일: rss-common.css .rss-link 공통 클래스 사용 */
     .comm-col-no    { width: 60px; }
-    .comm-col-cat   { width: 100px; }
-    .comm-col-title { /* flex */ }
-    .comm-col-author{ width: 100px; }
-    .comm-col-date  { width: 110px; }
-    .comm-col-view  { width: 70px; }
-    .comm-col-cmt   { width: 60px; }
+    .comm-col-title { /* auto */ }
+    .comm-col-author{ width: 110px; }
+    .comm-col-date  { width: 120px; white-space: nowrap; }
 
-    /* 제목 링크 */
-    .comm-title-link {
-      color: var(--rss-text);
-      font-weight: 500;
-      font-size: var(--rss-font-base);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .comm-title-link:hover { color: var(--rss-amber-dark); text-decoration: underline; }
+    /* 제목 열은 좌측 정렬 */
+    .rss-table td.comm-td-title { text-align: left; }
 
     /* 댓글 수 뱃지 */
     .comm-cmt-badge {
       font-size: var(--rss-font-xs);
       color: var(--rss-amber-dark);
       font-weight: 700;
+      margin-left: 4px;
     }
-
-    /* 카테고리 뱃지 */
-    .comm-cat-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: var(--rss-font-xs);
-      font-weight: 600;
-    }
-    .comm-cat-badge--info  { background: #fef3c7; color: #d97706; }
-    .comm-cat-badge--qna   { background: #f0fdf4; color: #16a34a; }
-    .comm-cat-badge--free  { background: #eff6ff; color: #2563eb; }
-
-    /* 제목 열은 좌측 정렬 */
-    .rss-table td.comm-td-title { text-align: left; }
 
     @media (max-width: 640px) {
-      .comm-col-no, .comm-col-view, .comm-col-cmt { display: none; }
-      .comm-col-date { width: 90px; }
+      .comm-col-no    { display: none; }
+      .comm-col-date  { width: 90px; }
     }
   </style>
 </head>
@@ -72,17 +47,10 @@
       <div class="rss-card" style="padding:0;">
 
         <!-- ── 툴바 ──────────────────────────────────────────
-             [Java] 검색 파라미터: keyword, category → /community?keyword=&category=
+             [Java] 검색 파라미터: keyword → /community?keyword=
         ─────────────────────────────────────────────────── -->
         <div class="rss-board-toolbar">
           <div class="rss-board-toolbar__left">
-            <!-- [DB] 컬럼: community.category ('all'|'info'|'qna'|'free') -->
-            <select name="searchType" id="communitySearchType" class="rss-input" style="width:auto; padding:8px 12px;">
-              <option value="">전체</option>
-              <option value="info">정보공유</option>
-              <option value="qna">질문/답변</option>
-              <option value="free">자유게시판</option>
-            </select>
             <div class="rss-search-wrap">
               <!-- [DB] 컬럼: community.title LIKE '%keyword%' -->
               <input type="text" name="searchKeyword" id="communitySearchKeyword" placeholder="검색어 입력" />
@@ -111,22 +79,16 @@
           <table class="rss-table" aria-label="커뮤니티 목록">
             <colgroup>
               <col class="comm-col-no" />
-              <col class="comm-col-cat" />
               <col class="comm-col-title" />
               <col class="comm-col-author" />
               <col class="comm-col-date" />
-              <col class="comm-col-view" />
-              <col class="comm-col-cmt" />
             </colgroup>
             <thead>
               <tr>
                 <th>번호</th>
-                <th>분류</th>
                 <th style="text-align:left;">제목</th>
                 <th>작성자</th>
                 <th>작성일</th>
-                <th>조회</th>
-                <th>댓글</th>
               </tr>
             </thead>
             <tbody>
@@ -136,98 +98,82 @@
               <tr>
                 <!-- [Java] th:text="${post.rowNum}" -->
                 <td>6</td>
-                <td><span class="comm-cat-badge comm-cat-badge--info">정보공유</span></td>
                 <td class="comm-td-title">
-                  <a href="community-detail.html" class="comm-title-link">
+                  <a href="community-detail.html" class="rss-link">
                     고속도로 TMA 차량 배치 시 주의사항 총정리
                     <!-- [Java] th:if="${post.commentCnt > 0}" -->
                     <span class="comm-cmt-badge">[12]</span>
                   </a>
                 </td>
+                <!-- [Java] th:text="${post.authorNm}" -->
                 <td>나잘난</td>
+                <!-- [Java] th:text="${post.regDt}" -->
                 <td>2026-06-10</td>
-                <td>342</td>
-                <td>12</td>
               </tr>
 
               <!-- 더미 2 -->
               <tr>
                 <td>5</td>
-                <td><span class="comm-cat-badge comm-cat-badge--qna">질문/답변</span></td>
                 <td class="comm-td-title">
-                  <a href="community-detail.html" class="comm-title-link">
+                  <a href="community-detail.html" class="rss-link">
                     씨인카 수량 변경 시 발주사 재승인이 꼭 필요한가요?
                     <span class="comm-cmt-badge">[8]</span>
                   </a>
                 </td>
                 <td>도로맨</td>
                 <td>2026-06-09</td>
-                <td>187</td>
-                <td>8</td>
               </tr>
 
               <!-- 더미 3 -->
               <tr>
                 <td>4</td>
-                <td><span class="comm-cat-badge comm-cat-badge--free">자유게시판</span></td>
                 <td class="comm-td-title">
-                  <a href="community-detail.html" class="comm-title-link">
+                  <a href="community-detail.html" class="rss-link">
                     올 여름 공사 시즌 준비 어떻게 하고 계신가요?
                     <span class="comm-cmt-badge">[24]</span>
                   </a>
                 </td>
                 <td>공사왕</td>
                 <td>2026-06-08</td>
-                <td>256</td>
-                <td>24</td>
               </tr>
 
               <!-- 더미 4 -->
               <tr>
                 <td>3</td>
-                <td><span class="comm-cat-badge comm-cat-badge--info">정보공유</span></td>
                 <td class="comm-td-title">
-                  <a href="community-detail.html" class="comm-title-link">
+                  <a href="community-detail.html" class="rss-link">
                     야간 공사 시 반사 조끼 착용 의무화 법령 정리
                     <span class="comm-cmt-badge">[5]</span>
                   </a>
                 </td>
                 <td>안전제일</td>
                 <td>2026-06-07</td>
-                <td>421</td>
-                <td>5</td>
               </tr>
 
               <!-- 더미 5 -->
               <tr>
                 <td>2</td>
-                <td><span class="comm-cat-badge comm-cat-badge--qna">질문/답변</span></td>
                 <td class="comm-td-title">
-                  <a href="community-detail.html" class="comm-title-link">
+                  <a href="community-detail.html" class="rss-link">
                     TMA 카드 만료 후 갱신 절차가 어떻게 되나요?
                     <span class="comm-cmt-badge">[3]</span>
                   </a>
                 </td>
                 <td>신입차단</td>
                 <td>2026-06-06</td>
-                <td>134</td>
-                <td>3</td>
               </tr>
 
               <!-- 더미 6 -->
               <tr>
                 <td>1</td>
-                <td><span class="comm-cat-badge comm-cat-badge--free">자유게시판</span></td>
                 <td class="comm-td-title">
-                  <a href="community-detail.html" class="comm-title-link">
+                  <a href="community-detail.html" class="rss-link">
                     로드세이프티시스템 사용 후기 — 6개월 사용 소감
                     <span class="comm-cmt-badge">[31]</span>
                   </a>
                 </td>
                 <td>베테랑</td>
                 <td>2026-06-05</td>
-                <td>678</td>
-                <td>31</td>
               </tr>
 
             </tbody>

@@ -60,13 +60,8 @@
     .rss-col-nm { text-align: left; min-width: 180px; }
     .rss-col-period { min-width: 200px; white-space: nowrap; }
     .rss-col-equip { text-align: left; min-width: 180px; font-size: var(--rss-font-sm); color: #6b7280; }
-    .clist-nm-link {
-      color: #374151;
-      font-weight: 500;
-      text-decoration: none;
-    }
-    .clist-nm-link:hover { color: var(--rss-amber-dark); text-decoration: underline; }
-    .clist-nm-link.urgent { color: #dc2626; font-weight: 700; }
+    /* 링크 스타일: rss-common.css .rss-link 공통 클래스 사용 */
+    .rss-link.urgent { color: #dc2626 !important; font-weight: 700; }
     /* ── 모바일 카드형 (768px 이하) ── */
     .clist-mobile { display: none; }
     @media (max-width: 768px) {
@@ -165,7 +160,7 @@
                 <td>1</td>
                 <td class="col-nm">
                   <!-- [Java] th:href="@{/construction/detail/{id}(id=${item.constructionSeq})}" -->
-                  <a href="construction-detail.html" class="clist-nm-link urgent">
+                  <a href="construction-detail.html" class="rss-link urgent">
                     [긴급] 호남선 순천방향 포장공사<!-- [Java] ${item.constructionNm} -->
                   </a>
                 </td>
@@ -183,7 +178,7 @@
               <tr>
                 <td>2</td>
                 <td class="col-nm">
-                  <a href="construction-detail.html" class="clist-nm-link">국도 32번선 횡단보도 보수</a>
+                  <a href="construction-detail.html" class="rss-link">국도 32번선 횡단보도 보수</a>
                 </td>
                 <td>소망건설</td>
                 <td class="col-period">2026-06-25 ~ 2026-06-25</td>
@@ -199,7 +194,7 @@
               <tr>
                 <td>3</td>
                 <td class="col-nm">
-                  <a href="construction-detail.html" class="clist-nm-link">중앙분리대 시공</a>
+                  <a href="construction-detail.html" class="rss-link">중앙분리대 시공</a>
                 </td>
                 <td>오봉토건</td>
                 <td class="col-period">2026-06-12 ~ 2026-06-18</td>
@@ -215,7 +210,7 @@
               <tr>
                 <td>4</td>
                 <td class="col-nm">
-                  <a href="construction-detail.html" class="clist-nm-link">호남선 서울방향 포장공사</a>
+                  <a href="construction-detail.html" class="rss-link">호남선 서울방향 포장공사</a>
                 </td>
                 <td>한국개발</td>
                 <td class="col-period">2026-06-01 ~ 2026-06-02</td>

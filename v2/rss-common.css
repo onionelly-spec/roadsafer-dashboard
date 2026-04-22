@@ -62,6 +62,19 @@ body {
 }
 a { text-decoration: none; color: inherit; }
 button { cursor: pointer; font-family: inherit; }
+
+/* ─── 공통 링크 스타일 ─────────────────────────────────── */
+/* 기본: 모노톤(텍스트 색), 호버: 엘로톤 */
+/* 목록 제목, 공지사항 제목 등 클릭 가능한 텍스트에 공통 적용 */
+.rss-link {
+  color: var(--rss-text);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.rss-link:hover {
+  color: var(--rss-amber-dark);
+  text-decoration: underline;
+}
 input, textarea, select { font-family: inherit; }
 img { max-width: 100%; display: block; }
 
@@ -571,8 +584,8 @@ img { max-width: 100%; display: block; }
 }
 .rss-table tr:last-child td { border-bottom: none; }
 .rss-table tr:hover td { background: #fafafa; }
-.rss-table a { color: var(--rss-amber-dark); }
-.rss-table a:hover { text-decoration: underline; }
+.rss-table a { color: var(--rss-text); transition: color 0.15s; }
+.rss-table a:hover { color: var(--rss-amber-dark); text-decoration: underline; }
 
 /* 상세 테이블 변형 (키/값 형태, th가 좌측 레이블) */
 .rss-table--detail th {

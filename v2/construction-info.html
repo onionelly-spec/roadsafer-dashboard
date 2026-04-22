@@ -61,14 +61,9 @@
     }
     .info-toolbar select:focus { outline: none; border-color: var(--rss-amber); }
 
-    /* ── 공사 정보 테이블 col 스타일 (공통 .rss-col-* 재선언) ── */
-    .info-nm-link {
-      color: #374151;
-      font-weight: 500;
-      text-decoration: none;
-    }
-    .info-nm-link:hover { color: var(--rss-amber-dark); text-decoration: underline; }
-    .info-nm-link.urgent { color: #dc2626; font-weight: 700; }
+    /* ── 공사 정보 테이블 col 스타일 ── */
+    /* 링크 스타일: rss-common.css .rss-link 공통 클래스 사용 */
+    .rss-link.urgent { color: #dc2626 !important; font-weight: 700; }
     /* ── 반응형 ── */
     @media (max-width: 768px) {
       .road-tabs { padding: 12px 16px 0; }
@@ -152,7 +147,7 @@
                   <!-- [Java] th:href="@{/construction-info/detail/{id}(id=${info.constructionSeq})}" -->
                   <!-- [Java] th:text="${info.constructionNm}" -->
                   <!-- [Java] th:classappend="${info.urgentYn == 1} ? 'urgent'" -->
-                  <a href="construction-info-detail.html" class="info-nm-link urgent">
+                  <a href="construction-info-detail.html" class="rss-link urgent">
                     [긴급] 호남선 순천방향 포장공사
                   </a>
                 </td>
@@ -171,7 +166,7 @@
               <tr>
                 <td>2</td>
                 <td class="col-nm">
-                  <a href="construction-info-detail.html" class="info-nm-link">국도 32번선 횡단보도 보수</a>
+                  <a href="construction-info-detail.html" class="rss-link">국도 32번선 횡단보도 보수</a>
                 </td>
                 <td>소망건설</td>
                 <td class="col-period">2026-06-25 ~ 2026-06-25(1일)</td>
@@ -183,7 +178,7 @@
               <tr>
                 <td>3</td>
                 <td class="col-nm">
-                  <a href="construction-info-detail.html" class="info-nm-link">중앙분리대 시공</a>
+                  <a href="construction-info-detail.html" class="rss-link">중앙분리대 시공</a>
                 </td>
                 <td>오봉토건</td>
                 <td class="col-period">2026-06-12 ~ 2026-06-18(7일)</td>
@@ -195,7 +190,7 @@
               <tr>
                 <td>4</td>
                 <td class="col-nm">
-                  <a href="construction-info-detail.html" class="info-nm-link">호남선 서울방향 포장공사</a>
+                  <a href="construction-info-detail.html" class="rss-link">호남선 서울방향 포장공사</a>
                 </td>
                 <td>한국개발</td>
                 <td class="col-period">2026-06-01 ~ 2026-06-02(2일)</td>
