@@ -89,7 +89,17 @@
         /* data-title 속성으로 페이지 타이틀 설정 */
         const pageTitle = headerWrap.dataset.title || '대시보드';
         const titleEl = document.getElementById('rss_header_title');
-        if (titleEl) titleEl.textContent = pageTitle;
+        if (titleEl) {
+          /* data-icon 속성이 있으면 타이틀 앞에 Lucide 아이콘 삽입 */
+          var iconName = headerWrap.dataset.icon;
+          if (iconName) {
+            titleEl.innerHTML =
+              '<i data-lucide="' + iconName + '" style="width:20px;height:20px;vertical-align:-3px;margin-right:8px;opacity:0.7;"></i>' +
+              pageTitle;
+          } else {
+            titleEl.textContent = pageTitle;
+          }
+        }
         /* 삽입 후 Lucide 아이콘 재렌더링 */
         if (window.lucide) lucide.createIcons();
         /* 삽입 후 사이드바 토글 버튼 재바인딩 */
@@ -321,10 +331,25 @@ function _initUserInfo() {
 
   /* 헤더 퀵버튼 배지 초기화 (0이면 숨김) */
   /* [Java Thymeleaf 전환 시] 서버에서 직접 렌더링 → 이 블록 불필요 */
-  /* [DB] tbl_construction WHERE approve_yn = 0 COUNT → approveCnt */
+  /* [DB] tbl_mber WHERE mber_type='EMPLOYEE' AND approve_yn=0 AND company_nm=#{loginUsr.companyNm} COUNT → approveCnt */
   /* [DB] tbl_noti WHERE mber_id = ? AND read_yn = 0 COUNT → noticeCnt */
+  var approveBtn   = document.getElementById('header_approve_btn');
   var approveBadge = document.getElementById('header_approve_badge');
   var noticeBadge  = document.getElementById('header_notice_badge');
+
+  /* 승인관리 버튼: mberType이 'BLOCK'(차단기업 대표)인 경우만 표시 */
+  /* [Java Thymeleaf 전환 시] th:if="${session.loginUsr.mberType == 'BLOCK'}" 로 대체 */
+  /* 더미: sessionStorage에 rss_mber_type 없으면 'BLOCK'으로 간주 */
+  var mberType = sessionStorage.getItem('rss_mber_type') || 'BLOCK';
+  if (approveBtn) {
+    if (mberType === 'BLOCK') {
+      approveBtn.style.display = '';
+    } else {
+      /* EMPLOYEE 등 직원은 숨김 */
+      approveBtn.style.display = 'none';
+    }
+  }
+
   /* 더미 데이터: 실제 환경에서는 서버 렌더링으로 교체 */
   var approveCnt = parseInt(sessionStorage.getItem('rss_approve_cnt') || '1', 10);
   var noticeCnt  = parseInt(sessionStorage.getItem('rss_notice_cnt')  || '2', 10);

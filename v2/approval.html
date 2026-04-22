@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>승인 관리 — 로드세이프티시스템</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* ── 승인관리 전용 스타일 ────────────────────────────── */
+
+    /* 섹션 타이틀 */
+    .apv-section-title {
+      font-size: var(--rss-font-sm);    /* 13px */
+      font-weight: 700;
+      color: var(--rss-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 20px 24px 10px;
+      border-bottom: 1px solid var(--rss-border);
+    }
+
+    /* 테이블 래퍼 */
+    .apv-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 테이블 */
+    .apv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--rss-font-sm);    /* 13px */
+    }
+    .apv-table thead th {
+      background: var(--rss-bg);
+      color: var(--rss-text-muted);
+      font-weight: 600;
+      padding: 10px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--rss-border);
+      white-space: nowrap;
+    }
+    .apv-table tbody tr {
+      border-bottom: 1px solid var(--rss-border);
+      transition: background 0.12s;
+    }
+    .apv-table tbody tr:last-child { border-bottom: none; }
+    .apv-table tbody tr:hover { background: #fffbf0; }
+    .apv-table tbody td {
+      padding: 14px 20px;
+      text-align: center;
+      color: var(--rss-text);
+      vertical-align: middle;
+    }
+    .apv-table tbody td.apv-td-name {
+      font-weight: 600;
+      color: var(--rss-text);
+    }
+    .apv-table tbody td.apv-td-tel {
+      color: var(--rss-text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* 빈 상태 */
+    .apv-empty {
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--rss-text-muted);
+      font-size: var(--rss-font-sm);
+    }
+
+    /* 섹션 구분 */
+    .apv-section-divider {
+      border-top: 6px solid var(--rss-bg);
+    }
+
+    /* 반응형 */
+    @media (max-width: 640px) {
+      .apv-section-title { padding: 16px 16px 8px; }
+      .apv-table thead th,
+      .apv-table tbody td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <!-- 공통 사이드바 -->
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <!-- 공통 헤더 -->
+    <!-- [Java] user_type = 'BLOCK' (차단기업 대표) 인 경우에만 이 페이지 접근 허용 -->
+    <div id="rss-header-wrap" data-title="승인 관리" data-icon="user-check"></div>
+
+    <main class="rss-content">
+
+      <!-- ══════════════════════════════════════════════════
+           승인 관리 카드
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-card" style="padding:0; overflow:hidden;">
+
+        <!-- ① 승인 요청 섹션 ─────────────────────────────
+             [DB] 테이블: tbl_mber
+             [DB] 조건: mber_type = 'EMPLOYEE' AND approve_yn = 0
+                        AND company_nm = #{loginUsr.companyNm}
+             [DB] 정렬: ORDER BY reg_dtm DESC
+             [Java] th:if="${!approveReqList.isEmpty()}"
+        ──────────────────────────────────────────────── -->
+        <p class="apv-section-title">승인 요청</p>
+
+        <div class="apv-table-wrap">
+          <table class="apv-table" aria-label="승인 요청 목록">
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th>휴대폰 번호</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="approveReqList">
+              <!-- [Java] th:each="mber : ${approveReqList}" -->
+
+              <!-- 더미 데이터 1 -->
+              <tr data-mber-seq="101">
+                <!-- [Java] th:text="${mber.usrNm}" -->
+                <td class="apv-td-name">도시진</td>
+                <!-- [Java] th:text="${mber.tel}" -->
+                <td class="apv-td-tel">010-2222-7777</td>
+                <td>
+                  <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                    <!-- 승인 버튼 -->
+                    <!-- [Java] th:attr="data-mber-seq=${mber.mberSeq}" -->
+                    <button class="rss-btn rss-btn--primary rss-btn--sm"
+                            onclick="approveConfirm(this, '101', '도시진')"
+                            data-mber-seq="101">
+                      승인
+                    </button>
+                    <!-- 반려 버튼 -->
+                    <button class="rss-btn rss-btn--sm"
+                            style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-text-muted);"
+                            onclick="rejectConfirm(this, '101', '도시진')"
+                            data-mber-seq="101">
+                      반려
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 더미 데이터 2 -->
+              <tr data-mber-seq="102">
+                <td class="apv-td-name">김소리</td>
+                <td class="apv-td-tel">010-8888-4111</td>
+                <td>
+                  <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                    <button class="rss-btn rss-btn--primary rss-btn--sm"
+                            onclick="approveConfirm(this, '102', '김소리')"
+                            data-mber-seq="102">
+                      승인
+                    </button>
+                    <button class="rss-btn rss-btn--sm"
+                            style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-text-muted);"
+                            onclick="rejectConfirm(this, '102', '김소리')"
+                            data-mber-seq="102">
+                      반려
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- [Java] th:if="${approveReqList.isEmpty()}" -->
+              <!-- 빈 상태 (더미에서는 숨김) -->
+              <!--
+              <tr id="approveReqEmpty">
+                <td colspan="3" class="apv-empty">새로운 승인 요청이 없습니다.</td>
+              </tr>
+              -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ② 승인 완료 직원(부서) 섹션 ──────────────────
+             [DB] 테이블: tbl_mber
+             [DB] 조건: mber_type = 'EMPLOYEE' AND approve_yn = 1
+                        AND company_nm = #{loginUsr.companyNm}
+             [DB] 정렬: ORDER BY reg_dtm DESC
+             [Java] th:if="${!approvedMberList.isEmpty()}"
+        ──────────────────────────────────────────────── -->
+        <div class="apv-section-divider"></div>
+        <p class="apv-section-title">승인 직원(부서)</p>
+
+        <div class="apv-table-wrap">
+          <table class="apv-table" aria-label="승인 완료 직원 목록">
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th>휴대폰 번호</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="approvedMberList">
+              <!-- [Java] th:each="mber : ${approvedMberList}" -->
+
+              <!-- 더미 데이터 1 -->
+              <tr data-mber-seq="201">
+                <!-- [Java] th:text="${mber.usrNm}" -->
+                <td class="apv-td-name">민윤기</td>
+                <!-- [Java] th:text="${mber.tel}" -->
+                <td class="apv-td-tel">010-2222-7777</td>
+                <td>
+                  <!-- 승인 취소 버튼 -->
+                  <!-- [Java] th:attr="data-mber-seq=${mber.mberSeq}" -->
+                  <button class="rss-btn rss-btn--sm"
+                          style="background:#6b7280;color:#fff;border:none;"
+                          onclick="cancelConfirm(this, '201', '민윤기')"
+                          data-mber-seq="201">
+                    승인 취소
+                  </button>
+                </td>
+              </tr>
+
+              <!-- 더미 데이터 2 -->
+              <tr data-mber-seq="202">
+                <td class="apv-td-name">신성민</td>
+                <td class="apv-td-tel">010-8888-4111</td>
+                <td>
+                  <button class="rss-btn rss-btn--sm"
+                          style="background:#6b7280;color:#fff;border:none;"
+                          onclick="cancelConfirm(this, '202', '신성민')"
+                          data-mber-seq="202">
+                    승인 취소
+                  </button>
+                </td>
+              </tr>
+
+              <!-- [Java] th:if="${approvedMberList.isEmpty()}" -->
+              <!-- 빈 상태 (더미에서는 숨김) -->
+              <!--
+              <tr id="approvedMberEmpty">
+                <td colspan="3" class="apv-empty">승인된 직원이 없습니다.</td>
+              </tr>
+              -->
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /.rss-card -->
+
+    </main><!-- /.rss-content -->
+
+    <!-- 공통 푸터 -->
+    <div id="rss-footer-wrap"></div>
+
+  </div><!-- /.rss-main -->
+</div><!-- /.rss-app -->
+
+
+<!-- ══════════════════════════════════════════════════
+     확인 모달 (승인 / 반려 / 승인 취소 공용)
+     [Java] 실제 환경에서는 form submit 또는 fetch API로 교체
+══════════════════════════════════════════════════ -->
+<div class="rss-modal-backdrop" id="apvConfirmModal" role="dialog" aria-modal="true"
+     aria-labelledby="apvConfirmTitle" style="display:none;">
+  <div class="rss-modal" style="max-width:400px;">
+    <div class="rss-modal__header">
+      <h2 class="rss-modal__title" id="apvConfirmTitle">승인 확인</h2>
+      <button class="rss-modal__close" onclick="closeApvModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:20px;height:20px;"></i>
+      </button>
+    </div>
+    <div class="rss-modal__body">
+      <p id="apvConfirmMsg" style="font-size:14px;color:var(--rss-text);line-height:1.7;"></p>
+    </div>
+    <div class="rss-modal__footer" style="gap:8px;">
+      <button class="rss-btn rss-btn--sm"
+              style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-text-muted);"
+              onclick="closeApvModal()">취소</button>
+      <button class="rss-btn rss-btn--primary rss-btn--sm" id="apvConfirmOkBtn"
+              onclick="executeApvAction()">확인</button>
+    </div>
+  </div>
+</div>
+
+
+<script src="rss-common.js"></script>
+<script>
+/* ══════════════════════════════════════════════════
+   승인 관리 인터랙션
+   [Java] 실제 환경에서는 fetch API 또는 form submit으로 서버 요청 처리
+   [Java] 승인: POST /api/approval/approve  { mberSeq: ... }
+   [Java] 반려: POST /api/approval/reject   { mberSeq: ... }
+   [Java] 취소: POST /api/approval/cancel   { mberSeq: ... }
+══════════════════════════════════════════════════ */
+
+var _apvAction   = null;  /* 'approve' | 'reject' | 'cancel' */
+var _apvMberSeq  = null;
+var _apvRowEl    = null;
+
+/* 승인 확인 팝업 */
+function approveConfirm(btn, mberSeq, usrNm) {
+  _apvAction  = 'approve';
+  _apvMberSeq = mberSeq;
+  _apvRowEl   = btn.closest('tr');
+  document.getElementById('apvConfirmTitle').textContent = '승인 처리';
+  document.getElementById('apvConfirmMsg').innerHTML =
+    '<strong>' + usrNm + '</strong> 님을 승인 처리하시겠습니까?<br>' +
+    '승인 후 해당 계정은 \'대기\' 상태에서 정상 사용 가능 상태로 전환됩니다.';
+  document.getElementById('apvConfirmOkBtn').style.background = 'var(--rss-amber)';
+  document.getElementById('apvConfirmOkBtn').textContent = '승인';
+  openApvModal();
+}
+
+/* 반려 확인 팝업 */
+function rejectConfirm(btn, mberSeq, usrNm) {
+  _apvAction  = 'reject';
+  _apvMberSeq = mberSeq;
+  _apvRowEl   = btn.closest('tr');
+  document.getElementById('apvConfirmTitle').textContent = '반려 처리';
+  document.getElementById('apvConfirmMsg').innerHTML =
+    '<strong>' + usrNm + '</strong> 님을 반려 처리하시겠습니까?<br>' +
+    '반려하면 모든 가입 정보가 삭제됩니다. 그래도 반려하시겠습니까?';
+  document.getElementById('apvConfirmOkBtn').style.background = '#dc2626';
+  document.getElementById('apvConfirmOkBtn').textContent = '반려';
+  openApvModal();
+}
+
+/* 승인 취소 확인 팝업 */
+function cancelConfirm(btn, mberSeq, usrNm) {
+  _apvAction  = 'cancel';
+  _apvMberSeq = mberSeq;
+  _apvRowEl   = btn.closest('tr');
+  document.getElementById('apvConfirmTitle').textContent = '승인 취소';
+  document.getElementById('apvConfirmMsg').innerHTML =
+    '<strong>' + usrNm + '</strong> 님의 승인을 취소하시겠습니까?<br>' +
+    '승인 취소 시 로그인이 불가능하고 모든 개인 정보가 삭제됩니다.';
+  document.getElementById('apvConfirmOkBtn').style.background = '#6b7280';
+  document.getElementById('apvConfirmOkBtn').textContent = '승인 취소';
+  openApvModal();
+}
+
+/* 모달 열기/닫기 */
+function openApvModal() {
+  var modal = document.getElementById('apvConfirmModal');
+  modal.style.display = 'flex';
+  if (window.lucide) lucide.createIcons();
+}
+function closeApvModal() {
+  document.getElementById('apvConfirmModal').style.display = 'none';
+  _apvAction = null; _apvMberSeq = null; _apvRowEl = null;
+}
+
+/* 실제 처리 (더미: 행 제거 + 토스트) */
+/* [Java] 실제 환경에서는 fetch API로 서버 요청 후 응답에 따라 처리 */
+function executeApvAction() {
+  closeApvModal();
+  if (!_apvRowEl) return;
+
+  if (_apvAction === 'approve') {
+    _apvRowEl.remove();
+    RSS.toast('승인 처리되었습니다.', 'success');
+  } else if (_apvAction === 'reject') {
+    _apvRowEl.remove();
+    RSS.toast('반려 처리되었습니다.', 'info');
+  } else if (_apvAction === 'cancel') {
+    _apvRowEl.remove();
+    RSS.toast('승인이 취소되었습니다.', 'info');
+  }
+}
+
+/* 모달 외부 클릭 닫기 */
+document.getElementById('apvConfirmModal').addEventListener('click', function(e) {
+  if (e.target === this) closeApvModal();
+});
+</script>
+</body>
+</html>

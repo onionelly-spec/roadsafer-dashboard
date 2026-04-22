@@ -25,9 +25,11 @@
 
   <div class="rss-header__right">
     <!-- 승인관리 버튼 -->
-    <!-- [DB] tbl_construction WHERE approve_yn = 0 AND mber_id = ? COUNT -->
-    <a href="construction-list.html" class="rss-header__quick-btn" id="header_approve_btn"
-       aria-label="승인관리">
+    <!-- [Java] th:if="${session.loginUsr.mberType == 'BLOCK'}" (차단기업 대표만 표시) -->
+    <!-- [DB] tbl_mber WHERE mber_type='EMPLOYEE' AND approve_yn=0 AND company_nm=#{loginUsr.companyNm} COUNT -->
+    <!-- data-role-block: JS에서 mberType 기준으로 표시/숨김 처리 -->
+    <a href="approval.html" class="rss-header__quick-btn" id="header_approve_btn"
+       data-role-block="true" aria-label="승인관리">
       <span class="rss-header__quick-label">승인 관리</span>
       <!-- [Java] th:if="${approveCnt > 0}" th:text="${approveCnt}" -->
       <span class="rss-header__quick-badge" id="header_approve_badge">1</span>

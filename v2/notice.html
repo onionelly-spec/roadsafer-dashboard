@@ -32,17 +32,20 @@
     .notice-row:hover { background: #fffbf0; }
     .notice-row__title {
       font-size: 14px;
-      color: #2563eb;
+      color: var(--rss-text);   /* 공통 CSS 텍스트 색상 적용 */
       font-weight: 500;
       flex: 1;
       min-width: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-decoration: none;    /* 미사용 시 기본 링크 스타일 제거 */
+    }
+    .notice-row__title:hover {
+      color: var(--rss-amber-dark);
       text-decoration: underline;
       text-underline-offset: 2px;
     }
-    .notice-row__title:hover { color: var(--rss-amber-dark); }
     .notice-row__date {
       font-size: 13px;
       color: #9ca3af;
@@ -159,7 +162,7 @@
 
   <div class="rss-main" id="rssMain">
 
-    <div id="rss-header-wrap" data-title="공지사항"></div>
+    <div id="rss-header-wrap" data-title="공지사항" data-icon="bell"></div>
 
     <main class="rss-content">
 
