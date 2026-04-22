@@ -128,12 +128,12 @@
             <thead>
               <tr>
                 <th style="width:52px;">번호<!-- [DB] row_number() --></th>
-                <th class="col-nm">공사명<!-- [DB] construction.constructionNm --></th>
+                <th class="rss-col-nm">공사명<!-- [DB] construction.constructionNm --></th>
                 <th>발주업체명<!-- [DB] construction.orderCompanyNm --></th>
-                <th class="col-period">기간<!-- [DB] construction.startDt ~ endDt --></th>
+                <th class="rss-col-period">기간<!-- [DB] construction.startDt ~ endDt --></th>
                 <th>도로명<!-- [DB] construction.roadNm --></th>
                 <th>방향<!-- [DB] construction.direction --></th>
-                <th class="col-equip">품목별 수량<!-- [DB] construction.equipSummary --></th>
+                <th class="rss-col-equip">품목별 수량<!-- [DB] construction.equipSummary --></th>
               </tr>
             </thead>
             <tbody>
@@ -143,7 +143,7 @@
               <!-- [Java] th:classappend="${info.urgentYn == 1} ? 'row-urgent'" -->
               <tr class="row-urgent">
                 <td>1</td>
-                <td class="col-nm">
+                <td class="rss-col-nm">
                   <!-- [Java] th:href="@{/construction-info/detail/{id}(id=${info.constructionSeq})}" -->
                   <!-- [Java] th:text="${info.constructionNm}" -->
                   <!-- [Java] th:classappend="${info.urgentYn == 1} ? 'urgent'" -->
@@ -154,49 +154,49 @@
                 <!-- [Java] th:text="${info.orderCompanyNm}" -->
                 <td style="color:#dc2626;font-weight:600;">한국개발</td>
                 <!-- [Java] th:text="${info.startDt} + ' ~ ' + ${info.endDt} + '(' + ${info.workDays} + '일)'" -->
-                <td class="col-period" style="color:#dc2626;font-weight:600;">2026-07-01 ~ 2026-07-03(3일)</td>
+                <td class="rss-col-period" style="color:#dc2626;font-weight:600;">2026-07-01 ~ 2026-07-03(3일)</td>
                 <!-- [Java] th:text="${info.roadNm}" -->
                 <td style="color:#dc2626;font-weight:600;">호남고속도로</td>
                 <!-- [Java] th:text="${info.direction}" -->
                 <td style="color:#dc2626;font-weight:600;">순천</td>
                 <!-- [Java] th:text="${info.equipSummary}" -->
-                <td class="col-equip" style="color:#dc2626;font-weight:600;">TMA1 : 1대, TMA3 : 2대, PLCS : 2대</td>
+                <td class="rss-col-equip" style="color:#dc2626;font-weight:600;">TMA1 : 1대, TMA3 : 2대, PLCS : 2대</td>
               </tr>
 
               <tr>
                 <td>2</td>
-                <td class="col-nm">
+                <td class="rss-col-nm">
                   <a href="construction-info-detail.html" class="rss-link">국도 32번선 횡단보도 보수</a>
                 </td>
                 <td>소망건설</td>
-                <td class="col-period">2026-06-25 ~ 2026-06-25(1일)</td>
+                <td class="rss-col-period">2026-06-25 ~ 2026-06-25(1일)</td>
                 <td>국도 32번</td>
                 <td>대전</td>
-                <td class="col-equip">TMA1 : 2대, TMA3 : 1대</td>
+                <td class="rss-col-equip">TMA1 : 2대, TMA3 : 1대</td>
               </tr>
 
               <tr>
                 <td>3</td>
-                <td class="col-nm">
+                <td class="rss-col-nm">
                   <a href="construction-info-detail.html" class="rss-link">중앙분리대 시공</a>
                 </td>
                 <td>오봉토건</td>
-                <td class="col-period">2026-06-12 ~ 2026-06-18(7일)</td>
+                <td class="rss-col-period">2026-06-12 ~ 2026-06-18(7일)</td>
                 <td>경부고속도로</td>
                 <td>부산</td>
-                <td class="col-equip">TMA3 : 2대, PLCS : 2대</td>
+                <td class="rss-col-equip">TMA3 : 2대, PLCS : 2대</td>
               </tr>
 
               <tr>
                 <td>4</td>
-                <td class="col-nm">
+                <td class="rss-col-nm">
                   <a href="construction-info-detail.html" class="rss-link">호남선 서울방향 포장공사</a>
                 </td>
                 <td>한국개발</td>
-                <td class="col-period">2026-06-01 ~ 2026-06-02(2일)</td>
+                <td class="rss-col-period">2026-06-01 ~ 2026-06-02(2일)</td>
                 <td>호남고속도로</td>
                 <td>서울</td>
-                <td class="col-equip">TMA1 : 1대, TMA3 : 2대, PLCS : 1대</td>
+                <td class="rss-col-equip">TMA1 : 1대, TMA3 : 2대, PLCS : 1대</td>
               </tr>
 
             </tbody>

@@ -608,6 +608,7 @@ img { max-width: 100%; display: block; }
   color: var(--rss-text);
   vertical-align: middle;
   line-height: 1.6;
+  text-align: left; /* 상세 키/값 테이블 값 열은 left */
 }
 .rss-table--detail tr:hover td { background: #fafafa; }
 .rss-table--detail tr:last-child td { border-bottom: 1px solid var(--rss-border); }
@@ -991,12 +992,13 @@ img { max-width: 100%; display: block; }
 
 /* ─── 공통 테이블 열(col) 스타일 ──────────────────────────── */
 /* 공사명/발주업체명 등 긴 텍스트 열 */
-.rss-col-nm    { text-align: left; min-width: 180px; }
+/* .rss-col-nm: text-align은 .rss-table td center 상속 */
+.rss-col-nm    { min-width: 180px; text-align: left; } /* 공사명은 긴 텍스트라 left 유지 */
 /* 기간 열 */
 .rss-col-period { min-width: 210px; white-space: nowrap; }
 /* 장비/품목 열 */
-.rss-col-equip  { text-align: left; min-width: 200px;
-                  font-size: var(--rss-font-sm); color: var(--rss-muted); }
+.rss-col-equip  { min-width: 200px;
+                  font-size: var(--rss-font-sm); color: var(--rss-muted); text-align: center; }
 /* 도로명 열 */
 .rss-col-road   { min-width: 100px; }
 /* 방향 열 */

@@ -56,10 +56,7 @@
     }
     .list-toolbar select:focus { outline: none; border-color: var(--rss-amber); }
 
-    /* ── 공사현황 테이블 ── */
-    .rss-col-nm { text-align: left; min-width: 180px; }
-    .rss-col-period { min-width: 200px; white-space: nowrap; }
-    .rss-col-equip { text-align: left; min-width: 180px; font-size: var(--rss-font-sm); color: #6b7280; }
+    /* ── 공사현황 테이블: .rss-col-* 스타일은 rss-common.css 공통 정의 사용 ── */
     /* 링크 스타일: rss-common.css .rss-link 공통 클래스 사용 */
     .rss-link.urgent { color: #dc2626 !important; font-weight: 700; }
     /* ── 모바일 카드형 (768px 이하) ── */
@@ -141,12 +138,12 @@
             <thead>
               <tr>
                 <th style="width:52px;">번호</th>
-                <th class="col-nm">공사명<!-- [DB] construction.constructionNm --></th>
+                <th class="rss-col-nm">공사명<!-- [DB] construction.constructionNm --></th>
                 <th>발주업체명<!-- [DB] construction.orderCompanyNm --></th>
-                <th class="col-period">기간<!-- [DB] construction.startDt ~ endDt --></th>
+                <th class="rss-col-period">기간<!-- [DB] construction.startDt ~ endDt --></th>
                 <th>도로명<!-- [DB] construction.roadNm --></th>
                 <th>방향<!-- [DB] construction.direction --></th>
-                <th class="col-equip">품목별 수량<!-- [DB] construction.equipSummary --></th>
+                <th class="rss-col-equip">품목별 수량<!-- [DB] construction.equipSummary --></th>
                 <th>상태<!-- [DB] construction.status --></th>
                 <th>관리</th>
               </tr>
@@ -158,17 +155,17 @@
               <!-- [Java] th:classappend="${item.urgentYn == 1} ? 'row-urgent'" -->
               <tr class="row-urgent">
                 <td>1</td>
-                <td class="col-nm">
+                <td class="rss-col-nm">
                   <!-- [Java] th:href="@{/construction/detail/{id}(id=${item.constructionSeq})}" -->
                   <a href="construction-detail.html" class="rss-link urgent">
                     [긴급] 호남선 순천방향 포장공사<!-- [Java] ${item.constructionNm} -->
                   </a>
                 </td>
                 <td style="color:#dc2626;font-weight:600;">한국개발<!-- [Java] ${item.orderCompanyNm} --></td>
-                <td class="col-period" style="color:#dc2626;font-weight:600;">2026-07-01 ~ 2026-07-03<!-- [Java] ${item.startDt} ~ ${item.endDt} --></td>
+                <td class="rss-col-period" style="color:#dc2626;font-weight:600;">2026-07-01 ~ 2026-07-03<!-- [Java] ${item.startDt} ~ ${item.endDt} --></td>
                 <td style="color:#dc2626;font-weight:600;">호남고속도로<!-- [Java] ${item.roadNm} --></td>
                 <td style="color:#dc2626;font-weight:600;">순천<!-- [Java] ${item.direction} --></td>
-                <td class="col-equip" style="color:#dc2626;font-weight:600;">TMA1:1대, TMA3:2대, PLCS:2대<!-- [Java] ${item.equipSummary} --></td>
+                <td class="rss-col-equip" style="color:#dc2626;font-weight:600;">TMA1:1대, TMA3:2대, PLCS:2대<!-- [Java] ${item.equipSummary} --></td>
                 <td><span class="rss-badge rss-badge--scheduled">예정</span><!-- [Java] ${item.statusLabel} --></td>
                 <td>
                   <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세</a>
@@ -177,14 +174,14 @@
 
               <tr>
                 <td>2</td>
-                <td class="col-nm">
+                <td class="rss-col-nm">
                   <a href="construction-detail.html" class="rss-link">국도 32번선 횡단보도 보수</a>
                 </td>
                 <td>소망건설</td>
-                <td class="col-period">2026-06-25 ~ 2026-06-25</td>
+                <td class="rss-col-period">2026-06-25 ~ 2026-06-25</td>
                 <td>국도 32번</td>
                 <td>대전</td>
-                <td class="col-equip">TMA1:2대, TMA3:1대</td>
+                <td class="rss-col-equip">TMA1:2대, TMA3:1대</td>
                 <td><span class="rss-badge rss-badge--progress">진행중</span></td>
                 <td>
                   <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세</a>
@@ -193,14 +190,14 @@
 
               <tr>
                 <td>3</td>
-                <td class="col-nm">
+                <td class="rss-col-nm">
                   <a href="construction-detail.html" class="rss-link">중앙분리대 시공</a>
                 </td>
                 <td>오봉토건</td>
-                <td class="col-period">2026-06-12 ~ 2026-06-18</td>
+                <td class="rss-col-period">2026-06-12 ~ 2026-06-18</td>
                 <td>경부고속도로</td>
                 <td>부산</td>
-                <td class="col-equip">TMA3:2대, PLCS:2대</td>
+                <td class="rss-col-equip">TMA3:2대, PLCS:2대</td>
                 <td><span class="rss-badge rss-badge--complete">완료</span></td>
                 <td>
                   <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세</a>
@@ -209,14 +206,14 @@
 
               <tr>
                 <td>4</td>
-                <td class="col-nm">
+                <td class="rss-col-nm">
                   <a href="construction-detail.html" class="rss-link">호남선 서울방향 포장공사</a>
                 </td>
                 <td>한국개발</td>
-                <td class="col-period">2026-06-01 ~ 2026-06-02</td>
+                <td class="rss-col-period">2026-06-01 ~ 2026-06-02</td>
                 <td>호남고속도로</td>
                 <td>서울</td>
-                <td class="col-equip">TMA1:1대, TMA3:2대, PLCS:1대</td>
+                <td class="rss-col-equip">TMA1:1대, TMA3:2대, PLCS:1대</td>
                 <td><span class="rss-badge rss-badge--complete">완료</span></td>
                 <td>
                   <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세</a>

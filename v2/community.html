@@ -16,8 +16,9 @@
     .comm-col-author{ width: 110px; }
     .comm-col-date  { width: 120px; white-space: nowrap; }
 
-    /* 제목 열은 좌측 정렬 */
-    .rss-table td.comm-td-title { text-align: left; }
+    /* 제목 열은 좌측 정렬 (공사명처럼 긴 텍스트) */
+    .rss-table td.comm-td-title,
+    .rss-table th.comm-th-title { text-align: left; }
 
     /* 댓글 수 뱃지 */
     .comm-cmt-badge {
@@ -86,7 +87,7 @@
             <thead>
               <tr>
                 <th>번호</th>
-                <th style="text-align:left;">제목</th>
+                <th class="comm-th-title">제목</th>
                 <th>작성자</th>
                 <th>작성일</th>
               </tr>
