@@ -329,6 +329,69 @@ img { max-width: 100%; display: block; }
   .rss-header__username { display: none; }
 }
 
+/* PC에서 모바일 전용 햄버거 버튼 숨김 */
+@media (min-width: 1024px) {
+  .rss-header__mobile-toggle { display: none !important; }
+}
+
+/* ─── 헤더 퀵 버튼 (승인관리 / 공지사항) ─────────────────── */
+.rss-header__quick-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--rss-border);
+  background: var(--rss-card);
+  color: var(--rss-text);
+  font-size: var(--rss-font-sm);   /* 13px */
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  cursor: pointer;
+}
+.rss-header__quick-btn:hover {
+  border-color: var(--rss-amber);
+  background: var(--rss-amber-light);
+  color: var(--rss-amber-dark);
+}
+.rss-header__quick-label {
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+}
+.rss-header__quick-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--rss-amber);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+/* 배지가 0이거나 없을 때 숨김 처리는 JS에서 제어 */
+@media (max-width: 480px) {
+  .rss-header__quick-label { display: none; }
+  .rss-header__quick-btn {
+    padding: 5px 8px;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    justify-content: center;
+  }
+  .rss-header__quick-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+  }
+}
+
 /* ─── 콘텐츠 영역 ──────────────────────────────────────── */
 .rss-content {
   flex: 1;
@@ -725,6 +788,40 @@ img { max-width: 100%; display: block; }
 .rss-flex  { display: flex; align-items: center; }
 .rss-flex-between { display: flex; align-items: center; justify-content: space-between; }
 
+
+/* ─── 사이드바 PC 화살표 접기 버튼 ──────────────────────── */
+.rss-sidebar__collapse-btn {
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: var(--rss-sidebar-bg);
+  color: rgba(255,255,255,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 110;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+.rss-sidebar__collapse-btn:hover {
+  background: var(--rss-amber);
+  border-color: var(--rss-amber);
+  color: #fff;
+}
+/* collapsed 상태에서 아이콘 방향 전환 */
+.rss-sidebar.collapsed .rss-sidebar__collapse-icon {
+  transform: rotate(180deg);
+}
+/* 모바일에서는 숨김 */
+@media (max-width: 1023px) {
+  .rss-sidebar__collapse-btn { display: none; }
+}
 
 /* ─── 공통 푸터 ─────────────────────────────────────────── */
 .rss-footer {

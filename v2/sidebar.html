@@ -44,7 +44,6 @@
   <nav class="rss-nav" aria-label="주 메뉴">
     <!-- [Java] 사용자 유형(user_type)에 따라 메뉴 노출 제어 -->
     <!-- [Java] th:if="${session.loginUsr.userType == 'BLOCKER'}" -->
-    <p class="rss-nav__section-label">차단기업</p>
     <ul style="list-style:none;padding:0;margin:0;">
       <li>
         <a href="index.html" class="rss-nav__link" data-menu="index">
@@ -108,6 +107,14 @@
       <span class="rss-nav__label">로그아웃</span>
     </a>
   </div>
+
+  <!-- PC 전용 사이드바 접기/펼치기 화살표 버튼 -->
+  <!-- 모바일(max-width:1023px)에서는 CSS로 숨김 처리 -->
+  <button class="rss-sidebar__collapse-btn" id="rssSidebarCollapseBtn"
+          aria-label="사이드바 접기/펼치기" title="사이드바 접기/펼치기">
+    <i data-lucide="chevron-left" class="rss-sidebar__collapse-icon" id="rssSidebarCollapseIcon"
+       style="width:16px;height:16px;"></i>
+  </button>
 
 </aside>
 

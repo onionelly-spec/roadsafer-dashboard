@@ -168,12 +168,24 @@ function _initSidebarBehavior() {
     }
   }
 
-  /* 토글 버튼 바인딩 */
+  /* 모바일 햄버거 토글 버튼 바인딩 */
   _bindToggleBtn = function() {
     const btnToggle = document.getElementById('rssSidebarToggle');
     btnToggle && btnToggle.addEventListener('click', toggleSidebar);
   };
   _bindToggleBtn();
+
+  /* PC 전용 사이드바 화살표 접기 버튼 바인딩 */
+  const collapseBtn  = document.getElementById('rssSidebarCollapseBtn');
+  const collapseIcon = document.getElementById('rssSidebarCollapseIcon');
+  if (collapseBtn) {
+    collapseBtn.addEventListener('click', function() {
+      const isCollapsed = sidebar.classList.toggle('collapsed');
+      main && main.classList.toggle('sidebar-collapsed', isCollapsed);
+      localStorage.setItem(COLLAPSED_KEY, isCollapsed ? '1' : '0');
+      /* 아이콘 방향 전환은 CSS .collapsed 클래스로 처리 */
+    });
+  }
 
   overlay && overlay.addEventListener('click', function() {
     sidebar.classList.remove('mobile-open');
@@ -307,11 +319,23 @@ function _initUserInfo() {
   if (sbCompany) sbCompany.textContent = companyNm;
   if (sbAvatar)  sbAvatar.textContent  = avatarChar;
 
-  /* 헤더 */
-  const hdName   = document.getElementById('header_usr_nm');
-  const hdAvatar = document.getElementById('header_usr_avatar');
-  if (hdName)   hdName.textContent   = usrNm;
-  if (hdAvatar) hdAvatar.textContent = avatarChar;
+  /* 헤더 퀵버튼 배지 초기화 (0이면 숨김) */
+  /* [Java Thymeleaf 전환 시] 서버에서 직접 렌더링 → 이 블록 불필요 */
+  /* [DB] tbl_construction WHERE approve_yn = 0 COUNT → approveCnt */
+  /* [DB] tbl_noti WHERE mber_id = ? AND read_yn = 0 COUNT → noticeCnt */
+  var approveBadge = document.getElementById('header_approve_badge');
+  var noticeBadge  = document.getElementById('header_notice_badge');
+  /* 더미 데이터: 실제 환경에서는 서버 렌더링으로 교체 */
+  var approveCnt = parseInt(sessionStorage.getItem('rss_approve_cnt') || '1', 10);
+  var noticeCnt  = parseInt(sessionStorage.getItem('rss_notice_cnt')  || '2', 10);
+  if (approveBadge) {
+    if (approveCnt > 0) { approveBadge.textContent = approveCnt; approveBadge.style.display = ''; }
+    else { approveBadge.style.display = 'none'; }
+  }
+  if (noticeBadge) {
+    if (noticeCnt > 0) { noticeBadge.textContent = noticeCnt; noticeBadge.style.display = ''; }
+    else { noticeBadge.style.display = 'none'; }
+  }
 }
 _initUserInfo();
 
