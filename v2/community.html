@@ -9,77 +9,53 @@
   <link rel="stylesheet" href="rss-common.css" />
 
   <style>
-    /* 커뮤니티 카드 그리드 */
-    .community-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      padding: 16px 20px 20px;
-    }
-    @media (max-width: 900px) { .community-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 560px) { .community-grid { grid-template-columns: 1fr; } }
+    /* 커뮤니티 목록 테이블 col 너비 */
+    .comm-col-no    { width: 60px; }
+    .comm-col-cat   { width: 100px; }
+    .comm-col-title { /* flex */ }
+    .comm-col-author{ width: 100px; }
+    .comm-col-date  { width: 110px; }
+    .comm-col-view  { width: 70px; }
+    .comm-col-cmt   { width: 60px; }
 
-    /* 커뮤니티 카드 아이템 */
-    .community-card {
-      display: block;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 10px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
-      background: #fff;
-    }
-    .community-card:hover {
-      border-color: #F59E0B;
-      box-shadow: 0 4px 16px rgba(245,158,11,0.12);
-      transform: translateY(-2px);
-    }
-    .community-card__thumb {
-      width: 100%;
-      aspect-ratio: 16/9;
-      object-fit: cover;
-      display: block;
-      background: #f3f4f6;
-    }
-    .community-card__body {
-      padding: 12px 14px 14px;
-    }
-    .community-card__category {
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: #d97706;
-      margin-bottom: 5px;
-    }
-    .community-card__title {
+    /* 제목 링크 */
+    .comm-title-link {
+      color: var(--rss-text);
+      font-weight: 500;
       font-size: var(--rss-font-base);
-      font-weight: 700;
-      color: #1a1c23;
-      line-height: 1.45;
-      margin-bottom: 6px;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-    .community-card__desc {
-      font-size: var(--rss-font-sm);
-      color: #6b7280;
-      line-height: 1.6;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      margin-bottom: 10px;
-    }
-    .community-card__meta {
-      display: flex;
+      text-decoration: none;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      font-size: var(--rss-font-sm);
-      color: #9ca3af;
+      gap: 5px;
     }
-    .community-card__meta-left { display: flex; align-items: center; gap: 8px; }
+    .comm-title-link:hover { color: var(--rss-amber-dark); text-decoration: underline; }
+
+    /* 댓글 수 뱃지 */
+    .comm-cmt-badge {
+      font-size: var(--rss-font-xs);
+      color: var(--rss-amber-dark);
+      font-weight: 700;
+    }
+
+    /* 카테고리 뱃지 */
+    .comm-cat-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: var(--rss-font-xs);
+      font-weight: 600;
+    }
+    .comm-cat-badge--info  { background: #fef3c7; color: #d97706; }
+    .comm-cat-badge--qna   { background: #f0fdf4; color: #16a34a; }
+    .comm-cat-badge--free  { background: #eff6ff; color: #2563eb; }
+
+    /* 제목 열은 좌측 정렬 */
+    .rss-table td.comm-td-title { text-align: left; }
+
+    @media (max-width: 640px) {
+      .comm-col-no, .comm-col-view, .comm-col-cmt { display: none; }
+      .comm-col-date { width: 90px; }
+    }
   </style>
 </head>
 <body>
@@ -88,27 +64,25 @@
 
 <div id="rss-sidebar-wrap"></div>
 
-  <!-- ── 메인 ── -->
   <div class="rss-main" id="rssMain">
 
 <div id="rss-header-wrap" data-title="커뮤니티" data-icon="users"></div>
 
     <main class="rss-content">
-      <div class="rss-card">
+      <div class="rss-card" style="padding:0;">
 
-        <!-- 툴바 -->
-        <!-- [Java] 검색 파라미터: keyword, category → /community?keyword=&category= -->
+        <!-- ── 툴바 ──────────────────────────────────────────
+             [Java] 검색 파라미터: keyword, category → /community?keyword=&category=
+        ─────────────────────────────────────────────────── -->
         <div class="rss-board-toolbar">
           <div class="rss-board-toolbar__left">
-            <!-- 카테고리 필터 -->
             <!-- [DB] 컬럼: community.category ('all'|'info'|'qna'|'free') -->
-            <select name="searchType" id="communitySearchType" class="rss-input" style="width:auto; padding:8px 12px; font-size:15px;">
+            <select name="searchType" id="communitySearchType" class="rss-input" style="width:auto; padding:8px 12px;">
               <option value="">전체</option>
               <option value="info">정보공유</option>
               <option value="qna">질문/답변</option>
               <option value="free">자유게시판</option>
             </select>
-            <!-- 검색 -->
             <div class="rss-search-wrap">
               <!-- [DB] 컬럼: community.title LIKE '%keyword%' -->
               <input type="text" name="searchKeyword" id="communitySearchKeyword" placeholder="검색어 입력" />
@@ -118,176 +92,147 @@
             </div>
           </div>
           <div class="rss-board-toolbar__right">
-            <!-- 내 글 보기 토글 -->
             <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
             <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" id="myPostBtn"
                     onclick="toggleMyPost(this)">
-              <i data-lucide="user" style="width:13px;height:13px;"></i>내 글 보기
+              <i data-lucide="user" style="width:14px;height:14px;"></i>내 글 보기
             </button>
             <a href="community-write.html" class="rss-btn rss-btn--amber rss-btn--sm">
-              <i data-lucide="pencil" style="width:13px;height:13px;"></i>글쓰기
+              <i data-lucide="pencil" style="width:14px;height:14px;"></i>글쓰기
             </a>
           </div>
         </div>
 
-        <!-- 커뮤니티 카드 그리드 -->
-        <!-- [DB] 테이블: community ORDER BY reg_dtm DESC LIMIT 9 -->
-        <!-- [Java] th:each="post : ${communityList}" -->
-        <div class="community-grid">
+        <!-- ── 커뮤니티 목록 테이블 ──────────────────────────
+             [DB] 테이블: community ORDER BY reg_dtm DESC
+             [Java] th:each="post : ${communityList}"
+        ─────────────────────────────────────────────────── -->
+        <div class="rss-table-wrap">
+          <table class="rss-table" aria-label="커뮤니티 목록">
+            <colgroup>
+              <col class="comm-col-no" />
+              <col class="comm-col-cat" />
+              <col class="comm-col-title" />
+              <col class="comm-col-author" />
+              <col class="comm-col-date" />
+              <col class="comm-col-view" />
+              <col class="comm-col-cmt" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>분류</th>
+                <th style="text-align:left;">제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>조회</th>
+                <th>댓글</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- [Java] th:each="post : ${communityList}" -->
 
-          <!-- 카드 1 -->
-          <a href="community-detail.html" class="community-card">
-            <!-- [DB] 컬럼: community.thumb_url -->
-            <img class="community-card__thumb"
-                 src="https://placehold.co/400x225/fef3c7/d97706?text=정보공유"
-                 alt="썸네일" />
-            <div class="community-card__body">
-              <p class="community-card__category">정보공유</p><!-- [Java] ${post.category} -->
-              <h3 class="community-card__title">고속도로 TMA 차량 배치 시 주의사항 총정리</h3>
-              <!-- [Java] ${post.title} -->
-              <p class="community-card__desc">
-                실제 현장에서 겪은 TMA 배치 실수 사례와 올바른 배치 방법을 공유합니다.
-              </p><!-- [Java] ${post.summary} -->
-              <div class="community-card__meta">
-                <div class="community-card__meta-left">
-                  <span>나잘난</span><!-- [Java] ${post.authorNm} -->
-                  <span>2026-06-10</span><!-- [Java] ${post.regDt} -->
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="flex items-center gap-1">
-                    <i data-lucide="eye" style="width:13px;height:13px;"></i> 342
-                    <!-- [Java] ${post.viewCnt} -->
-                  </span>
-                  <span class="flex items-center gap-1">
-                    <i data-lucide="message-circle" style="width:13px;height:13px;"></i> 12
-                    <!-- [Java] ${post.commentCnt} -->
-                  </span>
-                </div>
-              </div>
-            </div>
-          </a>
+              <!-- 더미 1 -->
+              <tr>
+                <!-- [Java] th:text="${post.rowNum}" -->
+                <td>6</td>
+                <td><span class="comm-cat-badge comm-cat-badge--info">정보공유</span></td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="comm-title-link">
+                    고속도로 TMA 차량 배치 시 주의사항 총정리
+                    <!-- [Java] th:if="${post.commentCnt > 0}" -->
+                    <span class="comm-cmt-badge">[12]</span>
+                  </a>
+                </td>
+                <td>나잘난</td>
+                <td>2026-06-10</td>
+                <td>342</td>
+                <td>12</td>
+              </tr>
 
-          <!-- 카드 2 -->
-          <a href="community-detail.html" class="community-card">
-            <img class="community-card__thumb"
-                 src="https://placehold.co/400x225/f0fdf4/16a34a?text=질문/답변"
-                 alt="썸네일" />
-            <div class="community-card__body">
-              <p class="community-card__category">질문/답변</p>
-              <h3 class="community-card__title">씨인카 수량 변경 시 발주사 재승인이 꼭 필요한가요?</h3>
-              <p class="community-card__desc">
-                공사 도중 씨인카 수량을 줄여야 하는 상황이 생겼는데, 재승인 절차가 어떻게 되는지 궁금합니다.
-              </p>
-              <div class="community-card__meta">
-                <div class="community-card__meta-left">
-                  <span>도로맨</span>
-                  <span>2026-06-09</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="flex items-center gap-1"><i data-lucide="eye" style="width:11px;height:11px;"></i> 187</span>
-                  <span class="flex items-center gap-1"><i data-lucide="message-circle" style="width:13px;height:13px;"></i> 8</span>
-                </div>
-              </div>
-            </div>
-          </a>
+              <!-- 더미 2 -->
+              <tr>
+                <td>5</td>
+                <td><span class="comm-cat-badge comm-cat-badge--qna">질문/답변</span></td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="comm-title-link">
+                    씨인카 수량 변경 시 발주사 재승인이 꼭 필요한가요?
+                    <span class="comm-cmt-badge">[8]</span>
+                  </a>
+                </td>
+                <td>도로맨</td>
+                <td>2026-06-09</td>
+                <td>187</td>
+                <td>8</td>
+              </tr>
 
-          <!-- 카드 3 -->
-          <a href="community-detail.html" class="community-card">
-            <img class="community-card__thumb"
-                 src="https://placehold.co/400x225/eff6ff/2563eb?text=자유게시판"
-                 alt="썸네일" />
-            <div class="community-card__body">
-              <p class="community-card__category">자유게시판</p>
-              <h3 class="community-card__title">올 여름 공사 시즌 준비 어떻게 하고 계신가요?</h3>
-              <p class="community-card__desc">
-                7~8월 성수기 대비 장비 점검 및 인력 운용 계획을 공유해보아요.
-              </p>
-              <div class="community-card__meta">
-                <div class="community-card__meta-left">
-                  <span>공사왕</span>
-                  <span>2026-06-08</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="flex items-center gap-1"><i data-lucide="eye" style="width:11px;height:11px;"></i> 256</span>
-                  <span class="flex items-center gap-1"><i data-lucide="message-circle" style="width:13px;height:13px;"></i> 24</span>
-                </div>
-              </div>
-            </div>
-          </a>
+              <!-- 더미 3 -->
+              <tr>
+                <td>4</td>
+                <td><span class="comm-cat-badge comm-cat-badge--free">자유게시판</span></td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="comm-title-link">
+                    올 여름 공사 시즌 준비 어떻게 하고 계신가요?
+                    <span class="comm-cmt-badge">[24]</span>
+                  </a>
+                </td>
+                <td>공사왕</td>
+                <td>2026-06-08</td>
+                <td>256</td>
+                <td>24</td>
+              </tr>
 
-          <!-- 카드 4 -->
-          <a href="community-detail.html" class="community-card">
-            <img class="community-card__thumb"
-                 src="https://placehold.co/400x225/fef3c7/d97706?text=정보공유"
-                 alt="썸네일" />
-            <div class="community-card__body">
-              <p class="community-card__category">정보공유</p>
-              <h3 class="community-card__title">야간 공사 시 반사 조끼 착용 의무화 법령 정리</h3>
-              <p class="community-card__desc">
-                최근 개정된 도로교통법 시행령 중 야간 작업자 안전 장비 관련 내용을 정리했습니다.
-              </p>
-              <div class="community-card__meta">
-                <div class="community-card__meta-left">
-                  <span>안전제일</span>
-                  <span>2026-06-07</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="flex items-center gap-1"><i data-lucide="eye" style="width:11px;height:11px;"></i> 421</span>
-                  <span class="flex items-center gap-1"><i data-lucide="message-circle" style="width:13px;height:13px;"></i> 5</span>
-                </div>
-              </div>
-            </div>
-          </a>
+              <!-- 더미 4 -->
+              <tr>
+                <td>3</td>
+                <td><span class="comm-cat-badge comm-cat-badge--info">정보공유</span></td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="comm-title-link">
+                    야간 공사 시 반사 조끼 착용 의무화 법령 정리
+                    <span class="comm-cmt-badge">[5]</span>
+                  </a>
+                </td>
+                <td>안전제일</td>
+                <td>2026-06-07</td>
+                <td>421</td>
+                <td>5</td>
+              </tr>
 
-          <!-- 카드 5 -->
-          <a href="community-detail.html" class="community-card">
-            <img class="community-card__thumb"
-                 src="https://placehold.co/400x225/f0fdf4/16a34a?text=질문/답변"
-                 alt="썸네일" />
-            <div class="community-card__body">
-              <p class="community-card__category">질문/답변</p>
-              <h3 class="community-card__title">TMA 카드 만료 후 갱신 절차가 어떻게 되나요?</h3>
-              <p class="community-card__desc">
-                TMA 카드 유효기간이 다음 달에 만료되는데 갱신 방법을 알고 싶습니다.
-              </p>
-              <div class="community-card__meta">
-                <div class="community-card__meta-left">
-                  <span>신입차단</span>
-                  <span>2026-06-06</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="flex items-center gap-1"><i data-lucide="eye" style="width:11px;height:11px;"></i> 134</span>
-                  <span class="flex items-center gap-1"><i data-lucide="message-circle" style="width:13px;height:13px;"></i> 3</span>
-                </div>
-              </div>
-            </div>
-          </a>
+              <!-- 더미 5 -->
+              <tr>
+                <td>2</td>
+                <td><span class="comm-cat-badge comm-cat-badge--qna">질문/답변</span></td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="comm-title-link">
+                    TMA 카드 만료 후 갱신 절차가 어떻게 되나요?
+                    <span class="comm-cmt-badge">[3]</span>
+                  </a>
+                </td>
+                <td>신입차단</td>
+                <td>2026-06-06</td>
+                <td>134</td>
+                <td>3</td>
+              </tr>
 
-          <!-- 카드 6 -->
-          <a href="community-detail.html" class="community-card">
-            <img class="community-card__thumb"
-                 src="https://placehold.co/400x225/eff6ff/2563eb?text=자유게시판"
-                 alt="썸네일" />
-            <div class="community-card__body">
-              <p class="community-card__category">자유게시판</p>
-              <h3 class="community-card__title">로드세이프티시스템 사용 후기 — 6개월 사용 소감</h3>
-              <p class="community-card__desc">
-                처음에는 어색했지만 익숙해지니 공사 관리가 훨씬 편해졌습니다. 장단점을 솔직하게 공유합니다.
-              </p>
-              <div class="community-card__meta">
-                <div class="community-card__meta-left">
-                  <span>베테랑</span>
-                  <span>2026-06-05</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="flex items-center gap-1"><i data-lucide="eye" style="width:11px;height:11px;"></i> 678</span>
-                  <span class="flex items-center gap-1"><i data-lucide="message-circle" style="width:13px;height:13px;"></i> 31</span>
-                </div>
-              </div>
-            </div>
-          </a>
+              <!-- 더미 6 -->
+              <tr>
+                <td>1</td>
+                <td><span class="comm-cat-badge comm-cat-badge--free">자유게시판</span></td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="comm-title-link">
+                    로드세이프티시스템 사용 후기 — 6개월 사용 소감
+                    <span class="comm-cmt-badge">[31]</span>
+                  </a>
+                </td>
+                <td>베테랑</td>
+                <td>2026-06-05</td>
+                <td>678</td>
+                <td>31</td>
+              </tr>
 
-        </div><!-- /community-grid -->
+            </tbody>
+          </table>
+        </div>
 
         <!-- 페이지네이션 -->
         <div class="rss-pagination">

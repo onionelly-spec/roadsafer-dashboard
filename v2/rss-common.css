@@ -551,21 +551,23 @@ img { max-width: 100%; display: block; }
   font-size: var(--rss-font-base); /* 15px */
 }
 .rss-table th {
-  padding: 11px 15px;
+  padding: 14px 16px;
   background: #f9fafb;
   border-bottom: 1px solid var(--rss-border);
-  font-size: var(--rss-font-sm);   /* 13px */
+  font-size: var(--rss-font-base); /* 15px */
   font-weight: 600;
   color: var(--rss-muted);
-  text-align: left;
+  text-align: center;
   white-space: nowrap;
 }
 .rss-table td {
-  padding: 12px 15px;
+  padding: 14px 16px;
   border-bottom: 1px solid #f3f4f6;
   color: var(--rss-text);
   vertical-align: middle;
-  line-height: 1.5;
+  line-height: 1.6;
+  text-align: center;
+  font-size: var(--rss-font-base); /* 15px */
 }
 .rss-table tr:last-child td { border-bottom: none; }
 .rss-table tr:hover td { background: #fafafa; }

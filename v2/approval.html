@@ -14,23 +14,34 @@
 
     /* 섹션 타이틀 */
     .apv-section-title {
-      font-size: var(--rss-font-md);    /* 16px */
+      font-size: var(--rss-font-md);
       font-weight: 700;
       color: var(--rss-text);
       letter-spacing: 0.01em;
-      padding: 20px 24px 12px;
-      border-bottom: 1px solid var(--rss-border);
+      padding: 20px 24px 14px;
+      background: #f9fafb;
+      border-bottom: 2px solid var(--rss-border);
     }
 
-    /* 테이블 td 전용 스타일 (.rss-table 사용, .apv-table 제거) */
+    /* 테이블 td 전용 스타일 */
     .apv-td-name {
       font-weight: 600;
       color: var(--rss-text);
+      text-align: center;
     }
     .apv-td-tel {
       color: var(--rss-muted);
       letter-spacing: 0.02em;
+      text-align: center;
     }
+    .apv-td-action {
+      text-align: center;
+    }
+
+    /* 두 섹션 공통 colgroup 너비 */
+    .apv-col-nm   { width: 160px; }
+    .apv-col-tel  { width: auto; }
+    .apv-col-act  { width: 160px; }
 
     /* 빈 상태 */
     .apv-empty {
@@ -42,13 +53,18 @@
 
     /* 섹션 구분 */
     .apv-section-divider {
-      border-top: 6px solid var(--rss-bg);
+      height: 8px;
+      background: var(--rss-bg);
+      border-top: 1px solid var(--rss-border);
+      border-bottom: 1px solid var(--rss-border);
     }
 
     /* 반응형 */
     @media (max-width: 640px) {
-      .apv-section-title { padding: 16px 16px 8px; font-size: var(--rss-font-base); }
-}
+      .apv-section-title { padding: 14px 16px 10px; font-size: var(--rss-font-base); }
+      .apv-col-nm  { width: 80px; }
+      .apv-col-act { width: 120px; }
+    }
   </style>
 </head>
 <body>
@@ -82,11 +98,16 @@
 
         <div class="rss-table-wrap">
           <table class="rss-table" aria-label="승인 요청 목록">
+            <colgroup>
+              <col class="apv-col-nm" />
+              <col class="apv-col-tel" />
+              <col class="apv-col-act" />
+            </colgroup>
             <thead>
               <tr>
-                <th>이름</th>
-                <th>휴대폰 번호</th>
-                <th>관리</th>
+                <th style="text-align:center;">이름</th>
+                <th style="text-align:center;">휴대폰 번호</th>
+                <th style="text-align:center;">관리</th>
               </tr>
             </thead>
             <tbody id="approveReqList">
@@ -98,22 +119,16 @@
                 <td class="apv-td-name">도시진</td>
                 <!-- [Java] th:text="${mber.tel}" -->
                 <td class="apv-td-tel">010-2222-7777</td>
-                <td>
-                  <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
-                    <!-- 승인 버튼 -->
+                <td class="apv-td-action">
+                  <div style="display:inline-flex;align-items:center;gap:8px;">
                     <!-- [Java] th:attr="data-mber-seq=${mber.mberSeq}" -->
                     <button class="rss-btn rss-btn--primary rss-btn--sm"
                             onclick="approveConfirm(this, '101', '도시진')"
-                            data-mber-seq="101">
-                      승인
-                    </button>
-                    <!-- 반려 버튼 -->
+                            data-mber-seq="101">승인</button>
                     <button class="rss-btn rss-btn--sm"
-                            style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-text-muted);"
+                            style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-muted);"
                             onclick="rejectConfirm(this, '101', '도시진')"
-                            data-mber-seq="101">
-                      반려
-                    </button>
+                            data-mber-seq="101">반려</button>
                   </div>
                 </td>
               </tr>
@@ -122,25 +137,20 @@
               <tr data-mber-seq="102">
                 <td class="apv-td-name">김소리</td>
                 <td class="apv-td-tel">010-8888-4111</td>
-                <td>
-                  <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                <td class="apv-td-action">
+                  <div style="display:inline-flex;align-items:center;gap:8px;">
                     <button class="rss-btn rss-btn--primary rss-btn--sm"
                             onclick="approveConfirm(this, '102', '김소리')"
-                            data-mber-seq="102">
-                      승인
-                    </button>
+                            data-mber-seq="102">승인</button>
                     <button class="rss-btn rss-btn--sm"
-                            style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-text-muted);"
+                            style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-muted);"
                             onclick="rejectConfirm(this, '102', '김소리')"
-                            data-mber-seq="102">
-                      반려
-                    </button>
+                            data-mber-seq="102">반려</button>
                   </div>
                 </td>
               </tr>
 
               <!-- [Java] th:if="${approveReqList.isEmpty()}" -->
-              <!-- 빈 상태 (더미에서는 숨김) -->
               <!--
               <tr id="approveReqEmpty">
                 <td colspan="3" class="apv-empty">새로운 승인 요청이 없습니다.</td>
@@ -150,6 +160,9 @@
           </table>
         </div>
 
+        <!-- 섹션 구분 -->
+        <div class="apv-section-divider"></div>
+
         <!-- ② 승인 완료 직원(부서) 섹션 ──────────────────
              [DB] 테이블: tbl_mber
              [DB] 조건: mber_type = 'EMPLOYEE' AND approve_yn = 1
@@ -157,16 +170,20 @@
              [DB] 정렬: ORDER BY reg_dtm DESC
              [Java] th:if="${!approvedMberList.isEmpty()}"
         ──────────────────────────────────────────────── -->
-        <div class="apv-section-divider"></div>
         <p class="apv-section-title">승인 직원(부서)</p>
 
         <div class="rss-table-wrap">
           <table class="rss-table" aria-label="승인 완료 직원 목록">
+            <colgroup>
+              <col class="apv-col-nm" />
+              <col class="apv-col-tel" />
+              <col class="apv-col-act" />
+            </colgroup>
             <thead>
               <tr>
-                <th>이름</th>
-                <th>휴대폰 번호</th>
-                <th>관리</th>
+                <th style="text-align:center;">이름</th>
+                <th style="text-align:center;">휴대폰 번호</th>
+                <th style="text-align:center;">관리</th>
               </tr>
             </thead>
             <tbody id="approvedMberList">
@@ -178,15 +195,12 @@
                 <td class="apv-td-name">민윤기</td>
                 <!-- [Java] th:text="${mber.tel}" -->
                 <td class="apv-td-tel">010-2222-7777</td>
-                <td>
-                  <!-- 승인 취소 버튼 -->
+                <td class="apv-td-action">
                   <!-- [Java] th:attr="data-mber-seq=${mber.mberSeq}" -->
                   <button class="rss-btn rss-btn--sm"
                           style="background:#6b7280;color:#fff;border:none;"
                           onclick="cancelConfirm(this, '201', '민윤기')"
-                          data-mber-seq="201">
-                    승인 취소
-                  </button>
+                          data-mber-seq="201">승인 취소</button>
                 </td>
               </tr>
 
@@ -194,18 +208,15 @@
               <tr data-mber-seq="202">
                 <td class="apv-td-name">신성민</td>
                 <td class="apv-td-tel">010-8888-4111</td>
-                <td>
+                <td class="apv-td-action">
                   <button class="rss-btn rss-btn--sm"
                           style="background:#6b7280;color:#fff;border:none;"
                           onclick="cancelConfirm(this, '202', '신성민')"
-                          data-mber-seq="202">
-                    승인 취소
-                  </button>
+                          data-mber-seq="202">승인 취소</button>
                 </td>
               </tr>
 
               <!-- [Java] th:if="${approvedMberList.isEmpty()}" -->
-              <!-- 빈 상태 (더미에서는 숨김) -->
               <!--
               <tr id="approvedMberEmpty">
                 <td colspan="3" class="apv-empty">승인된 직원이 없습니다.</td>
@@ -240,11 +251,11 @@
       </button>
     </div>
     <div class="rss-modal__body">
-      <p id="apvConfirmMsg" style="font-size:14px;color:var(--rss-text);line-height:1.7;"></p>
+      <p id="apvConfirmMsg" style="font-size:var(--rss-font-base);color:var(--rss-text);line-height:1.7;"></p>
     </div>
     <div class="rss-modal__footer" style="gap:8px;">
       <button class="rss-btn rss-btn--sm"
-              style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-text-muted);"
+              style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-muted);"
               onclick="closeApvModal()">취소</button>
       <button class="rss-btn rss-btn--primary rss-btn--sm" id="apvConfirmOkBtn"
               onclick="executeApvAction()">확인</button>
@@ -263,11 +274,10 @@
    [Java] 취소: POST /api/approval/cancel   { mberSeq: ... }
 ══════════════════════════════════════════════════ */
 
-var _apvAction   = null;  /* 'approve' | 'reject' | 'cancel' */
+var _apvAction   = null;
 var _apvMberSeq  = null;
 var _apvRowEl    = null;
 
-/* 승인 확인 팝업 */
 function approveConfirm(btn, mberSeq, usrNm) {
   _apvAction  = 'approve';
   _apvMberSeq = mberSeq;
@@ -275,13 +285,12 @@ function approveConfirm(btn, mberSeq, usrNm) {
   document.getElementById('apvConfirmTitle').textContent = '승인 처리';
   document.getElementById('apvConfirmMsg').innerHTML =
     '<strong>' + usrNm + '</strong> 님을 승인 처리하시겠습니까?<br>' +
-    '승인 후 해당 계정은 \'대기\' 상태에서 정상 사용 가능 상태로 전환됩니다.';
+    '승인 후 해당 계정은 정상 사용 가능 상태로 전환됩니다.';
   document.getElementById('apvConfirmOkBtn').style.background = 'var(--rss-amber)';
   document.getElementById('apvConfirmOkBtn').textContent = '승인';
   openApvModal();
 }
 
-/* 반려 확인 팝업 */
 function rejectConfirm(btn, mberSeq, usrNm) {
   _apvAction  = 'reject';
   _apvMberSeq = mberSeq;
@@ -289,13 +298,12 @@ function rejectConfirm(btn, mberSeq, usrNm) {
   document.getElementById('apvConfirmTitle').textContent = '반려 처리';
   document.getElementById('apvConfirmMsg').innerHTML =
     '<strong>' + usrNm + '</strong> 님을 반려 처리하시겠습니까?<br>' +
-    '반려하면 모든 가입 정보가 삭제됩니다. 그래도 반려하시겠습니까?';
+    '반려하면 모든 가입 정보가 삭제됩니다.';
   document.getElementById('apvConfirmOkBtn').style.background = '#dc2626';
   document.getElementById('apvConfirmOkBtn').textContent = '반려';
   openApvModal();
 }
 
-/* 승인 취소 확인 팝업 */
 function cancelConfirm(btn, mberSeq, usrNm) {
   _apvAction  = 'cancel';
   _apvMberSeq = mberSeq;
@@ -309,7 +317,6 @@ function cancelConfirm(btn, mberSeq, usrNm) {
   openApvModal();
 }
 
-/* 모달 열기/닫기 */
 function openApvModal() {
   var modal = document.getElementById('apvConfirmModal');
   modal.style.display = 'flex';
@@ -320,12 +327,9 @@ function closeApvModal() {
   _apvAction = null; _apvMberSeq = null; _apvRowEl = null;
 }
 
-/* 실제 처리 (더미: 행 제거 + 토스트) */
-/* [Java] 실제 환경에서는 fetch API로 서버 요청 후 응답에 따라 처리 */
 function executeApvAction() {
   closeApvModal();
   if (!_apvRowEl) return;
-
   if (_apvAction === 'approve') {
     _apvRowEl.remove();
     RSS.toast('승인 처리되었습니다.', 'success');
@@ -338,7 +342,6 @@ function executeApvAction() {
   }
 }
 
-/* 모달 외부 클릭 닫기 */
 document.getElementById('apvConfirmModal').addEventListener('click', function(e) {
   if (e.target === this) closeApvModal();
 });
