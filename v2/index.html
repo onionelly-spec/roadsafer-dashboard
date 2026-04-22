@@ -4,66 +4,72 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>메인 대시보드 — 로드세이프티시스템</title>
-
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Lucide 아이콘 CDN -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-
-  <!-- 공통 커스텀 CSS -->
   <link rel="stylesheet" href="rss-common.css" />
 
   <style>
-    /* 대시보드 전용 스타일 */
-    .dash-grid {
-      display: grid;
-      gap: 16px;
+    /* ── 대시보드 전용 스타일 ─────────────────────────────── */
+
+    /* 회사 정보 카드 */
+    .company-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
-    /* 상단 2컬럼 */
-    .dash-top {
-      grid-template-columns: 1fr 1fr;
+    .company-card__name {
+      font-size: var(--rss-font-xl);
+      font-weight: 700;
+      color: var(--rss-text);
+      margin-bottom: 4px;
     }
-    @media (max-width: 768px) {
-      .dash-top { grid-template-columns: 1fr; }
+    .company-card__meta {
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      display: flex;
+      gap: 6px;
+    }
+    .company-card__meta strong {
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: #9ca3af;
+      min-width: 44px;
     }
 
-    /* 회사 카드 */
-    .company-badge {
-      display: inline-flex; align-items: center;
-      padding: 2px 10px; border-radius: 99px;
-      font-size: var(--rss-font-sm); font-weight: 700;
-      background: rgba(245,158,11,0.12); color: #d97706;
-      margin-top: 6px;
-    }
-
-    /* 퀵메뉴 그리드 */
+    /* 퀵메뉴 — 5개 1줄 */
     .quick-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 10px;
     }
-    @media (max-width: 480px) {
+    @media (max-width: 640px) {
       .quick-grid { grid-template-columns: repeat(3, 1fr); }
     }
     .quick-item {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 8px; padding: 16px 8px;
-      border: 1.5px solid #e5e7eb; border-radius: 10px;
-      cursor: pointer; transition: border-color 0.15s, background 0.15s;
-      text-decoration: none; color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 8px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-decoration: none;
+      color: inherit;
     }
     .quick-item:hover {
-      border-color: #F59E0B;
+      border-color: var(--rss-amber);
       background: rgba(245,158,11,0.04);
     }
     .quick-item.active {
-      border-color: #F59E0B;
+      border-color: var(--rss-amber);
       background: rgba(245,158,11,0.08);
     }
     .quick-item__icon {
-      width: 40px; height: 40px; border-radius: 10px;
+      width: 40px; height: 40px;
+      border-radius: 10px;
       background: #f9fafb;
       display: flex; align-items: center; justify-content: center;
     }
@@ -71,40 +77,110 @@
       background: rgba(245,158,11,0.12);
     }
     .quick-item__label {
-      font-size: var(--rss-font-base); font-weight: 600; color: #374151;
-      text-align: center; line-height: 1.3;
+      font-size: var(--rss-font-base);
+      font-weight: 600;
+      color: #374151;
+      text-align: center;
+      white-space: nowrap;   /* 한 줄 */
     }
 
-    /* 알림 목록 */
-    .noti-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      flex-shrink: 0; margin-top: 5px;
+    /* 알림 목록 — 읽음/읽지않음 구분 없이 통일 */
+    .noti-list {
+      list-style: none;
+      padding: 0; margin: 0;
     }
-    .noti-dot--active   { background: #F59E0B; }
-    .noti-dot--inactive { background: #d1d5db; }
+    .noti-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 20px;
+      border-bottom: 1px solid #f3f4f6;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .noti-item:last-child { border-bottom: none; }
+    .noti-item:hover { background: #fafafa; }
+    .noti-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--rss-amber);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+    .noti-item__msg {
+      flex: 1;
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      line-height: 1.6;
+    }
+    .noti-item__date {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
 
     /* 광고 그리드 */
     .ad-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 16px;   /* 상하좌우 동일 여백 */
     }
     @media (max-width: 900px) { .ad-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .ad-grid { grid-template-columns: 1fr 1fr; } }
 
-    .ad-img-wrap { border-radius: 8px; overflow: hidden; aspect-ratio: 16/9; }
-    .ad-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-    .ad-add-btn {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 6px; border: 2px dashed #e5e7eb;
-      border-radius: 8px; aspect-ratio: 16/9;
-      cursor: pointer; transition: border-color 0.15s;
+    .ad-thumb {
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      display: block;
+    }
+    .ad-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: opacity 0.15s;
+    }
+    .ad-thumb:hover img { opacity: 0.88; }
+
+    .ad-more-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 2px dashed #e5e7eb;
+      border-radius: 8px;
+      aspect-ratio: 16/10;
+      cursor: pointer;
+      transition: border-color 0.15s;
       text-decoration: none;
     }
-    .ad-add-btn:hover { border-color: #F59E0B; }
-    .ad-add-btn span:first-child { font-size: var(--rss-font-2xl); color: #9ca3af; }
-    .ad-add-btn span:last-child  { font-size: var(--rss-font-sm); color: #9ca3af; }
+    .ad-more-btn:hover { border-color: var(--rss-amber); }
+    .ad-more-btn__icon { font-size: 24px; color: #9ca3af; }
+    .ad-more-btn__label { font-size: var(--rss-font-sm); color: #9ca3af; }
+
+    /* 공사현황 헤더 */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px 10px;
+    }
+    .section-header__title {
+      font-size: var(--rss-font-base);
+      font-weight: 700;
+      color: var(--rss-text);
+    }
+    .section-header__more {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      transition: color 0.12s;
+    }
+    .section-header__more:hover { color: var(--rss-amber-dark); }
 
     /* 모바일 카드형 공사현황 */
     .mobile-construction-list { display: none; }
@@ -117,266 +193,328 @@
       border-bottom: 1px solid #f3f4f6;
     }
     .mobile-construction-item:last-child { border-bottom: none; }
+
+    /* ── 경고창(모달) ─────────────────────────────────────── */
+    .rss-modal-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 9000;
+      align-items: center;
+      justify-content: center;
+    }
+    .rss-modal-backdrop.open { display: flex; }
+    .rss-modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px 28px 22px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+    .rss-modal__title {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      margin-bottom: 10px;
+    }
+    .rss-modal__body {
+      font-size: var(--rss-font-base);
+      color: #4b5563;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .rss-modal__body .highlight {
+      color: var(--rss-amber-dark);
+      font-weight: 600;
+    }
+    .rss-modal__footer {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .rss-modal textarea {
+      width: 100%;
+      border: 1px solid var(--rss-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      resize: vertical;
+      min-height: 80px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+    .rss-modal textarea:focus { border-color: var(--rss-amber); }
   </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════
-     앱 래퍼
-══════════════════════════════════════════════════════════ -->
 <div class="rss-app">
 
-  <!-- ══════════════════════════════════════════════════════
-       사이드바 — fetch로 sidebar.html 자동 삽입
-       [Java Thymeleaf] th:replace="fragments/sidebar :: sidebar"
-  ══════════════════════════════════════════════════════ -->
+  <!-- 사이드바 -->
+  <!-- [Java Thymeleaf] th:replace="fragments/sidebar :: sidebar" -->
   <div id="rss-sidebar-wrap"></div>
 
-
-  <!-- ══════════════════════════════════════════════════════
-       메인 영역
-  ══════════════════════════════════════════════════════ -->
   <div class="rss-main" id="rssMain">
 
-    <!-- 헤더 — fetch로 header.html 자동 삽입
-         data-title: 페이지 제목 (rss-common.js가 읽어서 헤더에 삽입)
-         [Java Thymeleaf] th:replace="fragments/header :: header(title='메인 대시보드')" -->
+    <!-- 헤더 -->
+    <!-- [Java Thymeleaf] th:replace="fragments/header :: header(title='메인 대시보드')" -->
     <div id="rss-header-wrap" data-title="메인 대시보드" data-icon="layout-dashboard"></div>
 
-    <!-- ── 콘텐츠 ── -->
     <main class="rss-content">
 
-      <!-- ── 상단 2컬럼: 회사정보 + 퀵메뉴 ── -->
-      <div class="dash-grid dash-top mb-4">
-
-        <!-- 회사 정보 카드 -->
-        <!-- [DB] 테이블: company, member -->
-        <div class="rss-card">
-          <div class="rss-card__body flex gap-4">
-            <!-- 회사 로고 -->
-            <div class="flex-shrink-0">
-              <img src="https://placehold.co/80x80/F59E0B/ffffff?text=RSS"
-                alt="회사 로고" class="w-20 h-20 rounded-xl object-cover" />
-              <!-- [Java] <img src="${company.logoUrl}" alt="회사 로고" /> -->
-              <div class="text-center mt-2">
-                <span class="company-badge">차단기업</span>
-                <!-- [Java] ${company.companyType} -->
-              </div>
+      <!-- ══════════════════════════════════════════════════
+           ① 회사 정보 카드
+           [DB] company, member
+           [Java] ${company.companyNm}, ${company.ceoNm}, ${company.approverNm}
+           [Java] 로그인 계정 유형: ${loginType} = 'company' | 'employee'
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-card mb-4">
+        <div class="rss-card__body">
+          <div class="company-card">
+            <!-- [Java] th:text="${company.companyNm}" -->
+            <h2 class="company-card__name">한국도로차단(주)</h2>
+            <div class="company-card__meta">
+              <strong>대표자</strong>
+              <span>나잘난<!-- [Java] ${company.ceoNm} --></span>
             </div>
-            <!-- 회사 정보 -->
-            <div class="flex-1 min-w-0">
-              <h2 class="text-base font-bold text-gray-900 mb-2">한국도로차단(주)</h2>
-              <!-- [Java] ${company.companyNm} -->
-              <p class="text-base text-gray-600 mb-1">
-                <span class="text-gray-400 text-sm font-semibold mr-1">대표자</span>
-                나잘난<!-- [Java] ${company.ceoNm} -->
-              </p>
-              <p class="text-base text-gray-600 mb-4">
-                <span class="text-gray-400 text-sm font-semibold mr-1">승인인</span>
-                김석진, 정호석, 박지민<!-- [Java] ${company.approverNm} -->
-              </p>
-              <div class="flex gap-2 flex-wrap">
-                <a href="construction-list.html" class="rss-btn rss-btn--outline-amber rss-btn--sm">
-                  <i data-lucide="list" style="width:13px;height:13px;"></i>공사 현황
-                </a>
-                <a href="notice.html" class="rss-btn rss-btn--outline rss-btn--sm">
-                  <i data-lucide="bell" style="width:13px;height:13px;"></i>공지사항
-                </a>
-              </div>
+            <div class="company-card__meta">
+              <strong>승인자</strong>
+              <!-- [Java] th:text="${company.approverNm}" -->
+              <span>김석진, 정호석, 박지민</span>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- 퀵메뉴 카드 -->
-        <div class="rss-card">
-          <div class="rss-card__body">
-            <div class="quick-grid">
-              <a href="tma-card.html" class="quick-item active">
-                <div class="quick-item__icon">
-                  <i data-lucide="credit-card" style="width:22px;height:22px;color:#F59E0B;"></i>
-                </div>
-                <span class="quick-item__label">TMA카드<br>관리</span>
-              </a>
-              <a href="construction-list.html" class="quick-item">
-                <div class="quick-item__icon">
-                  <i data-lucide="hard-hat" style="width:22px;height:22px;color:#6b7280;"></i>
-                </div>
-                <span class="quick-item__label">내 공사<br>이력</span>
-              </a>
-              <a href="construction-info.html" class="quick-item">
-                <div class="quick-item__icon">
-                  <i data-lucide="file-text" style="width:22px;height:22px;color:#6b7280;"></i>
-                </div>
-                <span class="quick-item__label">공사<br>정보</span>
-              </a>
-              <a href="market.html" class="quick-item">
-                <div class="quick-item__icon">
-                  <i data-lucide="shopping-bag" style="width:22px;height:22px;color:#6b7280;"></i>
-                </div>
-                <span class="quick-item__label">장터</span>
-              </a>
-              <a href="community.html" class="quick-item">
-                <div class="quick-item__icon">
-                  <i data-lucide="users" style="width:22px;height:22px;color:#6b7280;"></i>
-                </div>
-                <span class="quick-item__label">커뮤니티</span>
-              </a>
-            </div>
+      <!-- ══════════════════════════════════════════════════
+           ② 퀵메뉴 — 5개 1줄 (모바일 3열)
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-card mb-4">
+        <div class="rss-card__body">
+          <div class="quick-grid">
+
+            <a href="tma-card.html" class="quick-item active">
+              <div class="quick-item__icon">
+                <i data-lucide="credit-card" style="width:22px;height:22px;color:#F59E0B;"></i>
+              </div>
+              <span class="quick-item__label">TMA카드 관리</span>
+            </a>
+
+            <a href="construction-list.html" class="quick-item">
+              <div class="quick-item__icon">
+                <i data-lucide="hard-hat" style="width:22px;height:22px;color:#6b7280;"></i>
+              </div>
+              <span class="quick-item__label">내 공사 이력</span>
+            </a>
+
+            <a href="construction-info.html" class="quick-item">
+              <div class="quick-item__icon">
+                <i data-lucide="file-text" style="width:22px;height:22px;color:#6b7280;"></i>
+              </div>
+              <span class="quick-item__label">공사 정보</span>
+            </a>
+
+            <a href="market.html" class="quick-item">
+              <div class="quick-item__icon">
+                <i data-lucide="shopping-bag" style="width:22px;height:22px;color:#6b7280;"></i>
+              </div>
+              <span class="quick-item__label">장터</span>
+            </a>
+
+            <a href="community.html" class="quick-item">
+              <div class="quick-item__icon">
+                <i data-lucide="users" style="width:22px;height:22px;color:#6b7280;"></i>
+              </div>
+              <span class="quick-item__label">커뮤니티</span>
+            </a>
+
           </div>
         </div>
+      </div>
 
-      </div><!-- /dash-top -->
-
-      <!-- ── 오늘 알림 ── -->
-      <!-- [DB] 테이블: notification WHERE mber_id = ? AND DATE(reg_dtm) = CURDATE() -->
+      <!-- ══════════════════════════════════════════════════
+           ③ 오늘 알림 — 읽음/읽지않음 구분 없이 통일
+           [DB] notification WHERE mber_id = ? AND DATE(reg_dtm) = CURDATE()
+           [Java] th:each="noti : ${todayNotiList}"
+           알림 수: ${todayNotiList.size()}
+      ══════════════════════════════════════════════════ -->
       <div class="rss-card mb-4">
         <div class="rss-card__header">
-          <div class="flex items-center gap-2">
+          <div style="display:flex; align-items:center; gap:8px;">
             <h3 class="rss-card__title">오늘 알림</h3>
-            <!-- [Java] 미읽 알림 수 -->
-            <span class="rss-badge rss-badge--new">2</span>
+            <!-- [Java] th:text="${todayNotiList.size()}" -->
+            <span class="rss-badge rss-badge--new" id="notiCount">3</span>
           </div>
-          <a href="notice.html" class="rss-card__more">더보기 &gt;</a>
+          <!-- 더보기 없음 — 전체 표시 -->
         </div>
-        <ul style="list-style:none; padding:0; margin:0;">
-          <!-- [Java] th:each="noti : ${todayNotiList}" -->
 
-          <!-- 알림 아이템 1 (읽지 않음) -->
-          <li class="flex items-start gap-3 px-5 py-3.5 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors"
-              onclick="location.href='construction-detail.html'">
-            <span class="noti-dot noti-dot--active mt-1.5"></span>
-            <div class="flex-1 min-w-0">
-              <p class="text-base text-gray-800 leading-relaxed">
-                <strong>[국도32번선 횡단보도 보수]</strong> 오늘 일정이 완료되었습니다. 다음 일정을 확인하세요.
-                <!-- [Java] ${noti.message} -->
-              </p>
-            </div>
-            <span class="text-sm text-gray-400 flex-shrink-0 mt-0.5">2026-06-12 11:45</span>
-            <!-- [Java] ${#temporals.format(noti.regDtm, 'yyyy-MM-dd HH:mm')} -->
+        <!-- [Java] th:each="noti : ${todayNotiList}" -->
+        <ul class="noti-list" id="notiList">
+
+          <!-- 알림 1 -->
+          <li class="noti-item" onclick="location.href='construction-detail.html'">
+            <span class="noti-dot"></span>
+            <span class="noti-item__msg">
+              <strong>[국도32번선 횡단보도 보수]</strong> 오늘 일정이 완료되었습니다. 다음 일정을 확인하세요.
+              <!-- [Java] th:utext="${noti.message}" -->
+            </span>
+            <!-- [Java] th:text="${#temporals.format(noti.regDtm,'yyyy-MM-dd HH:mm')}" -->
+            <span class="noti-item__date">2026-06-12 11:45</span>
           </li>
 
-          <!-- 알림 아이템 2 (읽지 않음) -->
-          <li class="flex items-start gap-3 px-5 py-3.5 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors"
-              onclick="location.href='construction-detail.html'">
-            <span class="noti-dot noti-dot--active mt-1.5"></span>
-            <div class="flex-1 min-w-0">
-              <p class="text-base text-gray-800 leading-relaxed">
-                <strong>[중앙분리대 시공]</strong> 공사 정보와 일정이 변경되었습니다.
-              </p>
-            </div>
-            <span class="text-sm text-gray-400 flex-shrink-0 mt-0.5">2026-06-11 09:00</span>
+          <!-- 알림 2 -->
+          <li class="noti-item" onclick="location.href='construction-detail.html'">
+            <span class="noti-dot"></span>
+            <span class="noti-item__msg">
+              <strong>[중앙분리대 시공]</strong> 공사 정보와 일정이 변경되었습니다.
+            </span>
+            <span class="noti-item__date">2026-06-11 09:00</span>
           </li>
 
-          <!-- 알림 아이템 3 (읽음) -->
-          <li class="flex items-start gap-3 px-5 py-3.5 hover:bg-gray-50 cursor-pointer transition-colors"
-              onclick="location.href='construction-detail.html'">
-            <span class="noti-dot noti-dot--inactive mt-1.5"></span>
-            <div class="flex-1 min-w-0">
-              <p class="text-base text-gray-500 leading-relaxed">
-                [경부선 포장공사] 공사일정이 수정되었습니다.
-              </p>
-            </div>
-            <span class="text-sm text-gray-400 flex-shrink-0 mt-0.5">2026-06-10 09:00</span>
+          <!-- 알림 3 -->
+          <li class="noti-item" onclick="location.href='construction-detail.html'">
+            <span class="noti-dot"></span>
+            <span class="noti-item__msg">
+              [경부선 포장공사] 공사일정이 수정되었습니다.
+            </span>
+            <span class="noti-item__date">2026-06-10 09:00</span>
           </li>
 
         </ul>
       </div>
 
-      <!-- ── 광고 이미지 ── -->
-      <!-- [DB] 테이블: advertisement WHERE company_id = ? AND status = 'active' -->
+      <!-- ══════════════════════════════════════════════════
+           ④ 광고
+           [DB] advertisement WHERE status='active' ORDER BY reg_dtm DESC LIMIT 4
+           [Java] th:each="ad : ${adList}"
+      ══════════════════════════════════════════════════ -->
       <div class="rss-card mb-4">
         <div class="rss-card__header">
-          <h3 class="rss-card__title">광고 이미지</h3>
-          <a href="ad.html" class="rss-card__more">관리 &gt;</a>
+          <h3 class="rss-card__title">광고</h3>
+          <!-- 관리 메뉴 없음 -->
         </div>
         <div class="rss-card__body">
           <div class="ad-grid">
+
             <!-- [Java] th:each="ad : ${adList}" -->
-            <div class="ad-img-wrap">
-              <a href="ad-detail.html">
-                <img src="https://placehold.co/400x220/e5e7eb/9ca3af?text=광고+이미지+1" alt="광고 1" />
-                <!-- [Java] <img src="${ad.imgUrl}" alt="${ad.title}" /> -->
-              </a>
-            </div>
-            <div class="ad-img-wrap">
-              <a href="ad-detail.html">
-                <img src="https://placehold.co/400x220/e5e7eb/9ca3af?text=광고+이미지+2" alt="광고 2" />
-              </a>
-            </div>
-            <div class="ad-img-wrap">
-              <a href="ad-detail.html">
-                <img src="https://placehold.co/400x220/e5e7eb/9ca3af?text=광고+이미지+3" alt="광고 3" />
-              </a>
-            </div>
-            <!-- 광고 등록 버튼 -->
-            <a href="ad.html" class="ad-add-btn">
-              <span style="font-size:24px; color:#d1d5db;">+</span>
-              <span style="font-size:14px; color:#9ca3af;">광고 등록</span>
+            <a href="ad-detail.html" class="ad-thumb">
+              <img src="https://placehold.co/400x250/e5e7eb/9ca3af?text=광고+1" alt="광고 1" />
+              <!-- [Java] <img th:src="${ad.imgUrl}" th:alt="${ad.title}" /> -->
             </a>
+            <a href="ad-detail.html" class="ad-thumb">
+              <img src="https://placehold.co/400x250/e5e7eb/9ca3af?text=광고+2" alt="광고 2" />
+            </a>
+            <a href="ad-detail.html" class="ad-thumb">
+              <img src="https://placehold.co/400x250/e5e7eb/9ca3af?text=광고+3" alt="광고 3" />
+            </a>
+
+            <!-- + 더보기 → 광고 메뉴 이동 -->
+            <a href="ad.html" class="ad-more-btn">
+              <span class="ad-more-btn__icon">+</span>
+              <span class="ad-more-btn__label">더보기</span>
+            </a>
+
           </div>
         </div>
       </div>
 
-      <!-- ── 공사현황 테이블 ── -->
-      <!-- [DB] 테이블: construction JOIN company ON construction.order_company_id = company.id
-                       WHERE construction.block_company_id = ? ORDER BY start_dt DESC LIMIT 10 -->
+      <!-- ══════════════════════════════════════════════════
+           ⑤ 공사 현황
+           [DB] construction WHERE block_company_id = ? ORDER BY start_dt DESC
+           [Java] th:each="item : ${constructionList}"
+           [Java] 로그인 유형: ${loginType} = 'company'(기업주) | 'employee'(직원)
+             - company  → 금액 열 표시
+             - employee → 씨인카 수량 열 표시
+      ══════════════════════════════════════════════════ -->
       <div class="rss-card">
-        <div class="rss-card__header">
-            <a href="construction-list.html" class="text-base font-bold text-gray-900 hover:text-amber-600 transition-colors">
-            공사현황 &gt;
+
+        <div class="section-header">
+          <span class="section-header__title">공사 현황</span>
+          <a href="construction-list.html" class="section-header__more">
+            모두보기 <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
           </a>
         </div>
 
         <!-- PC 테이블 (769px 이상) -->
         <div class="rss-table-wrap desktop-table">
           <table class="rss-table">
+            <colgroup>
+              <col style="width:90px;" />
+              <col />
+              <col style="width:130px;" />
+              <col style="width:220px;" />
+              <!--
+                [Java] th:if="${loginType == 'company'}"  → 금액 열
+                [Java] th:if="${loginType == 'employee'}" → 씨인카 수량 열
+              -->
+              <col style="width:160px;" id="colAmountOrQty" />
+              <col style="width:110px;" />
+            </colgroup>
             <thead>
               <tr>
                 <th>상태</th>
                 <th>공사명</th>
                 <th>발주업체명</th>
                 <th>기간</th>
-                <th>씨인카 수량</th>
+                <!--
+                  [Java] th:if="${loginType == 'company'}"  → <th>금액</th>
+                  [Java] th:if="${loginType == 'employee'}" → <th>씨인카 수량</th>
+                  더미: 기업주 로그인 기준 → 금액 표시
+                -->
+                <th id="thAmountOrQty">금액</th>
                 <th>관리</th>
               </tr>
             </thead>
             <tbody>
               <!-- [Java] th:each="item : ${constructionList}" -->
 
+              <!-- 예정 행 — 차단 취소 버튼 -->
               <tr>
-                <!-- [DB] construction.status: 'scheduled'|'progress'|'complete'|'cancel' -->
                 <td><span class="rss-badge rss-badge--scheduled">예정</span></td>
-                <td>호남선 순천방향 포장공사</td><!-- [Java] ${item.constructionNm} -->
-                <td>한국개발</td><!-- [Java] ${item.orderCompanyNm} -->
+                <!-- [Java] th:text="${item.constructionNm}" -->
+                <td><a href="construction-detail.html" class="rss-link">호남선 순천방향 포장공사</a></td>
+                <!-- [Java] th:text="${item.orderCompanyNm}" -->
+                <td>한국개발</td>
+                <td>2026-07-01 ~ 2026-07-03 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(3일)</span></td>
+                <!--
+                  [Java] th:if="${loginType == 'company'}"  → th:text="${#numbers.formatInteger(item.amount,1,'COMMA')}"
+                  [Java] th:if="${loginType == 'employee'}" → th:text="${item.equipmentSummary}"
+                -->
+                <td id="tdAmount1"><!-- 예정 상태는 금액 미확정 → 공란 --></td>
                 <td>
-                  2026-07-01 ~ 2026-07-03
-                  <span class="text-sm text-gray-400">(3일)</span>
-                  <!-- [Java] ${item.startDt} ~ ${item.endDt} -->
-                </td>
-                <td class="text-sm">TMA-1 : 1대, TMA-3 : 2대, PLCS : 2대</td>
-                <!-- [Java] ${item.equipmentSummary} -->
-                <td>
-                  <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">차단 취소</a>
+                  <!-- 예정 상태 → 차단 취소 버튼 -->
+                  <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+                          onclick="openCancelModal(this)" data-nm="호남선 순천방향 포장공사">
+                    차단 취소
+                  </button>
                 </td>
               </tr>
 
+              <!-- 진행중 행 — 오늘 완료 버튼 -->
               <tr>
                 <td><span class="rss-badge rss-badge--progress">진행중</span></td>
-                <td><a href="construction-detail.html" class="hover:text-amber-600">국도 32번선 횡단보도 보수</a></td>
+                <td><a href="construction-detail.html" class="rss-link">국도 32번선 횡단보도 보수</a></td>
                 <td>소망건설</td>
-                <td>2026-06-25 ~ 2026-06-25 <span class="text-sm text-gray-400">(1일)</span></td>
-                <td class="text-sm">TMA-1 : 2대, TMA-3 : 1대</td>
+                <td>2026-06-25 ~ 2026-06-25 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(1일)</span></td>
+                <td>3,000,000</td>
                 <td>
-                  <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm" style="border-color:#F59E0B; color:#d97706;">오늘 완료</a>
+                  <!-- 진행중 + 오늘 공사 → 오늘 완료 버튼 -->
+                  <button type="button" class="rss-btn rss-btn--outline-amber rss-btn--sm"
+                          onclick="openCompleteModal(this)" data-nm="국도 32번선 횡단보도 보수">
+                    오늘 완료
+                  </button>
                 </td>
               </tr>
 
+              <!-- 진행중 행 — 버튼 없음 (오늘 공사 아님) -->
               <tr>
                 <td><span class="rss-badge rss-badge--progress">진행중</span></td>
-                <td>중앙분리대 시공</td>
+                <td><a href="construction-detail.html" class="rss-link">중앙분리대 시공</a></td>
                 <td>오봉도건</td>
-                <td>2026-06-12 ~ 2026-06-18 <span class="text-sm text-gray-400">(7일)</span></td>
-                <td class="text-sm">TMA-3 : 2대, PLCS : 2대</td>
+                <td>2026-06-12 ~ 2026-06-18 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(7일)</span></td>
+                <td>5,000,000</td>
                 <td></td>
               </tr>
 
@@ -384,28 +522,28 @@
           </table>
         </div>
 
-        <!-- 모바일 카드형 목록 (768px 이하) -->
+        <!-- 모바일 카드형 (768px 이하) -->
         <div class="mobile-construction-list">
           <!-- [Java] th:each="item : ${constructionList}" -->
 
           <div class="mobile-construction-item">
             <div class="flex items-center justify-between mb-2">
               <span class="rss-badge rss-badge--scheduled">예정</span>
-              <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">차단 취소</a>
+              <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+                      onclick="openCancelModal(this)" data-nm="호남선 순천방향 포장공사">차단 취소</button>
             </div>
             <p class="text-base font-semibold text-gray-900 mb-1">호남선 순천방향 포장공사</p>
             <p class="text-sm text-gray-500">발주: 한국개발 | 2026-07-01 ~ 2026-07-03 (3일)</p>
-            <p class="text-sm text-gray-400 mt-1">TMA-1 : 1대, TMA-3 : 2대, PLCS : 2대</p>
           </div>
 
           <div class="mobile-construction-item">
             <div class="flex items-center justify-between mb-2">
               <span class="rss-badge rss-badge--progress">진행중</span>
-              <a href="construction-detail.html" class="rss-btn rss-btn--sm" style="border:1.5px solid #F59E0B; color:#d97706; background:transparent; border-radius:6px; padding:6px 12px; font-size:14px; font-weight:600;">오늘 완료</a>
+              <button type="button" class="rss-btn rss-btn--outline-amber rss-btn--sm"
+                      onclick="openCompleteModal(this)" data-nm="국도 32번선 횡단보도 보수">오늘 완료</button>
             </div>
             <p class="text-base font-semibold text-gray-900 mb-1">국도 32번선 횡단보도 보수</p>
             <p class="text-sm text-gray-500">발주: 소망건설 | 2026-06-25 ~ 2026-06-25 (1일)</p>
-            <p class="text-sm text-gray-400 mt-1">TMA-1 : 2대, TMA-3 : 1대</p>
           </div>
 
           <div class="mobile-construction-item">
@@ -414,26 +552,273 @@
             </div>
             <p class="text-base font-semibold text-gray-900 mb-1">중앙분리대 시공</p>
             <p class="text-sm text-gray-500">발주: 오봉도건 | 2026-06-12 ~ 2026-06-18 (7일)</p>
-            <p class="text-sm text-gray-400 mt-1">TMA-3 : 2대, PLCS : 2대</p>
           </div>
 
-        </div><!-- /mobile-construction-list -->
+        </div>
 
-      </div><!-- /공사현황 카드 -->
+      </div><!-- /공사현황 -->
 
     <div id="rss-footer-wrap"></div>
     </main>
-  </div><!-- /rss-main -->
+  </div>
 
 </div><!-- /rss-app -->
 
 
-<!-- 공통 JS -->
+<!-- ══════════════════════════════════════════════════════════
+     경고창 모달 — 차단 취소
+     [Java] 취소 처리 후 페이지 새로고침
+══════════════════════════════════════════════════════════ -->
+<div class="rss-modal-backdrop" id="modalCancel">
+  <div class="rss-modal" role="dialog" aria-modal="true" aria-labelledby="cancelTitle">
+    <p class="rss-modal__title" id="cancelTitle">차단 취소</p>
+    <p class="rss-modal__body">
+      차단 취소에 대해 <span class="highlight">발주업체와 협의</span>가 되었습니까?
+    </p>
+    <!-- 취소 사유 입력 -->
+    <textarea id="cancelReason" placeholder="취소 사유를 입력하세요 (필수)"></textarea>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="closeModal('modalCancel')">아니오</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="submitCancel()">예</button>
+    </div>
+  </div>
+</div>
+
+<!-- 차단 취소 완료 알림 -->
+<div class="rss-modal-backdrop" id="modalCancelDone">
+  <div class="rss-modal">
+    <p class="rss-modal__title">처리 완료</p>
+    <p class="rss-modal__body">
+      공사가 취소되었습니다.<br>
+      차단 비용은 별도 협의 후 안내됩니다.
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="location.reload()">확인</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     경고창 모달 — 오늘 완료
+     플로우: 수량 변경 여부 확인 → 예: 콜센터 안내 → 아니오: 다음 일정 확인 분기
+══════════════════════════════════════════════════════════ -->
+
+<!-- Step 1: 수량 변경 여부 -->
+<div class="rss-modal-backdrop" id="modalComplete1">
+  <div class="rss-modal">
+    <p class="rss-modal__title">오늘 완료</p>
+    <p class="rss-modal__body">
+      투입된 씨인카 수량이 바뀌었다면 콜센터
+      <span class="highlight">(1566-0000)</span>으로 연락해주세요.<br><br>
+      수량이 바뀌었나요?
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="completeStep2No()">아니오</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="completeStep2Yes()">예</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 2-예: 콜센터 연락 안내 -->
+<div class="rss-modal-backdrop" id="modalComplete2Yes">
+  <div class="rss-modal">
+    <p class="rss-modal__title">콜센터 연락 안내</p>
+    <p class="rss-modal__body">
+      콜센터 <span class="highlight">(1566-0000)</span>으로 연락해주세요.<br>
+      콜센터에서 처리해드립니다.
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="closeModal('modalComplete2Yes')">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 2-아니오: 다음 공사 일정 확인 -->
+<div class="rss-modal-backdrop" id="modalComplete2No">
+  <div class="rss-modal">
+    <p class="rss-modal__title">다음 공사 일정 확인</p>
+    <p class="rss-modal__body">
+      다음 공사 일정에 대해 상호 차단 협의가 되었습니까?
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="completeNoNextSchedule()">아니오</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="completeHasNextSchedule()">예</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 3-예(다음 일정 있음): 다음 공사 일정 알림 -->
+<div class="rss-modal-backdrop" id="modalComplete3Yes">
+  <div class="rss-modal">
+    <p class="rss-modal__title">다음 공사 일정</p>
+    <p class="rss-modal__body">
+      <!-- [Java] th:text="'다음 공사는 ' + ${nextSchedule.startDt} + ' ' + ${nextSchedule.startTime} + '에 차단 시작입니다.'" -->
+      다음 공사는 <span class="highlight">**월 **일 **시</span>에 차단 시작입니다.
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="submitCompleteDone()">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 3-아니오(다음 일정 없음): 추가 진행 불가 여부 확인 -->
+<div class="rss-modal-backdrop" id="modalComplete3No">
+  <div class="rss-modal">
+    <p class="rss-modal__title">추가 진행 확인</p>
+    <p class="rss-modal__body">
+      추가 진행이 불가능합니까?<br>
+      추가불진행시 공사는 종료되고 <span class="highlight">패널티가 발생</span>합니다.
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="completeNoPenaltyNo()">아니오</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="completeNoPenaltyYes()">예</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 4-예(패널티 동의): 운영자 알림 -->
+<div class="rss-modal-backdrop" id="modalComplete4PenaltyYes">
+  <div class="rss-modal">
+    <p class="rss-modal__title">운영자 알림</p>
+    <p class="rss-modal__body">
+      운영자에게 알림이 발송되었습니다.<br>
+      추가 불진행시 패널티가 발생합니다.
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="closeModal('modalComplete4PenaltyYes')">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 4-아니오(패널티 거부): 협의 후 진행완료 요청 -->
+<div class="rss-modal-backdrop" id="modalComplete4PenaltyNo">
+  <div class="rss-modal">
+    <p class="rss-modal__title">협의 후 진행 완료</p>
+    <p class="rss-modal__body">
+      다음 공사 일정을 협의한 후 '진행완료' 해 주십시오.
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="closeModal('modalComplete4PenaltyNo')">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 마지막 날 — 금일로 모든 공사 종료 -->
+<div class="rss-modal-backdrop" id="modalCompleteLastDay">
+  <div class="rss-modal">
+    <p class="rss-modal__title">공사 종료</p>
+    <p class="rss-modal__body">
+      금일로 모든 공사가 종료됩니다.
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="submitCompleteDone()">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 진행 완료 최종 -->
+<div class="rss-modal-backdrop" id="modalCompleteFinal">
+  <div class="rss-modal">
+    <p class="rss-modal__title">진행 완료</p>
+    <p class="rss-modal__body">진행 완료되었습니다.</p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="location.reload()">확인</button>
+    </div>
+  </div>
+</div>
+
+
 <script src="rss-common.js"></script>
 <script>
-  /* Lucide 아이콘 초기화 */
   lucide.createIcons();
-</script>
 
+  /* ── 모달 공통 유틸 ─────────────────────────────────── */
+  function openModal(id)  { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  function closeAll() {
+    document.querySelectorAll('.rss-modal-backdrop').forEach(function(el) {
+      el.classList.remove('open');
+    });
+  }
+
+  /* ── 차단 취소 플로우 ───────────────────────────────── */
+  function openCancelModal(btn) {
+    document.getElementById('cancelReason').value = '';
+    openModal('modalCancel');
+  }
+  function submitCancel() {
+    var reason = document.getElementById('cancelReason').value.trim();
+    if (!reason) {
+      alert('취소 사유를 입력해주세요.');
+      return;
+    }
+    /* [Java] POST /construction/cancel { reason: reason }
+       → 취소 처리 후 페이지 새로고침 */
+    closeModal('modalCancel');
+    openModal('modalCancelDone');
+  }
+
+  /* ── 오늘 완료 플로우 ───────────────────────────────── */
+  function openCompleteModal(btn) {
+    closeAll();
+    openModal('modalComplete1');
+  }
+
+  /* Step 1: 수량 변경 → 예 */
+  function completeStep2Yes() {
+    closeModal('modalComplete1');
+    openModal('modalComplete2Yes');
+  }
+
+  /* Step 1: 수량 변경 → 아니오 */
+  function completeStep2No() {
+    closeModal('modalComplete1');
+    /* [Java] 다음 일정 여부 서버 확인 후 분기
+       더미: 다음 일정 있음 시나리오 */
+    openModal('modalComplete2No');
+  }
+
+  /* Step 2-아니오: 다음 일정 협의 → 예 (다음 일정 있음) */
+  function completeHasNextSchedule() {
+    closeModal('modalComplete2No');
+    /* [Java] 마지막 날 여부 확인 후 분기
+       더미: 마지막 날 아님 시나리오 */
+    openModal('modalComplete3Yes');
+  }
+
+  /* Step 2-아니오: 다음 일정 협의 → 아니오 (추가 진행 불가 확인) */
+  function completeNoNextSchedule() {
+    closeModal('modalComplete2No');
+    openModal('modalComplete3No');
+  }
+
+  /* Step 3-아니오: 패널티 → 예 */
+  function completeNoPenaltyYes() {
+    closeModal('modalComplete3No');
+    /* [Java] POST /construction/complete/penalty-notify */
+    openModal('modalComplete4PenaltyYes');
+  }
+
+  /* Step 3-아니오: 패널티 → 아니오 */
+  function completeNoPenaltyNo() {
+    closeModal('modalComplete3No');
+    openModal('modalComplete4PenaltyNo');
+  }
+
+  /* 최종 완료 처리 */
+  function submitCompleteDone() {
+    closeAll();
+    /* [Java] POST /construction/complete → 상태: 종료로 변경 → 페이지 새로고침 */
+    openModal('modalCompleteFinal');
+  }
+
+  /* 배경 클릭 시 닫기 */
+  document.querySelectorAll('.rss-modal-backdrop').forEach(function(backdrop) {
+    backdrop.addEventListener('click', function(e) {
+      if (e.target === backdrop) backdrop.classList.remove('open');
+    });
+  });
+</script>
 </body>
 </html>
