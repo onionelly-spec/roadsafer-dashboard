@@ -7,141 +7,56 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
-
   <style>
-    /* 탭 스타일 */
-    .detail-tabs {
-      display: flex;
-      gap: 0;
-      border-bottom: 2px solid #e5e7eb;
-      padding: 0 20px;
-      margin-bottom: 0;
-      overflow-x: auto;
-    }
-    .detail-tab {
-      padding: 13px 22px;
-      font-size: 15px;
-      font-weight: 600;
-      color: #9ca3af;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      white-space: nowrap;
-      transition: color 0.15s;
-      background: none;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-    }
-    .detail-tab:hover { color: #374151; }
-    .detail-tab.active { color: #F59E0B; border-bottom-color: #F59E0B; }
-
-    /* 탭 패널 */
-    .tab-panel { display: none; padding: 24px 20px 28px; }
-    .tab-panel.active { display: block; }
-
-    /* 정보 그리드 */
-    .info-dl {
-      display: grid;
-      grid-template-columns: 120px 1fr;
-      gap: 0;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-    .info-dl dt {
-      background: #f9fafb;
-      padding: 12px 16px;
+    /* ── 상세 정보 테이블 ── */
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 14px;
-      font-weight: 600;
-      color: #6b7280;
-      border-bottom: 1px solid #e5e7eb;
-      border-right: 1px solid #e5e7eb;
-      display: flex;
-      align-items: center;
     }
-    .info-dl dd {
-      padding: 12px 16px;
-      font-size: 15px;
-      color: #1f2937;
-      border-bottom: 1px solid #e5e7eb;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .info-dl dt:last-of-type,
-    .info-dl dd:last-of-type { border-bottom: none; }
-    @media (max-width: 560px) {
-      .info-dl { grid-template-columns: 90px 1fr; }
-      .detail-tab { padding: 10px 14px; font-size: 14px; }
-    }
-
-    /* 장비 테이블 */
-    .equip-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    .equip-table th {
+    .detail-table th {
+      width: 130px;
+      padding: 13px 18px;
       background: #f9fafb;
-      padding: 9px 12px;
-      text-align: center;
-      font-weight: 600;
-      color: #6b7280;
       border: 1px solid #e5e7eb;
       font-size: 13px;
-    }
-    .equip-table td {
-      padding: 9px 12px;
+      font-weight: 600;
+      color: #6b7280;
       text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .detail-table td {
+      padding: 13px 18px;
       border: 1px solid #e5e7eb;
       color: #374151;
+      vertical-align: middle;
+      line-height: 1.6;
     }
-    .equip-table tr:hover td { background: #fffbf0; }
+    /* 공사없음 날짜 강조 */
+    .no-work-date {
+      color: #dc2626;
+      font-weight: 600;
+    }
+    /* 방공소 적용 강조 */
+    .text-highlight { color: #d97706; font-weight: 600; }
 
-    /* 진행상황 캘린더 */
-    .cal-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    .cal-table th {
-      background: #f9fafb;
-      padding: 9px 6px;
-      text-align: center;
-      font-weight: 600;
-      color: #6b7280;
-      border: 1px solid #e5e7eb;
-      font-size: 13px;
+    /* ── 하단 버튼 영역 ── */
+    .detail-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px 24px;
+      border-top: 1px solid #f3f4f6;
     }
-    .cal-table td {
-      padding: 10px 8px;
-      text-align: center;
-      border: 1px solid #e5e7eb;
-      vertical-align: top;
-      min-width: 60px;
-    }
-    .cal-table .cal-date { font-size: 13px; color: #9ca3af; margin-bottom: 4px; }
-    .cal-table .cal-date.today { font-weight: 700; color: #1f2937; }
-    .cal-badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.1s;
-    }
-    .cal-badge:hover { opacity: 0.8; }
-    .cal-badge--demo   { background: #dbeafe; color: #1d4ed8; }
-    .cal-badge--done   { background: #dcfce7; color: #15803d; }
-    .cal-badge--cancel { background: #fee2e2; color: #dc2626; }
-    .cal-badge--plan   { background: #f3f4f6; color: #6b7280; }
-    .cal-total {
-      text-align: right;
-      font-size: 13px;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 12px;
-    }
-    @media (max-width: 700px) {
-      .cal-table { font-size: 11px; }
-      .cal-table th, .cal-table td { padding: 7px 4px; min-width: 40px; }
-      .cal-badge { padding: 2px 4px; font-size: 10px; }
+
+    /* ── 반응형 ── */
+    @media (max-width: 640px) {
+      .detail-table th { width: 90px; padding: 10px 12px; font-size: 12px; }
+      .detail-table td { padding: 10px 12px; font-size: 13px; }
+      .detail-footer { flex-direction: column; }
+      .detail-footer .rss-btn { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -149,275 +64,155 @@
 
 <div class="rss-app">
 
-<div id="rss-sidebar-wrap"></div>
+  <div id="rss-sidebar-wrap"></div>
 
-  <!-- ── 메인 ── -->
   <div class="rss-main" id="rssMain">
 
-<div id="rss-header-wrap" data-title="공사 정보 상세"></div>
+    <div id="rss-header-wrap" data-title="공사 정보 상세"></div>
 
     <main class="rss-content">
 
-      <!-- 공사 상세 카드 -->
-      <!-- [DB] 테이블: construction WHERE construction_id = ? -->
-      <div class="rss-card">
+      <div class="rss-card" style="padding:0;">
 
-        <!-- 탭 네비게이션 -->
-        <div class="detail-tabs" role="tablist">
-          <button class="detail-tab active" role="tab" data-tab="tab-info"   aria-selected="true">공사 정보</button>
-          <button class="detail-tab"        role="tab" data-tab="tab-block"  aria-selected="false">차단 정보</button>
-          <button class="detail-tab"        role="tab" data-tab="tab-status" aria-selected="false">진행 상황</button>
+        <!-- ══════════════════════════════════════════════════
+             공사 정보 상세 (B1-1)
+             [DB] 테이블: construction WHERE construction_seq = #{constructionSeq}
+             [Java] Model: construction (ConstructionDto)
+        ══════════════════════════════════════════════════ -->
+        <div style="overflow-x:auto; padding: 20px 24px 0;">
+          <table class="detail-table">
+            <tbody>
+
+              <!-- 공사명 -->
+              <tr>
+                <th scope="row">공사명</th>
+                <!-- [Java] th:text="${construction.constructionNm}" -->
+                <td>횡단보도 시공</td>
+              </tr>
+
+              <!-- 기간 -->
+              <tr>
+                <th scope="row">기간</th>
+                <!-- [Java] th:text="${construction.startDt} + ' ~ ' + ${construction.endDt}
+                             + '(차단 기간 : ' + ${construction.blockDays} + '일.  공사없음 : ' + ${construction.noWorkDates} + ')'" -->
+                <td>
+                  2026-06-25 ~ 2026-06-30
+                  <span style="color:#6b7280;">(차단 기간 : 4일. </span>
+                  <span>공사없음 : </span>
+                  <span class="no-work-date">06/28, 06/29</span>
+                  <span style="color:#6b7280;">)</span>
+                </td>
+              </tr>
+
+              <!-- 시간 -->
+              <tr>
+                <th scope="row">시간</th>
+                <!-- [Java] th:text="${construction.workTime}" -->
+                <td>야간 / 19시 차단 시작</td>
+              </tr>
+
+              <!-- 도로 구분 -->
+              <tr>
+                <th scope="row">도로 구분</th>
+                <!-- [Java] th:text="${construction.roadType}" -->
+                <!-- [DB] 컬럼: construction.road_type ('highway'|'national'|'local') -->
+                <td>국도</td>
+              </tr>
+
+              <!-- 길 구분 -->
+              <tr>
+                <th scope="row">길 구분</th>
+                <!-- [Java] th:text="${construction.laneType}" -->
+                <!-- [DB] 컬럼: construction.lane_type ('main'|'side'|'ramp') -->
+                <td>본선</td>
+              </tr>
+
+              <!-- 도로명 -->
+              <tr>
+                <th scope="row">도로명</th>
+                <!-- [Java] th:text="${construction.roadNm}" -->
+                <td>국도 32번</td>
+              </tr>
+
+              <!-- 방향 -->
+              <tr>
+                <th scope="row">방향</th>
+                <!-- [Java] th:text="${construction.direction}" -->
+                <td>대전</td>
+              </tr>
+
+              <!-- 공사구간 -->
+              <tr>
+                <th scope="row">공사구간</th>
+                <!-- [Java] th:text="${construction.sectionStart} + 'km ~ ' + ${construction.sectionEnd} + 'km'" -->
+                <td>105.6km ~ 105.7km</td>
+              </tr>
+
+              <!-- 품목별 수량 -->
+              <tr>
+                <th scope="row">품목별 수량</th>
+                <!-- [Java] th:text="${construction.equipSummary}" -->
+                <!-- [DB] 컬럼: construction.equip_summary (예: 'TMA1:1대,TMA3:2대,PLCS:2대') -->
+                <td>TMA1 : 1대, TMA3 : 2대, PLCS : 2대</td>
+              </tr>
+
+              <!-- 시연회 -->
+              <tr>
+                <th scope="row">시연회</th>
+                <!-- [Java] th:text="'시연회 날짜 : ' + ${construction.demoDate} + ', ' + ${construction.demoType} + ', ' + ${construction.demoFee} + '원'" -->
+                <!-- [DB] 컬럼: construction.demo_date, construction.demo_type, construction.demo_fee -->
+                <td>
+                  시연회 날짜 : 2026-06-22, 주간,
+                  <span class="text-highlight">방공소 적용 (2,450,000원)</span>
+                </td>
+              </tr>
+
+              <!-- 권역 -->
+              <tr>
+                <th scope="row">권역</th>
+                <!-- [Java] th:text="${construction.region}" -->
+                <!-- [DB] 컬럼: construction.region -->
+                <td>대전, 충남</td>
+              </tr>
+
+              <!-- 공사 단가(1대당) -->
+              <tr>
+                <th scope="row">공사 단가(1대당)</th>
+                <!-- [Java] th:text="'긴급 | TMA1 : ' + ${construction.priceTma1} + ', TMA3 : ' + ${construction.priceTma3} + ', PLCS : ' + ${construction.pricePlcs} + ', 신호수 : ' + ${construction.priceSignaler}" -->
+                <!-- [DB] 컬럼: construction.price_tma1, price_tma3, price_plcs, price_signaler -->
+                <td>긴급 | TMA1 : 600,000, TMA3 : 1,000,000, PLCS : 900,000, 신호수 : 250,000</td>
+              </tr>
+
+            </tbody>
+          </table>
         </div>
 
-        <!-- ───────────────────────────────────────────────
-             탭 1: 공사 정보
-             [DB] 테이블: construction
-        ─────────────────────────────────────────────── -->
-        <div id="tab-info" class="tab-panel active" role="tabpanel">
-
-          <dl class="info-dl">
-            <dt>공사명</dt>
-            <dd>국도 32번선 횡단보도 보수 공사<!-- [Java] ${construction.constructionNm} --></dd>
-
-            <dt>발주사</dt>
-            <dd>소망건설<!-- [Java] ${construction.orderCompanyNm} --></dd>
-
-            <dt>공사 기간</dt>
-            <dd>2026-06-25 ~ 2026-06-25<!-- [Java] ${construction.startDt} ~ ${construction.endDt} --></dd>
-
-            <dt>공사 지역</dt>
-            <dd>경기도 수원시 팔달구 인계동<!-- [Java] ${construction.region} --></dd>
-
-            <dt>공사 상태</dt>
-            <dd>
-              <span class="rss-badge rss-badge--progress">진행중</span>
-              <!-- [Java] ${construction.statusLabel} -->
-            </dd>
-
-            <dt>공사 유형</dt>
-            <dd>도로 보수<!-- [Java] ${construction.constructionType} --></dd>
-
-            <dt>담당자</dt>
-            <dd>김담당 (010-1234-5678)<!-- [Java] ${construction.managerNm} (${construction.managerTel}) --></dd>
-
-            <dt>비고</dt>
-            <dd>야간 작업 포함 (22:00 ~ 06:00)<!-- [Java] ${construction.description} --></dd>
-          </dl>
-
-          <!-- 첨부파일 -->
-          <!-- [DB] 테이블: construction_attachment WHERE construction_id = ? -->
-          <div class="mb-5">
-            <p class="text-xs font-semibold text-gray-400 mb-2">첨부파일</p>
-            <div class="flex flex-wrap gap-2">
-              <a href="#" class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline bg-blue-50 px-3 py-1.5 rounded-md">
-                <i data-lucide="paperclip" style="width:13px;height:13px;"></i>
-                <span class="truncate" style="max-width:140px;" title="공사계획서_수원_횡단보도.pdf">공사계획서_수원_횡...</span>.pdf
-                <!-- [Java] ${attachment.originalFileNm} -->
-              </a>
-              <a href="#" class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline bg-blue-50 px-3 py-1.5 rounded-md">
-                <i data-lucide="paperclip" style="width:13px;height:13px;"></i>
-                <span class="truncate" style="max-width:140px;" title="현장배치도.jpg">현장배치도</span>.jpg
-              </a>
-            </div>
-          </div>
-
-          <!-- 하단 버튼 -->
-          <div class="rss-post-footer">
-            <a href="construction-info.html" class="rss-btn rss-btn--outline">
-              <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
-            </a>
-          </div>
-
-        </div><!-- /tab-info -->
-
-        <!-- ───────────────────────────────────────────────
-             탭 2: 차단 정보
-             [DB] 테이블: construction_block WHERE construction_id = ?
-        ─────────────────────────────────────────────── -->
-        <div id="tab-block" class="tab-panel" role="tabpanel">
-
-          <!-- 안내 문구 -->
-          <div class="mb-5 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800 leading-relaxed">
-            투입될 씨인카 수량이 바뀌었다면 콜센터(1566-0000)로 연락해주세요.
-          </div>
-
-          <!-- 차단 장비 목록 -->
-          <!-- [DB] 테이블: construction_block_equipment WHERE construction_id = ? -->
-          <div class="overflow-x-auto mb-6">
-            <table class="equip-table">
-              <thead>
-                <tr>
-                  <th>장비 유형<!-- [DB] block_equipment.equip_type --></th>
-                  <th>장비 번호<!-- [DB] block_equipment.equip_no --></th>
-                  <th>씨인카 수량<!-- [DB] block_equipment.sinca_cnt --></th>
-                  <th>소유주<!-- [DB] block_equipment.owner_nm --></th>
-                  <th>TMA 카드<!-- [DB] block_equipment.tma_card_no --></th>
-                  <th>상태<!-- [DB] block_equipment.status --></th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- [Java] th:each="equip : ${blockEquipList}" -->
-                <tr>
-                  <td>TMA-1</td>
-                  <td>12가 3456</td>
-                  <td>3</td>
-                  <td>나잘난</td>
-                  <td>TMA-2024-001</td>
-                  <td><span class="rss-badge rss-badge--progress">배치완료</span></td>
-                </tr>
-                <tr>
-                  <td>TMA-3</td>
-                  <td>34나 5678</td>
-                  <td>2</td>
-                  <td>한국도로차단(주)</td>
-                  <td>TMA-2024-032</td>
-                  <td><span class="rss-badge rss-badge--scheduled">대기중</span></td>
-                </tr>
-                <tr>
-                  <td>PLCS</td>
-                  <td>56다 7890</td>
-                  <td>—</td>
-                  <td>나잘난</td>
-                  <td>—</td>
-                  <td><span class="rss-badge rss-badge--progress">배치완료</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- 하단 버튼 -->
-          <div class="rss-post-footer">
-            <a href="construction-info.html" class="rss-btn rss-btn--outline">
-              <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
-            </a>
-          </div>
-
-        </div><!-- /tab-block -->
-
-        <!-- ───────────────────────────────────────────────
-             탭 3: 진행 상황
-             [DB] 테이블: construction_progress WHERE construction_id = ?
-        ─────────────────────────────────────────────── -->
-        <div id="tab-status" class="tab-panel" role="tabpanel">
-
-          <!-- 안내 문구 -->
-          <div class="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800 leading-relaxed">
-            투입될 씨인카 수량이 바뀌었다면 콜센터(1566-0000)로 연락해주세요.<br>
-            금액을 누르면 날짜별 공사 금액을 확인할 수 있습니다.
-          </div>
-
-          <!-- 현재 합계 -->
-          <!-- [DB] SUM(construction_progress.amount) WHERE construction_id = ? AND status = 'done' -->
-          <div class="cal-total">현재 합계 : <span id="calTotal">7,850,000</span></div>
-
-          <!-- 주간 캘린더 -->
-          <!-- [DB] 테이블: construction_progress WHERE construction_id = ? -->
-          <!-- [Java] 날짜별로 그룹핑하여 요일 기준 캘린더 렌더링 -->
-          <div class="overflow-x-auto mb-6">
-            <table class="cal-table">
-              <thead>
-                <tr>
-                  <th>월</th><th>화</th><th>수</th><th>목</th>
-                  <th>금</th><th style="background:#f0f0f0;">토</th><th>일</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- 1주차 -->
-                <tr>
-                  <td>
-                    <div class="cal-date">6/22</div>
-                    <!-- [DB] progress.work_dt = '2026-06-22', status = 'demo' -->
-                    <span class="cal-badge cal-badge--demo"
-                          onclick="alert('시연회\n금액: 2,450,000원')"
-                          title="시연회 2,450,000원">시연회(2,450,000)</span>
-                  </td>
-                  <td><div class="cal-date">6/23</div></td>
-                  <td><div class="cal-date">6/24</div></td>
-                  <td>
-                    <div class="cal-date">6/25</div>
-                    <!-- [DB] progress.work_dt = '2026-06-25', status = 'done' -->
-                    <span class="cal-badge cal-badge--done"
-                          onclick="alert('공사완료\n금액: 4,900,000원')"
-                          title="공사완료 4,900,000원">공사완료(4,900,000)</span>
-                  </td>
-                  <td>
-                    <div class="cal-date">6/26</div>
-                    <!-- [DB] progress.work_dt = '2026-06-26', status = 'cancel' -->
-                    <span class="cal-badge cal-badge--cancel"
-                          onclick="alert('취소\n금액: -500,000원')"
-                          title="취소 -500,000원">취소(-500,000)</span>
-                  </td>
-                  <td style="background:#fafafa;">
-                    <div class="cal-date today">6/27</div>
-                    <!-- [DB] progress.work_dt = '2026-06-27', status = 'done' + 'cancel' -->
-                    <div class="flex flex-col gap-1 items-center">
-                      <span class="cal-badge cal-badge--done">완료</span>
-                      <span class="cal-badge cal-badge--cancel">취소</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="cal-date">6/28</div>
-                    <span class="text-xs text-gray-400">공사없음</span>
-                  </td>
-                </tr>
-                <!-- 2주차 -->
-                <tr>
-                  <td>
-                    <div class="cal-date">6/29</div>
-                    <span class="cal-badge cal-badge--plan">예정</span>
-                  </td>
-                  <td>
-                    <div class="cal-date">6/30</div>
-                    <span class="cal-badge cal-badge--plan">예정</span>
-                  </td>
-                  <td><div class="cal-date">7/1</div></td>
-                  <td><div class="cal-date">7/2</div></td>
-                  <td><div class="cal-date">7/3</div></td>
-                  <td style="background:#fafafa;"><div class="cal-date">7/4</div></td>
-                  <td><div class="cal-date">7/5</div></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- 하단 버튼 -->
-          <div class="rss-post-footer">
-            <a href="construction-info.html" class="rss-btn rss-btn--outline">
-              <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
-            </a>
-          </div>
-
-        </div><!-- /tab-status -->
+        <!-- ── 하단 버튼 ──────────────────────────────────────
+             [Java] 차단신청 버튼: 로그인한 차단기업 회원만 표시
+             [Java] th:if="${loginUsr != null and loginUsr.mberType == 'block'}"
+        ─────────────────────────────────────────────────── -->
+        <div class="detail-footer">
+          <!-- 차단신청 버튼 -->
+          <!-- [Java] th:href="@{/construction-info/apply/{id}(id=${construction.constructionSeq})}" -->
+          <a href="#" class="rss-btn rss-btn--amber">
+            <i data-lucide="file-plus" style="width:14px;height:14px;"></i>
+            차단신청
+          </a>
+          <!-- 목록 버튼 -->
+          <a href="construction-info.html" class="rss-btn rss-btn--outline">
+            <i data-lucide="list" style="width:14px;height:14px;"></i>
+            목록
+          </a>
+        </div>
 
       </div><!-- /rss-card -->
+
     </main>
   </div><!-- /rss-main -->
 
 </div><!-- /rss-app -->
 
 <script src="rss-common.js"></script>
-<script>
-  /* ── 탭 전환 ── */
-  document.querySelectorAll('.detail-tab').forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      /* 탭 버튼 활성화 */
-      document.querySelectorAll('.detail-tab').forEach(function(t) {
-        t.classList.remove('active');
-        t.setAttribute('aria-selected', 'false');
-      });
-      this.classList.add('active');
-      this.setAttribute('aria-selected', 'true');
-
-      /* 패널 활성화 */
-      var target = this.getAttribute('data-tab');
-      document.querySelectorAll('.tab-panel').forEach(function(p) {
-        p.classList.remove('active');
-      });
-      document.getElementById(target).classList.add('active');
-    });
-  });
-
-  lucide.createIcons();
-</script>
+<script>lucide.createIcons();</script>
 </body>
 </html>

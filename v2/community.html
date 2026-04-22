@@ -118,6 +118,12 @@
             </div>
           </div>
           <div class="rss-board-toolbar__right">
+            <!-- 내 글 보기 토글 -->
+            <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
+            <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" id="myPostBtn"
+                    onclick="toggleMyPost(this)">
+              <i data-lucide="user" style="width:13px;height:13px;"></i>내 글 보기
+            </button>
             <a href="community-write.html" class="rss-btn rss-btn--amber rss-btn--sm">
               <i data-lucide="pencil" style="width:13px;height:13px;"></i>글쓰기
             </a>
@@ -299,6 +305,17 @@
 </div><!-- /rss-app -->
 
 <script src="rss-common.js"></script>
-<script>lucide.createIcons();</script>
+<script>
+  lucide.createIcons();
+
+  /* ── 내 글 보기 토글 ──────────────────────────────────────
+     [Java] location.href = '/community?myYn=' + (isActive ? '' : 'Y');
+  ─────────────────────────────────────────────────────────── */
+  function toggleMyPost(btn) {
+    var isActive = btn.classList.contains('rss-btn--amber');
+    btn.classList.toggle('rss-btn--amber', !isActive);
+    btn.classList.toggle('rss-btn--outline', isActive);
+  }
+</script>
 </body>
 </html>

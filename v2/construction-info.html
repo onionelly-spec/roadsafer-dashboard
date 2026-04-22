@@ -7,77 +7,108 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
-
   <style>
-    /* 공사 정보 카드 그리드 */
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      padding: 16px 20px 20px;
-    }
-    @media (max-width: 1100px) { .info-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 600px)  { .info-grid { grid-template-columns: 1fr; } }
-
-    /* 공사 정보 카드 */
-    .info-card {
-      display: block;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 10px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      background: #fff;
-      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
-    }
-    .info-card:hover {
-      border-color: #F59E0B;
-      box-shadow: 0 4px 16px rgba(245,158,11,0.12);
-      transform: translateY(-2px);
-    }
-    .info-card__header {
-      padding: 14px 16px 10px;
-      border-bottom: 1px solid #f3f4f6;
+    /* ── 도로 유형 탭 ── */
+    .road-tabs {
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
+      align-items: flex-end;
+      gap: 0;
+      padding: 16px 24px 0;
     }
-    .info-card__title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #1a1c23;
-      line-height: 1.45;
-      flex: 1;
-    }
-    .info-card__body {
-      padding: 12px 16px 14px;
-    }
-    .info-card__row {
-      display: flex;
-      align-items: flex-start;
-      gap: 6px;
-      margin-bottom: 6px;
+    .road-tab {
+      padding: 8px 22px;
       font-size: 14px;
-    }
-    .info-card__row:last-child { margin-bottom: 0; }
-    .info-card__label {
-      color: #9ca3af;
-      font-size: 13px;
       font-weight: 600;
-      flex-shrink: 0;
-      min-width: 52px;
+      color: #6b7280;
+      cursor: pointer;
+      border: 1.5px solid #e5e7eb;
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      background: #f9fafb;
+      margin-right: 4px;
+      transition: background 0.15s, color 0.15s;
+      user-select: none;
+      position: relative;
+      bottom: -1px;
     }
-    .info-card__value {
-      color: #374151;
-      line-height: 1.5;
+    .road-tab.active {
+      background: #1a1f2e;
+      color: #fff;
+      border-color: #1a1f2e;
+      z-index: 1;
     }
-    .info-card__footer {
-      padding: 10px 16px;
-      border-top: 1px solid #f3f4f6;
+    .road-tab:not(.active):hover { background: #f3f4f6; color: #374151; }
+
+    /* ── 검색 툴바 ── */
+    .info-toolbar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 14px 24px;
+      border-bottom: 1px solid #f3f4f6;
+      flex-wrap: wrap;
+    }
+    .info-toolbar select {
+      padding: 7px 10px;
+      font-size: 13px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 6px;
+      color: #374151;
+      background: #fff;
+      cursor: pointer;
+      min-width: 90px;
+    }
+    .info-toolbar select:focus { outline: none; border-color: var(--rss-amber); }
+
+    /* ── 공사 정보 테이블 ── */
+    .info-table-wrap { overflow-x: auto; }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .info-table thead tr {
+      background: #f9fafb;
+      border-top: 2px solid #e5e7eb;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .info-table th {
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .info-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f3f4f6;
+      color: #374151;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .info-table tr:last-child td { border-bottom: none; }
+    .info-table tr:hover td { background: #fffbf0; }
+    .info-table .col-nm { text-align: left; min-width: 180px; }
+    .info-table .col-period { min-width: 210px; white-space: nowrap; }
+    .info-table .col-equip { text-align: left; min-width: 200px; font-size: 13px; color: #6b7280; }
+    .info-nm-link {
+      color: #374151;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .info-nm-link:hover { color: var(--rss-amber-dark); text-decoration: underline; }
+    .info-nm-link.urgent { color: #dc2626; font-weight: 700; }
+    .info-table tr.row-urgent td { background: #fff7f7; }
+    .info-table tr.row-urgent:hover td { background: #fff0f0; }
+
+    /* ── 반응형 ── */
+    @media (max-width: 768px) {
+      .road-tabs { padding: 12px 16px 0; }
+      .road-tab { padding: 7px 14px; font-size: 13px; }
+      .info-toolbar { padding: 10px 16px; }
+      .info-table th, .info-table td { padding: 10px 10px; font-size: 13px; }
     }
   </style>
 </head>
@@ -85,257 +116,179 @@
 
 <div class="rss-app">
 
-<div id="rss-sidebar-wrap"></div>
+  <div id="rss-sidebar-wrap"></div>
 
-  <!-- ── 메인 ── -->
   <div class="rss-main" id="rssMain">
 
-<div id="rss-header-wrap" data-title="공사 정보"></div>
+    <div id="rss-header-wrap" data-title="공사 정보"></div>
 
     <main class="rss-content">
-      <div class="rss-card">
 
-        <!-- 툴바 -->
-        <!-- [Java] 검색 파라미터: keyword, status, region → /construction-info?keyword=&status=&region= -->
-        <div class="rss-board-toolbar">
-          <div class="rss-board-toolbar__left">
-            <!-- 상태 필터 -->
-            <!-- [DB] 컬럼: construction.status ('recruiting'|'progress'|'complete') -->
-            <select name="searchType" id="infoSearchType" class="rss-input" style="width:auto; padding:7px 10px; font-size:13px;">
-              <option value="">전체 상태</option>
-              <option value="recruiting">모집중</option>
-              <option value="progress">진행중</option>
-              <option value="complete">완료</option>
-            </select>
-            <!-- 지역 필터 -->
-            <!-- [DB] 컬럼: construction.region -->
-            <select name="region" id="infoRegion" class="rss-input" style="width:auto; padding:7px 10px; font-size:13px;">
-              <option value="">전체 지역</option>
-              <option value="seoul">서울</option>
-              <option value="gyeonggi">경기</option>
-              <option value="chungcheong">충청</option>
-              <option value="jeolla">전라</option>
-              <option value="gyeongsang">경상</option>
-            </select>
-            <!-- 검색 -->
-            <div class="rss-search-wrap">
-              <input type="text" name="searchKeyword" id="infoSearchKeyword" placeholder="공사명 검색" />
-              <button type="button" aria-label="검색">
-                <i data-lucide="search" style="width:15px;height:15px;"></i>
-              </button>
-            </div>
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ── 도로 유형 탭 ──────────────────────────────────
+             [Java] 파라미터: roadType ('all'|'highway'|'national')
+             [Java] th:classappend="${param.roadType == 'all'} ? 'active'"
+             [Java] th:href="@{/construction-info(roadType='all')}"
+        ─────────────────────────────────────────────────── -->
+        <div class="road-tabs" role="tablist">
+          <button class="road-tab active" role="tab" data-road="all"      onclick="switchRoadTab(this)">전체</button>
+          <button class="road-tab"        role="tab" data-road="highway"  onclick="switchRoadTab(this)">고속도로</button>
+          <button class="road-tab"        role="tab" data-road="national" onclick="switchRoadTab(this)">국도</button>
+        </div>
+
+        <!-- ── 검색 툴바 ──────────────────────────────────────
+             [Java] GET 파라미터: roadType, searchType, searchKeyword
+             [Java] /construction-info?roadType=&searchType=&searchKeyword=
+        ─────────────────────────────────────────────────── -->
+        <div class="info-toolbar">
+          <!-- [DB] 검색 기준 선택 -->
+          <select name="searchType" id="infoSearchType">
+            <option value="">선택</option>
+            <option value="constructionNm">공사명</option>
+            <option value="orderCompanyNm">발주업체명</option>
+            <option value="roadNm">도로명</option>
+          </select>
+          <div class="rss-search-wrap">
+            <input type="text" name="searchKeyword" id="infoSearchKeyword" placeholder="검색어 입력" />
+            <button type="button" aria-label="검색">
+              <i data-lucide="search" style="width:15px;height:15px;"></i>
+            </button>
           </div>
         </div>
 
-        <!-- 공사 정보 카드 그리드 -->
-        <!-- [DB] 테이블: construction WHERE status != 'complete' ORDER BY reg_dtm DESC -->
-        <!-- [Java] th:each="info : ${constructionInfoList}" -->
-        <div class="info-grid">
+        <!-- ── 공사 정보 테이블 ──────────────────────────────
+             [DB] 테이블: construction
+             [DB] 조건: road_type = #{roadType} (전체일 경우 조건 없음)
+             [DB] 정렬: ORDER BY reg_dtm DESC
+             [Java] th:each="info : ${constructionInfoList}"
+        ─────────────────────────────────────────────────── -->
+        <div class="info-table-wrap">
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th style="width:52px;">번호<!-- [DB] row_number() --></th>
+                <th class="col-nm">공사명<!-- [DB] construction.constructionNm --></th>
+                <th>발주업체명<!-- [DB] construction.orderCompanyNm --></th>
+                <th class="col-period">기간<!-- [DB] construction.startDt ~ endDt --></th>
+                <th>도로명<!-- [DB] construction.roadNm --></th>
+                <th>방향<!-- [DB] construction.direction --></th>
+                <th class="col-equip">품목별 수량<!-- [DB] construction.equipSummary --></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- [Java] th:each="info : ${constructionInfoList}" -->
 
-          <!-- 카드 1 -->
-          <a href="construction-info-detail.html" class="info-card">
-            <div class="info-card__header">
-              <h3 class="info-card__title">호남선 순천방향 포장공사</h3>
-              <!-- [Java] ${info.constructionNm} -->
-              <span class="rss-badge rss-badge--scheduled flex-shrink-0">모집중</span>
-              <!-- [Java] ${info.statusLabel} -->
-            </div>
-            <div class="info-card__body">
-              <div class="info-card__row">
-                <span class="info-card__label">발주사</span>
-                <span class="info-card__value">한국개발(주)</span>
-                <!-- [Java] ${info.orderCompanyNm} -->
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">기간</span>
-                <span class="info-card__value">2026-07-01 ~ 2026-07-03</span>
-                <!-- [Java] ${info.startDt} ~ ${info.endDt} -->
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">지역</span>
-                <span class="info-card__value">전라남도 순천시</span>
-                <!-- [Java] ${info.region} -->
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">장비</span>
-                <span class="info-card__value">TMA-1 : 1대, TMA-3 : 2대, PLCS : 2대</span>
-                <!-- [Java] ${info.equipmentSummary} -->
-              </div>
-            </div>
-            <div class="info-card__footer">
-              <span class="text-xs text-gray-400">등록일: 2026-06-15</span>
-              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
-            </div>
-          </a>
+              <!-- 긴급 공사: urgentYn = 1 → row-urgent 클래스 추가 -->
+              <!-- [Java] th:classappend="${info.urgentYn == 1} ? 'row-urgent'" -->
+              <tr class="row-urgent">
+                <td>1</td>
+                <td class="col-nm">
+                  <!-- [Java] th:href="@{/construction-info/detail/{id}(id=${info.constructionSeq})}" -->
+                  <!-- [Java] th:text="${info.constructionNm}" -->
+                  <!-- [Java] th:classappend="${info.urgentYn == 1} ? 'urgent'" -->
+                  <a href="construction-info-detail.html" class="info-nm-link urgent">
+                    [긴급] 호남선 순천방향 포장공사
+                  </a>
+                </td>
+                <!-- [Java] th:text="${info.orderCompanyNm}" -->
+                <td style="color:#dc2626;font-weight:600;">한국개발</td>
+                <!-- [Java] th:text="${info.startDt} + ' ~ ' + ${info.endDt} + '(' + ${info.workDays} + '일)'" -->
+                <td class="col-period" style="color:#dc2626;font-weight:600;">2026-07-01 ~ 2026-07-03(3일)</td>
+                <!-- [Java] th:text="${info.roadNm}" -->
+                <td style="color:#dc2626;font-weight:600;">호남고속도로</td>
+                <!-- [Java] th:text="${info.direction}" -->
+                <td style="color:#dc2626;font-weight:600;">순천</td>
+                <!-- [Java] th:text="${info.equipSummary}" -->
+                <td class="col-equip" style="color:#dc2626;font-weight:600;">TMA1 : 1대, TMA3 : 2대, PLCS : 2대</td>
+              </tr>
 
-          <!-- 카드 2 -->
-          <a href="construction-info-detail.html" class="info-card">
-            <div class="info-card__header">
-              <h3 class="info-card__title">국도 32번선 횡단보도 보수</h3>
-              <span class="rss-badge rss-badge--progress flex-shrink-0">진행중</span>
-            </div>
-            <div class="info-card__body">
-              <div class="info-card__row">
-                <span class="info-card__label">발주사</span>
-                <span class="info-card__value">소망건설</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">기간</span>
-                <span class="info-card__value">2026-06-25 ~ 2026-06-25</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">지역</span>
-                <span class="info-card__value">경기도 수원시</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">장비</span>
-                <span class="info-card__value">TMA-1 : 2대, TMA-3 : 1대</span>
-              </div>
-            </div>
-            <div class="info-card__footer">
-              <span class="text-xs text-gray-400">등록일: 2026-06-10</span>
-              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
-            </div>
-          </a>
+              <tr>
+                <td>2</td>
+                <td class="col-nm">
+                  <a href="construction-info-detail.html" class="info-nm-link">국도 32번선 횡단보도 보수</a>
+                </td>
+                <td>소망건설</td>
+                <td class="col-period">2026-06-25 ~ 2026-06-25(1일)</td>
+                <td>국도 32번</td>
+                <td>대전</td>
+                <td class="col-equip">TMA1 : 2대, TMA3 : 1대</td>
+              </tr>
 
-          <!-- 카드 3 -->
-          <a href="construction-info-detail.html" class="info-card">
-            <div class="info-card__header">
-              <h3 class="info-card__title">중앙분리대 시공 — 경부선 오산IC 구간</h3>
-              <span class="rss-badge rss-badge--progress flex-shrink-0">진행중</span>
-            </div>
-            <div class="info-card__body">
-              <div class="info-card__row">
-                <span class="info-card__label">발주사</span>
-                <span class="info-card__value">오봉도건</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">기간</span>
-                <span class="info-card__value">2026-06-12 ~ 2026-06-18</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">지역</span>
-                <span class="info-card__value">경기도 오산시</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">장비</span>
-                <span class="info-card__value">TMA-3 : 2대, PLCS : 2대</span>
-              </div>
-            </div>
-            <div class="info-card__footer">
-              <span class="text-xs text-gray-400">등록일: 2026-06-05</span>
-              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
-            </div>
-          </a>
+              <tr>
+                <td>3</td>
+                <td class="col-nm">
+                  <a href="construction-info-detail.html" class="info-nm-link">중앙분리대 시공</a>
+                </td>
+                <td>오봉토건</td>
+                <td class="col-period">2026-06-12 ~ 2026-06-18(7일)</td>
+                <td>경부고속도로</td>
+                <td>부산</td>
+                <td class="col-equip">TMA3 : 2대, PLCS : 2대</td>
+              </tr>
 
-          <!-- 카드 4 -->
-          <a href="construction-info-detail.html" class="info-card">
-            <div class="info-card__header">
-              <h3 class="info-card__title">서해안고속도로 갓길 포장 보수</h3>
-              <span class="rss-badge rss-badge--scheduled flex-shrink-0">모집중</span>
-            </div>
-            <div class="info-card__body">
-              <div class="info-card__row">
-                <span class="info-card__label">발주사</span>
-                <span class="info-card__value">한국도로공사</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">기간</span>
-                <span class="info-card__value">2026-07-10 ~ 2026-07-12</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">지역</span>
-                <span class="info-card__value">충청남도 당진시</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">장비</span>
-                <span class="info-card__value">TMA-1 : 3대, PLCS : 1대</span>
-              </div>
-            </div>
-            <div class="info-card__footer">
-              <span class="text-xs text-gray-400">등록일: 2026-06-18</span>
-              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
-            </div>
-          </a>
+              <tr>
+                <td>4</td>
+                <td class="col-nm">
+                  <a href="construction-info-detail.html" class="info-nm-link">호남선 서울방향 포장공사</a>
+                </td>
+                <td>한국개발</td>
+                <td class="col-period">2026-06-01 ~ 2026-06-02(2일)</td>
+                <td>호남고속도로</td>
+                <td>서울</td>
+                <td class="col-equip">TMA1 : 1대, TMA3 : 2대, PLCS : 1대</td>
+              </tr>
 
-          <!-- 카드 5 -->
-          <a href="construction-info-detail.html" class="info-card">
-            <div class="info-card__header">
-              <h3 class="info-card__title">부산외곽순환고속도로 터널 조명 교체</h3>
-              <span class="rss-badge rss-badge--scheduled flex-shrink-0">모집중</span>
-            </div>
-            <div class="info-card__body">
-              <div class="info-card__row">
-                <span class="info-card__label">발주사</span>
-                <span class="info-card__value">부산시설공단</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">기간</span>
-                <span class="info-card__value">2026-07-20 ~ 2026-07-22</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">지역</span>
-                <span class="info-card__value">부산광역시 기장군</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">장비</span>
-                <span class="info-card__value">TMA-3 : 1대, PLCS : 3대</span>
-              </div>
-            </div>
-            <div class="info-card__footer">
-              <span class="text-xs text-gray-400">등록일: 2026-06-20</span>
-              <span class="rss-btn rss-btn--outline-amber rss-btn--sm">상세보기</span>
-            </div>
-          </a>
-
-          <!-- 카드 6 -->
-          <a href="construction-info-detail.html" class="info-card">
-            <div class="info-card__header">
-              <h3 class="info-card__title">대전-통영 고속도로 가드레일 교체</h3>
-              <span class="rss-badge rss-badge--complete flex-shrink-0">완료</span>
-            </div>
-            <div class="info-card__body">
-              <div class="info-card__row">
-                <span class="info-card__label">발주사</span>
-                <span class="info-card__value">국토교통부</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">기간</span>
-                <span class="info-card__value">2026-06-01 ~ 2026-06-05</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">지역</span>
-                <span class="info-card__value">경상남도 함양군</span>
-              </div>
-              <div class="info-card__row">
-                <span class="info-card__label">장비</span>
-                <span class="info-card__value">TMA-1 : 2대, TMA-3 : 2대</span>
-              </div>
-            </div>
-            <div class="info-card__footer">
-              <span class="text-xs text-gray-400">등록일: 2026-05-25</span>
-              <span class="rss-btn rss-btn--outline rss-btn--sm">상세보기</span>
-            </div>
-          </a>
-
-        </div><!-- /info-grid -->
+            </tbody>
+          </table>
+        </div><!-- /info-table-wrap -->
 
         <!-- 페이지네이션 -->
-        <div class="rss-pagination">
-          <button class="rss-pagination__btn" aria-label="이전"><i data-lucide="chevron-left" style="width:14px;height:14px;"></i></button>
+        <!-- [Java] th:with="totalPages=${constructionInfoPage.totalPages}" -->
+        <div class="rss-pagination" style="padding: 16px 0 20px;">
+          <button class="rss-pagination__btn" aria-label="처음 페이지">
+            <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="이전 페이지">
+            <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
+          </button>
           <button class="rss-pagination__btn active">1</button>
           <button class="rss-pagination__btn">2</button>
           <button class="rss-pagination__btn">3</button>
-          <button class="rss-pagination__btn" aria-label="다음"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></button>
+          <button class="rss-pagination__btn">4</button>
+          <button class="rss-pagination__btn">5</button>
+          <button class="rss-pagination__btn">6</button>
+          <button class="rss-pagination__btn">7</button>
+          <button class="rss-pagination__btn">8</button>
+          <button class="rss-pagination__btn">9</button>
+          <button class="rss-pagination__btn">10</button>
+          <button class="rss-pagination__btn" aria-label="다음 페이지">
+            <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="마지막 페이지">
+            <i data-lucide="chevrons-right" style="width:14px;height:14px;"></i>
+          </button>
         </div>
 
       </div><!-- /rss-card -->
+
     </main>
   </div><!-- /rss-main -->
 
 </div><!-- /rss-app -->
 
 <script src="rss-common.js"></script>
-<script>lucide.createIcons();</script>
+<script>
+  lucide.createIcons();
+
+  /* ── 도로 유형 탭 전환 ──────────────────────────────────────
+     [Java] 실제 환경에서는 서버에 파라미터로 요청:
+     location.href = '/construction-info?roadType=' + tab.dataset.road;
+  ─────────────────────────────────────────────────────────── */
+  function switchRoadTab(tab) {
+    document.querySelectorAll('.road-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+  }
+</script>
 </body>
 </html>

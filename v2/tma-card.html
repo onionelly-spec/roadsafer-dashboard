@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TMA 카드 관리 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── TMA 카드 그리드 ── */
+    .tma-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      padding: 20px 24px;
+    }
+    @media (max-width: 1200px) { .tma-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 900px)  { .tma-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px)  { .tma-grid { grid-template-columns: 1fr; } }
+
+    /* ── TMA 카드 ── */
+    .tma-card {
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .tma-card:hover { border-color: var(--rss-amber); box-shadow: 0 4px 14px rgba(245,158,11,0.12); }
+
+    /* 카드 상단 — 장비 유형 배지 영역 */
+    .tma-card__head {
+      padding: 14px 16px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .tma-card__type {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1c23;
+    }
+    .tma-card__no {
+      font-size: 12px;
+      color: #9ca3af;
+      font-weight: 500;
+    }
+
+    /* 카드 본문 */
+    .tma-card__body {
+      padding: 12px 16px 14px;
+    }
+    .tma-card__row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .tma-card__row:last-child { margin-bottom: 0; }
+    .tma-card__label {
+      color: #9ca3af;
+      font-weight: 600;
+      min-width: 56px;
+      flex-shrink: 0;
+    }
+    .tma-card__value { color: #374151; line-height: 1.5; }
+
+    /* 카드 하단 — 액션 버튼 */
+    .tma-card__foot {
+      padding: 10px 16px;
+      border-top: 1px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    /* ── 등록 모달 ── */
+    .rss-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .rss-modal-overlay.hidden { display: none; }
+    .rss-modal {
+      background: #fff;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+    .rss-modal__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .rss-modal__title { font-size: 16px; font-weight: 700; color: #1a1c23; }
+    .rss-modal__close {
+      background: none; border: none;
+      color: #9ca3af; cursor: pointer; padding: 4px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .rss-modal__close:hover { background: #f3f4f6; color: #374151; }
+    .rss-modal__body { padding: 20px 22px; }
+    .rss-modal__foot {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 14px 22px;
+      border-top: 1px solid #f3f4f6;
+    }
+    .rss-form-row { margin-bottom: 14px; }
+    .rss-form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+    .rss-form-label .required { color: #dc2626; margin-left: 2px; }
+    .rss-form-input {
+      width: 100%;
+      padding: 9px 12px;
+      font-size: 14px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 6px;
+      color: #374151;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+    .rss-form-input:focus { outline: none; border-color: var(--rss-amber); }
+
+    /* ── 반응형 ── */
+    @media (max-width: 640px) {
+      .tma-grid { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <div id="rss-header-wrap" data-title="TMA 카드 관리"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ── 툴바 ──────────────────────────────────────────
+             [Java] 로그인 사용자 소유 TMA 카드만 조회
+             [DB] 테이블: tma_card WHERE mber_seq = #{loginUsr.mberSeq}
+        ─────────────────────────────────────────────────── -->
+        <div class="rss-board-toolbar">
+          <div class="rss-board-toolbar__left">
+            <!-- 장비 유형 필터 -->
+            <!-- [DB] 컬럼: tma_card.equip_type ('TMA1'|'TMA3'|'PLCS') -->
+            <select name="equipType" id="tmaEquipType" class="rss-input" style="width:auto;padding:7px 10px;font-size:13px;">
+              <option value="">전체 유형</option>
+              <option value="TMA1">TMA-1</option>
+              <option value="TMA3">TMA-3</option>
+              <option value="PLCS">PLCS</option>
+            </select>
+            <!-- 검색 -->
+            <div class="rss-search-wrap">
+              <input type="text" name="searchKeyword" id="tmaSearchKeyword" placeholder="차량번호 / 카드번호 검색" />
+              <button type="button" aria-label="검색">
+                <i data-lucide="search" style="width:15px;height:15px;"></i>
+              </button>
+            </div>
+          </div>
+          <div class="rss-board-toolbar__right">
+            <!-- TMA 카드 등록 버튼 -->
+            <button type="button" class="rss-btn rss-btn--amber" onclick="openTmaModal('register')">
+              <i data-lucide="plus" style="width:14px;height:14px;"></i>
+              TMA 카드 등록
+            </button>
+          </div>
+        </div>
+
+        <!-- ── TMA 카드 그리드 ──────────────────────────────
+             [Java] th:each="card : ${tmaCardList}"
+        ─────────────────────────────────────────────────── -->
+        <div class="tma-grid">
+
+          <!-- 카드 1 -->
+          <!-- [Java] th:each="card : ${tmaCardList}" -->
+          <div class="tma-card">
+            <div class="tma-card__head">
+              <!-- [Java] th:text="${card.equipType}" -->
+              <span class="tma-card__type">TMA-1</span>
+              <!-- [Java] th:text="${card.tmaCardNo}" -->
+              <span class="tma-card__no">TMA-2024-001</span>
+            </div>
+            <div class="tma-card__body">
+              <div class="tma-card__row">
+                <span class="tma-card__label">차량번호</span>
+                <!-- [Java] th:text="${card.vehicleNo}" -->
+                <span class="tma-card__value">12가 3456</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">소유주</span>
+                <!-- [Java] th:text="${card.ownerNm}" -->
+                <span class="tma-card__value">나잘난</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">씨인카 수</span>
+                <!-- [Java] th:text="${card.sincaCnt} + '대'" -->
+                <!-- [DB] 컬럼: tma_card.sinca_cnt -->
+                <span class="tma-card__value">3대</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">등록일</span>
+                <!-- [Java] th:text="${card.regDt}" -->
+                <span class="tma-card__value">2024-03-15</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">상태</span>
+                <!-- [Java] th:text="${card.statusLabel}" -->
+                <span class="rss-badge rss-badge--progress">사용중</span>
+              </div>
+            </div>
+            <div class="tma-card__foot">
+              <!-- [Java] th:data-id="${card.tmaCardSeq}" -->
+              <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+                      onclick="openTmaModal('edit', this)" data-id="1">
+                <i data-lucide="pencil" style="width:12px;height:12px;"></i>수정
+              </button>
+              <button type="button" class="rss-btn rss-btn--outline-danger rss-btn--sm"
+                      onclick="deleteTmaCard(1)">
+                <i data-lucide="trash-2" style="width:12px;height:12px;"></i>삭제
+              </button>
+            </div>
+          </div>
+
+          <!-- 카드 2 -->
+          <div class="tma-card">
+            <div class="tma-card__head">
+              <span class="tma-card__type">TMA-3</span>
+              <span class="tma-card__no">TMA-2024-032</span>
+            </div>
+            <div class="tma-card__body">
+              <div class="tma-card__row">
+                <span class="tma-card__label">차량번호</span>
+                <span class="tma-card__value">34나 5678</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">소유주</span>
+                <span class="tma-card__value">한국도로차단(주)</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">씨인카 수</span>
+                <span class="tma-card__value">2대</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">등록일</span>
+                <span class="tma-card__value">2024-05-20</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">상태</span>
+                <span class="rss-badge rss-badge--scheduled">대기중</span>
+              </div>
+            </div>
+            <div class="tma-card__foot">
+              <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+                      onclick="openTmaModal('edit', this)" data-id="2">
+                <i data-lucide="pencil" style="width:12px;height:12px;"></i>수정
+              </button>
+              <button type="button" class="rss-btn rss-btn--outline-danger rss-btn--sm"
+                      onclick="deleteTmaCard(2)">
+                <i data-lucide="trash-2" style="width:12px;height:12px;"></i>삭제
+              </button>
+            </div>
+          </div>
+
+          <!-- 카드 3 -->
+          <div class="tma-card">
+            <div class="tma-card__head">
+              <span class="tma-card__type">PLCS</span>
+              <span class="tma-card__no">PLCS-2023-007</span>
+            </div>
+            <div class="tma-card__body">
+              <div class="tma-card__row">
+                <span class="tma-card__label">차량번호</span>
+                <span class="tma-card__value">56다 7890</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">소유주</span>
+                <span class="tma-card__value">나잘난</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">씨인카 수</span>
+                <span class="tma-card__value">1대</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">등록일</span>
+                <span class="tma-card__value">2023-11-08</span>
+              </div>
+              <div class="tma-card__row">
+                <span class="tma-card__label">상태</span>
+                <span class="rss-badge rss-badge--complete">완료</span>
+              </div>
+            </div>
+            <div class="tma-card__foot">
+              <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+                      onclick="openTmaModal('edit', this)" data-id="3">
+                <i data-lucide="pencil" style="width:12px;height:12px;"></i>수정
+              </button>
+              <button type="button" class="rss-btn rss-btn--outline-danger rss-btn--sm"
+                      onclick="deleteTmaCard(3)">
+                <i data-lucide="trash-2" style="width:12px;height:12px;"></i>삭제
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /tma-grid -->
+
+      </div><!-- /rss-card -->
+
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<!-- ══════════════════════════════════════════════════════════
+     TMA 카드 등록/수정 모달
+     [Java] POST /tma-card/save (등록)
+     [Java] POST /tma-card/update (수정)
+══════════════════════════════════════════════════════════ -->
+<div id="tmaModal" class="rss-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="tmaModalTitle">
+  <div class="rss-modal">
+    <div class="rss-modal__head">
+      <h2 class="rss-modal__title" id="tmaModalTitle">TMA 카드 등록</h2>
+      <button class="rss-modal__close" onclick="closeTmaModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+    <div class="rss-modal__body">
+      <form id="tmaForm">
+        <!-- [Java] th:action="@{/tma-card/save}" method="post" -->
+        <input type="hidden" name="tmaCardSeq" id="tmaCardSeq" /><!-- [DB] tma_card.tma_card_seq -->
+
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="equipType">
+            장비 유형<span class="required">*</span>
+          </label>
+          <!-- [DB] 컬럼: tma_card.equip_type -->
+          <select name="equipType" id="equipType" class="rss-form-input">
+            <option value="">선택하세요</option>
+            <option value="TMA1">TMA-1</option>
+            <option value="TMA3">TMA-3</option>
+            <option value="PLCS">PLCS</option>
+          </select>
+        </div>
+
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="vehicleNo">
+            차량번호<span class="required">*</span>
+          </label>
+          <!-- [DB] 컬럼: tma_card.vehicle_no -->
+          <input type="text" name="vehicleNo" id="vehicleNo" class="rss-form-input" placeholder="예) 12가 3456" />
+        </div>
+
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="ownerNm">소유주</label>
+          <!-- [DB] 컬럼: tma_card.owner_nm -->
+          <input type="text" name="ownerNm" id="ownerNm" class="rss-form-input" placeholder="소유주 이름 입력" />
+        </div>
+
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="sincaCnt">씨인카 수량</label>
+          <!-- [DB] 컬럼: tma_card.sinca_cnt -->
+          <input type="number" name="sincaCnt" id="sincaCnt" class="rss-form-input" placeholder="0" min="0" />
+        </div>
+
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="tmaCardNo">카드번호</label>
+          <!-- [DB] 컬럼: tma_card.tma_card_no -->
+          <input type="text" name="tmaCardNo" id="tmaCardNo" class="rss-form-input" placeholder="예) TMA-2024-001" />
+        </div>
+      </form>
+    </div>
+    <div class="rss-modal__foot">
+      <button type="button" class="rss-btn rss-btn--outline" onclick="closeTmaModal()">취소</button>
+      <button type="button" class="rss-btn rss-btn--amber" onclick="submitTmaForm()">
+        <i data-lucide="save" style="width:14px;height:14px;"></i>저장
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 모달 열기 ──────────────────────────────────────────── */
+  function openTmaModal(mode, btn) {
+    var modal = document.getElementById('tmaModal');
+    var title = document.getElementById('tmaModalTitle');
+    // 폼 초기화
+    document.getElementById('tmaForm').reset();
+    document.getElementById('tmaCardSeq').value = '';
+
+    if (mode === 'edit' && btn) {
+      title.textContent = 'TMA 카드 수정';
+      /* [Java] 실제 환경에서는 서버에서 해당 카드 데이터를 fetch하여 폼에 바인딩:
+         fetch('/tma-card/' + btn.dataset.id).then(r => r.json()).then(data => { ... }) */
+      document.getElementById('tmaCardSeq').value = btn.dataset.id;
+    } else {
+      title.textContent = 'TMA 카드 등록';
+    }
+    modal.classList.remove('hidden');
+    lucide.createIcons();
+  }
+
+  /* ── 모달 닫기 ── */
+  function closeTmaModal() {
+    document.getElementById('tmaModal').classList.add('hidden');
+  }
+
+  /* ── 폼 제출 ──────────────────────────────────────────────
+     [Java] POST /tma-card/save or /tma-card/update
+  ─────────────────────────────────────────────────────────── */
+  function submitTmaForm() {
+    var equipType = document.getElementById('equipType').value;
+    var vehicleNo = document.getElementById('vehicleNo').value.trim();
+    if (!equipType) { alert('장비 유형을 선택해주세요.'); return; }
+    if (!vehicleNo) { alert('차량번호를 입력해주세요.'); return; }
+    /* [Java] document.getElementById('tmaForm').submit(); */
+    alert('저장되었습니다. (더미 동작)');
+    closeTmaModal();
+  }
+
+  /* ── 삭제 ────────────────────────────────────────────────
+     [Java] POST /tma-card/delete?tmaCardSeq=#{id}
+  ─────────────────────────────────────────────────────────── */
+  function deleteTmaCard(id) {
+    if (confirm('해당 TMA 카드를 삭제하시겠습니까?')) {
+      /* [Java] fetch('/tma-card/delete?tmaCardSeq=' + id, { method: 'POST' }) */
+      alert('삭제되었습니다. (더미 동작)');
+    }
+  }
+
+  /* 모달 외부 클릭 시 닫기 */
+  document.getElementById('tmaModal').addEventListener('click', function(e) {
+    if (e.target === this) closeTmaModal();
+  });
+</script>
+</body>
+</html>

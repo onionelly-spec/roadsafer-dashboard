@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>정보변경 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 폼 공통 ── */
+    .profile-form { padding: 24px; max-width: 640px; }
+    .form-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+      padding: 10px 0 8px;
+      border-bottom: 2px solid #f3f4f6;
+      margin-bottom: 16px;
+      margin-top: 8px;
+    }
+    .form-section-title:first-child { margin-top: 0; }
+    .form-row { margin-bottom: 16px; }
+    .form-row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 480px) { .form-row-2col { grid-template-columns: 1fr; } }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+    .form-label .required { color: #dc2626; margin-left: 2px; }
+    .form-input {
+      width: 100%;
+      padding: 10px 13px;
+      font-size: 14px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 6px;
+      color: #374151;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus { outline: none; border-color: var(--rss-amber); }
+    .form-input::placeholder { color: #9ca3af; }
+    .form-input[readonly] { background: #f9fafb; color: #6b7280; cursor: not-allowed; }
+
+    /* ── 권역 체크박스 그룹 ── */
+    .region-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .region-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 20px;
+      font-size: 13px;
+      color: #374151;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .region-chip input[type="checkbox"] { display: none; }
+    .region-chip.checked { border-color: var(--rss-amber); background: #fffbf0; color: var(--rss-amber-dark); font-weight: 600; }
+
+    /* ── 통장사본 업로드 ── */
+    .file-upload-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .file-upload-name {
+      font-size: 13px;
+      color: #6b7280;
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── 하단 버튼 ── */
+    .profile-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 16px 24px;
+      border-top: 1px solid #f3f4f6;
+      flex-wrap: wrap;
+    }
+    .profile-footer__left { display: flex; gap: 8px; }
+    .profile-footer__right { display: flex; gap: 8px; }
+
+    /* ── 모달 공통 ── */
+    .rss-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .rss-modal-overlay.hidden { display: none; }
+    .rss-modal {
+      background: #fff;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+    .rss-modal__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .rss-modal__title { font-size: 16px; font-weight: 700; color: #1a1c23; }
+    .rss-modal__close {
+      background: none; border: none;
+      color: #9ca3af; cursor: pointer; padding: 4px;
+      border-radius: 6px; transition: background 0.15s;
+    }
+    .rss-modal__close:hover { background: #f3f4f6; color: #374151; }
+    .rss-modal__body { padding: 20px 22px; }
+    .rss-modal__foot {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 14px 22px;
+      border-top: 1px solid #f3f4f6;
+    }
+    .modal-form-row { margin-bottom: 14px; }
+    .modal-form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+    .modal-form-label .required { color: #dc2626; margin-left: 2px; }
+    .modal-form-input {
+      width: 100%;
+      padding: 9px 12px;
+      font-size: 14px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 6px;
+      color: #374151;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+    .modal-form-input:focus { outline: none; border-color: var(--rss-amber); }
+
+    @media (max-width: 640px) {
+      .profile-form { padding: 16px; }
+      .profile-footer { padding: 14px 16px; flex-direction: column; }
+      .profile-footer__left,
+      .profile-footer__right { width: 100%; }
+      .profile-footer .rss-btn { flex: 1; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <div id="rss-header-wrap" data-title="정보변경"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ══════════════════════════════════════════════════
+             정보변경 폼 (B8)
+             [Java] POST /profile/update
+             [DB] 테이블: tbl_mber, tbl_company
+        ══════════════════════════════════════════════════ -->
+        <!-- [Java] th:action="@{/profile/update}" method="post" enctype="multipart/form-data" -->
+        <form id="profileForm" class="profile-form" novalidate>
+          <!-- [DB] tbl_mber.mber_seq -->
+          <input type="hidden" name="mberSeq" id="mberSeq" value="1001" />
+
+          <!-- ── 공통 정보 ──────────────────────────────────── -->
+          <p class="form-section-title">공통 정보</p>
+
+          <!-- 아이디 (수정 불가) -->
+          <div class="form-row">
+            <label class="form-label" for="mberId">아이디</label>
+            <!-- [DB] tbl_mber.mber_id -->
+            <input type="text" name="mberId" id="mberId" class="form-input"
+                   value="nzn001" readonly />
+          </div>
+
+          <!-- 상호 -->
+          <div class="form-row">
+            <label class="form-label" for="companyNm">
+              상호<span class="required">*</span>
+            </label>
+            <!-- [DB] tbl_company.company_nm -->
+            <input type="text" name="companyNm" id="companyNm" class="form-input"
+                   value="나잘난(주)" placeholder="상호를 입력하세요" />
+          </div>
+
+          <!-- 사업자번호 -->
+          <div class="form-row">
+            <label class="form-label" for="bizNo">
+              사업자번호<span class="required">*</span>
+            </label>
+            <!-- [DB] tbl_company.biz_no -->
+            <input type="text" name="bizNo" id="bizNo" class="form-input"
+                   value="123-45-67890" placeholder="000-00-00000" maxlength="12" />
+          </div>
+
+          <!-- 대표자명 / 연락처 -->
+          <div class="form-row-2col">
+            <div>
+              <label class="form-label" for="ceoNm">대표자명</label>
+              <!-- [DB] tbl_company.ceo_nm -->
+              <input type="text" name="ceoNm" id="ceoNm" class="form-input"
+                     value="나잘난" placeholder="대표자 이름" />
+            </div>
+            <div>
+              <label class="form-label" for="tel">
+                연락처<span class="required">*</span>
+              </label>
+              <!-- [DB] tbl_mber.tel -->
+              <input type="tel" name="tel" id="tel" class="form-input"
+                     value="010-1234-5678" placeholder="010-0000-0000" />
+            </div>
+          </div>
+
+          <!-- 이메일 -->
+          <div class="form-row">
+            <label class="form-label" for="email">이메일</label>
+            <!-- [DB] tbl_mber.email -->
+            <input type="email" name="email" id="email" class="form-input"
+                   value="nzn001@example.com" placeholder="이메일 주소 입력" />
+          </div>
+
+          <!-- 주소 -->
+          <div class="form-row">
+            <label class="form-label" for="addr">주소</label>
+            <!-- [DB] tbl_company.addr -->
+            <input type="text" name="addr" id="addr" class="form-input"
+                   value="서울특별시 강남구 테헤란로 123" placeholder="주소 입력" />
+          </div>
+
+          <!-- ── 차단업체 추가 정보 ──────────────────────────
+               [Java] th:if="${mber.mberType == 'BLOCK'}"
+               (차단기업 회원만 표시)
+          ─────────────────────────────────────────────────── -->
+          <p class="form-section-title">차단업체 추가 정보</p>
+
+          <!-- 권역 설정 -->
+          <div class="form-row">
+            <label class="form-label">권역 설정</label>
+            <!-- [DB] tbl_company.region_cd (다중 선택, 쉼표 구분 저장) -->
+            <div class="region-group" id="regionGroup">
+              <label class="region-chip checked" onclick="toggleRegion(this)">
+                <input type="checkbox" name="regionCd" value="seoul" checked />서울/경기
+              </label>
+              <label class="region-chip" onclick="toggleRegion(this)">
+                <input type="checkbox" name="regionCd" value="gangwon" />강원
+              </label>
+              <label class="region-chip checked" onclick="toggleRegion(this)">
+                <input type="checkbox" name="regionCd" value="chungcheong" checked />충청
+              </label>
+              <label class="region-chip" onclick="toggleRegion(this)">
+                <input type="checkbox" name="regionCd" value="jeonla" />전라
+              </label>
+              <label class="region-chip" onclick="toggleRegion(this)">
+                <input type="checkbox" name="regionCd" value="gyeongsang" />경상
+              </label>
+              <label class="region-chip" onclick="toggleRegion(this)">
+                <input type="checkbox" name="regionCd" value="jeju" />제주
+              </label>
+            </div>
+          </div>
+
+          <!-- 통장사본 -->
+          <div class="form-row">
+            <label class="form-label">통장사본</label>
+            <!-- [DB] tbl_company.bankbook_file_nm, bankbook_file_url -->
+            <div class="file-upload-row">
+              <span class="file-upload-name" id="bankbookFileName">통장사본_나잘난.pdf</span>
+              <label class="rss-btn rss-btn--outline rss-btn--sm" style="cursor:pointer;">
+                <i data-lucide="upload" style="width:13px;height:13px;"></i>파일 변경
+                <input type="file" name="bankbookFile" id="bankbookFile"
+                       accept=".pdf,.jpg,.jpeg,.png"
+                       onchange="updateFileName(this)" style="display:none;" />
+              </label>
+            </div>
+            <p style="font-size:12px; color:#9ca3af; margin-top:4px;">PDF, JPG, PNG 지원 / 최대 5MB</p>
+          </div>
+
+        </form>
+
+        <!-- ── 하단 버튼 ── -->
+        <div class="profile-footer">
+          <div class="profile-footer__left">
+            <!-- 비밀번호 변경 -->
+            <button type="button" class="rss-btn rss-btn--outline"
+                    onclick="openPwModal()">
+              <i data-lucide="lock" style="width:14px;height:14px;"></i>비밀번호 변경
+            </button>
+            <!-- 회원탈퇴 -->
+            <button type="button" class="rss-btn rss-btn--outline-danger"
+                    onclick="confirmWithdraw()">
+              <i data-lucide="user-x" style="width:14px;height:14px;"></i>회원탈퇴
+            </button>
+          </div>
+          <div class="profile-footer__right">
+            <button type="button" class="rss-btn rss-btn--amber"
+                    onclick="submitProfile()">
+              <i data-lucide="save" style="width:14px;height:14px;"></i>저장
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /rss-card -->
+
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<!-- ══════════════════════════════════════════════════════════
+     비밀번호 변경 모달 (B8-2)
+     [Java] POST /profile/change-password
+     [DB] tbl_mber.password (BCrypt 해시)
+══════════════════════════════════════════════════════════ -->
+<div id="pwModal" class="rss-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pwModalTitle">
+  <div class="rss-modal">
+    <div class="rss-modal__head">
+      <h2 class="rss-modal__title" id="pwModalTitle">비밀번호 변경</h2>
+      <button class="rss-modal__close" onclick="closePwModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+    <div class="rss-modal__body">
+      <form id="pwForm" novalidate>
+        <div class="modal-form-row">
+          <label class="modal-form-label" for="currentPw">
+            현재 비밀번호<span class="required">*</span>
+          </label>
+          <!-- [DB] 서버에서 BCrypt 비교 처리 -->
+          <input type="password" name="currentPw" id="currentPw" class="modal-form-input"
+                 placeholder="현재 비밀번호 입력" autocomplete="current-password" />
+        </div>
+        <div class="modal-form-row">
+          <label class="modal-form-label" for="newPw">
+            새 비밀번호<span class="required">*</span>
+          </label>
+          <!-- [DB] tbl_mber.password (BCrypt 해시 저장) -->
+          <input type="password" name="newPw" id="newPw" class="modal-form-input"
+                 placeholder="8자 이상, 영문+숫자+특수문자 조합" autocomplete="new-password" />
+        </div>
+        <div class="modal-form-row">
+          <label class="modal-form-label" for="newPwConfirm">
+            새 비밀번호 확인<span class="required">*</span>
+          </label>
+          <input type="password" name="newPwConfirm" id="newPwConfirm" class="modal-form-input"
+                 placeholder="새 비밀번호 재입력" autocomplete="new-password" />
+        </div>
+      </form>
+    </div>
+    <div class="rss-modal__foot">
+      <button type="button" class="rss-btn rss-btn--outline" onclick="closePwModal()">취소</button>
+      <button type="button" class="rss-btn rss-btn--amber" onclick="submitPwForm()">
+        <i data-lucide="check" style="width:14px;height:14px;"></i>변경
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 권역 칩 토글 ── */
+  function toggleRegion(label) {
+    var cb = label.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    label.classList.toggle('checked', cb.checked);
+  }
+
+  /* ── 통장사본 파일명 업데이트 ── */
+  function updateFileName(input) {
+    var name = input.files.length ? input.files[0].name : '파일을 선택하세요';
+    document.getElementById('bankbookFileName').textContent = name;
+  }
+
+  /* ── 정보 저장 ──────────────────────────────────────────────
+     [Java] document.getElementById('profileForm').submit();
+  ─────────────────────────────────────────────────────────── */
+  function submitProfile() {
+    var companyNm = document.getElementById('companyNm').value.trim();
+    var tel       = document.getElementById('tel').value.trim();
+    if (!companyNm) { alert('상호를 입력해주세요.'); return; }
+    if (!tel)       { alert('연락처를 입력해주세요.'); return; }
+    /* [Java] document.getElementById('profileForm').submit(); */
+    RSS.toast('정보가 저장되었습니다.', 'success');
+  }
+
+  /* ── 비밀번호 변경 모달 ── */
+  function openPwModal() {
+    document.getElementById('pwForm').reset();
+    document.getElementById('pwModal').classList.remove('hidden');
+    lucide.createIcons();
+  }
+  function closePwModal() {
+    document.getElementById('pwModal').classList.add('hidden');
+  }
+
+  /* ── 비밀번호 변경 제출 ──────────────────────────────────────
+     [Java] POST /profile/change-password
+  ─────────────────────────────────────────────────────────── */
+  function submitPwForm() {
+    var currentPw    = document.getElementById('currentPw').value;
+    var newPw        = document.getElementById('newPw').value;
+    var newPwConfirm = document.getElementById('newPwConfirm').value;
+    if (!currentPw)  { alert('현재 비밀번호를 입력해주세요.'); return; }
+    if (!newPw)      { alert('새 비밀번호를 입력해주세요.'); return; }
+    if (newPw.length < 8) { alert('비밀번호는 8자 이상이어야 합니다.'); return; }
+    if (newPw !== newPwConfirm) { alert('새 비밀번호가 일치하지 않습니다.'); return; }
+    /* [Java] document.getElementById('pwForm').submit(); */
+    RSS.toast('비밀번호가 변경되었습니다.', 'success');
+    closePwModal();
+  }
+
+  /* ── 회원탈퇴 ────────────────────────────────────────────────
+     [Java] POST /profile/withdraw
+  ─────────────────────────────────────────────────────────── */
+  function confirmWithdraw() {
+    if (confirm('정말 탈퇴하시겠습니까?\n탈퇴 후 모든 데이터가 삭제됩니다.')) {
+      /* [Java] location.href = '/profile/withdraw'; */
+      alert('회원탈퇴가 처리되었습니다. (더미 동작)');
+      location.href = 'login.html';
+    }
+  }
+
+  /* 모달 외부 클릭 시 닫기 */
+  document.getElementById('pwModal').addEventListener('click', function(e) {
+    if (e.target === this) closePwModal();
+  });
+</script>
+</body>
+</html>

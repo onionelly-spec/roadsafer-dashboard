@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>광고 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 광고 그리드 ── */
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      padding: 20px 24px;
+    }
+    @media (max-width: 1100px) { .ad-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px)  { .ad-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 400px)  { .ad-grid { grid-template-columns: 1fr; } }
+
+    /* ── 광고 카드 ── */
+    .ad-card {
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .ad-card:hover {
+      border-color: var(--rss-amber);
+      box-shadow: 0 4px 16px rgba(245,158,11,0.12);
+      transform: translateY(-2px);
+    }
+    .ad-card__img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: #f3f4f6;
+      display: block;
+    }
+    .ad-card__body {
+      padding: 12px 14px 14px;
+    }
+    .ad-card__company {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a1c23;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ad-card__title {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── 인피니티 스크롤 로딩 표시 ── */
+    .ad-loading {
+      text-align: center;
+      padding: 20px;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+    .ad-loading.hidden { display: none; }
+
+    @media (max-width: 640px) {
+      .ad-grid { padding: 14px 16px; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <div id="rss-header-wrap" data-title="광고"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ══════════════════════════════════════════════════
+             광고 목록 (B7)
+             [DB] 테이블: ad ORDER BY reg_dtm DESC
+             [Java] 인피니티 스크롤: GET /ad/list?page=#{page}&size=12
+             [Java] th:each="ad : ${adList}"
+        ══════════════════════════════════════════════════ -->
+        <div class="ad-grid" id="adGrid">
+
+          <!-- 광고 카드 1 -->
+          <!-- [Java] th:each="ad : ${adList}" -->
+          <a href="ad-detail.html" class="ad-card">
+            <!-- [Java] th:src="${ad.thumbImgUrl}" -->
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/fef3c7/d97706?text=한국도로차단"
+                 alt="한국도로차단(주) 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <!-- [Java] th:text="${ad.companyNm}" -->
+              <p class="ad-card__company">한국도로차단(주)</p>
+              <!-- [Java] th:text="${ad.title}" -->
+              <p class="ad-card__title">도로 차단 전문 기업, 안전한 공사 현장을 만듭니다</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 2 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/eff6ff/2563eb?text=소망건설"
+                 alt="소망건설 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">소망건설(주)</p>
+              <p class="ad-card__title">TMA 장비 전문 임대 및 판매 서비스</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 3 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/f0fdf4/16a34a?text=오봉토건"
+                 alt="오봉토건 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">오봉토건</p>
+              <p class="ad-card__title">고속도로 공사 전문, 씨인카 보유 30대</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 4 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/fdf4ff/9333ea?text=안전시설물"
+                 alt="안전시설물 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">안전시설물(주)</p>
+              <p class="ad-card__title">도로 안전 시설물 전문 제조 및 납품</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 5 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/fff7ed/ea580c?text=도로안전"
+                 alt="도로안전 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">도로안전(주)</p>
+              <p class="ad-card__title">PLCS 차량 전문 임대 서비스</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 6 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/fef2f2/dc2626?text=씨인카전문"
+                 alt="씨인카전문 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">씨인카전문(주)</p>
+              <p class="ad-card__title">씨인카 정비 및 부품 공급 전문</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 7 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/ecfdf5/059669?text=공사관리"
+                 alt="공사관리 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">공사관리(주)</p>
+              <p class="ad-card__title">현장 안전 관리 솔루션 제공</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 8 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/f0f9ff/0284c7?text=도로표지"
+                 alt="도로표지 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">도로표지(주)</p>
+              <p class="ad-card__title">도로 표지판 제작 및 설치 전문</p>
+            </div>
+          </a>
+
+        </div><!-- /ad-grid -->
+
+        <!-- 인피니티 스크롤 로딩 표시 -->
+        <!-- [Java] 추가 데이터 없을 시 hidden 처리 -->
+        <div class="ad-loading" id="adLoading">
+          <i data-lucide="loader" style="width:18px;height:18px;display:inline;vertical-align:middle;margin-right:6px;"></i>
+          더 불러오는 중...
+        </div>
+
+      </div><!-- /rss-card -->
+
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 인피니티 스크롤 ──────────────────────────────────────
+     [Java] GET /ad/list?page=#{currentPage}&size=12
+     응답: { adList: [...], hasNext: true/false }
+  ─────────────────────────────────────────────────────────── */
+  var currentPage = 1;
+  var isLoading   = false;
+  var hasNext     = true; // [Java] 서버 응답에서 hasNext 값으로 제어
+
+  function loadMoreAds() {
+    if (isLoading || !hasNext) return;
+    isLoading = true;
+    document.getElementById('adLoading').classList.remove('hidden');
+
+    /* [Java] 실제 환경에서는 아래 fetch 코드로 교체:
+    fetch('/ad/list?page=' + (currentPage + 1) + '&size=12')
+      .then(r => r.json())
+      .then(data => {
+        data.adList.forEach(ad => appendAdCard(ad));
+        currentPage++;
+        hasNext = data.hasNext;
+        if (!hasNext) document.getElementById('adLoading').classList.add('hidden');
+        isLoading = false;
+      });
+    */
+
+    // 더미: 2페이지 이후는 더 불러오지 않음
+    setTimeout(function() {
+      hasNext = false;
+      document.getElementById('adLoading').classList.add('hidden');
+      isLoading = false;
+    }, 800);
+  }
+
+  /* 스크롤 감지 */
+  window.addEventListener('scroll', function() {
+    var scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+    if (scrollBottom < 200) loadMoreAds();
+  });
+</script>
+</body>
+</html>

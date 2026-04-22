@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 공사 현황 상세 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 탭 ── */
+    .detail-tabs {
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+      padding: 16px 24px 0;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .detail-tab {
+      padding: 9px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .detail-tab:hover { color: #374151; }
+    .detail-tab.active { color: var(--rss-amber-dark); border-bottom-color: var(--rss-amber); }
+    .tab-panel { display: none; padding: 24px; }
+    .tab-panel.active { display: block; }
+
+    /* ── 상세 테이블 ── */
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .detail-table th {
+      width: 130px;
+      padding: 12px 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .detail-table td {
+      padding: 12px 16px;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      vertical-align: middle;
+      line-height: 1.6;
+    }
+
+    /* ── 차단정보 탭 — 장비 테이블 ── */
+    .equip-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .equip-table th {
+      padding: 10px 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .equip-table td {
+      padding: 11px 12px;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .equip-table tr:hover td { background: #fffbf0; }
+
+    /* ── 진행상황 탭 — 주간 캘린더 ── */
+    .cal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .cal-table th {
+      padding: 10px 8px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-align: center;
+    }
+    .cal-table td {
+      padding: 12px 8px;
+      border: 1px solid #e5e7eb;
+      text-align: center;
+      vertical-align: top;
+      min-width: 80px;
+    }
+    .cal-date { font-size: 12px; color: #9ca3af; margin-bottom: 4px; }
+    .cal-date.today { font-weight: 700; color: #1f2937; }
+    .cal-status { font-size: 12px; }
+
+    /* ── 하단 버튼 ── */
+    .detail-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-top: 1px solid #f3f4f6;
+    }
+
+    /* ── 반응형 ── */
+    @media (max-width: 640px) {
+      .detail-tabs { padding: 12px 16px 0; }
+      .detail-tab { padding: 8px 14px; font-size: 13px; }
+      .tab-panel { padding: 16px; }
+      .detail-table th { width: 90px; padding: 10px 10px; font-size: 12px; }
+      .detail-table td { padding: 10px 10px; font-size: 13px; }
+      .cal-table { font-size: 12px; }
+      .cal-table th, .cal-table td { padding: 8px 4px; min-width: 44px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <div id="rss-header-wrap" data-title="내 공사 현황 상세"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ── 탭 네비게이션 ── -->
+        <div class="detail-tabs" role="tablist">
+          <button class="detail-tab active" role="tab" data-tab="tab-info"   aria-selected="true">공사 정보</button>
+          <button class="detail-tab"        role="tab" data-tab="tab-block"  aria-selected="false">차단 정보</button>
+          <button class="detail-tab"        role="tab" data-tab="tab-status" aria-selected="false">진행 상황</button>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+             탭 1: 공사 정보
+             [DB] 테이블: construction WHERE construction_seq = #{constructionSeq}
+        ══════════════════════════════════════════════════ -->
+        <div id="tab-info" class="tab-panel active" role="tabpanel">
+          <div style="overflow-x:auto;">
+            <table class="detail-table">
+              <tbody>
+                <tr>
+                  <th scope="row">공사명</th>
+                  <!-- [Java] th:text="${construction.constructionNm}" -->
+                  <td>횡단보도 시공</td>
+                </tr>
+                <tr>
+                  <th scope="row">발주업체명</th>
+                  <!-- [Java] th:text="${construction.orderCompanyNm}" -->
+                  <td>소망건설</td>
+                </tr>
+                <tr>
+                  <th scope="row">공사 기간</th>
+                  <!-- [Java] th:text="${construction.startDt} + ' ~ ' + ${construction.endDt}" -->
+                  <td>2026-06-25 ~ 2026-06-30</td>
+                </tr>
+                <tr>
+                  <th scope="row">시간</th>
+                  <!-- [Java] th:text="${construction.workTime}" -->
+                  <td>야간 / 19시 차단 시작</td>
+                </tr>
+                <tr>
+                  <th scope="row">도로 구분</th>
+                  <!-- [Java] th:text="${construction.roadType}" -->
+                  <td>국도</td>
+                </tr>
+                <tr>
+                  <th scope="row">길 구분</th>
+                  <!-- [Java] th:text="${construction.laneType}" -->
+                  <td>본선</td>
+                </tr>
+                <tr>
+                  <th scope="row">도로명</th>
+                  <!-- [Java] th:text="${construction.roadNm}" -->
+                  <td>국도 32번</td>
+                </tr>
+                <tr>
+                  <th scope="row">방향</th>
+                  <!-- [Java] th:text="${construction.direction}" -->
+                  <td>대전</td>
+                </tr>
+                <tr>
+                  <th scope="row">공사구간</th>
+                  <!-- [Java] th:text="${construction.sectionStart} + 'km ~ ' + ${construction.sectionEnd} + 'km'" -->
+                  <td>105.6km ~ 105.7km</td>
+                </tr>
+                <tr>
+                  <th scope="row">품목별 수량</th>
+                  <!-- [Java] th:text="${construction.equipSummary}" -->
+                  <td>TMA1 : 1대, TMA3 : 2대, PLCS : 2대</td>
+                </tr>
+                <tr>
+                  <th scope="row">담당자</th>
+                  <!-- [Java] th:text="${construction.managerNm} + ' (' + ${construction.managerTel} + ')'" -->
+                  <td>김담당 (010-1234-5678)</td>
+                </tr>
+                <tr>
+                  <th scope="row">공사 상태</th>
+                  <td>
+                    <!-- [Java] th:text="${construction.statusLabel}" -->
+                    <span class="rss-badge rss-badge--progress">진행중</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">비고</th>
+                  <!-- [Java] th:text="${construction.description}" -->
+                  <td>야간 작업 포함 (22:00 ~ 06:00)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 첨부파일 -->
+          <!-- [DB] 테이블: construction_attachment WHERE construction_seq = #{constructionSeq} -->
+          <div style="margin-top:16px;">
+            <p style="font-size:12px;font-weight:600;color:#9ca3af;margin-bottom:6px;">첨부파일</p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <!-- [Java] th:each="file : ${attachmentList}" -->
+              <a href="#" class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline bg-blue-50 px-3 py-1.5 rounded-md">
+                <i data-lucide="paperclip" style="width:13px;height:13px;"></i>
+                <span class="truncate" style="max-width:140px;" title="공사계획서_수원_횡단보도.pdf">공사계획서_수원_횡...</span>.pdf
+                <!-- [Java] ${file.originalFileNm} -->
+              </a>
+            </div>
+          </div>
+
+          <div class="detail-footer" style="margin-top:16px;padding-left:0;padding-right:0;border-top:1px solid #f3f4f6;">
+            <a href="construction-list.html" class="rss-btn rss-btn--outline">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
+            </a>
+          </div>
+        </div><!-- /tab-info -->
+
+        <!-- ══════════════════════════════════════════════════
+             탭 2: 차단 정보
+             [DB] 테이블: construction_block WHERE construction_seq = #{constructionSeq}
+        ══════════════════════════════════════════════════ -->
+        <div id="tab-block" class="tab-panel" role="tabpanel">
+          <div class="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800 leading-relaxed">
+            투입될 씨인카 수량이 바뀌었다면 콜센터(1566-0000)로 연락해주세요.
+          </div>
+
+          <!-- 차단 기본 정보 -->
+          <div style="overflow-x:auto;margin-bottom:20px;">
+            <table class="detail-table">
+              <tbody>
+                <tr>
+                  <th scope="row">담당자</th>
+                  <!-- [Java] th:text="${block.managerNm} + ' (' + ${block.managerTel} + ')'" -->
+                  <td>이차단 (010-9876-5432)</td>
+                </tr>
+                <tr>
+                  <th scope="row">차단구간</th>
+                  <!-- [Java] th:text="${block.blockSection}" -->
+                  <td>105.6km ~ 105.7km (상행)</td>
+                </tr>
+                <tr>
+                  <th scope="row">신호수</th>
+                  <!-- [Java] th:text="${block.signalerCnt} + '명'" -->
+                  <!-- [DB] 컬럼: construction_block.signaler_cnt -->
+                  <td>2명</td>
+                </tr>
+                <tr>
+                  <th scope="row">의견</th>
+                  <!-- [Java] th:text="${block.opinion}" -->
+                  <!-- [DB] 컬럼: construction_block.opinion -->
+                  <td>야간 작업 시 조명 차량 추가 배치 요청</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 장비 목록 -->
+          <!-- [DB] 테이블: construction_block_equipment WHERE construction_seq = #{constructionSeq} -->
+          <div style="overflow-x:auto;">
+            <table class="equip-table">
+              <thead>
+                <tr>
+                  <th>장비 유형<!-- [DB] block_equipment.equip_type --></th>
+                  <th>장비 번호<!-- [DB] block_equipment.equip_no --></th>
+                  <th>씨인카 수량<!-- [DB] block_equipment.sinca_cnt --></th>
+                  <th>소유주<!-- [DB] block_equipment.owner_nm --></th>
+                  <th>TMA 카드<!-- [DB] block_equipment.tma_card_no --></th>
+                  <th>상태<!-- [DB] block_equipment.status --></th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- [Java] th:each="equip : ${blockEquipList}" -->
+                <tr>
+                  <td>TMA-1</td>
+                  <td>12가 3456</td>
+                  <td>3</td>
+                  <td>나잘난</td>
+                  <td>TMA-2024-001</td>
+                  <td><span class="rss-badge rss-badge--progress">배치완료</span></td>
+                </tr>
+                <tr>
+                  <td>TMA-3</td>
+                  <td>34나 5678</td>
+                  <td>2</td>
+                  <td>한국도로차단(주)</td>
+                  <td>TMA-2024-032</td>
+                  <td><span class="rss-badge rss-badge--scheduled">대기중</span></td>
+                </tr>
+                <tr>
+                  <td>PLCS</td>
+                  <td>56다 7890</td>
+                  <td>—</td>
+                  <td>나잘난</td>
+                  <td>—</td>
+                  <td><span class="rss-badge rss-badge--progress">배치완료</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="detail-footer" style="margin-top:16px;padding-left:0;padding-right:0;border-top:1px solid #f3f4f6;">
+            <a href="construction-list.html" class="rss-btn rss-btn--outline">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
+            </a>
+          </div>
+        </div><!-- /tab-block -->
+
+        <!-- ══════════════════════════════════════════════════
+             탭 3: 진행 상황 (주간 캘린더)
+             [DB] 테이블: construction_progress WHERE construction_seq = #{constructionSeq}
+             [Java] weekDates: 현재 주 월~일 날짜 리스트
+        ══════════════════════════════════════════════════ -->
+        <div id="tab-status" class="tab-panel" role="tabpanel">
+
+          <!-- 주간 네비게이션 -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <button class="rss-btn rss-btn--outline rss-btn--sm" id="prevWeekBtn">
+              <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>이전 주
+            </button>
+            <span style="font-size:14px;font-weight:600;color:#374151;" id="weekRangeLabel">
+              <!-- [Java] th:text="${weekStart} + ' ~ ' + ${weekEnd}" -->
+              2026-06-22 ~ 2026-06-28
+            </span>
+            <button class="rss-btn rss-btn--outline rss-btn--sm" id="nextWeekBtn">
+              다음 주<i data-lucide="chevron-right" style="width:14px;height:14px;margin-left:4px;"></i>
+            </button>
+          </div>
+
+          <!-- 주간 캘린더 -->
+          <!-- [Java] th:each="day : ${weekDates}" -->
+          <div style="overflow-x:auto;">
+            <table class="cal-table">
+              <thead>
+                <tr>
+                  <th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th><th>일</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <!-- [Java] th:each="day : ${weekDates}" -->
+                  <!-- [Java] th:classappend="${day.isToday} ? 'today'" -->
+                  <td>
+                    <div class="cal-date">06/22</div>
+                    <!-- [Java] th:text="${day.progress.statusLabel}" -->
+                    <div class="cal-status"><span class="rss-badge rss-badge--complete" style="font-size:11px;">완료</span></div>
+                  </td>
+                  <td>
+                    <div class="cal-date">06/23</div>
+                    <div class="cal-status"><span class="rss-badge rss-badge--complete" style="font-size:11px;">완료</span></div>
+                  </td>
+                  <td>
+                    <div class="cal-date">06/24</div>
+                    <div class="cal-status"><span class="rss-badge rss-badge--progress" style="font-size:11px;">진행중</span></div>
+                  </td>
+                  <td>
+                    <div class="cal-date today">06/25</div>
+                    <div class="cal-status"><span class="rss-badge rss-badge--progress" style="font-size:11px;">진행중</span></div>
+                  </td>
+                  <td>
+                    <div class="cal-date">06/26</div>
+                    <div class="cal-status" style="color:#9ca3af;font-size:12px;">예정</div>
+                  </td>
+                  <td>
+                    <div class="cal-date">06/27</div>
+                    <div class="cal-status" style="color:#9ca3af;font-size:12px;">예정</div>
+                  </td>
+                  <td>
+                    <div class="cal-date">06/28</div>
+                    <div class="cal-status" style="color:#dc2626;font-size:12px;">공사없음</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="detail-footer" style="margin-top:16px;padding-left:0;padding-right:0;border-top:1px solid #f3f4f6;">
+            <a href="construction-list.html" class="rss-btn rss-btn--outline">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
+            </a>
+          </div>
+        </div><!-- /tab-status -->
+
+      </div><!-- /rss-card -->
+
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 탭 전환 ── */
+  document.querySelectorAll('.detail-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.detail-tab').forEach(function(t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.tab-panel').forEach(function(p) {
+        p.classList.remove('active');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

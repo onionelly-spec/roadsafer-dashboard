@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 공사 현황 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 상태 탭 필터 ── */
+    .status-tabs {
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+      padding: 16px 24px 0;
+    }
+    .status-tab {
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      border: 1.5px solid #e5e7eb;
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      background: #f9fafb;
+      margin-right: 4px;
+      transition: background 0.15s, color 0.15s;
+      user-select: none;
+      position: relative;
+      bottom: -1px;
+    }
+    .status-tab.active { background: #1a1f2e; color: #fff; border-color: #1a1f2e; z-index: 1; }
+    .status-tab:not(.active):hover { background: #f3f4f6; color: #374151; }
+
+    /* ── 검색 툴바 ── */
+    .list-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 14px 24px;
+      border-bottom: 1px solid #f3f4f6;
+      flex-wrap: wrap;
+    }
+    .list-toolbar select {
+      padding: 7px 10px;
+      font-size: 13px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 6px;
+      color: #374151;
+      background: #fff;
+      cursor: pointer;
+      min-width: 90px;
+    }
+    .list-toolbar select:focus { outline: none; border-color: var(--rss-amber); }
+
+    /* ── 공사현황 테이블 ── */
+    .clist-table-wrap { overflow-x: auto; }
+    .clist-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .clist-table thead tr {
+      background: #f9fafb;
+      border-top: 2px solid #e5e7eb;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .clist-table th {
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .clist-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f3f4f6;
+      color: #374151;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .clist-table tr:last-child td { border-bottom: none; }
+    .clist-table tr:hover td { background: #fffbf0; }
+    .clist-table .col-nm { text-align: left; min-width: 180px; }
+    .clist-table .col-period { min-width: 200px; white-space: nowrap; }
+    .clist-table .col-equip { text-align: left; min-width: 180px; font-size: 13px; color: #6b7280; }
+    .clist-nm-link {
+      color: #374151;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .clist-nm-link:hover { color: var(--rss-amber-dark); text-decoration: underline; }
+    .clist-nm-link.urgent { color: #dc2626; font-weight: 700; }
+    .clist-table tr.row-urgent td { background: #fff7f7; }
+    .clist-table tr.row-urgent:hover td { background: #fff0f0; }
+
+    /* ── 모바일 카드형 (768px 이하) ── */
+    .clist-table-wrap { display: block; }
+    .clist-mobile { display: none; }
+    @media (max-width: 768px) {
+      .clist-table-wrap { display: none; }
+      .clist-mobile { display: block; padding: 12px 16px; }
+      .clist-mobile-card {
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 10px;
+        background: #fff;
+        cursor: pointer;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+      .clist-mobile-card:hover { border-color: var(--rss-amber); box-shadow: 0 2px 8px rgba(245,158,11,0.12); }
+      .clist-mobile-card__title { font-size: 15px; font-weight: 700; color: #1a1c23; margin-bottom: 8px; }
+      .clist-mobile-card__title.urgent { color: #dc2626; }
+      .clist-mobile-card__row { display: flex; gap: 6px; font-size: 13px; margin-bottom: 4px; }
+      .clist-mobile-card__label { color: #9ca3af; font-weight: 600; min-width: 52px; flex-shrink: 0; }
+      .clist-mobile-card__value { color: #374151; }
+      .clist-mobile-card__footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+      .status-tabs { padding: 12px 16px 0; }
+      .status-tab { padding: 7px 12px; font-size: 13px; }
+      .list-toolbar { padding: 10px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <div id="rss-header-wrap" data-title="내 공사 현황"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ── 상태 탭 ──────────────────────────────────────
+             [Java] 파라미터: status ('all'|'progress'|'complete'|'scheduled')
+             [Java] th:classappend="${param.status == 'all'} ? 'active'"
+        ─────────────────────────────────────────────────── -->
+        <div class="status-tabs" role="tablist">
+          <button class="status-tab active" data-status="all"       onclick="switchStatusTab(this)">전체</button>
+          <button class="status-tab"        data-status="scheduled" onclick="switchStatusTab(this)">예정</button>
+          <button class="status-tab"        data-status="progress"  onclick="switchStatusTab(this)">진행중</button>
+          <button class="status-tab"        data-status="complete"  onclick="switchStatusTab(this)">완료</button>
+        </div>
+
+        <!-- ── 검색 툴바 ──────────────────────────────────────
+             [Java] GET 파라미터: status, searchType, searchKeyword
+        ─────────────────────────────────────────────────── -->
+        <div class="list-toolbar">
+          <select name="searchType" id="listSearchType">
+            <option value="">선택</option>
+            <option value="constructionNm">공사명</option>
+            <option value="orderCompanyNm">발주업체명</option>
+            <option value="roadNm">도로명</option>
+          </select>
+          <div class="rss-search-wrap">
+            <input type="text" name="searchKeyword" id="listSearchKeyword" placeholder="검색어 입력" />
+            <button type="button" aria-label="검색">
+              <i data-lucide="search" style="width:15px;height:15px;"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── PC 테이블 뷰 ──────────────────────────────────
+             [DB] 테이블: construction WHERE mber_id = #{loginUsr.mberSeq}
+             [DB] 정렬: ORDER BY reg_dtm DESC
+             [Java] th:each="item : ${constructionList}"
+        ─────────────────────────────────────────────────── -->
+        <div class="clist-table-wrap">
+          <table class="clist-table">
+            <thead>
+              <tr>
+                <th style="width:52px;">번호</th>
+                <th class="col-nm">공사명<!-- [DB] construction.constructionNm --></th>
+                <th>발주업체명<!-- [DB] construction.orderCompanyNm --></th>
+                <th class="col-period">기간<!-- [DB] construction.startDt ~ endDt --></th>
+                <th>도로명<!-- [DB] construction.roadNm --></th>
+                <th>방향<!-- [DB] construction.direction --></th>
+                <th class="col-equip">품목별 수량<!-- [DB] construction.equipSummary --></th>
+                <th>상태<!-- [DB] construction.status --></th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- [Java] th:each="item : ${constructionList}" -->
+
+              <!-- 긴급 공사 -->
+              <!-- [Java] th:classappend="${item.urgentYn == 1} ? 'row-urgent'" -->
+              <tr class="row-urgent">
+                <td>1</td>
+                <td class="col-nm">
+                  <!-- [Java] th:href="@{/construction/detail/{id}(id=${item.constructionSeq})}" -->
+                  <a href="construction-detail.html" class="clist-nm-link urgent">
+                    [긴급] 호남선 순천방향 포장공사<!-- [Java] ${item.constructionNm} -->
+                  </a>
+                </td>
+                <td style="color:#dc2626;font-weight:600;">한국개발<!-- [Java] ${item.orderCompanyNm} --></td>
+                <td class="col-period" style="color:#dc2626;font-weight:600;">2026-07-01 ~ 2026-07-03<!-- [Java] ${item.startDt} ~ ${item.endDt} --></td>
+                <td style="color:#dc2626;font-weight:600;">호남고속도로<!-- [Java] ${item.roadNm} --></td>
+                <td style="color:#dc2626;font-weight:600;">순천<!-- [Java] ${item.direction} --></td>
+                <td class="col-equip" style="color:#dc2626;font-weight:600;">TMA1:1대, TMA3:2대, PLCS:2대<!-- [Java] ${item.equipSummary} --></td>
+                <td><span class="rss-badge rss-badge--scheduled">예정</span><!-- [Java] ${item.statusLabel} --></td>
+                <td>
+                  <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>2</td>
+                <td class="col-nm">
+                  <a href="construction-detail.html" class="clist-nm-link">국도 32번선 횡단보도 보수</a>
+                </td>
+                <td>소망건설</td>
+                <td class="col-period">2026-06-25 ~ 2026-06-25</td>
+                <td>국도 32번</td>
+                <td>대전</td>
+                <td class="col-equip">TMA1:2대, TMA3:1대</td>
+                <td><span class="rss-badge rss-badge--progress">진행중</span></td>
+                <td>
+                  <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>3</td>
+                <td class="col-nm">
+                  <a href="construction-detail.html" class="clist-nm-link">중앙분리대 시공</a>
+                </td>
+                <td>오봉토건</td>
+                <td class="col-period">2026-06-12 ~ 2026-06-18</td>
+                <td>경부고속도로</td>
+                <td>부산</td>
+                <td class="col-equip">TMA3:2대, PLCS:2대</td>
+                <td><span class="rss-badge rss-badge--complete">완료</span></td>
+                <td>
+                  <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td>4</td>
+                <td class="col-nm">
+                  <a href="construction-detail.html" class="clist-nm-link">호남선 서울방향 포장공사</a>
+                </td>
+                <td>한국개발</td>
+                <td class="col-period">2026-06-01 ~ 2026-06-02</td>
+                <td>호남고속도로</td>
+                <td>서울</td>
+                <td class="col-equip">TMA1:1대, TMA3:2대, PLCS:1대</td>
+                <td><span class="rss-badge rss-badge--complete">완료</span></td>
+                <td>
+                  <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세</a>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div><!-- /clist-table-wrap -->
+
+        <!-- ── 모바일 카드 뷰 (768px 이하) ── -->
+        <div class="clist-mobile">
+          <!-- [Java] th:each="item : ${constructionList}" -->
+          <div class="clist-mobile-card" onclick="location.href='construction-detail.html'">
+            <div class="clist-mobile-card__title urgent">[긴급] 호남선 순천방향 포장공사</div>
+            <div class="clist-mobile-card__row">
+              <span class="clist-mobile-card__label">발주사</span>
+              <span class="clist-mobile-card__value">한국개발</span>
+            </div>
+            <div class="clist-mobile-card__row">
+              <span class="clist-mobile-card__label">기간</span>
+              <span class="clist-mobile-card__value">2026-07-01 ~ 2026-07-03</span>
+            </div>
+            <div class="clist-mobile-card__row">
+              <span class="clist-mobile-card__label">장비</span>
+              <span class="clist-mobile-card__value">TMA1:1대, TMA3:2대, PLCS:2대</span>
+            </div>
+            <div class="clist-mobile-card__footer">
+              <span class="rss-badge rss-badge--scheduled">예정</span>
+              <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세보기</a>
+            </div>
+          </div>
+
+          <div class="clist-mobile-card" onclick="location.href='construction-detail.html'">
+            <div class="clist-mobile-card__title">국도 32번선 횡단보도 보수</div>
+            <div class="clist-mobile-card__row">
+              <span class="clist-mobile-card__label">발주사</span>
+              <span class="clist-mobile-card__value">소망건설</span>
+            </div>
+            <div class="clist-mobile-card__row">
+              <span class="clist-mobile-card__label">기간</span>
+              <span class="clist-mobile-card__value">2026-06-25 ~ 2026-06-25</span>
+            </div>
+            <div class="clist-mobile-card__row">
+              <span class="clist-mobile-card__label">장비</span>
+              <span class="clist-mobile-card__value">TMA1:2대, TMA3:1대</span>
+            </div>
+            <div class="clist-mobile-card__footer">
+              <span class="rss-badge rss-badge--progress">진행중</span>
+              <a href="construction-detail.html" class="rss-btn rss-btn--outline rss-btn--sm">상세보기</a>
+            </div>
+          </div>
+        </div><!-- /clist-mobile -->
+
+        <!-- 페이지네이션 -->
+        <div class="rss-pagination" style="padding: 16px 0 20px;">
+          <button class="rss-pagination__btn" aria-label="처음">
+            <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="이전">
+            <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn active">1</button>
+          <button class="rss-pagination__btn">2</button>
+          <button class="rss-pagination__btn">3</button>
+          <button class="rss-pagination__btn" aria-label="다음">
+            <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="마지막">
+            <i data-lucide="chevrons-right" style="width:14px;height:14px;"></i>
+          </button>
+        </div>
+
+      </div><!-- /rss-card -->
+
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  function switchStatusTab(tab) {
+    document.querySelectorAll('.status-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+    /* [Java] 실제 환경: location.href = '/construction?status=' + tab.dataset.status; */
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>광고 상세 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 광고 상세 대표 이미지 ── */
+    .ad-hero-img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      display: block;
+      background: #f3f4f6;
+    }
+
+    /* ── 하단 버튼 ── */
+    .ad-detail-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 16px 24px;
+      border-top: 1px solid #f3f4f6;
+    }
+
+    @media (max-width: 480px) {
+      .ad-detail-footer { padding: 14px 16px; }
+      .ad-detail-footer .rss-btn { flex: 1; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <div id="rss-header-wrap" data-title="광고 상세"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ══════════════════════════════════════════════════
+             광고 상세 (B7-1)
+             [DB] 테이블: ad WHERE ad_seq = #{adSeq}
+             [Java] Model: ad (AdDto)
+        ══════════════════════════════════════════════════ -->
+
+        <!-- 대표 이미지 -->
+        <!-- [Java] th:src="${ad.thumbImgUrl}" -->
+        <img class="ad-hero-img"
+             src="https://placehold.co/1200x400/fef3c7/d97706?text=한국도로차단(주)+광고"
+             alt="광고 대표 이미지" />
+
+        <!-- 게시글 헤더 -->
+        <div class="rss-post-header">
+          <!-- [Java] th:text="${ad.title}" -->
+          <h2 class="rss-post-title">
+            도로 차단 전문 기업, 안전한 공사 현장을 만듭니다
+          </h2>
+          <div class="rss-post-meta">
+            <span>
+              <i data-lucide="building-2" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
+              <!-- [Java] th:text="${ad.companyNm}" -->
+              한국도로차단(주)
+            </span>
+            <span>
+              <i data-lucide="calendar" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
+              <!-- [Java] th:text="${#temporals.format(ad.regDtm, 'yyyy-MM-dd')}" -->
+              2026-06-15
+            </span>
+          </div>
+        </div>
+
+        <!-- 광고 본문 -->
+        <!-- [DB] 컬럼: ad.content (TEXT, 에디터 HTML 포함 가능) -->
+        <!-- [Java] th:utext="${ad.content}" (HTML 렌더링 허용 시 utext 사용) -->
+        <div class="rss-post-body">
+          <p>안녕하세요, 한국도로차단(주)입니다.</p>
+          <br>
+          <p>저희는 고속도로 및 국도 공사 현장의 안전한 차단 서비스를 전문으로 제공하는 기업입니다.</p>
+          <br>
+          <h3 style="font-weight:700; font-size:15px; margin-bottom:8px;">■ 주요 서비스</h3>
+          <ul style="padding-left:20px; line-height:2.2; list-style:disc;">
+            <li>TMA-1, TMA-3, PLCS 차량 임대 및 운영</li>
+            <li>씨인카 보유 50대 이상 (전국 배치 가능)</li>
+            <li>24시간 긴급 출동 서비스</li>
+            <li>발주사 승인 대행 서비스</li>
+          </ul>
+          <br>
+          <h3 style="font-weight:700; font-size:15px; margin-bottom:8px;">■ 보유 장비</h3>
+          <p>TMA-1 : 12대 / TMA-3 : 8대 / PLCS : 15대 / 씨인카 : 55대</p>
+          <br>
+          <p>문의: 02-1234-5678 | 이메일: info@koreacutoff.co.kr</p>
+        </div>
+
+        <!-- 하단 버튼 -->
+        <div class="ad-detail-footer">
+          <a href="ad.html" class="rss-btn rss-btn--outline">
+            <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
+          </a>
+        </div>
+
+      </div><!-- /rss-card -->
+
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+</script>
+</body>
+</html>

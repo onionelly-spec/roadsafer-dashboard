@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>장터 등록 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 폼 공통 ── */
+    .write-form { padding: 24px; max-width: 760px; }
+    .form-row { margin-bottom: 18px; }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    .form-label .required { color: #dc2626; margin-left: 2px; }
+    .form-input {
+      width: 100%;
+      padding: 10px 13px;
+      font-size: 14px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 6px;
+      color: #374151;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus { outline: none; border-color: var(--rss-amber); }
+    .form-input::placeholder { color: #9ca3af; }
+    .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    .form-textarea {
+      resize: vertical;
+      min-height: 140px;
+    }
+
+    /* ── 이미지 업로드 영역 ── */
+    .img-upload-area {
+      border: 2px dashed #e5e7eb;
+      border-radius: 8px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: #fafafa;
+    }
+    .img-upload-area:hover { border-color: var(--rss-amber); background: #fffbf0; }
+    .img-upload-area input[type="file"] { display: none; }
+    .img-upload-area__icon { color: #9ca3af; margin-bottom: 8px; }
+    .img-upload-area__text { font-size: 14px; color: #6b7280; }
+    .img-upload-area__hint { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+
+    /* 업로드된 이미지 미리보기 */
+    .img-preview-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .img-preview-item {
+      position: relative;
+      width: 80px;
+      height: 80px;
+    }
+    .img-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1.5px solid #e5e7eb;
+    }
+    .img-preview-item__del {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 20px;
+      height: 20px;
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── 하단 버튼 ── */
+    .write-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 16px 24px;
+      border-top: 1px solid #f3f4f6;
+    }
+
+    /* ── 반응형 ── */
+    @media (max-width: 640px) {
+      .write-form { padding: 16px; }
+      .write-footer { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <!-- [Java] 수정 시: data-title="장터 수정", 등록 시: data-title="장터 등록" -->
+    <div id="rss-header-wrap" data-title="장터 등록"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ══════════════════════════════════════════════════
+             장터 등록/수정 폼 (B4-2)
+             [Java] POST /market/save (등록)
+             [Java] POST /market/update (수정)
+             [DB] 테이블: market
+        ══════════════════════════════════════════════════ -->
+        <!-- [Java] th:action="@{/market/save}" method="post" enctype="multipart/form-data" -->
+        <form id="marketWriteForm" class="write-form" novalidate>
+          <!-- 수정 시 시퀀스 hidden 전달 -->
+          <!-- [Java] th:if="${market != null}" -->
+          <input type="hidden" name="marketSeq" id="marketSeq" /><!-- [DB] market.market_seq -->
+
+          <!-- 카테고리 -->
+          <div class="form-row">
+            <label class="form-label" for="category">
+              카테고리<span class="required">*</span>
+            </label>
+            <!-- [DB] 컬럼: market.category ('sinca'|'sign'|'safety'|'sinboard'|'tma') -->
+            <select name="category" id="category" class="form-input form-select">
+              <option value="">카테고리를 선택하세요</option>
+              <option value="sinca">씨인카</option>
+              <option value="sign">간판시설물</option>
+              <option value="safety">안전시설물</option>
+              <option value="sinboard">씨인보드</option>
+              <option value="tma">TMA</option>
+            </select>
+          </div>
+
+          <!-- 제목 -->
+          <div class="form-row">
+            <label class="form-label" for="title">
+              제목<span class="required">*</span>
+            </label>
+            <!-- [DB] 컬럼: market.title -->
+            <input type="text" name="title" id="title" class="form-input"
+                   placeholder="상품 제목을 입력하세요" maxlength="100" />
+          </div>
+
+          <!-- 수량 / 규격 -->
+          <div class="form-row" style="display:grid;grid-template-columns:1fr 2fr;gap:12px;">
+            <div>
+              <label class="form-label" for="qty">수량</label>
+              <!-- [DB] 컬럼: market.qty -->
+              <input type="number" name="qty" id="qty" class="form-input" placeholder="0" min="0" />
+            </div>
+            <div>
+              <label class="form-label" for="spec">규격</label>
+              <!-- [DB] 컬럼: market.spec -->
+              <input type="text" name="spec" id="spec" class="form-input" placeholder="예) TMA-1 / 2022년식 / 45,000km" />
+            </div>
+          </div>
+
+          <!-- 판매가 -->
+          <div class="form-row">
+            <label class="form-label" for="price">판매가 (원)</label>
+            <!-- [DB] 컬럼: market.price -->
+            <input type="number" name="price" id="price" class="form-input"
+                   placeholder="숫자만 입력 (협의 가능 시 0 입력)" min="0" />
+          </div>
+
+          <!-- 내용 -->
+          <div class="form-row">
+            <label class="form-label" for="content">
+              내용<span class="required">*</span>
+            </label>
+            <!-- [DB] 컬럼: market.content -->
+            <textarea name="content" id="content" class="form-input form-textarea"
+                      placeholder="상품에 대한 상세 내용을 입력하세요."></textarea>
+          </div>
+
+          <!-- 이미지 첨부 -->
+          <div class="form-row">
+            <label class="form-label">이미지 첨부 (최대 5장)</label>
+            <!-- [DB] 테이블: market_image (market_seq, img_url, original_file_nm, sort_order) -->
+            <div class="img-upload-area" onclick="document.getElementById('marketImages').click()">
+              <div class="img-upload-area__icon">
+                <i data-lucide="image-plus" style="width:32px;height:32px;"></i>
+              </div>
+              <p class="img-upload-area__text">클릭하여 이미지를 업로드하세요</p>
+              <p class="img-upload-area__hint">JPG, PNG, GIF 지원 / 파일당 최대 5MB</p>
+              <input type="file" name="marketImages" id="marketImages"
+                     accept="image/*" multiple onchange="previewImages(this)" />
+            </div>
+            <!-- 이미지 미리보기 -->
+            <div class="img-preview-list" id="imgPreviewList"></div>
+          </div>
+
+        </form>
+
+        <!-- ── 하단 버튼 ── -->
+        <div class="write-footer">
+          <a href="market.html" class="rss-btn rss-btn--outline">취소</a>
+          <button type="button" class="rss-btn rss-btn--amber" onclick="submitMarketForm()">
+            <i data-lucide="save" style="width:14px;height:14px;"></i>등록하기
+          </button>
+        </div>
+
+      </div><!-- /rss-card -->
+
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 이미지 미리보기 ── */
+  function previewImages(input) {
+    var list = document.getElementById('imgPreviewList');
+    var files = Array.from(input.files);
+    var maxCount = 5;
+    var current = list.querySelectorAll('.img-preview-item').length;
+
+    files.slice(0, maxCount - current).forEach(function(file) {
+      if (!file.type.startsWith('image/')) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var item = document.createElement('div');
+        item.className = 'img-preview-item';
+        item.innerHTML = '<img src="' + e.target.result + '" alt="미리보기" />'
+          + '<button type="button" class="img-preview-item__del" onclick="removePreview(this)" aria-label="삭제">✕</button>';
+        list.appendChild(item);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function removePreview(btn) {
+    btn.closest('.img-preview-item').remove();
+  }
+
+  /* ── 폼 제출 ──────────────────────────────────────────────
+     [Java] document.getElementById('marketWriteForm').submit();
+  ─────────────────────────────────────────────────────────── */
+  function submitMarketForm() {
+    var category = document.getElementById('category').value;
+    var title    = document.getElementById('title').value.trim();
+    var content  = document.getElementById('content').value.trim();
+    if (!category) { alert('카테고리를 선택해주세요.'); return; }
+    if (!title)    { alert('제목을 입력해주세요.'); return; }
+    if (!content)  { alert('내용을 입력해주세요.'); return; }
+    /* [Java] document.getElementById('marketWriteForm').submit(); */
+    alert('등록되었습니다. (더미 동작)');
+    location.href = 'market.html';
+  }
+</script>
+</body>
+</html>
