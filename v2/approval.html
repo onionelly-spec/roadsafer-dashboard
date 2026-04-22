@@ -14,12 +14,11 @@
 
     /* 섹션 타이틀 */
     .apv-section-title {
-      font-size: var(--rss-font-sm);    /* 13px */
+      font-size: var(--rss-font-md);    /* 16px */
       font-weight: 700;
-      color: var(--rss-text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 20px 24px 10px;
+      color: var(--rss-text);
+      letter-spacing: 0.01em;
+      padding: 20px 24px 12px;
       border-bottom: 1px solid var(--rss-border);
     }
 
@@ -29,39 +28,41 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* 테이블 */
+    /* 테이블 — 두 섹션 동일 스타일 */
     .apv-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: var(--rss-font-sm);    /* 13px */
+      font-size: var(--rss-font-base);  /* 15px — 공통 본문 기준 */
     }
     .apv-table thead th {
-      background: var(--rss-bg);
-      color: var(--rss-text-muted);
+      background: #f9fafb;
+      color: var(--rss-muted);
+      font-size: var(--rss-font-sm);    /* 13px — th는 한 단계 작게 */
       font-weight: 600;
-      padding: 10px 20px;
+      padding: 12px 20px;
       text-align: center;
       border-bottom: 1px solid var(--rss-border);
       white-space: nowrap;
     }
     .apv-table tbody tr {
-      border-bottom: 1px solid var(--rss-border);
+      border-bottom: 1px solid #f3f4f6;
       transition: background 0.12s;
     }
     .apv-table tbody tr:last-child { border-bottom: none; }
     .apv-table tbody tr:hover { background: #fffbf0; }
     .apv-table tbody td {
-      padding: 14px 20px;
+      padding: 15px 20px;
       text-align: center;
       color: var(--rss-text);
       vertical-align: middle;
+      font-size: var(--rss-font-base);  /* 15px — 두 섹션 동일 */
     }
     .apv-table tbody td.apv-td-name {
       font-weight: 600;
       color: var(--rss-text);
     }
     .apv-table tbody td.apv-td-tel {
-      color: var(--rss-text-muted);
+      color: var(--rss-muted);
       letter-spacing: 0.02em;
     }
 
@@ -69,8 +70,8 @@
     .apv-empty {
       padding: 32px 24px;
       text-align: center;
-      color: var(--rss-text-muted);
-      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      font-size: var(--rss-font-base);
     }
 
     /* 섹션 구분 */
@@ -80,9 +81,9 @@
 
     /* 반응형 */
     @media (max-width: 640px) {
-      .apv-section-title { padding: 16px 16px 8px; }
-      .apv-table thead th,
-      .apv-table tbody td { padding: 10px 12px; }
+      .apv-section-title { padding: 16px 16px 8px; font-size: var(--rss-font-base); }
+      .apv-table thead th { padding: 10px 12px; font-size: var(--rss-font-xs); }
+      .apv-table tbody td { padding: 12px 12px; font-size: var(--rss-font-sm); }
     }
   </style>
 </head>

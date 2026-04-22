@@ -18,7 +18,7 @@
     }
     .detail-tab {
       padding: 9px 22px;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       font-weight: 600;
       color: #6b7280;
       cursor: pointer;
@@ -37,14 +37,14 @@
     .detail-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
     }
     .detail-table th {
       width: 130px;
       padding: 12px 16px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #6b7280;
       text-align: center;
@@ -63,13 +63,13 @@
     .equip-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
     }
     .equip-table th {
       padding: 10px 12px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #6b7280;
       text-align: center;
@@ -88,13 +88,13 @@
     .cal-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
     }
     .cal-table th {
       padding: 10px 8px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #6b7280;
       text-align: center;
@@ -106,9 +106,9 @@
       vertical-align: top;
       min-width: 80px;
     }
-    .cal-date { font-size: 12px; color: #9ca3af; margin-bottom: 4px; }
+    .cal-date { font-size: var(--rss-font-xs); color: #9ca3af; margin-bottom: 4px; }
     .cal-date.today { font-weight: 700; color: #1f2937; }
-    .cal-status { font-size: 12px; }
+    .cal-status { font-size: var(--rss-font-xs); }
 
     /* ── 하단 버튼 ── */
     .detail-footer {
@@ -122,11 +122,11 @@
     /* ── 반응형 ── */
     @media (max-width: 640px) {
       .detail-tabs { padding: 12px 16px 0; }
-      .detail-tab { padding: 8px 14px; font-size: 13px; }
+      .detail-tab { padding: 8px 14px; font-size: var(--rss-font-sm); }
       .tab-panel { padding: 16px; }
-      .detail-table th { width: 90px; padding: 10px 10px; font-size: 12px; }
-      .detail-table td { padding: 10px 10px; font-size: 13px; }
-      .cal-table { font-size: 12px; }
+      .detail-table th { width: 90px; padding: 10px 10px; font-size: var(--rss-font-xs); }
+      .detail-table td { padding: 10px 10px; font-size: var(--rss-font-sm); }
+      .cal-table { font-size: var(--rss-font-xs); }
       .cal-table th, .cal-table td { padding: 8px 4px; min-width: 44px; }
     }
   </style>

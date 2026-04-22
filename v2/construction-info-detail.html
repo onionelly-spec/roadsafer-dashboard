@@ -12,14 +12,14 @@
     .detail-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
     }
     .detail-table th {
       width: 130px;
       padding: 13px 18px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #6b7280;
       text-align: center;
@@ -53,8 +53,8 @@
 
     /* ── 반응형 ── */
     @media (max-width: 640px) {
-      .detail-table th { width: 90px; padding: 10px 12px; font-size: 12px; }
-      .detail-table td { padding: 10px 12px; font-size: 13px; }
+      .detail-table th { width: 90px; padding: 10px 12px; font-size: var(--rss-font-xs); }
+      .detail-table td { padding: 10px 12px; font-size: var(--rss-font-sm); }
       .detail-footer { flex-direction: column; }
       .detail-footer .rss-btn { width: 100%; justify-content: center; }
     }

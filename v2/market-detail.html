@@ -48,7 +48,7 @@
 
     /* ── 상품 정보 ── */
     .market-info__cat {
-      font-size: 12px;
+      font-size: var(--rss-font-xs);
       font-weight: 600;
       color: var(--rss-amber-dark);
       text-transform: uppercase;
@@ -56,7 +56,7 @@
       margin-bottom: 6px;
     }
     .market-info__title {
-      font-size: 20px;
+      font-size: var(--rss-font-xl);
       font-weight: 700;
       color: #1a1c23;
       line-height: 1.4;
@@ -66,13 +66,13 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       color: #9ca3af;
       margin-bottom: 18px;
       flex-wrap: wrap;
     }
     .market-info__price {
-      font-size: 22px;
+      font-size: var(--rss-font-2xl);
       font-weight: 700;
       color: #1a1c23;
       margin-bottom: 18px;
@@ -82,7 +82,7 @@
     .spec-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       margin-bottom: 18px;
     }
     .spec-table th {
@@ -90,7 +90,7 @@
       padding: 10px 14px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #6b7280;
       text-align: center;
@@ -104,7 +104,7 @@
 
     /* ── 상품 내용 ── */
     .market-info__content {
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       color: #374151;
       line-height: 1.75;
       padding: 14px;
@@ -129,8 +129,8 @@
     .market-detail-footer__right { display: flex; gap: 8px; }
 
     @media (max-width: 480px) {
-      .market-info__title { font-size: 17px; }
-      .market-info__price { font-size: 18px; }
+      .market-info__title { font-size: var(--rss-font-md); }
+      .market-info__price { font-size: var(--rss-font-lg); }
       .market-detail-footer { flex-direction: column; }
       .market-detail-footer__left,
       .market-detail-footer__right { width: 100%; }

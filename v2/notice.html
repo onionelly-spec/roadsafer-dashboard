@@ -10,7 +10,7 @@
   <style>
     /* ── 공지사항 섹션 타이틀 ── */
     .notice-section-title {
-      font-size: 15px;
+      font-size: var(--rss-font-base);
       font-weight: 700;
       color: var(--rss-text);
       padding: 18px 24px 10px;
@@ -31,7 +31,7 @@
     .notice-row:last-child { border-bottom: none; }
     .notice-row:hover { background: #fffbf0; }
     .notice-row__title {
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       color: var(--rss-text);   /* 공통 CSS 텍스트 색상 적용 */
       font-weight: 500;
       flex: 1;
@@ -47,7 +47,7 @@
       text-underline-offset: 2px;
     }
     .notice-row__date {
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       color: #9ca3af;
       white-space: nowrap;
       flex-shrink: 0;
@@ -90,7 +90,7 @@
       gap: 12px;
     }
     .notice-modal__title {
-      font-size: 16px;
+      font-size: var(--rss-font-md);
       font-weight: 700;
       color: var(--rss-text);
       line-height: 1.5;
@@ -114,14 +114,14 @@
       padding: 10px 24px;
       background: #fafafa;
       border-bottom: 1px solid #f3f4f6;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       color: #6b7280;
     }
     .notice-modal__body {
       padding: 20px 24px;
       overflow-y: auto;
       flex: 1;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       color: #374151;
       line-height: 1.8;
     }
@@ -130,7 +130,7 @@
       border-top: 1px solid #f3f4f6;
     }
     .notice-modal__attach-label {
-      font-size: 12px;
+      font-size: var(--rss-font-xs);
       font-weight: 600;
       color: #9ca3af;
       margin-bottom: 6px;

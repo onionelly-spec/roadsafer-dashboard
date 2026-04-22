@@ -18,7 +18,7 @@
     }
     .cat-tab {
       padding: 8px 18px;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #6b7280;
       cursor: pointer;
@@ -85,7 +85,7 @@
     }
     .market-card__body { padding: 12px 14px 14px; }
     .market-card__cat {
-      font-size: 11px;
+      font-size: var(--rss-font-xs);
       font-weight: 600;
       color: var(--rss-amber-dark);
       text-transform: uppercase;
@@ -93,7 +93,7 @@
       margin-bottom: 4px;
     }
     .market-card__title {
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       font-weight: 700;
       color: #1a1c23;
       line-height: 1.45;
@@ -104,13 +104,13 @@
       overflow: hidden;
     }
     .market-card__price {
-      font-size: 15px;
+      font-size: var(--rss-font-base);
       font-weight: 700;
       color: #1a1c23;
       margin-bottom: 4px;
     }
     .market-card__meta {
-      font-size: 12px;
+      font-size: var(--rss-font-xs);
       color: #9ca3af;
       display: flex;
       align-items: center;
@@ -120,7 +120,7 @@
     /* ── 반응형 ── */
     @media (max-width: 640px) {
       .cat-tabs { padding: 12px 16px 0; gap: 4px; }
-      .cat-tab { padding: 6px 12px; font-size: 12px; }
+      .cat-tab { padding: 6px 12px; font-size: var(--rss-font-xs); }
       .market-toolbar { padding: 10px 16px; }
       .market-grid { padding: 14px 16px; gap: 10px; }
     }

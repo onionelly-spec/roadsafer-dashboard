@@ -11,7 +11,7 @@
     /* ── 폼 공통 ── */
     .profile-form { padding: 24px; max-width: 640px; }
     .form-section-title {
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       font-weight: 700;
       color: #374151;
       padding: 10px 0 8px;
@@ -30,7 +30,7 @@
     @media (max-width: 480px) { .form-row-2col { grid-template-columns: 1fr; } }
     .form-label {
       display: block;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #374151;
       margin-bottom: 5px;
@@ -39,7 +39,7 @@
     .form-input {
       width: 100%;
       padding: 10px 13px;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       border: 1.5px solid #e5e7eb;
       border-radius: 6px;
       color: #374151;
@@ -63,7 +63,7 @@
       padding: 6px 12px;
       border: 1.5px solid #e5e7eb;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       color: #374151;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
@@ -80,7 +80,7 @@
       flex-wrap: wrap;
     }
     .file-upload-name {
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       color: #6b7280;
       flex: 1;
       min-width: 0;
@@ -128,7 +128,7 @@
       padding: 18px 22px;
       border-bottom: 1px solid #f3f4f6;
     }
-    .rss-modal__title { font-size: 16px; font-weight: 700; color: #1a1c23; }
+    .rss-modal__title { font-size: var(--rss-font-md); font-weight: 700; color: #1a1c23; }
     .rss-modal__close {
       background: none; border: none;
       color: #9ca3af; cursor: pointer; padding: 4px;
@@ -147,7 +147,7 @@
     .modal-form-row { margin-bottom: 14px; }
     .modal-form-label {
       display: block;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #374151;
       margin-bottom: 5px;
@@ -156,7 +156,7 @@
     .modal-form-input {
       width: 100%;
       padding: 9px 12px;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       border: 1.5px solid #e5e7eb;
       border-radius: 6px;
       color: #374151;

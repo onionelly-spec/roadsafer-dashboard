@@ -17,7 +17,7 @@
     }
     .status-tab {
       padding: 8px 20px;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
       font-weight: 600;
       color: #6b7280;
       cursor: pointer;
@@ -46,7 +46,7 @@
     }
     .list-toolbar select {
       padding: 7px 10px;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       border: 1.5px solid #e5e7eb;
       border-radius: 6px;
       color: #374151;
@@ -61,7 +61,7 @@
     .clist-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: var(--rss-font-base);
     }
     .clist-table thead tr {
       background: #f9fafb;
@@ -70,7 +70,7 @@
     }
     .clist-table th {
       padding: 11px 14px;
-      font-size: 13px;
+      font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #6b7280;
       text-align: center;
@@ -87,7 +87,7 @@
     .clist-table tr:hover td { background: #fffbf0; }
     .clist-table .col-nm { text-align: left; min-width: 180px; }
     .clist-table .col-period { min-width: 200px; white-space: nowrap; }
-    .clist-table .col-equip { text-align: left; min-width: 180px; font-size: 13px; color: #6b7280; }
+    .clist-table .col-equip { text-align: left; min-width: 180px; font-size: var(--rss-font-sm); color: #6b7280; }
     .clist-nm-link {
       color: #374151;
       font-weight: 500;
@@ -114,14 +114,14 @@
         transition: border-color 0.15s, box-shadow 0.15s;
       }
       .clist-mobile-card:hover { border-color: var(--rss-amber); box-shadow: 0 2px 8px rgba(245,158,11,0.12); }
-      .clist-mobile-card__title { font-size: 15px; font-weight: 700; color: #1a1c23; margin-bottom: 8px; }
+      .clist-mobile-card__title { font-size: var(--rss-font-base); font-weight: 700; color: #1a1c23; margin-bottom: 8px; }
       .clist-mobile-card__title.urgent { color: #dc2626; }
-      .clist-mobile-card__row { display: flex; gap: 6px; font-size: 13px; margin-bottom: 4px; }
+      .clist-mobile-card__row { display: flex; gap: 6px; font-size: var(--rss-font-sm); margin-bottom: 4px; }
       .clist-mobile-card__label { color: #9ca3af; font-weight: 600; min-width: 52px; flex-shrink: 0; }
       .clist-mobile-card__value { color: #374151; }
       .clist-mobile-card__footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
       .status-tabs { padding: 12px 16px 0; }
-      .status-tab { padding: 7px 12px; font-size: 13px; }
+      .status-tab { padding: 7px 12px; font-size: var(--rss-font-sm); }
       .list-toolbar { padding: 10px 16px; }
     }
   </style>
