@@ -710,6 +710,20 @@ img { max-width: 100%; display: block; }
 }
 .rss-search-wrap button:hover { color: var(--rss-amber); }
 
+/* ─── 검색 툴바 내 select 높이 통일 ─────────────────────────
+   .rss-board-toolbar, .list-toolbar 내 select는 .rss-search-wrap input과
+   동일한 높이(38px)가 되도록 padding 오버라이드
+──────────────────────────────────────────────────────────── */
+.rss-board-toolbar .rss-select,
+.list-toolbar .rss-select {
+  width: auto;
+  min-width: 90px;
+  padding: 8px 10px;
+  height: 38px;
+  line-height: 1.4;
+  font-size: var(--rss-font-sm); /* 13px */
+}
+
 /* ─── 페이지네이션 ──────────────────────────────────────── */
 .rss-pagination {
   display: flex;
