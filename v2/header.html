@@ -24,14 +24,14 @@
     <!-- 알림 버튼 -->
     <button class="rss-header__icon-btn" aria-label="알림" style="position:relative;">
       <i data-lucide="bell" style="width:20px;height:20px;"></i>
-      <!-- [DB] tbl_notification WHERE user_id = ? AND is_read = 0 COUNT > 0 -->
+      <!-- [DB] tbl_noti WHERE mber_id = ? AND read_yn = 0 COUNT > 0 -->
       <span class="rss-header__badge" id="header_noti_badge" style="display:none;">3</span>
-      <!-- [Java] th:if="${notiCount > 0}" th:text="${notiCount}" -->
+      <!-- [Java] th:if="${notiCnt > 0}" th:text="${notiCnt}" -->
     </button>
     <!-- 사용자 아바타 + 이름 -->
-    <div class="rss-header__avatar" id="header_user_avatar">나</div>
-    <!-- [Java] ${session.loginUser.userName.substring(0,1)} -->
-    <span class="rss-header__username" id="header_user_name">나잘난</span>
-    <!-- [Java] ${session.loginUser.userName} -->
+    <div class="rss-header__avatar" id="header_usr_avatar">나</div>
+    <!-- [Java] ${session.loginUsr.usrNm.substring(0,1)} -->
+    <span class="rss-header__username" id="header_usr_nm">나잘난</span>
+    <!-- [Java] ${session.loginUsr.usrNm} -->
   </div>
 </header>

@@ -40,15 +40,15 @@
           <div class="rss-post-meta">
             <span>
               <i data-lucide="user" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              관리자<!-- [Java] ${notice.authorName} -->
+              관리자<!-- [Java] ${notice.authorNm} -->
             </span>
             <span>
               <i data-lucide="calendar" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              2026-06-01<!-- [Java] ${#temporals.format(notice.createdAt, 'yyyy-MM-dd')} -->
+              2026-06-01<!-- [Java] ${#temporals.format(notice.regDtm, 'yyyy-MM-dd')} -->
             </span>
             <span>
               <i data-lucide="eye" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              조회 1,240<!-- [Java] ${notice.viewCount} -->
+              조회 1,240<!-- [Java] ${notice.viewCnt} -->
             </span>
           </div>
         </div>
@@ -82,7 +82,7 @@
           <a href="#" class="inline-flex items-center gap-2 text-base text-blue-600 hover:underline">
             <i data-lucide="paperclip" style="width:14px;height:14px;"></i>
             2026_하반기_정책변경_안내문.pdf
-            <!-- [Java] ${attachment.originalFileName} -->
+            <!-- [Java] ${attachment.originalFileNm} -->
           </a>
         </div>
 

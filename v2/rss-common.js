@@ -257,22 +257,23 @@ _initNavActive();
 function _initUserInfo() {
   /* 세션 스토리지 또는 더미 데이터에서 사용자 정보 읽기 */
   /* [Java] 실제 환경에서는 서버에서 직접 렌더링 */
-  const userName    = sessionStorage.getItem('rss_user_name')    || '나잘난';
-  const companyName = sessionStorage.getItem('rss_company_name') || '한국도로차단(주)';
-  const avatarChar  = userName.charAt(0);
+  /* sessionStorage 키: rss_usr_nm, rss_company_nm (용어사전: usr=사용자, nm=이름, company_nm=회사명) */
+  const usrNm     = sessionStorage.getItem('rss_usr_nm')      || '나잘난';
+  const companyNm = sessionStorage.getItem('rss_company_nm')  || '한국도로차단(주)';
+  const avatarChar  = usrNm.charAt(0);
 
   /* 사이드바 */
-  const sbName    = document.getElementById('sidebar_user_name');
-  const sbCompany = document.getElementById('sidebar_user_company');
-  const sbAvatar  = document.getElementById('sidebar_user_avatar');
-  if (sbName)    sbName.textContent    = userName;
-  if (sbCompany) sbCompany.textContent = companyName;
+  const sbName    = document.getElementById('sidebar_usr_nm');
+  const sbCompany = document.getElementById('sidebar_company_nm');
+  const sbAvatar  = document.getElementById('sidebar_usr_avatar');
+  if (sbName)    sbName.textContent    = usrNm;
+  if (sbCompany) sbCompany.textContent = companyNm;
   if (sbAvatar)  sbAvatar.textContent  = avatarChar;
 
   /* 헤더 */
-  const hdName   = document.getElementById('header_user_name');
-  const hdAvatar = document.getElementById('header_user_avatar');
-  if (hdName)   hdName.textContent   = userName;
+  const hdName   = document.getElementById('header_usr_nm');
+  const hdAvatar = document.getElementById('header_usr_avatar');
+  if (hdName)   hdName.textContent   = usrNm;
   if (hdAvatar) hdAvatar.textContent = avatarChar;
 }
 _initUserInfo();

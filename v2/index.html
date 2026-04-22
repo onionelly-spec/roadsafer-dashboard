@@ -166,14 +166,14 @@
             <!-- 회사 정보 -->
             <div class="flex-1 min-w-0">
               <h2 class="text-base font-bold text-gray-900 mb-2">한국도로차단(주)</h2>
-              <!-- [Java] ${company.companyName} -->
+              <!-- [Java] ${company.companyNm} -->
               <p class="text-base text-gray-600 mb-1">
                 <span class="text-gray-400 text-sm font-semibold mr-1">대표자</span>
-                나잘난<!-- [Java] ${company.ceoName} -->
+                나잘난<!-- [Java] ${company.ceoNm} -->
               </p>
               <p class="text-base text-gray-600 mb-4">
                 <span class="text-gray-400 text-sm font-semibold mr-1">승인인</span>
-                김석진, 정호석, 박지민<!-- [Java] ${company.approvers} -->
+                김석진, 정호석, 박지민<!-- [Java] ${company.approverNm} -->
               </p>
               <div class="flex gap-2 flex-wrap">
                 <a href="construction-list.html" class="rss-btn rss-btn--outline-amber rss-btn--sm">
@@ -228,7 +228,7 @@
       </div><!-- /dash-top -->
 
       <!-- ── 오늘 알림 ── -->
-      <!-- [DB] 테이블: notification WHERE member_id = ? AND DATE(created_at) = CURDATE() -->
+      <!-- [DB] 테이블: notification WHERE mber_id = ? AND DATE(reg_dtm) = CURDATE() -->
       <div class="rss-card mb-4">
         <div class="rss-card__header">
           <div class="flex items-center gap-2">
@@ -239,7 +239,7 @@
           <a href="notice.html" class="rss-card__more">더보기 &gt;</a>
         </div>
         <ul style="list-style:none; padding:0; margin:0;">
-          <!-- [Java] th:each="noti : ${todayNotifications}" -->
+          <!-- [Java] th:each="noti : ${todayNotiList}" -->
 
           <!-- 알림 아이템 1 (읽지 않음) -->
           <li class="flex items-start gap-3 px-5 py-3.5 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors"
@@ -252,7 +252,7 @@
               </p>
             </div>
             <span class="text-sm text-gray-400 flex-shrink-0 mt-0.5">2026-06-12 11:45</span>
-            <!-- [Java] ${#temporals.format(noti.createdAt, 'yyyy-MM-dd HH:mm')} -->
+            <!-- [Java] ${#temporals.format(noti.regDtm, 'yyyy-MM-dd HH:mm')} -->
           </li>
 
           <!-- 알림 아이템 2 (읽지 않음) -->
@@ -291,11 +291,11 @@
         </div>
         <div class="rss-card__body">
           <div class="ad-grid">
-            <!-- [Java] th:each="ad : ${advertisements}" -->
+            <!-- [Java] th:each="ad : ${adList}" -->
             <div class="ad-img-wrap">
               <a href="ad-detail.html">
                 <img src="https://placehold.co/400x220/e5e7eb/9ca3af?text=광고+이미지+1" alt="광고 1" />
-                <!-- [Java] <img src="${ad.imageUrl}" alt="${ad.title}" /> -->
+                <!-- [Java] <img src="${ad.imgUrl}" alt="${ad.title}" /> -->
               </a>
             </div>
             <div class="ad-img-wrap">
@@ -319,7 +319,7 @@
 
       <!-- ── 공사현황 테이블 ── -->
       <!-- [DB] 테이블: construction JOIN company ON construction.order_company_id = company.id
-                       WHERE construction.block_company_id = ? ORDER BY start_date DESC LIMIT 10 -->
+                       WHERE construction.block_company_id = ? ORDER BY start_dt DESC LIMIT 10 -->
       <div class="rss-card">
         <div class="rss-card__header">
             <a href="construction-list.html" class="text-base font-bold text-gray-900 hover:text-amber-600 transition-colors">
@@ -346,12 +346,12 @@
               <tr>
                 <!-- [DB] construction.status: 'scheduled'|'progress'|'complete'|'cancel' -->
                 <td><span class="rss-badge rss-badge--scheduled">예정</span></td>
-                <td>호남선 순천방향 포장공사</td><!-- [Java] ${item.constructionName} -->
-                <td>한국개발</td><!-- [Java] ${item.orderCompanyName} -->
+                <td>호남선 순천방향 포장공사</td><!-- [Java] ${item.constructionNm} -->
+                <td>한국개발</td><!-- [Java] ${item.orderCompanyNm} -->
                 <td>
                   2026-07-01 ~ 2026-07-03
                   <span class="text-sm text-gray-400">(3일)</span>
-                  <!-- [Java] ${item.startDate} ~ ${item.endDate} -->
+                  <!-- [Java] ${item.startDt} ~ ${item.endDt} -->
                 </td>
                 <td class="text-sm">TMA-1 : 1대, TMA-3 : 2대, PLCS : 2대</td>
                 <!-- [Java] ${item.equipmentSummary} -->

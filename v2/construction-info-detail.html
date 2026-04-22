@@ -177,13 +177,13 @@
 
           <dl class="info-dl">
             <dt>공사명</dt>
-            <dd>국도 32번선 횡단보도 보수 공사<!-- [Java] ${construction.constructionName} --></dd>
+            <dd>국도 32번선 횡단보도 보수 공사<!-- [Java] ${construction.constructionNm} --></dd>
 
             <dt>발주사</dt>
-            <dd>소망건설<!-- [Java] ${construction.orderCompanyName} --></dd>
+            <dd>소망건설<!-- [Java] ${construction.orderCompanyNm} --></dd>
 
             <dt>공사 기간</dt>
-            <dd>2026-06-25 ~ 2026-06-25<!-- [Java] ${construction.startDate} ~ ${construction.endDate} --></dd>
+            <dd>2026-06-25 ~ 2026-06-25<!-- [Java] ${construction.startDt} ~ ${construction.endDt} --></dd>
 
             <dt>공사 지역</dt>
             <dd>경기도 수원시 팔달구 인계동<!-- [Java] ${construction.region} --></dd>
@@ -198,10 +198,10 @@
             <dd>도로 보수<!-- [Java] ${construction.constructionType} --></dd>
 
             <dt>담당자</dt>
-            <dd>김담당 (010-1234-5678)<!-- [Java] ${construction.managerName} (${construction.managerPhone}) --></dd>
+            <dd>김담당 (010-1234-5678)<!-- [Java] ${construction.managerNm} (${construction.managerTel}) --></dd>
 
             <dt>비고</dt>
-            <dd>야간 작업 포함 (22:00 ~ 06:00)<!-- [Java] ${construction.remark} --></dd>
+            <dd>야간 작업 포함 (22:00 ~ 06:00)<!-- [Java] ${construction.description} --></dd>
           </dl>
 
           <!-- 첨부파일 -->
@@ -212,7 +212,7 @@
               <a href="#" class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline bg-blue-50 px-3 py-1.5 rounded-md">
                 <i data-lucide="paperclip" style="width:13px;height:13px;"></i>
                 <span class="truncate" style="max-width:140px;" title="공사계획서_수원_횡단보도.pdf">공사계획서_수원_횡...</span>.pdf
-                <!-- [Java] ${attachment.originalFileName} -->
+                <!-- [Java] ${attachment.originalFileNm} -->
               </a>
               <a href="#" class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline bg-blue-50 px-3 py-1.5 rounded-md">
                 <i data-lucide="paperclip" style="width:13px;height:13px;"></i>
@@ -249,8 +249,8 @@
                 <tr>
                   <th>장비 유형<!-- [DB] block_equipment.equip_type --></th>
                   <th>장비 번호<!-- [DB] block_equipment.equip_no --></th>
-                  <th>씨인카 수량<!-- [DB] block_equipment.sinca_count --></th>
-                  <th>소유주<!-- [DB] block_equipment.owner_name --></th>
+                  <th>씨인카 수량<!-- [DB] block_equipment.sinca_cnt --></th>
+                  <th>소유주<!-- [DB] block_equipment.owner_nm --></th>
                   <th>TMA 카드<!-- [DB] block_equipment.tma_card_no --></th>
                   <th>상태<!-- [DB] block_equipment.status --></th>
                 </tr>
@@ -326,7 +326,7 @@
                 <tr>
                   <td>
                     <div class="cal-date">6/22</div>
-                    <!-- [DB] progress.work_date = '2026-06-22', status = 'demo' -->
+                    <!-- [DB] progress.work_dt = '2026-06-22', status = 'demo' -->
                     <span class="cal-badge cal-badge--demo"
                           onclick="alert('시연회\n금액: 2,450,000원')"
                           title="시연회 2,450,000원">시연회(2,450,000)</span>
@@ -335,21 +335,21 @@
                   <td><div class="cal-date">6/24</div></td>
                   <td>
                     <div class="cal-date">6/25</div>
-                    <!-- [DB] progress.work_date = '2026-06-25', status = 'done' -->
+                    <!-- [DB] progress.work_dt = '2026-06-25', status = 'done' -->
                     <span class="cal-badge cal-badge--done"
                           onclick="alert('공사완료\n금액: 4,900,000원')"
                           title="공사완료 4,900,000원">공사완료(4,900,000)</span>
                   </td>
                   <td>
                     <div class="cal-date">6/26</div>
-                    <!-- [DB] progress.work_date = '2026-06-26', status = 'cancel' -->
+                    <!-- [DB] progress.work_dt = '2026-06-26', status = 'cancel' -->
                     <span class="cal-badge cal-badge--cancel"
                           onclick="alert('취소\n금액: -500,000원')"
                           title="취소 -500,000원">취소(-500,000)</span>
                   </td>
                   <td style="background:#fafafa;">
                     <div class="cal-date today">6/27</div>
-                    <!-- [DB] progress.work_date = '2026-06-27', status = 'done' + 'cancel' -->
+                    <!-- [DB] progress.work_dt = '2026-06-27', status = 'done' + 'cancel' -->
                     <div class="flex flex-col gap-1 items-center">
                       <span class="cal-badge cal-badge--done">완료</span>
                       <span class="cal-badge cal-badge--cancel">취소</span>

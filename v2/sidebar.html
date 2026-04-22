@@ -28,22 +28,22 @@
   </a>
 
   <!-- 사용자 정보 -->
-  <!-- [DB] tbl_user: user_name, company_name, user_type -->
+  <!-- [DB] tbl_mber: usr_nm, company_nm, user_type -->
   <div class="rss-sidebar__user">
-    <div class="rss-sidebar__user-avatar" id="sidebar_user_avatar">나</div>
-    <!-- [Java] ${session.loginUser.userName.substring(0,1)} -->
+    <div class="rss-sidebar__user-avatar" id="sidebar_usr_avatar">나</div>
+    <!-- [Java] ${session.loginUsr.usrNm.substring(0,1)} -->
     <div class="rss-sidebar__user-info">
-      <div class="rss-sidebar__user-name" id="sidebar_user_name">나잘난</div>
-      <!-- [Java] ${session.loginUser.userName} -->
-      <div class="rss-sidebar__user-company" id="sidebar_user_company">한국도로차단(주)</div>
-      <!-- [Java] ${session.loginUser.companyName} -->
+      <div class="rss-sidebar__user-name" id="sidebar_usr_nm">나잘난</div>
+      <!-- [Java] ${session.loginUsr.usrNm} -->
+      <div class="rss-sidebar__user-company" id="sidebar_company_nm">한국도로차단(주)</div>
+      <!-- [Java] ${session.loginUsr.companyNm} -->
     </div>
   </div>
 
   <!-- 내비게이션 -->
   <nav class="rss-nav" aria-label="주 메뉴">
     <!-- [Java] 사용자 유형(user_type)에 따라 메뉴 노출 제어 -->
-    <!-- [Java] th:if="${session.loginUser.userType == 'BLOCKER'}" -->
+    <!-- [Java] th:if="${session.loginUsr.userType == 'BLOCKER'}" -->
     <p class="rss-nav__section-label">차단기업</p>
     <ul style="list-style:none;padding:0;margin:0;">
       <li>

@@ -468,7 +468,7 @@
           <div class="login-input-group">
 
             <!-- 아이디 입력 -->
-            <!-- [DB] 컬럼: member.user_id (VARCHAR 50) -->
+            <!-- [DB] 컬럼: mber.user_id (VARCHAR 50) -->
             <div class="login-input-wrap">
               <i data-lucide="user" class="input-icon"></i>
               <input
@@ -484,7 +484,7 @@
             </div>
 
             <!-- 비밀번호 입력 -->
-            <!-- [DB] 컬럼: member.user_pw (VARCHAR 255, BCrypt 해시) -->
+            <!-- [DB] 컬럼: mber.user_pw (VARCHAR 255, BCrypt 해시) -->
             <div class="login-input-wrap">
               <i data-lucide="lock" class="input-icon"></i>
               <input
@@ -514,7 +514,7 @@
 
           <!-- 자동로그인 + 찾기 링크 -->
           <div class="login-meta-row">
-            <!-- [DB] 컬럼: member_session.auto_login (TINYINT 1) -->
+            <!-- [DB] 컬럼: mber_session.auto_login (TINYINT 1) -->
             <label>
               <input type="checkbox" id="auto_login" name="auto_login" value="1"
                 class="w-3.5 h-3.5 rounded accent-amber-500 cursor-pointer" />
@@ -584,16 +584,16 @@
     <!-- 모달 바디 -->
     <div class="p-5">
       <p class="text-xs text-gray-500 mb-4 leading-relaxed">가입 시 등록한 정보를 입력하여 계정을 찾으세요.</p>
-      <!-- [DB] 컬럼: company.company_name (VARCHAR 100) -->
+      <!-- [DB] 컬럼: company.company_nm (VARCHAR 100) -->
       <div class="rss-form-group">
-        <label class="rss-label" for="find_company_name">회사명 <span style="color:#F59E0B;">*</span></label>
-        <input type="text" id="find_company_name" name="find_company_name"
+        <label class="rss-label" for="find_company_nm">회사명 <span style="color:#F59E0B;">*</span></label>
+        <input type="text" id="find_company_nm" name="find_company_nm"
           class="rss-input" placeholder="회사명을 입력하세요" maxlength="100" />
       </div>
-      <!-- [DB] 컬럼: member.phone (VARCHAR 20) -->
+      <!-- [DB] 컬럼: mber.tel (VARCHAR 20) -->
       <div class="rss-form-group">
         <label class="rss-label" for="find_phone">담당자 연락처 <span style="color:#F59E0B;">*</span></label>
-        <input type="tel" id="find_phone" name="find_phone"
+        <input type="tel" id="find_tel" name="find_tel"
           class="rss-input" placeholder="010-0000-0000" maxlength="20" />
       </div>
       <button type="button" onclick="closeFindModal()"

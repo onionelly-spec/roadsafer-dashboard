@@ -53,31 +53,31 @@
           <div class="rss-post-meta">
             <span>
               <i data-lucide="user" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              나잘난<!-- [Java] ${post.authorName} -->
+              나잘난<!-- [Java] ${post.authorNm} -->
             </span>
             <span>
               <i data-lucide="calendar" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              2026-06-10<!-- [Java] ${#temporals.format(post.createdAt, 'yyyy-MM-dd')} -->
+              2026-06-10<!-- [Java] ${#temporals.format(post.regDtm, 'yyyy-MM-dd')} -->
             </span>
             <span>
               <i data-lucide="eye" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              조회 342<!-- [Java] ${post.viewCount} -->
+              조회 342<!-- [Java] ${post.viewCnt} -->
             </span>
             <span>
               <i data-lucide="message-circle" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              댓글 12<!-- [Java] ${post.commentCount} -->
+              댓글 12<!-- [Java] ${post.commentCnt} -->
             </span>
           </div>
         </div>
 
         <!-- 썸네일 이미지 (있을 경우) -->
-        <!-- [DB] 컬럼: community.thumbnail_url -->
+        <!-- [DB] 컬럼: community.thumb_url -->
         <div class="px-6 pt-5">
           <img src="https://placehold.co/800x360/fef3c7/d97706?text=본문+이미지"
                alt="본문 이미지"
                class="w-full rounded-xl object-cover"
                style="max-height:360px;" />
-          <!-- [Java] th:if="${post.thumbnailUrl != null}" -->
+          <!-- [Java] th:if="${post.thumbUrl != null}" -->
         </div>
 
         <!-- 게시글 본문 -->
@@ -104,7 +104,7 @@
         <!-- 하단 버튼 -->
         <div class="rss-post-footer">
           <!-- 작성자 본인만 수정/삭제 표시 -->
-          <!-- [Java] th:if="${loginUser.memberId == post.memberId}" -->
+          <!-- [Java] th:if="${loginUsr.mberSeq == post.mberSeq}" -->
           <a href="community-write.html" class="rss-btn rss-btn--outline rss-btn--sm">
             <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
           </a>
@@ -120,13 +120,13 @@
       </div><!-- /게시글 카드 -->
 
       <!-- 댓글 영역 -->
-      <!-- [DB] 테이블: community_comment WHERE community_id = ? ORDER BY created_at ASC -->
+      <!-- [DB] 테이블: community_comment WHERE community_id = ? ORDER BY reg_dtm ASC -->
       <div class="rss-card">
         <div class="rss-card__header">
           <h3 class="rss-card__title">
             댓글
             <span class="rss-badge rss-badge--new ml-2">12</span>
-            <!-- [Java] ${post.commentCount} -->
+            <!-- [Java] ${post.commentCnt} -->
           </h3>
         </div>
         <div class="px-5 py-2">
@@ -139,9 +139,9 @@
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">
                 <span class="text-base font-semibold text-gray-800">도로맨</span>
-                <!-- [Java] ${comment.authorName} -->
+                <!-- [Java] ${comment.authorNm} -->
                 <span class="text-base text-gray-400">2026-06-10 14:23</span>
-                <!-- [Java] ${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')} -->
+                <!-- [Java] ${#temporals.format(comment.regDtm, 'yyyy-MM-dd HH:mm')} -->
               </div>
               <p class="text-base text-gray-700 leading-relaxed">
                 정말 유용한 정보 감사합니다! 배치 간격 기준이 헷갈렸는데 명확해졌네요.
@@ -169,7 +169,7 @@
         <div class="px-5 pb-5 pt-3" style="border-top:1px solid #f3f4f6;">
           <form id="commentForm" name="commentForm">
             <!-- [DB] 컬럼: community_comment.content (TEXT) -->
-            <!-- [DB] 컬럼: community_comment.community_id, member_id (서버에서 세션으로 처리) -->
+            <!-- [DB] 컬럼: community_comment.community_id, mber_id (서버에서 세션으로 처리) -->
             <div class="flex gap-2">
               <textarea
                 id="comment_content"

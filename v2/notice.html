@@ -28,7 +28,7 @@
           <div class="rss-board-toolbar__left">
             <!-- 카테고리 필터 -->
             <!-- [DB] 컬럼: notice.category ('all'|'system'|'update'|'event') -->
-            <select name="category" id="noticeCategory" class="rss-input" style="width:auto; padding:7px 10px; font-size:14px;">
+            <select name="searchType" id="noticeSearchType" class="rss-input" style="width:auto; padding:7px 10px; font-size:14px;">
               <option value="">전체</option>
               <option value="system">시스템</option>
               <option value="update">업데이트</option>
@@ -37,7 +37,7 @@
             <!-- 검색 -->
             <div class="rss-search-wrap">
               <!-- [DB] 컬럼: notice.title LIKE '%keyword%' -->
-              <input type="text" name="keyword" id="noticeKeyword" placeholder="검색어 입력" />
+              <input type="text" name="searchKeyword" id="noticeSearchKeyword" placeholder="검색어 입력" />
               <button type="button" aria-label="검색">
                 <i data-lucide="search" style="width:15px;height:15px;"></i>
               </button>
@@ -56,9 +56,9 @@
 
         <!-- 공지 목록 -->
         <!-- [Java] th:each="notice : ${noticeList}" -->
-        <!-- [DB] 테이블: notice ORDER BY is_pinned DESC, created_at DESC -->
+        <!-- [DB] 테이블: notice ORDER BY pin_yn DESC, reg_dtm DESC -->
 
-        <!-- 고정 공지 (is_pinned = 1) -->
+        <!-- 고정 공지 (pin_yn = 1) -->
         <a href="notice-detail.html" class="rss-board-item" style="background:#fffbf0;">
           <span class="rss-board-item__num text-center">
             <i data-lucide="pin" style="width:13px;height:13px;color:#F59E0B;display:inline-block;"></i>

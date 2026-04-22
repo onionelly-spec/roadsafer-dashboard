@@ -102,7 +102,7 @@
           <div class="rss-board-toolbar__left">
             <!-- 카테고리 필터 -->
             <!-- [DB] 컬럼: community.category ('all'|'info'|'qna'|'free') -->
-            <select name="category" id="communityCategory" class="rss-input" style="width:auto; padding:8px 12px; font-size:15px;">
+            <select name="searchType" id="communitySearchType" class="rss-input" style="width:auto; padding:8px 12px; font-size:15px;">
               <option value="">전체</option>
               <option value="info">정보공유</option>
               <option value="qna">질문/답변</option>
@@ -111,7 +111,7 @@
             <!-- 검색 -->
             <div class="rss-search-wrap">
               <!-- [DB] 컬럼: community.title LIKE '%keyword%' -->
-              <input type="text" name="keyword" id="communityKeyword" placeholder="검색어 입력" />
+              <input type="text" name="searchKeyword" id="communitySearchKeyword" placeholder="검색어 입력" />
               <button type="button" aria-label="검색">
                 <i data-lucide="search" style="width:15px;height:15px;"></i>
               </button>
@@ -125,13 +125,13 @@
         </div>
 
         <!-- 커뮤니티 카드 그리드 -->
-        <!-- [DB] 테이블: community ORDER BY created_at DESC LIMIT 9 -->
+        <!-- [DB] 테이블: community ORDER BY reg_dtm DESC LIMIT 9 -->
         <!-- [Java] th:each="post : ${communityList}" -->
         <div class="community-grid">
 
           <!-- 카드 1 -->
           <a href="community-detail.html" class="community-card">
-            <!-- [DB] 컬럼: community.thumbnail_url -->
+            <!-- [DB] 컬럼: community.thumb_url -->
             <img class="community-card__thumb"
                  src="https://placehold.co/400x225/fef3c7/d97706?text=정보공유"
                  alt="썸네일" />
@@ -144,17 +144,17 @@
               </p><!-- [Java] ${post.summary} -->
               <div class="community-card__meta">
                 <div class="community-card__meta-left">
-                  <span>나잘난</span><!-- [Java] ${post.authorName} -->
-                  <span>2026-06-10</span><!-- [Java] ${post.createdDate} -->
+                  <span>나잘난</span><!-- [Java] ${post.authorNm} -->
+                  <span>2026-06-10</span><!-- [Java] ${post.regDt} -->
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="flex items-center gap-1">
                     <i data-lucide="eye" style="width:13px;height:13px;"></i> 342
-                    <!-- [Java] ${post.viewCount} -->
+                    <!-- [Java] ${post.viewCnt} -->
                   </span>
                   <span class="flex items-center gap-1">
                     <i data-lucide="message-circle" style="width:13px;height:13px;"></i> 12
-                    <!-- [Java] ${post.commentCount} -->
+                    <!-- [Java] ${post.commentCnt} -->
                   </span>
                 </div>
               </div>
