@@ -49,17 +49,7 @@
       border-bottom: 1px solid #f3f4f6;
       flex-wrap: wrap;
     }
-    .info-toolbar select {
-      padding: 7px 10px;
-      font-size: var(--rss-font-sm);
-      border: 1.5px solid #e5e7eb;
-      border-radius: 6px;
-      color: #374151;
-      background: #fff;
-      cursor: pointer;
-      min-width: 90px;
-    }
-    .info-toolbar select:focus { outline: none; border-color: var(--rss-amber); }
+    /* select: rss-common.css .rss-select + .info-toolbar .rss-select 공통 클래스 사용 */
 
     /* ── 공사 정보 테이블 col 스타일 ── */
     /* 링크 스타일: rss-common.css .rss-link 공통 클래스 사용 */
@@ -103,7 +93,7 @@
         ─────────────────────────────────────────────────── -->
         <div class="info-toolbar">
           <!-- [DB] 검색 기준 선택 -->
-          <select name="searchType" id="infoSearchType">
+          <select name="searchType" id="infoSearchType" class="rss-select">
             <option value="">선택</option>
             <option value="constructionNm">공사명</option>
             <option value="orderCompanyNm">발주업체명</option>
