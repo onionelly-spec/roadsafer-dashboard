@@ -12,57 +12,12 @@
 
 <div class="rss-app">
 
-  <!-- ── 사이드바 (공통) ── -->
-  <aside class="rss-sidebar" id="rssSidebar">
-    <a href="index.html" class="rss-sidebar__logo">
-      <img src="https://placehold.co/32x32/F59E0B/ffffff?text=R" alt="RSS 로고" class="rss-sidebar__logo-img" />
-      <div class="rss-sidebar__logo-text">
-        <span class="rss-sidebar__logo-main">(주)로드세이프티시스템</span>
-        <span class="rss-sidebar__logo-sub">Road Safety System</span>
-      </div>
-    </a>
-    <div class="rss-sidebar__user">
-      <div class="rss-sidebar__user-avatar">나</div>
-      <div class="rss-sidebar__user-info">
-        <div class="rss-sidebar__user-name">나잘난</div>
-        <div class="rss-sidebar__user-company">한국도로차단(주)</div>
-      </div>
-    </div>
-    <nav class="rss-nav">
-      <p class="rss-nav__section-label">차단기업</p>
-      <ul style="list-style:none;padding:0;margin:0;">
-        <li><a href="index.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="layout-dashboard"></i></span><span class="rss-nav__label">메인 대시보드</span></a></li>
-        <li><a href="construction-list.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="hard-hat"></i></span><span class="rss-nav__label">내 공사 현황</span></a></li>
-        <li><a href="construction-info.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="file-text"></i></span><span class="rss-nav__label">공사 정보</span></a></li>
-        <li><a href="tma-card.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="credit-card"></i></span><span class="rss-nav__label">TMA 카드 관리</span></a></li>
-        <li><a href="market.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="shopping-bag"></i></span><span class="rss-nav__label">장터</span></a></li>
-        <li><a href="community.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="users"></i></span><span class="rss-nav__label">커뮤니티</span></a></li>
-        <li><a href="notice.html" class="rss-nav__link active"><span class="rss-nav__icon"><i data-lucide="bell"></i></span><span class="rss-nav__label">공지사항</span></a></li>
-        <li><a href="ad.html" class="rss-nav__link"><span class="rss-nav__icon"><i data-lucide="megaphone"></i></span><span class="rss-nav__label">광고</span></a></li>
-      </ul>
-    </nav>
-    <div class="rss-sidebar__bottom">
-      <a href="profile.html" class="rss-sidebar__bottom-link"><span class="rss-nav__icon"><i data-lucide="settings"></i></span><span class="rss-nav__label">정보변경</span></a>
-      <a href="login.html" class="rss-sidebar__bottom-link"><span class="rss-nav__icon"><i data-lucide="log-out"></i></span><span class="rss-nav__label">로그아웃</span></a>
-    </div>
-  </aside>
-  <div class="rss-overlay" id="rssOverlay"></div>
+<div id="rss-sidebar-wrap"></div>
 
   <!-- ── 메인 ── -->
   <div class="rss-main" id="rssMain">
 
-    <header class="rss-header">
-      <div class="rss-header__left">
-        <button class="rss-header__toggle" id="rssSidebarToggle" aria-label="사이드바 토글">
-          <i data-lucide="menu" style="width:18px;height:18px;"></i>
-        </button>
-        <h1 class="rss-header__title">공지사항</h1>
-      </div>
-      <div class="rss-header__right">
-        <div class="rss-header__avatar">나</div>
-        <span class="rss-header__username">나잘난</span>
-      </div>
-    </header>
+<div id="rss-header-wrap" data-title="공지사항"></div>
 
     <main class="rss-content">
       <div class="rss-card">
@@ -90,8 +45,7 @@
           </div>
         </div>
 
-        <!-- 목록 헤더 (PC) -->
-        <div class="hidden md:grid px-5 py-2.5 text-base font-semibold text-gray-400 border-b border-gray-100"
+<div class="hidden md:grid px-5 py-2.5 text-base font-semibold text-gray-400 border-b border-gray-100"
              style="grid-template-columns: 60px 80px 1fr 100px 80px;">
           <span class="text-center">번호</span>
           <span class="text-center">분류</span>

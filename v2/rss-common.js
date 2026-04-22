@@ -3,23 +3,116 @@
  * 로드세이프티시스템 (RSS) — 공통 인터랙션 스크립트
  * Vanilla JS (ES6+) — 프레임워크 비종속
  * 개발환경: Java + MariaDB
+ *
+ * ─────────────────────────────────────────────────────────
+ * [목차]
+ *  0. 공통 컴포넌트 fetch 삽입 (sidebar.html / header.html)
+ *  1. 사이드바 토글
+ *  2. 탭 전환
+ *  3. 검색 폼 — Enter 키 지원
+ *  4. 모달 공통
+ *  5. 현재 페이지 네비게이션 active 처리
+ *  6. 토스트 알림
+ * ─────────────────────────────────────────────────────────
+ *
+ * [Java Thymeleaf 전환 시]
+ *  - 0번 fetch 로직은 불필요 → 삭제하거나 주석 처리
+ *  - sidebar.html → /templates/fragments/sidebar.html
+ *  - header.html  → /templates/fragments/header.html
+ *  - 각 페이지에서 th:replace="fragments/sidebar :: sidebar" 로 교체
+ *  - 5번 active 처리는 th:classappend="${currentMenu=='xxx'}?'active'" 로 교체
  */
 
 'use strict';
 
 /* ═══════════════════════════════════════════════════════════
-   1. 사이드바 토글
+   0. 공통 컴포넌트 fetch 삽입
+   ─────────────────────────────────────────────────────────
+   [사용법] 각 HTML 페이지에 아래 두 줄을 배치하세요.
+     <div id="rss-sidebar-wrap"></div>
+     <div id="rss-header-wrap" data-title="페이지 제목"></div>
+
+   [주의] fetch()는 file:// 프로토콜에서 동작하지 않습니다.
+          반드시 localhost 또는 실제 서버 환경에서 실행하세요.
+          (Live Server, Tomcat, Nginx 등)
+
+   [Java Thymeleaf 전환 시]
+     이 섹션 전체를 삭제하고 th:replace 방식으로 교체하세요.
    ═══════════════════════════════════════════════════════════ */
-(function initSidebar() {
+(function initComponents() {
+  const sidebarWrap = document.getElementById('rss-sidebar-wrap');
+  const headerWrap  = document.getElementById('rss-header-wrap');
+
+  /* 현재 파일 기준 상대 경로 계산 */
+  const base = (function() {
+    const scripts = document.querySelectorAll('script[src*="rss-common.js"]');
+    if (scripts.length) {
+      const src = scripts[scripts.length - 1].getAttribute('src');
+      return src.replace('rss-common.js', '');
+    }
+    return '';
+  })();
+
+  /* ── 사이드바 삽입 ── */
+  if (sidebarWrap) {
+    fetch(base + 'sidebar.html')
+      .then(function(res) {
+        if (!res.ok) throw new Error('sidebar.html 로드 실패: ' + res.status);
+        return res.text();
+      })
+      .then(function(html) {
+        sidebarWrap.innerHTML = html;
+        /* 삽입 후 Lucide 아이콘 재렌더링 */
+        if (window.lucide) lucide.createIcons();
+        /* 삽입 후 사이드바 관련 기능 초기화 */
+        _initSidebarBehavior();
+        _initNavActive();
+        _initUserInfo();
+      })
+      .catch(function(err) {
+        console.warn('[RSS] sidebar.html fetch 오류:', err.message);
+        console.warn('[RSS] file:// 프로토콜에서는 fetch가 동작하지 않습니다. Live Server를 사용하세요.');
+      });
+  }
+
+  /* ── 헤더 삽입 ── */
+  if (headerWrap) {
+    fetch(base + 'header.html')
+      .then(function(res) {
+        if (!res.ok) throw new Error('header.html 로드 실패: ' + res.status);
+        return res.text();
+      })
+      .then(function(html) {
+        headerWrap.innerHTML = html;
+        /* data-title 속성으로 페이지 타이틀 설정 */
+        const pageTitle = headerWrap.dataset.title || '대시보드';
+        const titleEl = document.getElementById('rss_header_title');
+        if (titleEl) titleEl.textContent = pageTitle;
+        /* 삽입 후 Lucide 아이콘 재렌더링 */
+        if (window.lucide) lucide.createIcons();
+        /* 삽입 후 사이드바 토글 버튼 재바인딩 */
+        _bindToggleBtn();
+        _initUserInfo();
+      })
+      .catch(function(err) {
+        console.warn('[RSS] header.html fetch 오류:', err.message);
+      });
+  }
+})();
+
+
+/* ═══════════════════════════════════════════════════════════
+   1. 사이드바 토글 (내부 함수 — fetch 완료 후 호출됨)
+   ═══════════════════════════════════════════════════════════ */
+function _initSidebarBehavior() {
   const sidebar  = document.getElementById('rssSidebar');
   const main     = document.getElementById('rssMain');
   const overlay  = document.getElementById('rssOverlay');
-  const btnToggle = document.getElementById('rssSidebarToggle');
 
   if (!sidebar) return;
 
   const COLLAPSED_KEY = 'rss_sidebar_collapsed';
-  const isMobile = () => window.innerWidth < 1024;
+  const isMobile = function() { return window.innerWidth < 1024; };
 
   /* 저장된 상태 복원 (PC만) */
   if (!isMobile() && localStorage.getItem(COLLAPSED_KEY) === '1') {
@@ -29,31 +122,37 @@
 
   function toggleSidebar() {
     if (isMobile()) {
-      /* 모바일: 오버레이 + 슬라이드 */
       const isOpen = sidebar.classList.toggle('mobile-open');
       overlay && overlay.classList.toggle('show', isOpen);
     } else {
-      /* PC: 접기/펼치기 */
       const isCollapsed = sidebar.classList.toggle('collapsed');
       main && main.classList.toggle('sidebar-collapsed', isCollapsed);
       localStorage.setItem(COLLAPSED_KEY, isCollapsed ? '1' : '0');
     }
   }
 
-  btnToggle && btnToggle.addEventListener('click', toggleSidebar);
-  overlay   && overlay.addEventListener('click', () => {
+  /* 토글 버튼 바인딩 */
+  _bindToggleBtn = function() {
+    const btnToggle = document.getElementById('rssSidebarToggle');
+    btnToggle && btnToggle.addEventListener('click', toggleSidebar);
+  };
+  _bindToggleBtn();
+
+  overlay && overlay.addEventListener('click', function() {
     sidebar.classList.remove('mobile-open');
     overlay.classList.remove('show');
   });
 
-  /* 화면 크기 변경 시 초기화 */
-  window.addEventListener('resize', () => {
+  window.addEventListener('resize', function() {
     if (!isMobile()) {
       sidebar.classList.remove('mobile-open');
       overlay && overlay.classList.remove('show');
     }
   });
-})();
+}
+
+/* 토글 버튼 바인딩 함수 (헤더 삽입 후 재호출용) */
+var _bindToggleBtn = function() {};
 
 
 /* ═══════════════════════════════════════════════════════════
@@ -62,20 +161,17 @@
           대응 패널: data-tab-panel="그룹명" data-panel="탭명"
    ═══════════════════════════════════════════════════════════ */
 (function initTabs() {
-  document.querySelectorAll('[data-tab]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      const group = btn.dataset.tabGroup || 'default';
-      const target = btn.dataset.tab;
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-tab]');
+    if (!btn) return;
+    const group  = btn.dataset.tabGroup || 'default';
+    const target = btn.dataset.tab;
 
-      /* 버튼 active 전환 */
-      document.querySelectorAll('[data-tab-group="' + group + '"]').forEach(function(b) {
-        b.classList.toggle('active', b.dataset.tab === target);
-      });
-
-      /* 패널 active 전환 */
-      document.querySelectorAll('[data-tab-panel="' + group + '"]').forEach(function(p) {
-        p.classList.toggle('active', p.dataset.panel === target);
-      });
+    document.querySelectorAll('[data-tab-group="' + group + '"]').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.tab === target);
+    });
+    document.querySelectorAll('[data-tab-panel="' + group + '"]').forEach(function(p) {
+      p.classList.toggle('active', p.dataset.panel === target);
     });
   });
 })();
@@ -85,13 +181,12 @@
    3. 검색 폼 — Enter 키 지원
    ═══════════════════════════════════════════════════════════ */
 (function initSearch() {
-  document.querySelectorAll('.rss-search-wrap input').forEach(function(input) {
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        const form = input.closest('form');
-        form ? form.submit() : console.log('[RSS Search]', input.value);
-      }
-    });
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    const input = e.target.closest('.rss-search-wrap input');
+    if (!input) return;
+    const form = input.closest('form');
+    form ? form.submit() : console.log('[RSS Search]', input.value);
   });
 })();
 
@@ -101,39 +196,30 @@
    사용법: data-modal-open="모달ID" 버튼 / data-modal-close 버튼
    ═══════════════════════════════════════════════════════════ */
 (function initModal() {
-  /* 열기 */
-  document.querySelectorAll('[data-modal-open]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      const id = btn.dataset.modalOpen;
-      const modal = document.getElementById(id);
-      if (modal) {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      }
-    });
-  });
-
-  /* 닫기 */
   function closeModal(modal) {
     modal.style.display = 'none';
     document.body.style.overflow = '';
   }
 
-  document.querySelectorAll('[data-modal-close]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      const modal = btn.closest('.rss-modal');
+  document.addEventListener('click', function(e) {
+    /* 열기 */
+    const openBtn = e.target.closest('[data-modal-open]');
+    if (openBtn) {
+      const modal = document.getElementById(openBtn.dataset.modalOpen);
+      if (modal) { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+      return;
+    }
+    /* 닫기 버튼 */
+    const closeBtn = e.target.closest('[data-modal-close]');
+    if (closeBtn) {
+      const modal = closeBtn.closest('.rss-modal');
       if (modal) closeModal(modal);
-    });
+      return;
+    }
+    /* 오버레이 클릭 닫기 */
+    if (e.target.classList.contains('rss-modal')) closeModal(e.target);
   });
 
-  /* 오버레이 클릭 닫기 */
-  document.querySelectorAll('.rss-modal').forEach(function(modal) {
-    modal.addEventListener('click', function(e) {
-      if (e.target === modal) closeModal(modal);
-    });
-  });
-
-  /* ESC 키 닫기 */
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       document.querySelectorAll('.rss-modal[style*="flex"]').forEach(closeModal);
@@ -144,21 +230,57 @@
 
 /* ═══════════════════════════════════════════════════════════
    5. 현재 페이지 네비게이션 active 처리
+   ─────────────────────────────────────────────────────────
+   [Java Thymeleaf 전환 시]
+     th:classappend="${currentMenu == 'notice'} ? 'active'" 로 교체하세요.
    ═══════════════════════════════════════════════════════════ */
-(function initNavActive() {
+function _initNavActive() {
   const current = location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.rss-nav__link').forEach(function(link) {
     const href = link.getAttribute('href') || '';
-    if (href === current || href.includes(current)) {
-      link.classList.add('active');
-    }
+    const isActive = href === current
+      || (href !== 'index.html' && current.startsWith(href.replace('.html', '')));
+    link.classList.toggle('active', isActive);
   });
-})();
+}
+/* 사이드바가 이미 DOM에 있는 경우(fetch 없이 직접 삽입)를 위해 즉시 실행 */
+_initNavActive();
 
 
 /* ═══════════════════════════════════════════════════════════
-   6. 토스트 알림 (선택적 사용)
-   사용법: RSS.toast('메시지', 'success' | 'error' | 'info')
+   6. 사용자 정보 동기화
+   ─────────────────────────────────────────────────────────
+   사이드바와 헤더에 동일한 사용자 정보를 표시합니다.
+   [Java Thymeleaf 전환 시]
+     서버사이드 렌더링으로 대체 → 이 함수 불필요
+   ═══════════════════════════════════════════════════════════ */
+function _initUserInfo() {
+  /* 세션 스토리지 또는 더미 데이터에서 사용자 정보 읽기 */
+  /* [Java] 실제 환경에서는 서버에서 직접 렌더링 */
+  const userName    = sessionStorage.getItem('rss_user_name')    || '나잘난';
+  const companyName = sessionStorage.getItem('rss_company_name') || '한국도로차단(주)';
+  const avatarChar  = userName.charAt(0);
+
+  /* 사이드바 */
+  const sbName    = document.getElementById('sidebar_user_name');
+  const sbCompany = document.getElementById('sidebar_user_company');
+  const sbAvatar  = document.getElementById('sidebar_user_avatar');
+  if (sbName)    sbName.textContent    = userName;
+  if (sbCompany) sbCompany.textContent = companyName;
+  if (sbAvatar)  sbAvatar.textContent  = avatarChar;
+
+  /* 헤더 */
+  const hdName   = document.getElementById('header_user_name');
+  const hdAvatar = document.getElementById('header_user_avatar');
+  if (hdName)   hdName.textContent   = userName;
+  if (hdAvatar) hdAvatar.textContent = avatarChar;
+}
+_initUserInfo();
+
+
+/* ═══════════════════════════════════════════════════════════
+   7. 토스트 알림 (선택적 사용)
+   사용법: RSS.toast('메시지', 'success' | 'error' | 'info' | 'warning')
    ═══════════════════════════════════════════════════════════ */
 window.RSS = window.RSS || {};
 RSS.toast = function(msg, type) {

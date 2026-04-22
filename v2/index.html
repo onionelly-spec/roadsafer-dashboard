@@ -127,120 +127,21 @@
 <div class="rss-app">
 
   <!-- ══════════════════════════════════════════════════════
-       사이드바 (공통 컴포넌트 — 모든 내부 페이지 동일)
+       사이드바 — fetch로 sidebar.html 자동 삽입
+       [Java Thymeleaf] th:replace="fragments/sidebar :: sidebar"
   ══════════════════════════════════════════════════════ -->
-  <aside class="rss-sidebar" id="rssSidebar" role="navigation" aria-label="주 메뉴">
+  <div id="rss-sidebar-wrap"></div>
 
-    <!-- 로고 -->
-    <a href="index.html" class="rss-sidebar__logo">
-      <img src="https://placehold.co/32x32/F59E0B/ffffff?text=R" alt="RSS 로고" class="rss-sidebar__logo-img" />
-      <div class="rss-sidebar__logo-text">
-        <span class="rss-sidebar__logo-main">(주)로드세이프티시스템</span>
-        <span class="rss-sidebar__logo-sub">Road Safety System</span>
-      </div>
-    </a>
-
-    <!-- 로그인 사용자 정보 -->
-    <!-- [Java] session 또는 SecurityContext에서 사용자 정보 바인딩 -->
-    <!-- [DB] 컬럼: member.user_name, company.company_name -->
-    <div class="rss-sidebar__user">
-      <div class="rss-sidebar__user-avatar" aria-hidden="true">나</div>
-      <div class="rss-sidebar__user-info">
-        <div class="rss-sidebar__user-name">나잘난</div><!-- [Java] ${loginUser.userName} -->
-        <div class="rss-sidebar__user-company">한국도로차단(주)</div><!-- [Java] ${loginUser.companyName} -->
-      </div>
-    </div>
-
-    <!-- 네비게이션 메뉴 -->
-    <nav class="rss-nav" aria-label="사이드바 메뉴">
-      <p class="rss-nav__section-label">차단기업</p>
-      <ul style="list-style:none; padding:0; margin:0;">
-        <li class="rss-nav__item">
-          <a href="index.html" class="rss-nav__link active">
-            <span class="rss-nav__icon"><i data-lucide="layout-dashboard"></i></span>
-            <span class="rss-nav__label">메인 대시보드</span>
-          </a>
-        </li>
-        <li class="rss-nav__item">
-          <a href="construction-list.html" class="rss-nav__link">
-            <span class="rss-nav__icon"><i data-lucide="hard-hat"></i></span>
-            <span class="rss-nav__label">내 공사 현황</span>
-          </a>
-        </li>
-        <li class="rss-nav__item">
-          <a href="construction-info.html" class="rss-nav__link">
-            <span class="rss-nav__icon"><i data-lucide="file-text"></i></span>
-            <span class="rss-nav__label">공사 정보</span>
-          </a>
-        </li>
-        <li class="rss-nav__item">
-          <a href="tma-card.html" class="rss-nav__link">
-            <span class="rss-nav__icon"><i data-lucide="credit-card"></i></span>
-            <span class="rss-nav__label">TMA 카드 관리</span>
-          </a>
-        </li>
-        <li class="rss-nav__item">
-          <a href="market.html" class="rss-nav__link">
-            <span class="rss-nav__icon"><i data-lucide="shopping-bag"></i></span>
-            <span class="rss-nav__label">장터</span>
-          </a>
-        </li>
-        <li class="rss-nav__item">
-          <a href="community.html" class="rss-nav__link">
-            <span class="rss-nav__icon"><i data-lucide="users"></i></span>
-            <span class="rss-nav__label">커뮤니티</span>
-          </a>
-        </li>
-        <li class="rss-nav__item">
-          <a href="notice.html" class="rss-nav__link">
-            <span class="rss-nav__icon"><i data-lucide="bell"></i></span>
-            <span class="rss-nav__label">공지사항</span>
-          </a>
-        </li>
-        <li class="rss-nav__item">
-          <a href="ad.html" class="rss-nav__link">
-            <span class="rss-nav__icon"><i data-lucide="megaphone"></i></span>
-            <span class="rss-nav__label">광고</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- 하단 메뉴 -->
-    <div class="rss-sidebar__bottom">
-      <a href="profile.html" class="rss-sidebar__bottom-link">
-        <span class="rss-nav__icon"><i data-lucide="settings"></i></span>
-        <span class="rss-nav__label">정보변경</span>
-      </a>
-      <a href="login.html" class="rss-sidebar__bottom-link">
-        <span class="rss-nav__icon"><i data-lucide="log-out"></i></span>
-        <span class="rss-nav__label">로그아웃</span>
-      </a>
-    </div>
-
-  </aside>
-
-  <!-- 모바일 오버레이 -->
-  <div class="rss-overlay" id="rssOverlay" aria-hidden="true"></div>
 
   <!-- ══════════════════════════════════════════════════════
        메인 영역
   ══════════════════════════════════════════════════════ -->
   <div class="rss-main" id="rssMain">
 
-    <!-- 상단 헤더 -->
-    <header class="rss-header">
-      <div class="rss-header__left">
-        <button class="rss-header__toggle" id="rssSidebarToggle" aria-label="사이드바 토글">
-          <i data-lucide="menu" style="width:18px;height:18px;"></i>
-        </button>
-        <h1 class="rss-header__title">메인 대시보드</h1>
-      </div>
-      <div class="rss-header__right">
-        <div class="rss-header__avatar" aria-hidden="true">나</div><!-- [Java] 이니셜 -->
-        <span class="rss-header__username">나잘난</span><!-- [Java] ${loginUser.userName} -->
-      </div>
-    </header>
+    <!-- 헤더 — fetch로 header.html 자동 삽입
+         data-title: 페이지 제목 (rss-common.js가 읽어서 헤더에 삽입)
+         [Java Thymeleaf] th:replace="fragments/header :: header(title='메인 대시보드')" -->
+    <div id="rss-header-wrap" data-title="메인 대시보드"></div>
 
     <!-- ── 콘텐츠 ── -->
     <main class="rss-content">
