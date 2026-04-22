@@ -724,3 +724,122 @@ img { max-width: 100%; display: block; }
 .rss-gap-3 { gap: 12px; }
 .rss-flex  { display: flex; align-items: center; }
 .rss-flex-between { display: flex; align-items: center; justify-content: space-between; }
+
+
+/* ─── 공통 푸터 ─────────────────────────────────────────── */
+.rss-footer {
+  background: #f8f8f8;
+  border-top: 1px solid var(--rss-border);
+  padding: 18px 24px 16px;
+  font-size: var(--rss-font-xs);
+  color: var(--rss-muted);
+  line-height: 1.8;
+}
+
+/* 데스크탑 내부 레이아웃 */
+.rss-footer__inner {
+  display: block;
+}
+.rss-footer__mobile {
+  display: none;
+}
+
+/* 약관 링크 */
+.rss-footer__links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.rss-footer__link {
+  color: var(--rss-muted);
+  text-decoration: none;
+  font-size: var(--rss-font-xs);
+  transition: color 0.15s;
+}
+.rss-footer__link:hover { color: var(--rss-amber-dark); }
+.rss-footer__link--bold { font-weight: 700; color: #374151; }
+.rss-footer__link--bold:hover { color: var(--rss-amber-dark); }
+.rss-footer__divider { color: #d1d5db; font-size: 11px; }
+
+/* 회사 정보 */
+.rss-footer__info { margin-bottom: 6px; }
+.rss-footer__info-row {
+  font-size: var(--rss-font-xs);
+  color: var(--rss-muted);
+  margin: 0;
+  line-height: 1.9;
+  flex-wrap: wrap;
+}
+.rss-footer__sep {
+  margin: 0 5px;
+  color: #d1d5db;
+}
+
+/* 카피라잇 */
+.rss-footer__copy {
+  font-size: var(--rss-font-xs);
+  color: #9ca3af;
+  margin: 0;
+  margin-top: 4px;
+}
+
+/* ── 모바일 전용 ── */
+@media (max-width: 767px) {
+  .rss-footer {
+    padding: 14px 16px 12px;
+  }
+  /* 데스크탑 레이아웃 숨김 */
+  .rss-footer__inner {
+    display: none;
+  }
+  /* 모바일 레이아웃 표시 */
+  .rss-footer__mobile {
+    display: block;
+  }
+
+  /* 모바일 상단 행 */
+  .rss-footer__mobile-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  /* 모바일 토글 버튼 */
+  .rss-footer__toggle-btn {
+    background: none;
+    border: 1px solid var(--rss-border);
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--rss-muted);
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .rss-footer__toggle-btn:hover {
+    background: #f3f4f6;
+    border-color: var(--rss-amber);
+    color: var(--rss-amber-dark);
+  }
+  .rss-footer__toggle-btn[aria-expanded="true"] .rss-footer__toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  /* 모바일 회사 상세정보 (기본 숨김) */
+  .rss-footer__mobile-info {
+    display: none;
+    padding: 8px 0 6px;
+    border-top: 1px solid #f3f4f6;
+    margin-top: 4px;
+  }
+  .rss-footer__mobile-info.open {
+    display: block;
+  }
+}

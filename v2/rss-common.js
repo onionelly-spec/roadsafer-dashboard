@@ -6,7 +6,7 @@
  *
  * ─────────────────────────────────────────────────────────
  * [목차]
- *  0. 공통 컴포넌트 fetch 삽입 (sidebar.html / header.html)
+ *  0. 공통 컴포넌트 fetch 삽입 (sidebar.html / header.html / footer.html)
  *  1. 사이드바 토글
  *  2. 탭 전환
  *  3. 검색 폼 — Enter 키 지원
@@ -19,6 +19,7 @@
  *  - 0번 fetch 로직은 불필요 → 삭제하거나 주석 처리
  *  - sidebar.html → /templates/fragments/sidebar.html
  *  - header.html  → /templates/fragments/header.html
+ *  - footer.html  → /templates/fragments/footer.html
  *  - 각 페이지에서 th:replace="fragments/sidebar :: sidebar" 로 교체
  *  - 5번 active 처리는 th:classappend="${currentMenu=='xxx'}?'active'" 로 교체
  */
@@ -28,9 +29,10 @@
 /* ═══════════════════════════════════════════════════════════
    0. 공통 컴포넌트 fetch 삽입
    ─────────────────────────────────────────────────────────
-   [사용법] 각 HTML 페이지에 아래 두 줄을 배치하세요.
+   [사용법] 각 HTML 페이지에 아래 세 줄을 배치하세요.
      <div id="rss-sidebar-wrap"></div>
      <div id="rss-header-wrap" data-title="페이지 제목"></div>
+     <div id="rss-footer-wrap"></div>  ← rss-main 내부 맨 아래
 
    [주의] fetch()는 file:// 프로토콜에서 동작하지 않습니다.
           반드시 localhost 또는 실제 서버 환경에서 실행하세요.
@@ -98,7 +100,42 @@
         console.warn('[RSS] header.html fetch 오류:', err.message);
       });
   }
+  /* ── 푸터 삽입 ── */
+  var footerWrap = document.getElementById('rss-footer-wrap');
+  if (footerWrap) {
+    fetch(base + 'footer.html')
+      .then(function(res) {
+        if (!res.ok) throw new Error('footer.html 로드 실패: ' + res.status);
+        return res.text();
+      })
+      .then(function(html) {
+        footerWrap.innerHTML = html;
+        /* 삽입 후 Lucide 아이콘 재렌더링 */
+        if (window.lucide) lucide.createIcons();
+        /* 모바일 토글 버튼 바인딩 */
+        _initFooterToggle();
+      })
+      .catch(function(err) {
+        console.warn('[RSS] footer.html fetch 오류:', err.message);
+      });
+  }
 })();
+
+
+/* ═══════════════════════════════════════════════════════════
+   0-1. 푸터 모바일 토글 (내부 함수 — footer fetch 완료 후 호출)
+   ═══════════════════════════════════════════════════════════ */
+function _initFooterToggle() {
+  var btn  = document.getElementById('footerToggleBtn');
+  var info = document.getElementById('footerMobileInfo');
+  if (!btn || !info) return;
+
+  btn.addEventListener('click', function() {
+    var isOpen = info.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    info.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+  });
+}
 
 
 /* ═══════════════════════════════════════════════════════════
