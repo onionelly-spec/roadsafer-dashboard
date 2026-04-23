@@ -319,7 +319,7 @@
                 <strong>대표자</strong>
                 <span>나잘난<!-- [Java] ${company.ceoNm} --></span>
               </div>
-              <div class="company-card__meta">
+              <div class="company-card__meta" id="company-approver">
                 <strong>승인자</strong>
                 <!-- [Java] th:text="${company.approverNm}" -->
                 <span>김석진, 정호석, 박지민</span>
@@ -333,7 +333,7 @@
           <div class="rss-card__body">
             <div class="quick-grid">
 
-            <a href="tma-card.html" class="quick-item active">
+            <a href="tma-card.html" class="quick-item" data-menu-id="tma-card">
               <div class="quick-item__icon">
                 <i data-lucide="credit-card" style="width:22px;height:22px;color:#F59E0B;"></i>
               </div>
@@ -354,7 +354,7 @@
               <span class="quick-item__label">공사 정보</span>
             </a>
 
-            <a href="market.html" class="quick-item">
+          <a href="approval.html" class="quick-item" data-menu-id="approval">
               <div class="quick-item__icon">
                 <i data-lucide="shopping-bag" style="width:22px;height:22px;color:#6b7280;"></i>
               </div>
@@ -504,7 +504,7 @@
                   [Java] th:if="${loginType == 'employee'}" → <th>씨인카 수량</th>
                   더미: 기업주 로그인 기준 → 금액 표시
                 -->
-                <th id="thAmountOrQty">금액</th>
+                <th id="thAmountOrQty" data-th="금액">금액</th>
                 <th>관리</th>
               </tr>
               </tr>
@@ -525,7 +525,7 @@
                   [Java] th:if="${loginType == 'company'}"  → th:text="${#numbers.formatInteger(item.amount,1,'COMMA')}"
                   [Java] th:if="${loginType == 'employee'}" → th:text="${item.equipmentSummary}"
                 -->
-                <td id="tdAmount1"><!-- 예정 상태는 금액 미확정 → 공란 --></td>
+                <td class="rss-col-amount" id="tdAmount1"><!-- 예정 상태는 금액 미확정 → 공란 --></td>
                 <td>
                   <!-- 예정 상태 → 차단 취소 버튼 -->
                   <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
@@ -542,7 +542,7 @@
                 <td><a href="construction-detail.html" class="rss-link">국도 32번선 횡단보도 보수</a></td>
                 <td>소망건설</td>
                 <td>2026-06-25 ~ 2026-06-25 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(1일)</span></td>
-                <td>3,000,000</td>
+                <td class="rss-col-amount">3,000,000</td>
                 <td>
                   <!-- 진행중 + 오늘 공사 → 오늘 완료 버튼 -->
                   <button type="button" class="rss-btn rss-btn--outline-amber rss-btn--sm"
@@ -559,7 +559,7 @@
                 <td><a href="construction-detail.html" class="rss-link">중앙분리대 시공</a></td>
                 <td>오봉도건</td>
                 <td>2026-06-12 ~ 2026-06-18 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(7일)</span></td>
-                <td>5,000,000</td>
+                <td class="rss-col-amount">5,000,000</td>
                 <td></td>
               </tr>
 

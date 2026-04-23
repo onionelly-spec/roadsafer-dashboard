@@ -405,3 +405,35 @@ RSS.toast = function(msg, type) {
   s.textContent = '@keyframes rssToastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}';
   document.head.appendChild(s);
 })();
+_initUserInfo();
+
+/* ═══════════════════════════════════════════════════════════
+   7. 사용자 유형별 UI 제어
+   ─────────────────────────────────────────────────────────
+   [Java Thymeleaf 전환 시]
+     th:if, th:classappend 등을 사용하여 서버사이드에서 처리하세요.
+   ═══════════════════════════════════════════════════════════ */
+(function initConditionalUI() {
+  // DOM이 완전히 로드된 후 실행
+  document.addEventListener('DOMContentLoaded', function() {
+    const userType = sessionStorage.getItem('rss_mber_type');
+    const userName = sessionStorage.getItem('rss_mber_name') || '사용자';
+
+    // 로그인 페이지가 아니면 실행
+    if (!document.body.classList.contains('login-page')) {
+      if (userType === 'employee') {
+        // 1. TMA 카드 관리, 승인 관리 숨기기
+        document.querySelectorAll('[data-menu-id="tma-card"], [data-menu-id="approval"]').forEach(el => el.classList.add('hidden'));
+
+        // 2. 공사 현황 테이블의 '금액' 열 숨기기
+        document.querySelectorAll('.rss-col-amount, [data-th="금액"]').forEach(el => el.classList.add('hidden'));
+
+        // 3. 담당자 이름 변경
+        const approverEl = document.querySelector('#company-approver');
+        if (approverEl) {
+          approverEl.innerHTML = `<strong>담당자</strong><span>${userName}</span>`;
+        }
+      }
+    }
+  });
+})();
