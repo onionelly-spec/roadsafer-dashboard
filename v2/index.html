@@ -138,13 +138,13 @@
       white-space: nowrap;
     }
 
-    /* 광고 그리드 — 데스크탑 4개 1줄 */
+    /* 광고 그리드 — 데스크탑 5개 1줄 (썸네일 4개 + 더보기 1개) */
     .ad-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 16px;
     }
-    @media (max-width: 900px) { .ad-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px) { .ad-grid { grid-template-columns: repeat(3, 1fr); } }
 
     /* 광고 모바일 슬라이더 */
     @media (max-width: 640px) {
@@ -454,25 +454,13 @@
               <img src="https://placehold.co/400x250/e5e7eb/9ca3af?text=광고+4" alt="광고 4" />
             </a>
 
-            <!-- 더보기 카드 — 모바일 슬라이더 마지막 / 데스크탑 숨김 -->
-            <a href="ad.html" class="ad-more-btn" style="display:none;" id="adMoreCard">
+            <!-- 더보기 카드 — 항상 표시 (데스크탑 5번째 칸 / 모바일 슬라이더 마지막) -->
+            <a href="ad.html" class="ad-more-btn" id="adMoreCard">
               <span class="ad-more-btn__icon">+</span>
               <span class="ad-more-btn__label">더보기</span>
             </a>
 
           </div>
-          <script>
-            /* 모바일(640px 이하)에서만 더보기 카드 표시 */
-            (function(){
-              function toggleAdMore(){
-                var el = document.getElementById('adMoreCard');
-                if(!el) return;
-                el.style.display = window.innerWidth <= 640 ? 'flex' : 'none';
-              }
-              toggleAdMore();
-              window.addEventListener('resize', toggleAdMore);
-            })();
-          </script>
         </div>
       </div>
 
@@ -486,9 +474,9 @@
       ══════════════════════════════════════════════════ -->
       <div class="rss-card">
 
-        <div class="section-header">
-          <span class="section-header__title">공사 현황</span>
-          <a href="construction-list.html" class="section-header__more">
+        <div class="rss-card__header">
+          <h3 class="rss-card__title">공사 현황</h3>
+          <a href="construction-list.html" class="rss-card__more">
             모두보기 <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
           </a>
         </div>
