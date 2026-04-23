@@ -494,13 +494,26 @@
         </div>
 
         <!-- PC 테이블 (769px 이상) -->
-        <div class="rss-table-wrap desktop-table">
-          <table class="rss-table">
-            <colgroup>
-              <col style="width:90px;" />
-              <col style="width:200px;" />
-              <col style="width:120px;" />
-              <col style="min-width:260px; white-space:nowrap;" />
+        <div class="rss-table-wrap desktop-table">            <table class="rss-table">
+              <colgroup>
+                <col class="rss-col-no">
+                <col class="rss-col-status">
+                <col class="rss-col-nm">
+                <col class="rss-col-owner">
+                <col class="rss-col-period">
+                <col class="rss-col-price">
+                <col class="rss-col-mgmt">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>번호</th>
+                  <th>상태</th>
+                  <th>공사명</th>
+                  <th>발주업체명</th>
+                  <th>기간</th>
+                  <th>금액</th>
+                  <th>관리</th>
+                </tr>
               <!--
                 [Java] th:if="${loginType == 'company'}"  → 금액 열
                 [Java] th:if="${loginType == 'employee'}" → 씨인카 수량 열
