@@ -483,34 +483,10 @@
 
         <!-- PC 테이블 (769px 이상) -->
         <div class="rss-table-wrap desktop-table">            <table class="rss-table">
-              <colgroup>
-                <col class="rss-col-no">
-                <col class="rss-col-status">
-                <col class="rss-col-nm">
-                <col class="rss-col-owner">
-                <col class="rss-col-period">
-                <col class="rss-col-price">
-                <col class="rss-col-mgmt">
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>번호</th>
-                  <th>상태</th>
-                  <th>공사명</th>
-                  <th>발주업체명</th>
-                  <th>기간</th>
-                  <th>금액</th>
-                  <th>관리</th>
-                </tr>
-              <!--
-                [Java] th:if="${loginType == 'company'}"  → 금액 열
-                [Java] th:if="${loginType == 'employee'}" → 씨인카 수량 열
-              -->
-              <col style="width:160px;" id="colAmountOrQty" />
-              <col style="width:110px;" />
-            </colgroup>
+
             <thead>
               <tr>
+                <th>번호</th>
                 <th>상태</th>
                 <th>공사명</th>
                 <th>발주업체명</th>
@@ -522,6 +498,7 @@
                 -->
                 <th id="thAmountOrQty">금액</th>
                 <th>관리</th>
+              </tr>
               </tr>
             </thead>
             <tbody>
