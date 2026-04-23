@@ -418,6 +418,34 @@ img { max-width: 100%; display: block; }
   .rss-content { padding: 16px; }
 }
 
+/* ─── 테이블 ─────────────────────────────────────────────── */
+.rss-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+.rss-table th,
+.rss-table td {
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--rss-border);
+}
+.rss-table th {
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+  color: var(--rss-muted);
+  background: #f9fafb;
+}
+.rss-table tbody tr:last-child td { border-bottom: none; }
+
+/* 테이블 컬럼 너비 및 정렬 */
+.rss-col-no { width: 60px; }
+.rss-col-status { width: 90px; }
+.rss-col-nm { text-align: left; }
+.rss-col-owner { width: 120px; }
+.rss-col-period { width: 180px; }
+.rss-col-price { width: 120px; text-align: right; }
+.rss-col-mgmt { width: 100px; }
+
 /* ─── 카드 ─────────────────────────────────────────────── */
 .rss-card {
   background: var(--rss-card);
