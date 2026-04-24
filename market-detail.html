@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>장터 상세 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 상세 레이아웃 ── */
+    .market-detail-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      padding: 24px;
+    }
+    @media (max-width: 768px) {
+      .market-detail-wrap { grid-template-columns: 1fr; padding: 16px; }
+    }
+
+    /* ── 이미지 갤러리 ── */
+    .market-gallery__main {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #f3f4f6;
+      border: 1.5px solid #e5e7eb;
+    }
+    .market-gallery__thumbs {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .market-gallery__thumb {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1.5px solid #e5e7eb;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .market-gallery__thumb.active,
+    .market-gallery__thumb:hover { border-color: var(--rss-amber); }
+
+    /* ── 상품 정보 ── */
+    .market-info__cat {
+      font-size: var(--rss-font-xs);
+      font-weight: 600;
+      color: var(--rss-amber-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .market-info__title {
+      font-size: var(--rss-font-xl);
+      font-weight: 700;
+      color: #1a1c23;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .market-info__meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: var(--rss-font-sm);
+      color: #9ca3af;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .market-info__price {
+      font-size: var(--rss-font-2xl);
+      font-weight: 700;
+      color: #1a1c23;
+      margin-bottom: 18px;
+    }
+
+    /* 상품 스펙 테이블: .rss-table--detail 공통 클래스 사용 (.spec-table 제거) */
+    .rss-table--detail { margin-bottom: 18px; }
+
+    /* ── 상품 내용 ── */
+    .market-info__content {
+      font-size: var(--rss-font-base);
+      color: #374151;
+      line-height: 1.75;
+      padding: 14px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 18px;
+      white-space: pre-line;
+    }
+
+    /* ── 하단 버튼 ── */
+    .market-detail-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-top: 1px solid #f3f4f6;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .market-detail-footer__left { display: flex; gap: 8px; }
+    .market-detail-footer__right { display: flex; gap: 8px; }
+
+    @media (max-width: 480px) {
+      .market-info__title { font-size: var(--rss-font-md); }
+      .market-info__price { font-size: var(--rss-font-lg); }
+      .market-detail-footer { flex-direction: column; }
+      .market-detail-footer__left,
+      .market-detail-footer__right { width: 100%; }
+      .market-detail-footer .rss-btn { flex: 1; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <div id="rss-header-wrap" data-title="장터 상세" data-icon="shopping-bag"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ══════════════════════════════════════════════════
+             장터 상세 (B4-1)
+             [DB] 테이블: market WHERE market_seq = #{marketSeq}
+             [Java] Model: market (MarketDto)
+        ══════════════════════════════════════════════════ -->
+        <div class="market-detail-wrap">
+
+          <!-- 이미지 갤러리 -->
+          <div>
+            <!-- [Java] th:src="${market.thumbImgUrl}" -->
+            <img id="mainImg" class="market-gallery__main"
+                 src="https://placehold.co/600x450/f3f4f6/9ca3af?text=TMA-1+차량"
+                 alt="TMA-1 차량 메인 이미지" />
+            <!-- [DB] 테이블: market_image WHERE market_seq = #{marketSeq} -->
+            <!-- [Java] th:each="img : ${imageList}" -->
+            <div class="market-gallery__thumbs">
+              <img class="market-gallery__thumb active"
+                   src="https://placehold.co/120x90/f3f4f6/9ca3af?text=1"
+                   alt="썸네일 1" onclick="changeMainImg(this, 'https://placehold.co/600x450/f3f4f6/9ca3af?text=TMA-1+차량')" />
+              <img class="market-gallery__thumb"
+                   src="https://placehold.co/120x90/e5e7eb/9ca3af?text=2"
+                   alt="썸네일 2" onclick="changeMainImg(this, 'https://placehold.co/600x450/e5e7eb/9ca3af?text=측면')" />
+              <img class="market-gallery__thumb"
+                   src="https://placehold.co/120x90/d1d5db/9ca3af?text=3"
+                   alt="썸네일 3" onclick="changeMainImg(this, 'https://placehold.co/600x450/d1d5db/9ca3af?text=내부')" />
+            </div>
+          </div>
+
+          <!-- 상품 정보 -->
+          <div>
+            <!-- [Java] th:text="${market.categoryLabel}" -->
+            <p class="market-info__cat">씨인카</p>
+            <!-- [Java] th:text="${market.title}" -->
+            <h1 class="market-info__title">TMA-1 차량 판매합니다 (2022년식, 상태 양호)</h1>
+            <div class="market-info__meta">
+              <!-- [Java] th:text="${market.usrNm}" -->
+              <span><i data-lucide="user" style="width:13px;height:13px;display:inline;vertical-align:middle;margin-right:3px;"></i>나잘난</span>
+              <!-- [Java] th:text="${market.regDt}" -->
+              <span><i data-lucide="calendar" style="width:13px;height:13px;display:inline;vertical-align:middle;margin-right:3px;"></i>2026-06-20</span>
+            </div>
+
+            <!-- 판매가 -->
+            <!-- [Java] th:text="${#numbers.formatInteger(market.price, 3, 'COMMA')} + '원'" -->
+            <p class="market-info__price">3,500,000원</p>
+
+            <!-- 스펙 테이블 -->
+            <table class="rss-table rss-table--detail">
+              <tbody>
+                <tr>
+                  <th scope="row">수량</th>
+                  <!-- [Java] th:text="${market.qty} + '대'" -->
+                  <!-- [DB] 컬럼: market.qty -->
+                  <td>1대</td>
+                </tr>
+                <tr>
+                  <th scope="row">규격</th>
+                  <!-- [Java] th:text="${market.spec}" -->
+                  <!-- [DB] 컬럼: market.spec -->
+                  <td>TMA-1 / 2022년식 / 주행거리 45,000km</td>
+                </tr>
+                <tr>
+                  <th scope="row">판매가</th>
+                  <!-- [Java] th:text="${#numbers.formatInteger(market.price, 3, 'COMMA')} + '원'" -->
+                  <td>3,500,000원 (협의 가능)</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- 상품 내용 -->
+            <!-- [Java] th:text="${market.content}" -->
+            <div class="market-info__content">2022년식 TMA-1 차량입니다.
+주행거리 45,000km로 상태 매우 양호합니다.
+씨인카 3대 포함 판매합니다.
+직거래 우선이며 원거리는 협의 가능합니다.
+문의: 010-1234-5678</div>
+          </div>
+
+        </div><!-- /market-detail-wrap -->
+
+        <!-- ── 하단 버튼 ──────────────────────────────────────
+             [Java] 수정/삭제: 작성자 본인만 표시
+             [Java] th:if="${loginUsr.mberSeq == market.mberSeq}"
+        ─────────────────────────────────────────────────── -->
+        <div class="market-detail-footer">
+          <div class="market-detail-footer__left">
+            <!-- 작성자 본인만 표시 -->
+            <!-- [Java] th:if="${loginUsr.mberSeq == market.mberSeq}" -->
+            <a href="market-write.html" class="rss-btn rss-btn--outline">
+              <i data-lucide="pencil" style="width:14px;height:14px;"></i>수정
+            </a>
+            <button type="button" class="rss-btn rss-btn--outline-danger"
+                    onclick="deleteMarket()">
+              <i data-lucide="trash-2" style="width:14px;height:14px;"></i>삭제
+            </button>
+          </div>
+          <div class="market-detail-footer__right">
+            <!-- 상담 신청 버튼 (작성자 본인 제외) -->
+            <!-- [Java] th:unless="${loginUsr.mberSeq == market.mberSeq}" -->
+            <button type="button" class="rss-btn rss-btn--amber"
+                    onclick="requestConsult()">
+              <i data-lucide="message-circle" style="width:14px;height:14px;"></i>상담 신청
+            </button>
+            <a href="market.html" class="rss-btn rss-btn--outline">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>목록
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /rss-card -->
+
+    <div id="rss-footer-wrap"></div>
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 메인 이미지 교체 ── */
+  function changeMainImg(thumb, src) {
+    document.getElementById('mainImg').src = src;
+    document.querySelectorAll('.market-gallery__thumb').forEach(function(t) { t.classList.remove('active'); });
+    thumb.classList.add('active');
+  }
+
+  /* ── 삭제 ────────────────────────────────────────────────
+     [Java] POST /market/delete?marketSeq=#{id}
+  ─────────────────────────────────────────────────────────── */
+  function deleteMarket() {
+    if (confirm('해당 게시글을 삭제하시겠습니까?')) {
+      /* [Java] location.href = '/market/delete?marketSeq=' + marketSeq; */
+      alert('삭제되었습니다. (더미 동작)');
+      location.href = 'market.html';
+    }
+  }
+
+  /* ── 상담 신청 ── */
+  function requestConsult() {
+    alert('상담 신청이 완료되었습니다. (더미 동작)');
+  }
+</script>
+</body>
+</html>

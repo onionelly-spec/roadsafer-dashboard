@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공사 정보 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 도로 유형 탭 ── */
+    .road-tabs {
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+      padding: 16px 24px 0;
+    }
+    .road-tab {
+      padding: 8px 22px;
+      font-size: var(--rss-font-base);
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      border: 1.5px solid #e5e7eb;
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      background: #f9fafb;
+      margin-right: 4px;
+      transition: background 0.15s, color 0.15s;
+      user-select: none;
+      position: relative;
+      bottom: -1px;
+    }
+    .road-tab.active {
+      background: #1a1f2e;
+      color: #fff;
+      border-color: #1a1f2e;
+      z-index: 1;
+    }
+    .road-tab:not(.active):hover { background: #f3f4f6; color: #374151; }
+
+    /* ── 검색 툴바 ── */
+    .info-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 14px 24px;
+      border-bottom: 1px solid #f3f4f6;
+      flex-wrap: wrap;
+    }
+    /* select: rss-common.css .rss-select + .info-toolbar .rss-select 공통 클래스 사용 */
+
+    /* ── 공사 정보 테이블 col 스타일 ── */
+    /* 링크 스타일: rss-common.css .rss-link 공통 클래스 사용 */
+    .rss-link.urgent { color: #dc2626 !important; font-weight: 700; }
+    /* ── 반응형 ── */
+    @media (max-width: 768px) {
+      .road-tabs { padding: 12px 16px 0; }
+      .road-tab { padding: 7px 14px; font-size: var(--rss-font-sm); }
+      .info-toolbar { padding: 10px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <div id="rss-header-wrap" data-title="공사 정보" data-icon="file-text"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ── 도로 유형 탭 ──────────────────────────────────
+             [Java] 파라미터: roadType ('all'|'highway'|'national')
+             [Java] th:classappend="${param.roadType == 'all'} ? 'active'"
+             [Java] th:href="@{/construction-info(roadType='all')}"
+        ─────────────────────────────────────────────────── -->
+        <div class="road-tabs" role="tablist">
+          <button class="road-tab active" role="tab" data-road="all"      onclick="switchRoadTab(this)">전체</button>
+          <button class="road-tab"        role="tab" data-road="highway"  onclick="switchRoadTab(this)">고속도로</button>
+          <button class="road-tab"        role="tab" data-road="national" onclick="switchRoadTab(this)">국도</button>
+        </div>
+
+        <!-- ── 검색 툴바 ──────────────────────────────────────
+             [Java] GET 파라미터: roadType, searchType, searchKeyword
+             [Java] /construction-info?roadType=&searchType=&searchKeyword=
+        ─────────────────────────────────────────────────── -->
+        <div class="info-toolbar">
+          <!-- [DB] 검색 기준 선택 -->
+          <select name="searchType" id="infoSearchType" class="rss-select">
+            <option value="">선택</option>
+            <option value="constructionNm">공사명</option>
+            <option value="orderCompanyNm">발주업체명</option>
+            <option value="roadNm">도로명</option>
+          </select>
+          <div class="rss-search-wrap">
+            <input type="text" name="searchKeyword" id="infoSearchKeyword" placeholder="검색어 입력" />
+            <button type="button" aria-label="검색">
+              <i data-lucide="search" style="width:15px;height:15px;"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── 공사 정보 테이블 ──────────────────────────────
+             [DB] 테이블: construction
+             [DB] 조건: road_type = #{roadType} (전체일 경우 조건 없음)
+             [DB] 정렬: ORDER BY reg_dtm DESC
+             [Java] th:each="info : ${constructionInfoList}"
+        ─────────────────────────────────────────────────── -->
+        <div class="rss-table-wrap">
+          <table class="rss-table">
+            <colgroup>
+              <col class="rss-col-no" />
+              <col class="rss-col-nm" />
+              <col class="rss-col-owner" />
+              <col class="rss-col-period" />
+              <col class="rss-col-road" />
+              <col class="rss-col-dir" />
+              <col class="rss-col-equip" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>번호<!-- [DB] row_number() --></th>
+                <th>공사명<!-- [DB] construction.constructionNm --></th>
+                <th>발주업체명<!-- [DB] construction.orderCompanyNm --></th>
+                <th>기간<!-- [DB] construction.startDt ~ endDt --></th>
+                <th>도로명<!-- [DB] construction.roadNm --></th>
+                <th>방향<!-- [DB] construction.direction --></th>
+                <th>품목별 수량<!-- [DB] construction.equipSummary --></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- [Java] th:each="info : ${constructionInfoList}" -->
+
+              <!-- 긴급 공사: urgentYn = 1 → row-urgent 클래스 추가 -->
+              <!-- [Java] th:classappend="${info.urgentYn == 1} ? 'row-urgent'" -->
+              <tr class="row-urgent">
+                <td>1</td>
+                <td class="rss-col-nm">
+                  <!-- [Java] th:href="@{/construction-info/detail/{id}(id=${info.constructionSeq})}" -->
+                  <!-- [Java] th:text="${info.constructionNm}" -->
+                  <!-- [Java] th:classappend="${info.urgentYn == 1} ? 'urgent'" -->
+                  <a href="construction-info-detail.html" class="rss-link urgent">
+                    [긴급] 호남선 순천방향 포장공사
+                  </a>
+                </td>
+                <!-- [Java] th:text="${info.orderCompanyNm}" -->
+                <td style="color:#dc2626;font-weight:600;">한국개발</td>
+                <!-- [Java] th:text="${info.startDt} + ' ~ ' + ${info.endDt} + '(' + ${info.workDays} + '일)'" -->
+                <td class="rss-col-period" style="color:#dc2626;font-weight:600;">2026-07-01 ~ 2026-07-03(3일)</td>
+                <!-- [Java] th:text="${info.roadNm}" -->
+                <td style="color:#dc2626;font-weight:600;">호남고속도로</td>
+                <!-- [Java] th:text="${info.direction}" -->
+                <td style="color:#dc2626;font-weight:600;">순천</td>
+                <!-- [Java] th:text="${info.equipSummary}" -->
+                <td class="rss-col-equip" style="color:#dc2626;font-weight:600;">TMA1 : 1대, TMA3 : 2대, PLCS : 2대</td>
+              </tr>
+
+              <tr>
+                <td>2</td>
+                <td class="rss-col-nm">
+                  <a href="construction-info-detail.html" class="rss-link">국도 32번선 횡단보도 보수</a>
+                </td>
+                <td>소망건설</td>
+                <td class="rss-col-period">2026-06-25 ~ 2026-06-25(1일)</td>
+                <td>국도 32번</td>
+                <td>대전</td>
+                <td class="rss-col-equip">TMA1 : 2대, TMA3 : 1대</td>
+              </tr>
+
+              <tr>
+                <td>3</td>
+                <td class="rss-col-nm">
+                  <a href="construction-info-detail.html" class="rss-link">중앙분리대 시공</a>
+                </td>
+                <td>오봉토건</td>
+                <td class="rss-col-period">2026-06-12 ~ 2026-06-18(7일)</td>
+                <td>경부고속도로</td>
+                <td>부산</td>
+                <td class="rss-col-equip">TMA3 : 2대, PLCS : 2대</td>
+              </tr>
+
+              <tr>
+                <td>4</td>
+                <td class="rss-col-nm">
+                  <a href="construction-info-detail.html" class="rss-link">호남선 서울방향 포장공사</a>
+                </td>
+                <td>한국개발</td>
+                <td class="rss-col-period">2026-06-01 ~ 2026-06-02(2일)</td>
+                <td>호남고속도로</td>
+                <td>서울</td>
+                <td class="rss-col-equip">TMA1 : 1대, TMA3 : 2대, PLCS : 1대</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div><!-- /info-table-wrap -->
+
+        <!-- 페이지네이션 -->
+        <!-- [Java] th:with="totalPages=${constructionInfoPage.totalPages}" -->
+        <div class="rss-pagination" style="padding: 16px 0 20px;">
+          <button class="rss-pagination__btn" aria-label="처음 페이지">
+            <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="이전 페이지">
+            <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn active">1</button>
+          <button class="rss-pagination__btn">2</button>
+          <button class="rss-pagination__btn">3</button>
+          <button class="rss-pagination__btn">4</button>
+          <button class="rss-pagination__btn">5</button>
+          <button class="rss-pagination__btn">6</button>
+          <button class="rss-pagination__btn">7</button>
+          <button class="rss-pagination__btn">8</button>
+          <button class="rss-pagination__btn">9</button>
+          <button class="rss-pagination__btn">10</button>
+          <button class="rss-pagination__btn" aria-label="다음 페이지">
+            <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="마지막 페이지">
+            <i data-lucide="chevrons-right" style="width:14px;height:14px;"></i>
+          </button>
+        </div>
+
+      </div><!-- /rss-card -->
+
+    <div id="rss-footer-wrap"></div>
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 도로 유형 탭 전환 ──────────────────────────────────────
+     [Java] 실제 환경에서는 서버에 파라미터로 요청:
+     location.href = '/construction-info?roadType=' + tab.dataset.road;
+  ─────────────────────────────────────────────────────────── */
+  function switchRoadTab(tab) {
+    document.querySelectorAll('.road-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+  }
+</script>
+</body>
+</html>

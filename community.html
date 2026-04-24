@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>커뮤니티 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* comm-col-* 제거 → rss-common.css .rss-col-* 공통 클래스 사용 */
+
+    /* 댓글 수 뱃지 */
+    .comm-cmt-badge {
+      font-size: var(--rss-font-xs);
+      color: var(--rss-amber-dark);
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    @media (max-width: 640px) {
+      .rss-col-no    { display: none; }
+      .rss-col-date  { width: 90px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+<div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+<div id="rss-header-wrap" data-title="커뮤니티" data-icon="users"></div>
+
+    <main class="rss-content">
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ── 툴바 ──────────────────────────────────────────
+             [Java] 검색 파라미터: keyword → /community?keyword=
+        ─────────────────────────────────────────────────── -->
+        <div class="rss-board-toolbar">
+          <div class="rss-board-toolbar__left">
+            <div class="rss-search-wrap">
+              <!-- [DB] 컬럼: community.title LIKE '%keyword%' -->
+              <input type="text" name="searchKeyword" id="communitySearchKeyword" placeholder="검색어 입력" />
+              <button type="button" aria-label="검색">
+                <i data-lucide="search" style="width:15px;height:15px;"></i>
+              </button>
+            </div>
+          </div>
+          <div class="rss-board-toolbar__right">
+            <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
+            <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" id="myPostBtn"
+                    onclick="toggleMyPost(this)">
+              <i data-lucide="user" style="width:14px;height:14px;"></i>내 글 보기
+            </button>
+            <a href="community-write.html" class="rss-btn rss-btn--amber rss-btn--sm">
+              <i data-lucide="pencil" style="width:14px;height:14px;"></i>글쓰기
+            </a>
+          </div>
+        </div>
+
+        <!-- ── 커뮤니티 목록 테이블 ──────────────────────────
+             [DB] 테이블: community ORDER BY reg_dtm DESC
+             [Java] th:each="post : ${communityList}"
+        ─────────────────────────────────────────────────── -->
+        <div class="rss-table-wrap">
+          <table class="rss-table" aria-label="커뮤니티 목록">
+            <colgroup>
+              <col class="rss-col-no" />
+              <col class="rss-col-nm" />
+              <col class="rss-col-author" />
+              <col class="rss-col-date" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- [Java] th:each="post : ${communityList}" -->
+
+              <!-- 더미 1 -->
+              <tr>
+                <!-- [Java] th:text="${post.rowNum}" -->
+                <td>6</td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="rss-link">
+                    고속도로 TMA 차량 배치 시 주의사항 총정리
+                    <!-- [Java] th:if="${post.commentCnt > 0}" -->
+                    <span class="comm-cmt-badge">[12]</span>
+                  </a>
+                </td>
+                <!-- [Java] th:text="${post.authorNm}" -->
+                <td>나잘난</td>
+                <!-- [Java] th:text="${post.regDt}" -->
+                <td>2026-06-10</td>
+              </tr>
+
+              <!-- 더미 2 -->
+              <tr>
+                <td>5</td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="rss-link">
+                    씨인카 수량 변경 시 발주사 재승인이 꼭 필요한가요?
+                    <span class="comm-cmt-badge">[8]</span>
+                  </a>
+                </td>
+                <td>도로맨</td>
+                <td>2026-06-09</td>
+              </tr>
+
+              <!-- 더미 3 -->
+              <tr>
+                <td>4</td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="rss-link">
+                    올 여름 공사 시즌 준비 어떻게 하고 계신가요?
+                    <span class="comm-cmt-badge">[24]</span>
+                  </a>
+                </td>
+                <td>공사왕</td>
+                <td>2026-06-08</td>
+              </tr>
+
+              <!-- 더미 4 -->
+              <tr>
+                <td>3</td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="rss-link">
+                    야간 공사 시 반사 조끼 착용 의무화 법령 정리
+                    <span class="comm-cmt-badge">[5]</span>
+                  </a>
+                </td>
+                <td>안전제일</td>
+                <td>2026-06-07</td>
+              </tr>
+
+              <!-- 더미 5 -->
+              <tr>
+                <td>2</td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="rss-link">
+                    TMA 카드 만료 후 갱신 절차가 어떻게 되나요?
+                    <span class="comm-cmt-badge">[3]</span>
+                  </a>
+                </td>
+                <td>신입차단</td>
+                <td>2026-06-06</td>
+              </tr>
+
+              <!-- 더미 6 -->
+              <tr>
+                <td>1</td>
+                <td class="comm-td-title">
+                  <a href="community-detail.html" class="rss-link">
+                    로드세이프티시스템 사용 후기 — 6개월 사용 소감
+                    <span class="comm-cmt-badge">[31]</span>
+                  </a>
+                </td>
+                <td>베테랑</td>
+                <td>2026-06-05</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div class="rss-pagination">
+          <button class="rss-pagination__btn" aria-label="이전"><i data-lucide="chevron-left" style="width:14px;height:14px;"></i></button>
+          <button class="rss-pagination__btn active">1</button>
+          <button class="rss-pagination__btn">2</button>
+          <button class="rss-pagination__btn">3</button>
+          <button class="rss-pagination__btn" aria-label="다음"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></button>
+        </div>
+
+      </div><!-- /rss-card -->
+    <div id="rss-footer-wrap"></div>
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 내 글 보기 토글 ──────────────────────────────────────
+     [Java] location.href = '/community?myYn=' + (isActive ? '' : 'Y');
+  ─────────────────────────────────────────────────────────── */
+  function toggleMyPost(btn) {
+    var isActive = btn.classList.contains('rss-btn--amber');
+    btn.classList.toggle('rss-btn--amber', !isActive);
+    btn.classList.toggle('rss-btn--outline', isActive);
+  }
+</script>
+</body>
+</html>

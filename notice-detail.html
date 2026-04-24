@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공지사항 상세 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+</head>
+<body>
+
+<div class="rss-app">
+
+<div id="rss-sidebar-wrap"></div>
+
+  <!-- ── 메인 ── -->
+  <div class="rss-main" id="rssMain">
+
+<div id="rss-header-wrap" data-title="공지사항"></div>
+
+    <main class="rss-content">
+
+      <!-- 공지사항 상세 카드 -->
+      <!-- [DB] 테이블: notice WHERE notice_id = ? -->
+      <div class="rss-card">
+
+<div class="rss-post-header">
+          <!-- 분류 배지 -->
+          <div class="mb-3">
+            <span class="rss-badge rss-badge--notice">시스템</span>
+            <!-- [Java] ${notice.category} -->
+          </div>
+          <!-- 제목 -->
+          <h2 class="rss-post-title">
+            [필독] 2026년 하반기 서비스 이용 정책 변경 안내
+            <!-- [Java] ${notice.title} -->
+          </h2>
+          <!-- 메타 정보 -->
+          <div class="rss-post-meta">
+            <span>
+              <i data-lucide="user" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
+              관리자<!-- [Java] ${notice.authorNm} -->
+            </span>
+            <span>
+              <i data-lucide="calendar" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
+              2026-06-01<!-- [Java] ${#temporals.format(notice.regDtm, 'yyyy-MM-dd')} -->
+            </span>
+            <span>
+              <i data-lucide="eye" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
+              조회 1,240<!-- [Java] ${notice.viewCnt} -->
+            </span>
+          </div>
+        </div>
+
+        <!-- 게시글 본문 -->
+        <!-- [DB] 컬럼: notice.content (TEXT) — HTML 허용 시 th:utext 사용 -->
+        <div class="rss-post-body">
+          <p>안녕하세요, 로드세이프티시스템입니다.</p>
+          <br>
+          <p>2026년 하반기(7월 1일)부터 아래와 같이 서비스 이용 정책이 변경됩니다. 이용에 참고하시기 바랍니다.</p>
+          <br>
+          <h3 style="font-weight:700; font-size:15px; margin-bottom:8px;">■ 주요 변경 사항</h3>
+          <ol style="padding-left:20px; line-height:2;">
+            <li>1. TMA 카드 등록 시 사업자등록증 첨부 필수화</li>
+            <li>2. 공사 신청 최소 48시간 전 사전 등록 의무화</li>
+            <li>3. 차단 취소 위약금 정책 강화 (취소 시 공사 금액의 10%)</li>
+            <li>4. 씨인카 수량 변경 시 발주사 재승인 절차 추가</li>
+          </ol>
+          <br>
+          <p>변경된 정책은 2026년 7월 1일부터 적용되며, 이전에 등록된 공사 건은 기존 정책이 적용됩니다.</p>
+          <br>
+          <p>문의사항은 고객센터(1566-0000)로 연락주시기 바랍니다.</p>
+          <br>
+          <p>감사합니다.</p>
+        </div>
+
+        <!-- 첨부파일 (있을 경우) -->
+        <!-- [DB] 테이블: notice_attachment WHERE notice_id = ? -->
+        <div class="px-6 pb-4">
+          <p class="text-base font-semibold text-gray-400 mb-2">첨부파일</p>
+          <a href="#" class="inline-flex items-center gap-2 text-base text-blue-600 hover:underline">
+            <i data-lucide="paperclip" style="width:14px;height:14px;"></i>
+            2026_하반기_정책변경_안내문.pdf
+            <!-- [Java] ${attachment.originalFileNm} -->
+          </a>
+        </div>
+
+        <!-- 하단 버튼 — 모든 화면에서 표시 -->
+        <div class="rss-post-footer">
+          <a href="notice.html" class="rss-btn rss-btn--outline">
+            <i data-lucide="list" style="width:14px;height:14px;"></i>
+            목록으로
+          </a>
+        </div>
+
+      </div><!-- /rss-card -->
+
+      <!-- 이전/다음 글 네비게이션 -->
+      <!-- [DB] 이전글: notice WHERE notice_id < ? ORDER BY notice_id DESC LIMIT 1 -->
+      <!-- [DB] 다음글: notice WHERE notice_id > ? ORDER BY notice_id ASC LIMIT 1 -->
+      <div class="rss-card mt-3">
+        <div class="flex items-center gap-3 px-5 py-3.5 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors"
+             onclick="location.href='notice-detail.html'">
+          <span class="text-base text-gray-400 flex-shrink-0 w-10">이전글</span>
+          <span class="text-base text-gray-700 truncate">TMA 카드 신규 등록 절차 간소화 안내</span>
+          <!-- [Java] ${prevNotice.title} -->
+        </div>
+        <div class="flex items-center gap-3 px-5 py-3.5 hover:bg-gray-50 cursor-pointer transition-colors"
+             onclick="location.href='notice-detail.html'">
+          <span class="text-base text-gray-400 flex-shrink-0 w-10">다음글</span>
+          <span class="text-base text-gray-500 truncate">다음 글이 없습니다.</span>
+          <!-- [Java] th:text="${nextNotice != null ? nextNotice.title : '다음 글이 없습니다.'}" -->
+        </div>
+      </div>
+
+    <div id="rss-footer-wrap"></div>
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

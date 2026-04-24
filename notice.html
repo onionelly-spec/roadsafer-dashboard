@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공지사항 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 공지사항 섹션 타이틀 ── */
+    .notice-section-title {
+      font-size: var(--rss-font-base);
+      font-weight: 700;
+      color: var(--rss-text);
+      padding: 18px 24px 10px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    /* ── 공지 행 ── */
+    .notice-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 24px;
+      border-bottom: 1px solid #f3f4f6;
+      cursor: pointer;
+      transition: background 0.15s;
+      gap: 12px;
+    }
+    .notice-row:last-child { border-bottom: none; }
+    .notice-row:hover { background: #fffbf0; }
+    /* .notice-row__title 링크 색상: rss-common.css .rss-link 상속 */
+    .notice-row__title {
+      font-size: var(--rss-font-base);
+      font-weight: 500;
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .notice-row__date {
+      font-size: var(--rss-font-sm);
+      color: #9ca3af;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── 이전 공지 섹션 구분 ── */
+    .notice-prev-section { border-top: 2px solid #f3f4f6; margin-top: 4px; }
+
+    /* ── 모달 배경 ── */
+    .notice-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .notice-modal-backdrop.show { display: flex; }
+
+    /* ── 모달 본체 ── */
+    .notice-modal {
+      background: #fff;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 640px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+    .notice-modal__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      gap: 12px;
+    }
+    .notice-modal__title {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      line-height: 1.5;
+      flex: 1;
+    }
+    .notice-modal__close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #9ca3af;
+      padding: 2px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+    .notice-modal__close:hover { color: var(--rss-text); }
+    .notice-modal__meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 24px;
+      background: #fafafa;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: var(--rss-font-sm);
+      color: #6b7280;
+    }
+    .notice-modal__body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+      font-size: var(--rss-font-base);
+      color: #374151;
+      line-height: 1.8;
+    }
+    .notice-modal__attach {
+      padding: 12px 24px 16px;
+      border-top: 1px solid #f3f4f6;
+    }
+    .notice-modal__attach-label {
+      font-size: var(--rss-font-xs);
+      font-weight: 600;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+    .notice-modal__footer {
+      padding: 12px 24px;
+      border-top: 1px solid #f3f4f6;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* ── 반응형 ── */
+    @media (max-width: 640px) {
+      .notice-row { padding: 12px 16px; }
+      .notice-section-title { padding: 14px 16px 8px; }
+      .notice-modal__header,
+      .notice-modal__body,
+      .notice-modal__meta,
+      .notice-modal__attach,
+      .notice-modal__footer { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <div id="rss-header-wrap" data-title="공지사항" data-icon="bell"></div>
+
+    <main class="rss-content">
+
+      <div class="rss-card" style="padding:0;">
+
+        <!-- ══════════════════════════════════════════
+             ① 확인하지 않은 공지
+             [DB] 테이블: notice
+             [DB] 조건: read_yn = 0 AND mber_id = #{loginUsr.mberSeq}
+             [DB] 정렬: ORDER BY reg_dtm DESC
+             [Java] th:if="${!unreadNoticeList.isEmpty()}"
+        ══════════════════════════════════════════ -->
+        <p class="notice-section-title">확인하지 않은 공지</p>
+
+        <!-- [Java] th:each="notice : ${unreadNoticeList}" -->
+        <div class="notice-row"
+             onclick="openNoticeModal(this)"
+             data-notice-id="5"
+             data-title="시스템 점기 점검 예정입니다"
+             data-date="2026-06-13"
+             data-author="관리자"
+             data-content="안녕하세요, 로드세이프티시스템입니다.&lt;br&gt;&lt;br&gt;2026년 6월 15일(일) 02:00 ~ 06:00 동안 시스템 정기 점검이 예정되어 있습니다.&lt;br&gt;점검 시간 동안 서비스 이용이 일시 중단될 수 있습니다.&lt;br&gt;&lt;br&gt;이용에 불편을 드려 죄송합니다."
+             data-attach="">
+          <!-- [Java] th:text="${notice.noticeNm}" -->
+          <span class="notice-row__title rss-link">시스템 점기 점검 예정입니다</span>
+          <!-- [Java] th:text="${#temporals.format(notice.regDtm,'yyyy-MM-dd')}" -->
+          <span class="notice-row__date">2026-06-13</span>
+        </div>
+
+        <div class="notice-row"
+             onclick="openNoticeModal(this)"
+             data-notice-id="4"
+             data-title="차단기업 추가 서류를 등록해주세요"
+             data-date="2026-06-12"
+             data-author="관리자"
+             data-content="안녕하세요, 로드세이프티시스템입니다.&lt;br&gt;&lt;br&gt;차단기업 회원 중 사업자등록증 사본을 아직 등록하지 않으신 분은 마이페이지 &gt; 정보변경 메뉴에서 서류를 등록해 주시기 바랍니다.&lt;br&gt;&lt;br&gt;미등록 시 공사 신청이 제한될 수 있습니다."
+             data-attach="">
+          <span class="notice-row__title rss-link">차단기업 추가 서류를 등록해주세요</span>
+          <span class="notice-row__date">2026-06-12</span>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+             ② 이전 공지
+             [DB] 테이블: notice
+             [DB] 조건: read_yn = 1 AND mber_id = #{loginUsr.mberSeq}
+             [DB] 정렬: ORDER BY reg_dtm DESC
+             [DB] 페이징: LIMIT 10 OFFSET #{page * 10}
+             [Java] th:if="${!prevNoticeList.isEmpty()}"
+        ══════════════════════════════════════════ -->
+        <div class="notice-prev-section">
+          <p class="notice-section-title">이전 공지</p>
+
+          <!-- [Java] th:each="notice : ${prevNoticeList}" -->
+          <div class="notice-row"
+               onclick="openNoticeModal(this)"
+               data-notice-id="3"
+               data-title="발주기업 담당자 확인 안내"
+               data-date="2026-06-11"
+               data-author="관리자"
+               data-content="발주기업 담당자 정보가 변경된 경우, 시스템에 반드시 업데이트해 주시기 바랍니다.&lt;br&gt;&lt;br&gt;담당자 연락처가 잘못 등록된 경우 공사 승인이 지연될 수 있습니다."
+               data-attach="">
+            <span class="notice-row__title rss-link">발주기업 담당자 확인 안내</span>
+            <span class="notice-row__date">2026-06-11</span>
+          </div>
+
+          <div class="notice-row"
+               onclick="openNoticeModal(this)"
+               data-notice-id="2"
+               data-title="시스템 임시 중지 안내"
+               data-date="2026-06-10"
+               data-author="관리자"
+               data-content="긴급 서버 점검으로 인해 2026-06-10 23:00 ~ 01:00 동안 시스템이 임시 중지되었습니다.&lt;br&gt;불편을 드려 죄송합니다."
+               data-attach="">
+            <span class="notice-row__title rss-link">시스템 임시 중지 안내</span>
+            <span class="notice-row__date">2026-06-10</span>
+          </div>
+
+          <div class="notice-row"
+               onclick="openNoticeModal(this)"
+               data-notice-id="1"
+               data-title="로드세이프티시스템 서비스 오픈 안내"
+               data-date="2026-04-01"
+               data-author="관리자"
+               data-content="로드세이프티시스템 서비스가 정식 오픈되었습니다.&lt;br&gt;&lt;br&gt;많은 이용 부탁드립니다."
+               data-attach="">
+            <span class="notice-row__title rss-link">로드세이프티시스템 서비스 오픈 안내</span>
+            <span class="notice-row__date">2026-04-01</span>
+          </div>
+
+        </div><!-- /이전 공지 -->
+
+        <!-- 페이지네이션 (이전 공지 기준) -->
+        <!-- [Java] th:with="totalPages=${prevNoticePage.totalPages}, currentPage=${prevNoticePage.number}" -->
+        <div class="rss-pagination" style="padding: 16px 0 20px;">
+          <button class="rss-pagination__btn" aria-label="처음 페이지">
+            <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="이전 페이지">
+            <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
+          </button>
+          <!-- [Java] th:each="i : ${#numbers.sequence(1, totalPages)}" -->
+          <button class="rss-pagination__btn active">1</button>
+          <button class="rss-pagination__btn">2</button>
+          <button class="rss-pagination__btn">3</button>
+          <button class="rss-pagination__btn">4</button>
+          <button class="rss-pagination__btn">5</button>
+          <button class="rss-pagination__btn">6</button>
+          <button class="rss-pagination__btn">7</button>
+          <button class="rss-pagination__btn">8</button>
+          <button class="rss-pagination__btn">9</button>
+          <button class="rss-pagination__btn">10</button>
+          <button class="rss-pagination__btn" aria-label="다음 페이지">
+            <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="마지막 페이지">
+            <i data-lucide="chevrons-right" style="width:14px;height:14px;"></i>
+          </button>
+        </div>
+
+      </div><!-- /rss-card -->
+
+    <div id="rss-footer-wrap"></div>
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<!-- ══════════════════════════════════════════════════════
+     공지사항 상세 모달 (B6-1)
+     [Java] 실제 환경에서는 data-notice-id로 AJAX 요청 후 바인딩
+            예: fetch(`/notice/detail/${noticeId}`).then(res=>res.json())
+                .then(data => { 모달 필드에 데이터 바인딩 })
+══════════════════════════════════════════════════════ -->
+<div class="notice-modal-backdrop" id="noticeModalBackdrop" onclick="closeNoticeModalOnBackdrop(event)">
+  <div class="notice-modal" role="dialog" aria-modal="true" aria-labelledby="noticeModalTitle">
+
+    <div class="notice-modal__header">
+      <!-- [Java] notice.noticeNm -->
+      <h2 class="notice-modal__title" id="noticeModalTitle">공지 제목</h2>
+      <button class="notice-modal__close" onclick="closeNoticeModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:20px;height:20px;"></i>
+      </button>
+    </div>
+
+    <div class="notice-modal__meta">
+      <span style="display:flex;align-items:center;gap:4px;">
+        <i data-lucide="user" style="width:12px;height:12px;"></i>
+        <!-- [Java] notice.authorNm -->
+        <span id="noticeModalAuthor">관리자</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:4px;">
+        <i data-lucide="calendar" style="width:12px;height:12px;"></i>
+        <!-- [Java] ${#temporals.format(notice.regDtm,'yyyy-MM-dd')} -->
+        <span id="noticeModalDate">2026-06-13</span>
+      </span>
+    </div>
+
+    <!-- [Java] notice.content — HTML 허용 시 th:utext 사용 -->
+    <div class="notice-modal__body" id="noticeModalBody">
+      공지 내용이 여기에 표시됩니다.
+    </div>
+
+    <!-- 첨부파일 (있을 경우만 표시) -->
+    <!-- [DB] 테이블: notice_attachment WHERE notice_id = #{notice.noticeSeq} -->
+    <div class="notice-modal__attach" id="noticeModalAttach" style="display:none;">
+      <p class="notice-modal__attach-label">첨부파일</p>
+      <div id="noticeModalAttachList"></div>
+    </div>
+
+    <div class="notice-modal__footer">
+      <button class="rss-btn rss-btn--outline rss-btn--sm" onclick="closeNoticeModal()">닫기</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 공지사항 모달 열기 ──────────────────────────────────────
+     [Java] 실제 환경에서는 아래 방식으로 서버에서 데이터를 가져옴:
+     fetch(`/notice/detail/${noticeId}`)
+       .then(res => res.json())
+       .then(data => {
+         document.getElementById('noticeModalTitle').textContent = data.noticeNm;
+         document.getElementById('noticeModalDate').textContent  = data.regDtm;
+         document.getElementById('noticeModalBody').innerHTML    = data.content;
+       });
+
+     [Java] 읽음 처리: 모달 열 때 read_yn = 1 업데이트
+     fetch(`/notice/read/${noticeId}`, { method: 'POST' });
+  ─────────────────────────────────────────────────────────── */
+  function openNoticeModal(row) {
+    var title   = row.dataset.title   || '';
+    var date    = row.dataset.date    || '';
+    var author  = row.dataset.author  || '관리자';
+    var content = row.dataset.content || '';
+    var attach  = row.dataset.attach  || '';
+
+    document.getElementById('noticeModalTitle').textContent  = title;
+    document.getElementById('noticeModalDate').textContent   = date;
+    document.getElementById('noticeModalAuthor').textContent = author;
+    document.getElementById('noticeModalBody').innerHTML     = content;
+
+    var attachWrap = document.getElementById('noticeModalAttach');
+    if (attach) {
+      document.getElementById('noticeModalAttachList').innerHTML =
+        '<a href="' + attach + '" class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline bg-blue-50 px-3 py-1.5 rounded-md">' +
+        '<i data-lucide="paperclip" style="width:13px;height:13px;"></i>' + attach + '</a>';
+      attachWrap.style.display = '';
+      lucide.createIcons();
+    } else {
+      attachWrap.style.display = 'none';
+    }
+
+    document.getElementById('noticeModalBackdrop').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeNoticeModal() {
+    document.getElementById('noticeModalBackdrop').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  function closeNoticeModalOnBackdrop(e) {
+    if (e.target === document.getElementById('noticeModalBackdrop')) {
+      closeNoticeModal();
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeNoticeModal();
+  });
+</script>
+</body>
+</html>

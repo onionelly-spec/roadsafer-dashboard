@@ -396,324 +396,231 @@
       <div class="login-logo-wrap">
 
         <!-- 흰색 원형 카드 안의 RSS 로고 -->
-        <!-- [이미지 경로] 서버 배포 시 /assets/images/logo-rss.png 등으로 변경 -->
+        <!-- [이미지 경로] /assets/logo-rss.svg 또는 /assets/logo-rss.png -->
         <div class="login-logo-circle">
-          <img src="logo-rss.png" alt="(주)로드세이프티시스템 로고" />
+          <img src="https://placehold.co/120x120/ffffff/f59e0b?text=RSS" alt="로드세이프티시스템 로고" />
         </div>
 
-        <!-- 아이콘 배지 — 오른쪽 상단: 공사 헬멧 (안전 상징) -->
+        <!-- 아이콘 배지 1 (오른쪽 상단) — 서비스 아이콘 -->
         <div class="login-icon-badge login-icon-badge--top-right">
-          <i data-lucide="hard-hat"></i>
+          <i data-lucide="shield-check" style="width:20px;height:20px;"></i>
         </div>
 
-        <!-- 아이콘 배지 — 왼쪽 하단: 스마트폰 (모바일 관리 상징) -->
+        <!-- 아이콘 배지 2 (왼쪽 하단) — 서비스 아이콘 -->
         <div class="login-icon-badge login-icon-badge--bottom-left">
-          <i data-lucide="smartphone"></i>
+          <i data-lucide="lock" style="width:20px;height:20px;"></i>
         </div>
 
       </div>
 
-      <!-- 헤드라인 -->
-      <h2 class="login-visual__headline">안전한 도로의 시작</h2>
-
-      <!-- 설명 문구 -->
+      <!-- 헤드라인 + 설명 -->
+      <h1 class="login-visual__headline">로드세이프티<br>시스템</h1>
       <p class="login-visual__desc">
-        로드세이프티시스템은<br>
-        신속하고 안전한 공사 현장을 위해<br>
-        최적의 파트너를 연결합니다.
+        안전한 도로 공사 관리<br>
+        효율적인 차단 기업 운영
       </p>
 
       <!-- 저작권 -->
-      <p class="login-visual__footer">© 2026 (주)로드세이프티시스템. All rights reserved.</p>
+      <p class="login-visual__footer">© 2024 Road Safety System</p>
+
     </div>
+
   </aside>
 
   <!-- ══════════════════════════════════════════════════════
        오른쪽 폼 패널
   ══════════════════════════════════════════════════════ -->
-  <main class="login-form-panel">
+  <div class="login-form-panel">
 
-    <!-- 모바일 전용 로고 -->
-    <!-- [이미지 경로] 서버 배포 시 /assets/images/logo-rss.png 등으로 변경 -->
+    <!-- 모바일 로고 -->
     <div class="login-mobile-logo">
-      <img src="logo-rss.png" alt="(주)로드세이프티시스템 로고" />
+      <img src="https://placehold.co/120x120/ffffff/f59e0b?text=RSS" alt="로드세이프티시스템 로고" />
     </div>
 
-    <!-- ── 로그인 카드 ── -->
+    <!-- 로그인 카드 -->
     <div class="login-card">
 
-      <!-- 상단 앰버 라인 -->
       <div class="login-card__top-line"></div>
 
       <div class="login-card__body">
 
         <!-- 카드 타이틀 -->
-        <h1 class="login-card__title">기업 로그인</h1>
+        <h2 class="login-card__title">로그인</h2>
         <p class="login-card__subtitle">서비스 이용을 위해 로그인해주세요.</p>
 
-        <!-- ── 에러 메시지 ── -->
-        <!-- [Java] 로그인 실패 시 model.addAttribute("loginError", "...") 로 전달 -->
-        <div id="loginErrorBar"
-             class="hidden items-center gap-2 px-3 py-2.5 rounded-lg text-xs mb-3"
-             style="background:rgba(239,68,68,0.07); border:1px solid rgba(239,68,68,0.18); color:#dc2626;">
-          <i data-lucide="alert-circle" style="width:14px;height:14px;flex-shrink:0;"></i>
-          <span id="loginErrorMsg">아이디와 비밀번호를 입력해주세요.</span>
-        </div>
+        <!-- 로그인 폼 -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
 
-        <!-- ── 로그인 폼 ── -->
-        <!-- [Java] action="/api/auth/login" method="POST" 로 변경 -->
-        <!-- [Java] th:action="@{/login}" (Thymeleaf 사용 시) -->
-        <form id="loginForm" name="loginForm" novalidate>
-
+          <!-- 아이디 입력 -->
           <div class="login-input-group">
-
-            <!-- 아이디 입력 -->
-            <!-- [DB] 컬럼: mber.user_id (VARCHAR 50) -->
             <div class="login-input-wrap">
-              <i data-lucide="user" class="input-icon"></i>
+              <i class="input-icon" data-lucide="user"></i>
               <input
                 type="text"
-                id="user_id"
-                name="user_id"
+                id="userId"
                 class="login-input-field"
                 placeholder="아이디"
-                autocomplete="username"
-                maxlength="50"
-                value="block"
+                required
               />
             </div>
 
             <!-- 비밀번호 입력 -->
-            <!-- [DB] 컬럼: mber.user_pw (VARCHAR 255, BCrypt 해시) -->
             <div class="login-input-wrap">
-              <i data-lucide="lock" class="input-icon"></i>
+              <i class="input-icon" data-lucide="lock"></i>
               <input
                 type="password"
-                id="user_pw"
-                name="user_pw"
+                id="userPassword"
                 class="login-input-field"
                 placeholder="비밀번호"
-                autocomplete="current-password"
-                maxlength="100"
-                style="padding-right:36px;"
-                value="1234"
+                required
               />
-              <!-- 비밀번호 표시/숨김 토글 -->
-              <button type="button" id="pwToggleBtn" class="pw-toggle-btn" aria-label="비밀번호 표시/숨김">
-                <i data-lucide="eye" id="pwToggleIcon" style="width:15px;height:15px;"></i>
+              <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility()">
+                <i data-lucide="eye" style="width:16px;height:16px;"></i>
               </button>
-            </div>
-
-            <!-- 로그인 버튼 -->
-            <button type="submit" id="loginSubmitBtn" class="login-submit-btn">
-              <i data-lucide="log-in" style="width:15px;height:15px;"></i>
-              로그인
-            </button>
-
-          </div><!-- /login-input-group -->
-
-          <!-- 자동로그인 + 찾기 링크 -->
-          <div class="login-meta-row">
-            <!-- [DB] 컬럼: mber_session.auto_login (TINYINT 1) -->
-            <label>
-              <input type="checkbox" id="auto_login" name="auto_login" value="1"
-                class="w-3.5 h-3.5 rounded accent-amber-500 cursor-pointer" />
-              자동로그인
-            </label>
-            <div class="find-links">
-              <a href="#" onclick="openFindModal('id'); return false;">아이디 찾기</a>
-              <a href="#" onclick="openFindModal('pw'); return false;">비밀번호 찾기</a>
             </div>
           </div>
 
+          <!-- 로그인 버튼 -->
+          <button type="submit" class="login-submit-btn">
+            <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+            <span>로그인</span>
+          </button>
+
         </form>
+
+        <!-- 자동로그인 + 찾기 링크 -->
+        <div class="login-meta-row">
+          <label>
+            <input type="checkbox" id="autoLogin" />
+            자동로그인
+          </label>
+          <div class="find-links">
+            <a href="#" id="findIdLink">아이디 찾기</a>
+            <span style="color:#e5e7eb;">|</span>
+            <a href="#" id="findPwLink">비밀번호 찾기</a>
+          </div>
+        </div>
 
         <!-- 구분선 -->
         <div class="login-divider">or</div>
 
-        <!-- 신규 기업 회원가입 버튼 -->
-        <a href="signup.html" class="login-signup-btn">
-          <i data-lucide="building-2" style="width:15px;height:15px;"></i>
-          신규 기업 회원가입
-        </a>
+        <!-- 회원가입 버튼 -->
+        <button type="button" class="login-signup-btn" onclick="location.href='#'">
+          <i data-lucide="user-plus" style="width:16px;height:16px;"></i>
+          <span>신규 기업 회원가입</span>
+        </button>
 
         <!-- 안내 박스 -->
         <div class="login-notice-box">
-          <i data-lucide="info" style="width:12px;height:12px;display:inline;vertical-align:middle;margin-right:3px;color:#F59E0B;"></i>
-          사업자번호를 보유한 <strong>기업회원</strong>만 이용할 수 있습니다.
+          <i data-lucide="alert-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"></i>
+          사업자번호를 보유한 <strong>기업회원만 이용할 수 있습니다.</strong>
         </div>
 
-        <!-- 테스트 빠른 로그인 (개발/데모용) -->
+        <!-- 테스트 빠른 로그인 -->
         <div class="login-test-section">
           <p class="login-test-label">테스트 빠른 로그인</p>
           <div class="login-test-btns">
-            <button type="button" class="login-test-btn" onclick="testLogin(\'company\')">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+            <button type="button" class="login-test-btn" onclick="testLogin('company')">
               <span>기업주</span>
             </button>
-            <button type="button" class="login-test-btn" onclick="testLogin(\'employee\')">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <button type="button" class="login-test-btn" onclick="testLogin('employee')">
               <span>직원</span>
-            </button>
-          </div>
+            </button>         </div>
         </div>
 
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
 <!-- ══════════════════════════════════════════════════════
-     아이디/비밀번호 찾기 모달
-     [Java] 실제 구현 시 /api/auth/find-account API 연동
+     찾기 모달 (아이디 찾기 / 비밀번호 찾기)
 ══════════════════════════════════════════════════════ -->
-<div id="findModal"
-     style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.35); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:20px;">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
-    <!-- 모달 헤더 -->
-    <div class="flex items-center justify-between px-5 py-4" style="border-bottom:1px solid #f0ede6;">
-      <h2 class="text-sm font-bold text-gray-900" id="findModalTitle">계정 찾기</h2>
-      <button class="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" onclick="closeFindModal()">
-        <i data-lucide="x" style="width:13px;height:13px;color:#6b7280;"></i>
-      </button>
-    </div>
-    <!-- 모달 바디 -->
-    <div class="p-5">
-      <p class="text-xs text-gray-500 mb-4 leading-relaxed">가입 시 등록한 정보를 입력하여 계정을 찾으세요.</p>
-      <!-- [DB] 컬럼: company.company_nm (VARCHAR 100) -->
-      <div class="rss-form-group">
-        <label class="rss-label" for="find_company_nm">회사명 <span style="color:#F59E0B;">*</span></label>
-        <input type="text" id="find_company_nm" name="find_company_nm"
-          class="rss-input" placeholder="회사명을 입력하세요" maxlength="100" />
-      </div>
-      <!-- [DB] 컬럼: mber.tel (VARCHAR 20) -->
-      <div class="rss-form-group">
-        <label class="rss-label" for="find_phone">담당자 연락처 <span style="color:#F59E0B;">*</span></label>
-        <input type="tel" id="find_tel" name="find_tel"
-          class="rss-input" placeholder="010-0000-0000" maxlength="20" />
-      </div>
-      <button type="button" onclick="closeFindModal()"
-        class="rss-btn rss-btn--amber rss-btn--full">확인</button>
+<div id="findModal" class="rss-modal-backdrop" style="display:none;">
+  <div class="rss-modal">
+    <p class="rss-modal__title">아이디 찾기</p>
+    <p class="rss-modal__body">
+      가입 시 등록하신 이메일을 입력하면<br>
+      아이디를 알려드립니다.
+    </p>
+    <input type="email" id="findEmail" class="rss-modal-input" placeholder="이메일 주소" />
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="closeFindModal()">취소</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="submitFindId()">확인</button>
     </div>
   </div>
 </div>
 
-
 <script>
-  /* ── 비밀번호 표시/숨김 ── */
-  document.getElementById('pwToggleBtn').addEventListener('click', function() {
-    const input = document.getElementById('user_pw');
-    const icon  = document.getElementById('pwToggleIcon');
-    if (input.type === 'password') {
-      input.type = 'text';
-      icon.setAttribute('data-lucide', 'eye-off');
-    } else {
-      input.type = 'password';
-      icon.setAttribute('data-lucide', 'eye');
-    }
-    lucide.createIcons();
-  });
-
-  /* ── 로그인 폼 유효성 검사 ── */
-  /* [Java] 실제 서버 로그인 처리 시 form action/method 변경 후 이 JS 제거 가능 */
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const id  = document.getElementById('user_id').value.trim();
-    const pw  = document.getElementById('user_pw').value.trim();
-    const bar = document.getElementById('loginErrorBar');
-    const msg = document.getElementById('loginErrorMsg');
-
-    if (!id || !pw) {
-      msg.textContent = '아이디와 비밀번호를 입력해주세요.';
-      bar.classList.remove('hidden');
-      bar.classList.add('flex');
-      return;
-    }
-    bar.classList.add('hidden');
-    bar.classList.remove('flex');
-
-    /* [Java] 서버 로그인 처리 후 리다이렉트 — 아래 라인 제거 */
-    location.href = 'index.html';
-  });
-
-  /* ── 테스트 로그인 (데모용) ── */
-  function testLogin(type) {
-    document.getElementById('user_id').value = type;
-    document.getElementById('user_pw').value = '1234';
-    location.href = 'index.html';
+  /* ── 비밀번호 표시/숨김 토글 ── */
+  function togglePasswordVisibility() {
+    const pwInput = document.getElementById('userPassword');
+    const isPassword = pwInput.type === 'password';
+    pwInput.type = isPassword ? 'text' : 'password';
   }
 
-  /* ── 찾기 모달 ── */
-  function openFindModal(type) {
-    const m = document.getElementById('findModal');
-    const t = document.getElementById('findModalTitle');
-    t.textContent = type === 'id' ? '아이디 찾기' : '비밀번호 찾기';
-    m.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+  /* ── 로그인 폼 제출 ── */
+  function handleLogin(event) {
+    event.preventDefault();
+    const userId = document.getElementById('userId').value;
+    const userPassword = document.getElementById('userPassword').value;
+    
+    // [Java] 서버에 로그인 요청
+    console.log('로그인 시도:', userId);
+    
+    // 임시: 로그인 성공 시뮬레이션
+    sessionStorage.setItem('rss_mber_id', userId);
+    sessionStorage.setItem('rss_mber_type', 'company'); // 기본값
+    window.location.href = 'index.html';
+  }
+
+  /* ── 찾기 모달 열기/닫기 ── */
+  function openFindModal() {
+    document.getElementById('findModal').style.display = 'flex';
   }
   function closeFindModal() {
     document.getElementById('findModal').style.display = 'none';
-    document.body.style.overflow = '';
   }
+  function submitFindId() {
+    const email = document.getElementById('findEmail').value;
+    console.log('아이디 찾기 요청:', email);
+    closeFindModal();
+  }
+
+  /* ── 모달 배경 클릭 시 닫기 ── */
   document.getElementById('findModal').addEventListener('click', function(e) {
     if (e.target === this) closeFindModal();
   });
 
   /* ── Lucide 아이콘 초기화 ── */
   lucide.createIcons();
+
+  /* ── 테스트 로그인 함수 ── */
+  function testLogin(type) {
+    let userName = '';
+    if (type === 'company') {
+      userName = '김철수';
+    } else if (type === 'employee') {
+      userName = '이영희';
+    }
+    sessionStorage.setItem('rss_mber_type', type);
+    sessionStorage.setItem('rss_mber_name', userName);
+    window.location.href = 'index.html';
+  }
+
+  /* ── 찾기 링크 이벤트 ── */
+  document.getElementById('findIdLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    openFindModal();
+  });
+  document.getElementById('findPwLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    openFindModal();
+  });
 </script>
 
-<script>
-    function testLogin(type) {
-      let userName = \'\';
-      if (type === \'company\') {
-        userName = \'김철수\';
-      } else if (type === \'employee\') {
-        userName = \'이영희\';
-      }
-      sessionStorage.setItem(\'rss_mber_type\', type);
-      sessionStorage.setItem(\'rss_mber_name\', userName);
-      window.location.href = \'index.html\';
-    }
-  </script>
 </body>
 </html>
-
-<script>
-  function testLogin(type) {
-    let userName = \'\';
-    if (type === \'company\') {
-      userName = \'김철수\';
-    } else if (type === \'employee\') {
-      userName = \'이영희\';
-    }
-    sessionStorage.setItem(\'rss_mber_type\', type);
-    sessionStorage.setItem(\'rss_mber_name\', userName);
-    window.location.href = \'index.html\';
-  }
-</script>
-</script>
-
-<script>
-  function testLogin(type) {
-    let userName = '';
-    if (type === 'company') {
-      userName = '김철수';
-    } else if (type === 'employee') {
-      userName = '이영희';
-    }
-    sessionStorage.setItem('rss_mber_type', type);
-    sessionStorage.setItem('rss_mber_name', userName);
-    window.location.href = 'index.html';
-  }
-</script>
-
-<script>
-  function testLogin(type) {
-    let userName = '';
-    if (type === 'company') {
-      userName = '김철수';
-    } else if (type === 'employee') {
-      userName = '이영희';
-    }
-    sessionStorage.setItem('rss_mber_type', type);
-    sessionStorage.setItem('rss_mber_name', userName);
-    window.location.href = 'index.html';
-  }
-</script>

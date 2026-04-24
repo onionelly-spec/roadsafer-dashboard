@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>커뮤니티 상세 — 로드세이프티시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* ── 댓글 영역 ── */
+    .comment-item {
+      padding: 14px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .comment-item:last-child { border-bottom: none; }
+    .comment-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #e5e7eb; color: #6b7280;
+      font-size: var(--rss-font-xs); font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    /* ── 대댓글 영역 ── */
+    .reply-list {
+      margin-top: 10px;
+      padding-left: 40px;
+      border-left: 2px solid #f3f4f6;
+      margin-left: 40px;
+    }
+    .reply-item {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f9fafb;
+    }
+    .reply-item:last-child { border-bottom: none; }
+    .reply-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: #fef3c7; color: #d97706;
+      font-size: var(--rss-font-xs); font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    /* ── 대댓글 입력 폼 ── */
+    .reply-form-wrap {
+      margin-top: 8px;
+      padding-left: 40px;
+      margin-left: 40px;
+      display: none;
+    }
+    .reply-form-wrap.open { display: block; }
+    /* ── 댓글 액션 버튼 ── */
+    .comment-action-btn {
+      background: none;
+      border: none;
+      font-size: var(--rss-font-xs);
+      color: #9ca3af;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.12s, color 0.12s;
+    }
+    .comment-action-btn:hover { background: #f3f4f6; color: #374151; }
+    .comment-action-btn.reply-active { color: var(--rss-amber-dark); background: #fef3c7; }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+<div id="rss-sidebar-wrap"></div>
+
+  <!-- ── 메인 ── -->
+  <div class="rss-main" id="rssMain">
+
+<div id="rss-header-wrap" data-title="커뮤니티" data-icon="users"></div>
+
+    <main class="rss-content">
+
+      <!-- 게시글 상세 카드 -->
+      <!-- [DB] 테이블: community WHERE community_id = ? -->
+      <div class="rss-card mb-4">
+
+        <div class="rss-post-header">
+          <div class="mb-3">
+            <span class="rss-badge rss-badge--new">정보공유</span>
+            <!-- [Java] ${post.category} -->
+          </div>
+          <h2 class="rss-post-title">
+            고속도로 TMA 차량 배치 시 주의사항 총정리
+            <!-- [Java] ${post.title} -->
+          </h2>
+          <div class="rss-post-meta">
+            <span>
+              <i data-lucide="user" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
+              나잘난<!-- [Java] ${post.authorNm} -->
+            </span>
+            <span>
+              <i data-lucide="calendar" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
+              2026-06-10<!-- [Java] ${#temporals.format(post.regDtm, 'yyyy-MM-dd')} -->
+            </span>
+            <span>
+              <i data-lucide="eye" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
+              조회 342<!-- [Java] ${post.viewCnt} -->
+            </span>
+            <span>
+              <i data-lucide="message-circle" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
+              댓글 12<!-- [Java] ${post.commentCnt} -->
+            </span>
+          </div>
+        </div>
+
+        <!-- 썸네일 이미지 (있을 경우) -->
+        <!-- [DB] 컬럼: community.thumb_url -->
+        <!-- [Java] th:if="${post.thumbUrl != null}" -->
+        <div class="px-6 pt-5">
+          <img src="https://placehold.co/800x360/fef3c7/d97706?text=본문+이미지"
+               alt="본문 이미지"
+               class="w-full rounded-xl object-cover"
+               style="max-height:360px;" />
+        </div>
+
+        <!-- 게시글 본문 -->
+        <!-- [DB] 컬럼: community.content (TEXT) -->
+        <div class="rss-post-body">
+          <p>안녕하세요, 10년 경력의 차단기업 현장 관리자입니다.</p>
+          <br>
+          <p>오늘은 고속도로 현장에서 TMA 차량 배치 시 자주 발생하는 실수와 올바른 배치 방법을 공유하고자 합니다.</p>
+          <br>
+          <h3 style="font-weight:700; font-size:15px; margin-bottom:8px;">■ 배치 전 체크리스트</h3>
+          <ol style="padding-left:20px; line-height:2.2;">
+            <li>1. TMA 카드 유효기간 확인 (만료 30일 전 갱신 신청 권장)</li>
+            <li>2. 씨인카 배터리 잔량 80% 이상 확인</li>
+            <li>3. 반사 테이프 손상 여부 육안 점검</li>
+            <li>4. 발주사 승인 문서 현장 지참</li>
+          </ol>
+          <br>
+          <h3 style="font-weight:700; font-size:15px; margin-bottom:8px;">■ 배치 간격 기준</h3>
+          <p>편도 2차로 이상 고속도로의 경우, TMA 차량은 작업 구간 후방 <strong>최소 50m</strong> 지점에 배치해야 합니다. 야간의 경우 <strong>100m</strong>로 간격을 늘리는 것을 권장합니다.</p>
+          <br>
+          <p>더 궁금한 점이 있으시면 댓글로 질문해주세요!</p>
+        </div>
+
+        <!-- 하단 버튼 -->
+        <div class="rss-post-footer">
+          <!-- 작성자 본인만 수정/삭제 표시 -->
+          <!-- [Java] th:if="${loginUsr.mberSeq == post.mberSeq}" -->
+          <a href="community-write.html" class="rss-btn rss-btn--outline rss-btn--sm">
+            <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
+          </a>
+          <button type="button" class="rss-btn rss-btn--sm" style="border:1.5px solid #fecaca; color:#dc2626; background:transparent; border-radius:6px; cursor:pointer;"
+                  onclick="if(confirm('삭제하시겠습니까?')) location.href='community.html'">
+            <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
+          </button>
+          <a href="community.html" class="rss-btn rss-btn--outline">
+            <i data-lucide="list" style="width:14px;height:14px;"></i>목록으로
+          </a>
+        </div>
+
+      </div><!-- /게시글 카드 -->
+
+      <!-- ══════════════════════════════════════════════════════
+           댓글 + 대댓글 영역
+           [DB] 테이블: community_comment
+                컬럼: comment_seq, community_seq, parent_comment_seq, mber_seq,
+                      content, reg_dtm, del_yn
+           [Java] 1depth (parent_comment_seq IS NULL) → commentList
+                  2depth (parent_comment_seq = comment.commentSeq) → replyList
+      ══════════════════════════════════════════════════════ -->
+      <div class="rss-card">
+        <div class="rss-card__header">
+          <h3 class="rss-card__title">
+            댓글
+            <span class="rss-badge rss-badge--new ml-2">12</span>
+            <!-- [Java] ${post.commentCnt} -->
+          </h3>
+        </div>
+        <div class="px-5 py-2">
+
+          <!-- ── 댓글 1 (대댓글 포함) ──────────────────────────
+               [Java] th:each="comment : ${commentList}"
+          ─────────────────────────────────────────────────── -->
+          <div class="comment-item">
+            <div class="flex gap-3">
+              <!-- [Java] th:text="${#strings.substring(comment.authorNm, 0, 1)}" -->
+              <div class="comment-avatar">도</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <!-- [Java] th:text="${comment.authorNm}" -->
+                  <span class="text-base font-semibold text-gray-800">도로맨</span>
+                  <!-- [Java] th:text="${#temporals.format(comment.regDtm, 'yyyy-MM-dd HH:mm')}" -->
+                  <span class="text-base text-gray-400">2026-06-10 14:23</span>
+                </div>
+                <!-- [Java] th:text="${comment.content}" -->
+                <p class="text-base text-gray-700 leading-relaxed mb-2">
+                  정말 유용한 정보 감사합니다! 배치 간격 기준이 헷갈렸는데 명확해졌네요.
+                </p>
+                <!-- 대댓글 달기 버튼 -->
+                <button type="button" class="comment-action-btn" id="replyBtn1"
+                        onclick="toggleReplyForm('reply-form-1', 'replyBtn1')">
+                  <i data-lucide="corner-down-right" style="width:12px;height:12px;display:inline;vertical-align:middle;margin-right:2px;"></i>
+                  대댓글
+                </button>
+              </div>
+            </div>
+
+            <!-- 대댓글 목록 -->
+            <!-- [DB] community_comment WHERE parent_comment_seq = #{comment.commentSeq} -->
+            <!-- [Java] th:each="reply : ${comment.replyList}" -->
+            <div class="reply-list">
+              <div class="reply-item">
+                <!-- [Java] th:text="${#strings.substring(reply.authorNm, 0, 1)}" -->
+                <div class="reply-avatar">나</div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <!-- [Java] th:text="${reply.authorNm}" -->
+                    <span class="text-sm font-semibold text-gray-800">나잘난</span>
+                    <span class="text-xs text-amber-600 font-semibold">작성자</span>
+                    <!-- [Java] th:text="${#temporals.format(reply.regDtm, 'yyyy-MM-dd HH:mm')}" -->
+                    <span class="text-sm text-gray-400">2026-06-10 15:10</span>
+                  </div>
+                  <!-- [Java] th:text="${reply.content}" -->
+                  <p class="text-sm text-gray-700 leading-relaxed">
+                    감사합니다! 도움이 되셨으면 좋겠네요. 추가로 궁금한 점 있으면 편하게 질문해주세요.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 대댓글 입력 폼 -->
+            <!-- [Java] action="/community/{id}/comment/reply" method="POST" -->
+            <div class="reply-form-wrap" id="reply-form-1">
+              <form onsubmit="submitReply(event, this)">
+                <!-- [DB] community_comment.parent_comment_seq -->
+                <input type="hidden" name="parentCommentSeq" value="1" />
+                <div class="flex gap-2 mt-1">
+                  <textarea name="content" class="rss-input flex-1"
+                            style="min-height:52px; resize:none; font-size:13px;"
+                            placeholder="대댓글을 입력하세요..." maxlength="300"></textarea>
+                  <button type="submit" class="rss-btn rss-btn--amber rss-btn--sm" style="align-self:flex-end; white-space:nowrap;">등록</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- ── 댓글 2 (대댓글 없음) ── -->
+          <div class="comment-item">
+            <div class="flex gap-3">
+              <div class="comment-avatar">공</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <span class="text-base font-semibold text-gray-800">공사왕</span>
+                  <span class="text-base text-gray-400">2026-06-10 16:05</span>
+                </div>
+                <p class="text-base text-gray-700 leading-relaxed mb-2">
+                  야간 100m 기준은 어떤 법령에 근거한 건가요? 참고하고 싶습니다.
+                </p>
+                <button type="button" class="comment-action-btn" id="replyBtn2"
+                        onclick="toggleReplyForm('reply-form-2', 'replyBtn2')">
+                  <i data-lucide="corner-down-right" style="width:12px;height:12px;display:inline;vertical-align:middle;margin-right:2px;"></i>
+                  대댓글
+                </button>
+              </div>
+            </div>
+            <!-- 대댓글 없음 (더미) -->
+            <!-- 대댓글 입력 폼 -->
+            <div class="reply-form-wrap" id="reply-form-2">
+              <form onsubmit="submitReply(event, this)">
+                <input type="hidden" name="parentCommentSeq" value="2" />
+                <div class="flex gap-2 mt-1">
+                  <textarea name="content" class="rss-input flex-1"
+                            style="min-height:52px; resize:none; font-size:13px;"
+                            placeholder="대댓글을 입력하세요..." maxlength="300"></textarea>
+                  <button type="submit" class="rss-btn rss-btn--amber rss-btn--sm" style="align-self:flex-end; white-space:nowrap;">등록</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div><!-- /댓글 목록 -->
+
+        <!-- ── 댓글 입력 폼 ──────────────────────────────────
+             [Java] action="/community/{communitySeq}/comment" method="POST"
+             [DB] community_comment.community_seq, content, mber_seq (세션)
+        ─────────────────────────────────────────────────── -->
+        <div class="px-5 pb-5 pt-3" style="border-top:1px solid #f3f4f6;">
+          <form id="commentForm" name="commentForm">
+            <div class="flex gap-2">
+              <textarea
+                id="comment_content"
+                name="content"
+                class="rss-input flex-1"
+                style="min-height:64px; resize:none;"
+                placeholder="댓글을 입력하세요..."
+                maxlength="500"
+              ></textarea>
+              <button type="submit" class="rss-btn rss-btn--amber" style="align-self:flex-end; white-space:nowrap;">
+                등록
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div><!-- /댓글 카드 -->
+
+    <div id="rss-footer-wrap"></div>
+    </main>
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ── 댓글 폼 제출 (데모용) ──────────────────────────────────
+     [Java] 실제 서버 처리 시 form action/method 변경 후 이 JS 제거
+  ─────────────────────────────────────────────────────────── */
+  document.getElementById('commentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var content = document.getElementById('comment_content').value.trim();
+    if (!content) { RSS.toast('댓글 내용을 입력해주세요.', 'warning'); return; }
+    RSS.toast('댓글이 등록되었습니다.', 'success');
+    document.getElementById('comment_content').value = '';
+  });
+
+  /* ── 대댓글 폼 토글 ── */
+  function toggleReplyForm(formId, btnId) {
+    var form = document.getElementById(formId);
+    var btn  = document.getElementById(btnId);
+    var isOpen = form.classList.contains('open');
+    // 모든 대댓글 폼 닫기
+    document.querySelectorAll('.reply-form-wrap').forEach(function(f) { f.classList.remove('open'); });
+    document.querySelectorAll('.comment-action-btn').forEach(function(b) { b.classList.remove('reply-active'); });
+    // 현재 폼 토글
+    if (!isOpen) {
+      form.classList.add('open');
+      btn.classList.add('reply-active');
+      form.querySelector('textarea').focus();
+      lucide.createIcons();
+    }
+  }
+
+  /* ── 대댓글 제출 (데모용) ──────────────────────────────────
+     [Java] POST /community/{communitySeq}/comment/reply
+     [DB] community_comment.parent_comment_seq = #{parentCommentSeq}
+  ─────────────────────────────────────────────────────────── */
+  function submitReply(e, form) {
+    e.preventDefault();
+    var content = form.querySelector('textarea').value.trim();
+    if (!content) { RSS.toast('대댓글 내용을 입력해주세요.', 'warning'); return; }
+    RSS.toast('대댓글이 등록되었습니다.', 'success');
+    form.querySelector('textarea').value = '';
+    form.closest('.reply-form-wrap').classList.remove('open');
+  }
+</script>
+</body>
+</html>
