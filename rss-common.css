@@ -439,7 +439,7 @@ img { max-width: 100%; display: block; }
 
 /* 테이블 컬럼 너비 및 정렬 */
 .rss-col-no { width: 60px; }
-.rss-col-status { width: 90px; }
+.rss-col-status { width: 10%; }
 .rss-col-nm { text-align: left; }
 .rss-col-owner { width: 120px; }
 .rss-col-period { width: 180px; }
