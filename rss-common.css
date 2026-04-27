@@ -1144,8 +1144,9 @@ img { max-width: 100%; display: block; }
   align-items: center;
   gap: 12px;
   padding: 12px 24px;
+  height: 62px;
   border-bottom: 1px solid var(--rss-border);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 .rss-board-toolbar,
 .info-toolbar,
@@ -1155,8 +1156,9 @@ img { max-width: 100%; display: block; }
   justify-content: flex-end;
   gap: 8px;
   padding: 12px 24px;
+  height: 62px;
   border-bottom: 1px solid var(--rss-border);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 /* 필터와 toolbar가 함께 있을 때 한 줄 레이아웃 */
