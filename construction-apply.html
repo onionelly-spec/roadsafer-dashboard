@@ -9,22 +9,24 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
   <style>
-    /* ── 차단 신청 폼 전용 스타일 ── */
+    /* ── 차단 신청 폼 전용 스타일 (공통 디자인 시스템 확장) ── */
     .apply-notice {
       padding: 16px;
       background-color: #fefce8;
       border: 1px solid #fef08a;
       border-radius: 8px;
       margin-bottom: 24px;
-      font-size: 14px;
+      font-size: var(--rss-font-sm);
       line-height: 1.6;
       color: #854d0e;
     }
     .apply-notice b { color: #dc2626; }
     
+    /* 폼 테이블 스타일 보강 */
     .form-table th { width: 140px; background-color: #f9fafb; font-weight: 600; text-align: center !important; }
     .form-table td { padding: 12px 16px; }
     
+    /* 수량 배지 */
     .item-count-badge {
       display: inline-flex;
       align-items: center;
@@ -40,6 +42,7 @@
       margin-right: 12px;
     }
     
+    /* 차량 리스트 레이아웃 */
     .vehicle-list {
       display: flex;
       flex-wrap: wrap;
@@ -51,7 +54,7 @@
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: var(--rss-font-sm);
       color: #374151;
     }
     .vehicle-item input[type="checkbox"] {
@@ -60,12 +63,13 @@
       cursor: pointer;
     }
     
+    /* 하단 버튼 영역 여백 최적화 */
     .apply-footer {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      padding: 32px 24px;
+      padding: 32px 0 16px;
       border-top: 1px solid #f3f4f6;
       margin-top: 24px;
     }
@@ -74,7 +78,7 @@
       .form-table th { width: 100px; font-size: 13px; }
       .vehicle-list { gap: 10px; }
       .apply-footer { flex-direction: column; }
-      .apply-footer .rss-btn { width: 100%; justify-content: center; }
+      .apply-footer .rss-btn { width: 100%; }
     }
   </style>
 </head>
@@ -86,143 +90,147 @@
 
   <div class="rss-main" id="rssMain">
 
-    <div id="rss-header-wrap" data-title="차단 신청" data-icon="file-plus"></div>
+    <!-- 타이틀: 공사 정보 (요청 사항 반영) -->
+    <div id="rss-header-wrap" data-title="공사 정보" data-icon="file-text"></div>
 
     <main class="rss-content">
 
+      <!-- rss-card__body를 사용하여 상하좌우 공통 여백(24px) 확보 -->
       <div class="rss-card">
-        
-        <h2 class="text-xl font-bold mb-4">차단 신청</h2>
-        
-        <!-- 안내 문구 -->
-        <div class="apply-notice">
-          차단 신청을 하기 위해서는 TMA 카드가 등록되어 있어야 하며, TMA3, PLCS는 별도 제출을 선택하여 추후 제출이 가능합니다.<br>
-          모든 차단 신청은 '선착순' 신청입니다. <b>차단 신청 후 별도의 통보 없이 공사 취소, 차단 신청 취소가 발생할 수 있습니다.</b>
-        </div>
-
-        <!-- ══════════════════════════════════════════════════
-             차단 신청 폼 (B4-2)
-             [Java] th:action="@{/construction/apply/save}"
-        ══════════════════════════════════════════════════ -->
-        <form id="applyForm" method="post">
-          <!-- 공사 시퀀스 (Hidden) -->
-          <input type="hidden" name="construction_seq" value="123">
-
-          <div style="overflow-x:auto;">
-            <table class="rss-table form-table">
-              <tbody>
-                <!-- 차단 구간 -->
-                <tr>
-                  <th scope="row">차단 구간</th>
-                  <td>
-                    <input type="text" name="block_section" class="rss-input w-full" placeholder="차단 구간을 입력하세요 (예: 105.6km ~ 105.7km)" required>
-                  </td>
-                </tr>
-
-                <!-- TMA1 -->
-                <tr>
-                  <th scope="row">TMA1</th>
-                  <td>
-                    <div class="vehicle-list">
-                      <span class="item-count-badge">1대</span>
-                      <!-- [Java] th:each="v : ${myTma1List}" -->
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="tma1_vcl_no" value="11누1111">
-                        <span>11누1111</span>
-                      </label>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- TMA3 -->
-                <tr>
-                  <th scope="row">TMA3</th>
-                  <td>
-                    <div class="vehicle-list">
-                      <span class="item-count-badge">2대</span>
-                      <!-- [Java] th:each="v : ${myTma3List}" -->
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="tma3_vcl_no" value="22마2222">
-                        <span>22마2222</span>
-                      </label>
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="tma3_vcl_no" value="33다3333">
-                        <span>33다3333</span>
-                      </label>
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="tma3_vcl_no" value="55모3232">
-                        <span>55모3232</span>
-                      </label>
-                      <label class="vehicle-item text-amber-600 font-semibold">
-                        <input type="checkbox" name="tma3_sep_yn" value="Y">
-                        <span>별도 제출</span>
-                      </label>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- PLCS -->
-                <tr>
-                  <th scope="row">PLCS</th>
-                  <td>
-                    <div class="vehicle-list">
-                      <span class="item-count-badge">2대</span>
-                      <!-- [Java] th:each="v : ${myPlcsList}" -->
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="plcs_vcl_no" value="11소6767">
-                        <span>11소6767</span>
-                      </label>
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="plcs_vcl_no" value="32파0090">
-                        <span>32파0090</span>
-                      </label>
-                      <label class="vehicle-item text-amber-600 font-semibold">
-                        <input type="checkbox" name="plcs_sep_yn" value="Y">
-                        <span>별도 제출</span>
-                      </label>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- 신호수 -->
-                <tr>
-                  <th scope="row">신호수</th>
-                  <td>
-                    <div class="flex items-center gap-3">
-                      <span class="item-count-badge">0명</span>
-                      <select name="signaler_cnt" class="rss-input w-32">
-                        <option value="0">0명</option>
-                        <option value="1">1명</option>
-                        <option value="2">2명</option>
-                        <option value="3">3명</option>
-                      </select>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- 의견 -->
-                <tr>
-                  <th scope="row">의견</th>
-                  <td>
-                    <textarea name="opinion" class="rss-input w-full h-32 py-3" placeholder="차단방법, 일정에 대해 자유로운 의견을 남겨주세요."></textarea>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="rss-card__body">
+          
+          <h2 class="text-xl font-bold mb-4">차단 신청</h2>
+          
+          <!-- 안내 문구 -->
+          <div class="apply-notice">
+            차단 신청을 하기 위해서는 TMA 카드가 등록되어 있어야 하며, TMA3, PLCS는 별도 제출을 선택하여 추후 제출이 가능합니다.<br>
+            모든 차단 신청은 '선착순' 신청입니다. <b>차단 신청 후 별도의 통보 없이 공사 취소, 차단 신청 취소가 발생할 수 있습니다.</b>
           </div>
 
-          <!-- 하단 버튼 -->
-          <div class="apply-footer">
-            <button type="submit" class="rss-btn rss-btn--amber w-40">
-              <i data-lucide="check-circle" style="width:16px;height:16px;"></i>등록
-            </button>
-            <a href="construction-info-detail.html" class="rss-btn rss-btn--outline w-40">
-              <i data-lucide="x" style="width:16px;height:16px;"></i>취소
-            </a>
-          </div>
-        </form>
+          <!-- ══════════════════════════════════════════════════
+               차단 신청 폼 (B4-2)
+               [Java] th:action="@{/construction/apply/save}"
+          ══════════════════════════════════════════════════ -->
+          <form id="applyForm" method="post">
+            <!-- [Java] <input type="hidden" name="construction_seq" th:value="${construction.constructionSeq}"> -->
+            <input type="hidden" name="construction_seq" value="123">
 
-      </div>
+            <div style="overflow-x:auto;">
+              <table class="rss-table form-table">
+                <tbody>
+                  <!-- 차단 구간 -->
+                  <tr>
+                    <th scope="row">차단 구간</th>
+                    <td>
+                      <input type="text" name="block_section" class="rss-input w-full" placeholder="차단 구간을 입력하세요 (예: 105.6km ~ 105.7km)" required>
+                    </td>
+                  </tr>
+
+                  <!-- TMA1 -->
+                  <tr>
+                    <th scope="row">TMA1</th>
+                    <td>
+                      <div class="vehicle-list">
+                        <span class="item-count-badge">1대</span>
+                        <!-- [Java] th:each="v : ${myTma1List}" -->
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="tma1_vcl_no" value="11누1111">
+                          <span>11누1111</span>
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- TMA3 -->
+                  <tr>
+                    <th scope="row">TMA3</th>
+                    <td>
+                      <div class="vehicle-list">
+                        <span class="item-count-badge">2대</span>
+                        <!-- [Java] th:each="v : ${myTma3List}" -->
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="tma3_vcl_no" value="22마2222">
+                          <span>22마2222</span>
+                        </label>
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="tma3_vcl_no" value="33다3333">
+                          <span>33다3333</span>
+                        </label>
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="tma3_vcl_no" value="55모3232">
+                          <span>55모3232</span>
+                        </label>
+                        <label class="vehicle-item text-amber-600 font-semibold">
+                          <input type="checkbox" name="tma3_sep_yn" value="Y">
+                          <span>별도 제출</span>
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- PLCS -->
+                  <tr>
+                    <th scope="row">PLCS</th>
+                    <td>
+                      <div class="vehicle-list">
+                        <span class="item-count-badge">2대</span>
+                        <!-- [Java] th:each="v : ${myPlcsList}" -->
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="plcs_vcl_no" value="11소6767">
+                          <span>11소6767</span>
+                        </label>
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="plcs_vcl_no" value="32파0090">
+                          <span>32파0090</span>
+                        </label>
+                        <label class="vehicle-item text-amber-600 font-semibold">
+                          <input type="checkbox" name="plcs_sep_yn" value="Y">
+                          <span>별도 제출</span>
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 신호수 -->
+                  <tr>
+                    <th scope="row">신호수</th>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <span class="item-count-badge">0명</span>
+                        <select name="signaler_cnt" class="rss-input w-32">
+                          <option value="0">0명</option>
+                          <option value="1">1명</option>
+                          <option value="2">2명</option>
+                          <option value="3">3명</option>
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 의견 -->
+                  <tr>
+                    <th scope="row">의견</th>
+                    <td>
+                      <textarea name="opinion" class="rss-input w-full h-32 py-3" placeholder="차단방법, 일정에 대해 자유로운 의견을 남겨주세요."></textarea>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 하단 버튼: 공통 규격(rss-btn) 및 적절한 너비 적용 -->
+            <div class="apply-footer">
+              <button type="submit" class="rss-btn rss-btn--amber px-10">
+                <i data-lucide="check-circle" style="width:16px;height:16px;"></i>등록
+              </button>
+              <a href="construction-info-detail.html" class="rss-btn rss-btn--outline px-10">
+                <i data-lucide="x" style="width:16px;height:16px;"></i>취소
+              </a>
+            </div>
+          </form>
+
+        </div><!-- /rss-card__body -->
+      </div><!-- /rss-card -->
 
     </main>
 
@@ -240,11 +248,7 @@
   document.getElementById('applyForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    // [기획서 규칙] 필수 수량 체크 로직 (예시: TMA3 2대 필요)
-    const tma3Checked = document.querySelectorAll('input[name="tma3_vcl_no"]:checked').length;
-    const tma3Sep = document.querySelector('input[name="tma3_sep_yn"]').checked;
-    
-    // 실제 수량 체크 로직은 백엔드 또는 정교한 스크립트가 필요하나 여기서는 컨셉만 구현
+    // [기획서 규칙] 필수 수량 체크 로직 컨셉
     if (confirm('등록하시겠습니까?')) {
       alert('차단신청이 처리되었습니다.');
       location.href = 'construction-list.html'; // 신청 후 내 공사 현황(B4)으로 이동
