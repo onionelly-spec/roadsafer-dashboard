@@ -493,10 +493,11 @@ img { max-width: 100%; display: block; }
   justify-content: center;
   gap: 6px;
   padding: 9px 18px;
+  height: 38px;
   border-radius: var(--rss-radius);
   font-size: var(--rss-font-base); /* 15px */
   font-weight: 600;
-  border: none;
+  border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
@@ -1216,20 +1217,6 @@ img { max-width: 100%; display: block; }
    - 우측: 검색 드롭다운 + 키워드 입력 + 액션 버튼들
    - 버튼 높이: 38px (입력창과 통일)
 ─────────────────────────────────────────────────── */
-
-/* 버튼 높이 통일 (입력창 38px과 동일) */
-.rss-btn {
-  height: 38px !important;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 16px;
-}
-
-.rss-btn--sm {
-  height: 38px !important;
-  padding: 0 12px;
-}
 
 /* 필터 영역 여백 */
 .rss-filter-bar {
