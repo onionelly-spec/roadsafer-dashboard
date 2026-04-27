@@ -325,14 +325,19 @@
     /* 안내 박스 */
     .login-notice-box {
       margin-top: 12px;
-      padding: 11px 15px;
+      padding: 11px 12px;
       background: rgba(245,158,11,0.06);
       border: 1px solid rgba(245,158,11,0.18);
       border-radius: 8px;
       font-size: var(--rss-font-sm);
       color: #7c7c7c;
-      text-align: center;
-      line-height: 1.6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .login-notice-box strong { color: #374151; }
 
@@ -514,8 +519,8 @@
 
         <!-- 안내 박스 -->
         <div class="login-notice-box">
-          <i data-lucide="alert-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"></i>
-          사업자번호를 보유한 <strong>기업회원만 이용할 수 있습니다.</strong>
+          <i data-lucide="alert-circle" style="width:15px;height:15px;flex-shrink:0;"></i>
+          <span>사업자번호를 보유한 <strong>기업회원만 이용할 수 있습니다.</strong></span>
         </div>
 
         <!-- 테스트 빠른 로그인 -->
