@@ -1187,6 +1187,17 @@ img { max-width: 100%; display: block; }
   .market-toolbar {
     gap: 6px;
   }
+  
+  /* 모바일 폰트 크기 감소 (1포인트씩) */
+  .rss-btn,
+  .rss-input,
+  .rss-select,
+  .rss-textarea {
+    font-size: 14px !important; /* 15px → 14px */
+  }
+  .rss-btn--sm {
+    font-size: 12px !important; /* 13px → 12px */
+  }
 }
 
 
