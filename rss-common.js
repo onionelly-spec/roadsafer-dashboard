@@ -94,7 +94,7 @@
           var iconName = headerWrap.dataset.icon;
           if (iconName) {
             titleEl.innerHTML =
-              '<i data-lucide="' + iconName + '" style="width:20px;height:20px;flex-shrink:0;opacity:0.7;"></i>' +
+              '<i data-lucide="' + iconName + '" class="rss-header__title-icon" style="width:20px;height:20px;flex-shrink:0;opacity:0.7;"></i>' +
               '<span>' + pageTitle + '</span>';
           } else {
             titleEl.textContent = pageTitle;

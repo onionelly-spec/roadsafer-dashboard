@@ -351,6 +351,11 @@ img { max-width: 100%; display: block; }
   .rss-header__mobile-toggle { display: none !important; }
 }
 
+/* 모바일에서 타이틀 아이콘 숨김 */
+@media (max-width: 768px) {
+  .rss-header__title-icon { display: none !important; }
+}
+
 /* ─── 헤더 퀵 버튼 (승인관리 / 공지사항) ─────────────────── */
 .rss-header__quick-btn {
   position: relative;
@@ -394,18 +399,23 @@ img { max-width: 100%; display: block; }
 }
 /* 배지가 0이거나 없을 때 숨김 처리는 JS에서 제어 */
 @media (max-width: 480px) {
-  .rss-header__quick-label { display: none; }
+  .rss-header__quick-label { 
+    display: inline-block; 
+    font-size: 12px; /* 모바일에서 한 포인트 작게 */
+  }
   .rss-header__quick-btn {
-    padding: 5px 8px;
-    border-radius: 50%;
-    width: 34px;
-    height: 34px;
-    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    width: auto;
+    height: auto;
+    justify-content: flex-start;
+    gap: 4px;
   }
   .rss-header__quick-badge {
-    position: absolute;
-    top: -4px;
-    right: -4px;
+    position: static;
+    min-width: 16px;
+    height: 16px;
+    font-size: 10px;
   }
 }
 
