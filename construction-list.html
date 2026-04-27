@@ -135,7 +135,7 @@
              [Java] ${monthlySalesAmt} (숫자, 포맷: #,###원)
         ══════════════════════════════════════════════════ -->
         <!-- [Java] th:if="${loginType == 'company'}" -->
-        <div class="monthly-sales" id="monthlySalesBlock">
+        <div class="monthly-sales" id="monthlySalesBlock" data-role-block="true">
           <p class="monthly-sales__amount">
             <!-- [Java] th:text="'월 매출 : '+${#numbers.formatInteger(monthlySalesAmt,1,'COMMA')}+'원'" -->
             월 매출 : 12,700,000원
@@ -181,7 +181,7 @@
               <col class="rss-col-owner" />
               <col class="rss-col-period" />
               <!-- [Java] th:if="${loginType == 'company'}" -->
-              <col class="rss-col-price" id="colAmount" />
+              <col class="rss-col-price td-amount" id="colAmount" />
               <col class="rss-col-mgmt" />
             </colgroup>
             <thead>
@@ -192,7 +192,7 @@
                 <th>발주업체명</th>
                 <th>기간</th>
                 <!-- [Java] th:if="${loginType == 'company'}" -->
-                <th id="thAmount">금액</th>
+                <th id="thAmount" class="td-amount">금액</th>
                 <th>관리</th>
               </tr>
             </thead>
