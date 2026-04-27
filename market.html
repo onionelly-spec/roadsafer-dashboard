@@ -135,25 +135,24 @@
 
       <div class="rss-card" style="padding:0;">
 
-        <!-- ── 카테고리 탭 ──────────────────────────────────
+        <!-- ── 카테고리 + 검색 영역 (한 줄) ──────────────────────────────────
+             좌측: 카테고리 필터 버튼들
+             우측: 내 글 보기 + 검색 + 등록하기 버튼
              [Java] 파라미터: category ('all'|'sinca'|'sign'|'safety'|'sinboard'|'tma')
-             [DB] 컬럼: market.category
-        ─────────────────────────────────────────────────── -->
-        <div class="rss-filter-bar">
-          <div class="cat-tabs" role="tablist">
-          <button class="cat-tab active" data-cat="all"      onclick="switchCatTab(this)">전체</button>
-          <button class="cat-tab"        data-cat="sinca"    onclick="switchCatTab(this)">씨인카</button>
-          <button class="cat-tab"        data-cat="sign"     onclick="switchCatTab(this)">간판시설물</button>
-          <button class="cat-tab"        data-cat="safety"   onclick="switchCatTab(this)">안전시설물</button>
-          <button class="cat-tab"        data-cat="sinboard" onclick="switchCatTab(this)">씨인보드</button>
-          <button class="cat-tab"        data-cat="tma"      onclick="switchCatTab(this)">TMA</button>
-        </div>
-        </div>
-
-        <!-- ── 툴바 ──────────────────────────────────────────
              [Java] GET 파라미터: category, myYn, searchKeyword
         ─────────────────────────────────────────────────── -->
-        <div class="market-toolbar">
+        <div style="display: flex; align-items: center; gap: 0;">
+          <div class="rss-filter-bar" style="flex: 0 0 auto; border-right: 1px solid var(--rss-border); border-bottom: none; padding: 12px 24px;">
+            <div class="cat-tabs" role="tablist">
+              <button class="cat-tab active" data-cat="all"      onclick="switchCatTab(this)">전체</button>
+              <button class="cat-tab"        data-cat="sinca"    onclick="switchCatTab(this)">씨인카</button>
+              <button class="cat-tab"        data-cat="sign"     onclick="switchCatTab(this)">간판시설물</button>
+              <button class="cat-tab"        data-cat="safety"   onclick="switchCatTab(this)">안전시설물</button>
+              <button class="cat-tab"        data-cat="sinboard" onclick="switchCatTab(this)">씨인보드</button>
+              <button class="cat-tab"        data-cat="tma"      onclick="switchCatTab(this)">TMA</button>
+            </div>
+          </div>
+          <div class="market-toolbar" style="flex: 1; border-bottom: 1px solid var(--rss-border); border-left: none;">
           <div class="market-toolbar__left">
             <!-- 내 글 보기 토글 -->
             <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
@@ -175,6 +174,7 @@
               <i data-lucide="plus" style="width:14px;height:14px;"></i>등록하기
             </a>
           </div>
+        </div>
         </div>
 
         <!-- ── 장터 상품 그리드 ──────────────────────────────
