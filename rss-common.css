@@ -1089,7 +1089,7 @@ img { max-width: 100%; display: block; }
 /* 장비/품목 열 */
 .rss-col-equip  { width: 20%; }
 /* 도로명 열 */
-.rss-col-road   { width: 15%; }
+.rss-col-road   { width: 10%; }
 /* 방향 열 */
 .rss-col-dir    { width: 5%; }
 
