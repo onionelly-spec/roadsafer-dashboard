@@ -85,7 +85,8 @@
         transition: border-color 0.15s, box-shadow 0.15s;
       }
       .clist-mobile-card:hover { border-color: var(--rss-amber); box-shadow: 0 2px 8px rgba(245,158,11,0.12); }
-      .clist-mobile-card__title { font-size: var(--rss-font-base); font-weight: 700; color: #1a1c23; margin-bottom: 8px; }
+      .clist-mobile-card__title { font-size: var(--rss-font-base); font-weight: 700; color: #1a1c23; margin-bottom: 8px; cursor: pointer; transition: color 0.15s; }
+      .clist-mobile-card__title:hover { color: var(--rss-amber-dark); }
       .clist-mobile-card__title.urgent { color: #dc2626; }
       .clist-mobile-card__row { display: flex; gap: 6px; font-size: var(--rss-font-sm); margin-bottom: 4px; }
       .clist-mobile-card__label { color: #9ca3af; font-weight: 600; min-width: 52px; flex-shrink: 0; }
@@ -322,7 +323,7 @@
           <!-- [Java] th:each="item : ${constructionList}" -->
 
           <div class="clist-mobile-card">
-            <div class="clist-mobile-card__title urgent">[긴급] 호남선 순천방향 포장공사</div>
+            <div class="clist-mobile-card__title urgent" onclick="location.href='construction-detail.html'" style="cursor: pointer;">[긴급] 호남선 순천방향 포장공사</div>
             <div class="clist-mobile-card__row">
               <span class="clist-mobile-card__label">발주사</span>
               <span class="clist-mobile-card__value">한국개발</span>
@@ -344,7 +345,7 @@
           </div>
 
           <div class="clist-mobile-card">
-            <div class="clist-mobile-card__title">국도 32번선 횡단보도 보수</div>
+            <div class="clist-mobile-card__title" onclick="location.href='construction-detail.html'" style="cursor: pointer;">국도 32번선 횡단보도 보수</div>
             <div class="clist-mobile-card__row">
               <span class="clist-mobile-card__label">발주사</span>
               <span class="clist-mobile-card__value">소망건설</span>
@@ -366,7 +367,7 @@
           </div>
 
           <div class="clist-mobile-card">
-            <div class="clist-mobile-card__title">중앙분리대 시공</div>
+            <div class="clist-mobile-card__title" onclick="location.href='construction-detail.html'" style="cursor: pointer;">중앙분리대 시공</div>
             <div class="clist-mobile-card__row">
               <span class="clist-mobile-card__label">발주사</span>
               <span class="clist-mobile-card__value">오봉토건</span>
@@ -387,7 +388,7 @@
           </div>
 
           <div class="clist-mobile-card">
-            <div class="clist-mobile-card__title">호남선 서울방향 포장공사</div>
+            <div class="clist-mobile-card__title" onclick="location.href='construction-detail.html'" style="cursor: pointer;">호남선 서울방향 포장공사</div>
             <div class="clist-mobile-card__row">
               <span class="clist-mobile-card__label">발주사</span>
               <span class="clist-mobile-card__value">원빅세이프티</span>
