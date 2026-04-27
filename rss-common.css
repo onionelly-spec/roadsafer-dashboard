@@ -1167,30 +1167,7 @@ img { max-width: 100%; display: block; }
   padding: 12px 24px;
 }
 
-/* ─── 버튼 높이 통일 (38px) ───────────────────────────────────
-   드롭다운, 입력박스와 동일한 높이로 통일
-──────────────────────────────────────────────────────────────── */
-.rss-btn {
-  height: 38px;
-  padding: 0 16px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border-radius: var(--rss-radius);
-  font-size: var(--rss-font-base); /* 15px */
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-  line-height: 1.4;
-}
-.rss-btn--sm {
-  height: 36px;
-  padding: 0 12px;
-  font-size: var(--rss-font-sm);
-}
+
 
 /* ─── 반응형 ────────────────────────────────────────────────── */
 @media (max-width: 768px) {
@@ -1210,22 +1187,4 @@ img { max-width: 100%; display: block; }
   }
 }
 
-/* ── 필터 + toolbar 한 줄 레이아웃 규칙 ──────────────────────────────────
-   모든 목록 페이지의 공통 규칙:
-   - 필터와 검색을 한 줄에 배치
-   - 좌측: 필터 버튼들
-   - 우측: 검색 드롭다운 + 키워드 입력 + 액션 버튼들
-   - 버튼 높이: 38px (입력창과 통일)
-─────────────────────────────────────────────────── */
 
-/* 필터 영역 여백 */
-.rss-filter-bar {
-  padding: 12px 24px !important;
-  border-bottom: 1px solid var(--rss-border);
-}
-
-@media (max-width: 768px) {
-  .rss-filter-bar {
-    padding: 10px 16px !important;
-  }
-}
