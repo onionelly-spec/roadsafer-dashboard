@@ -9,11 +9,11 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
   <style>
-    /* 공사없음 날짜 강조 */
-    .no-work-date { color: #dc2626; font-weight: 600; }
-    /* 방공소 적용 강조 */
-    .text-highlight { color: #d97706; font-weight: 600; }
-    /* 하단 버튼 영역 */
+    /* ── 기획서 스타일 보강 ── */
+    /* 수정된 정보 빨간색 강조 (공통 규칙) */
+    .text-modified { color: #dc2626 !important; font-weight: 700; }
+    
+    /* ── 하단 버튼 ── */
     .detail-footer {
       display: flex;
       align-items: center;
@@ -44,138 +44,112 @@
 
         <!-- ══════════════════════════════════════════════════
              공사 정보 상세 (B1-1)
-             [DB] 테이블: construction WHERE construction_seq = #{constructionSeq}
-             [Java] Model: construction (ConstructionDto)
+             [DB] 테이블: rs_construction WHERE construction_seq = #{constructionSeq}
         ══════════════════════════════════════════════════ -->
-        <div style="overflow-x:auto; padding: 20px 24px 0;">
+        <div style="overflow-x:auto; padding: 24px 24px 0;">
           <table class="rss-table rss-table--detail">
             <tbody>
-
-              <!-- 공사명 -->
               <tr>
                 <th scope="row">공사명</th>
                 <!-- [Java] th:text="${construction.constructionNm}" -->
                 <td>횡단보도 시공</td>
               </tr>
-
-              <!-- 기간 -->
               <tr>
                 <th scope="row">기간</th>
-                <!-- [Java] th:text="${construction.startDt} + ' ~ ' + ${construction.endDt}
-                             + '(차단 기간 : ' + ${construction.blockDays} + '일.  공사없음 : ' + ${construction.noWorkDates} + ')'" -->
+                <!-- 
+                  [Java] 기간 정보 가이드 (용어사전 표준 적용)
+                  1. 전체 기간: ${construction.startDt} ~ ${construction.endDt}
+                  2. 차단 기간: 전체 기간 중 실제 공사가 있는 날의 수 (DB: rs_work_day 테이블 카운트 또는 계산 필드)
+                  3. 공사없는 날짜: 전체 기간 중 rs_work_day 테이블에 존재하지 않는 날짜 목록
+                -->
                 <td>
-                  2026-06-25 ~ 2026-06-30
-                  <span style="color:#6b7280;">(차단 기간 : 4일. </span>
-                  <span>공사없음 : </span>
-                  <span class="no-work-date">06/28, 06/29</span>
-                  <span style="color:#6b7280;">)</span>
+                  2026-06-25 ~ 2026-06-30 (차단 기간 : 4일, 공사없음 : 06/28, 06/29)
                 </td>
               </tr>
-
-              <!-- 시간 -->
               <tr>
                 <th scope="row">시간</th>
-                <!-- [Java] th:text="${construction.workTime}" -->
+                <!-- [Java] th:text="${construction.workTimeDesc}" -->
                 <td>야간 / 19시 차단 시작</td>
               </tr>
-
-              <!-- 도로 구분 -->
               <tr>
                 <th scope="row">도로 구분</th>
-                <!-- [Java] th:text="${construction.roadType}" -->
-                <!-- [DB] 컬럼: construction.road_type ('highway'|'national'|'local') -->
+                <!-- [Java] th:text="${construction.roadClass}" -->
                 <td>국도</td>
               </tr>
-
-              <!-- 길 구분 -->
               <tr>
                 <th scope="row">길 구분</th>
-                <!-- [Java] th:text="${construction.laneType}" -->
-                <!-- [DB] 컬럼: construction.lane_type ('main'|'side'|'ramp') -->
+                <!-- [Java] th:text="${construction.laneClass}" -->
                 <td>본선</td>
               </tr>
-
-              <!-- 도로명 -->
               <tr>
                 <th scope="row">도로명</th>
                 <!-- [Java] th:text="${construction.roadNm}" -->
                 <td>국도 32번</td>
               </tr>
-
-              <!-- 방향 -->
               <tr>
                 <th scope="row">방향</th>
                 <!-- [Java] th:text="${construction.direction}" -->
                 <td>대전</td>
               </tr>
-
-              <!-- 공사구간 -->
               <tr>
                 <th scope="row">공사구간</th>
-                <!-- [Java] th:text="${construction.sectionStart} + 'km ~ ' + ${construction.sectionEnd} + 'km'" -->
+                <!-- [Java] th:text="${construction.blockSection}" -->
                 <td>105.6km ~ 105.7km</td>
               </tr>
-
-              <!-- 품목별 수량 -->
               <tr>
                 <th scope="row">품목별 수량</th>
                 <!-- [Java] th:text="${construction.equipSummary}" -->
-                <!-- [DB] 컬럼: construction.equip_summary (예: 'TMA1:1대,TMA3:2대,PLCS:2대') -->
                 <td>TMA1 : 1대, TMA3 : 2대, PLCS : 2대</td>
               </tr>
-
-              <!-- 시연회 -->
               <tr>
                 <th scope="row">시연회</th>
-                <!-- [Java] th:text="'시연회 날짜 : ' + ${construction.demoDate} + ', ' + ${construction.demoType} + ', ' + ${construction.demoFee} + '원'" -->
-                <!-- [DB] 컬럼: construction.demo_date, construction.demo_type, construction.demo_fee -->
-                <td>
-                  시연회 날짜 : 2026-06-22, 주간,
-                  <span class="text-highlight">방공소 적용 (2,450,000원)</span>
-                </td>
+                <!-- 
+                  [Java] 시연회 정보
+                  - th:text="'시연회 날짜 : ' + ${construction.rehearsalDt} + ', ' + ${construction.rehearsalType} + ', ' + ${construction.rehearsalFeeLabel} + ' 적용 (' + ${#numbers.formatInteger(construction.rehearsalAmount, 0, 'COMMA')} + '원)'"
+                -->
+                <td>시연회 날짜 : 2026-06-22, 주간, 반공수 적용 (2,450,000원)</td>
               </tr>
-
-              <!-- 권역 -->
               <tr>
                 <th scope="row">권역</th>
                 <!-- [Java] th:text="${construction.region}" -->
-                <!-- [DB] 컬럼: construction.region -->
                 <td>대전, 충남</td>
               </tr>
-
-              <!-- 공사 단가(1대당) -->
               <tr>
                 <th scope="row">공사 단가(1대당)</th>
-                <!-- [Java] th:text="'긴급 | TMA1 : ' + ${construction.priceTma1} + ', TMA3 : ' + ${construction.priceTma3} + ', PLCS : ' + ${construction.pricePlcs} + ', 신호수 : ' + ${construction.priceSignaler}" -->
-                <!-- [DB] 컬럼: construction.price_tma1, price_tma3, price_plcs, price_signaler -->
-                <td>긴급 | TMA1 : 600,000, TMA3 : 1,000,000, PLCS : 900,000, 신호수 : 250,000</td>
+                <!-- 
+                  [Java] 책정 단가 분기 가이드 (용어사전 표준 적용)
+                  1. 긴급 여부 확인: ${construction.urgentYn == 'Y'}
+                  2. 긴급일 경우: 등록된 긴급 단가 세트 출력
+                  3. 일반일 경우: 기본 단가 세트 출력
+                -->
+                <td>
+                  <!-- [Java] th:if="${construction.urgentYn == 'Y'}" -->
+                  <div class="unit-price-box">
+                    <span class="rss-badge rss-badge--cancel" style="padding:2px 8px; font-size:11px; margin-right:6px;">긴급</span>
+                    TMA1 : 600,000, TMA3 : 1,000,000, PLCS : 900,000, 신호수 : 250,000
+                  </div>
+                </td>
               </tr>
-
             </tbody>
           </table>
         </div>
 
         <!-- ── 하단 버튼 ──────────────────────────────────────
              [Java] 차단신청 버튼: 로그인한 차단기업 회원만 표시
-             [Java] th:if="${loginUsr != null and loginUsr.mberType == 'block'}"
+             [Java] th:if="${loginUsr != null and loginUsr.mberType == 'company'}"
         ─────────────────────────────────────────────────── -->
         <div class="detail-footer">
-          <!-- 차단신청 버튼 -->
-          <!-- [Java] th:href="@{/construction-info/apply/{id}(id=${construction.constructionSeq})}" -->
           <a href="#" class="rss-btn rss-btn--amber">
-            <i data-lucide="file-plus" style="width:14px;height:14px;"></i>
-            차단신청
+            <i data-lucide="file-plus" style="width:14px;height:14px;"></i>차단신청
           </a>
-          <!-- 목록 버튼 -->
           <a href="construction-info.html" class="rss-btn rss-btn--outline">
-            <i data-lucide="list" style="width:14px;height:14px;"></i>
-            목록
+            <i data-lucide="list" style="width:14px;height:14px;"></i>목록
           </a>
         </div>
 
       </div><!-- /rss-card -->
 
-    <div id="rss-footer-wrap"></div>
+      <div id="rss-footer-wrap"></div>
     </main>
   </div><!-- /rss-main -->
 
