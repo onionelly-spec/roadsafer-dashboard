@@ -77,18 +77,20 @@
 
       <div class="rss-card" style="padding:0;">
 
-        <!-- ── 도로 유형 탭 ──────────────────────────────────
+        <!-- ── 필터 영역 (좌측) ──────────────────────────────────
              [Java] 파라미터: roadType ('all'|'highway'|'national')
              [Java] th:classappend="${param.roadType == 'all'} ? 'active'"
              [Java] th:href="@{/construction-info(roadType='all')}"
         ─────────────────────────────────────────────────── -->
-        <div class="road-tabs" role="tablist">
-          <button class="road-tab active" role="tab" data-road="all"      onclick="switchRoadTab(this)">전체</button>
-          <button class="road-tab"        role="tab" data-road="highway"  onclick="switchRoadTab(this)">고속도로</button>
-          <button class="road-tab"        role="tab" data-road="national" onclick="switchRoadTab(this)">국도</button>
+        <div class="rss-filter-bar">
+          <div class="road-tabs" role="tablist">
+            <button class="road-tab active" role="tab" data-road="all"      onclick="switchRoadTab(this)">전체</button>
+            <button class="road-tab"        role="tab" data-road="highway"  onclick="switchRoadTab(this)">고속도로</button>
+            <button class="road-tab"        role="tab" data-road="national" onclick="switchRoadTab(this)">국도</button>
+          </div>
         </div>
 
-        <!-- ── 검색 툴바 ──────────────────────────────────────
+        <!-- ── 검색 및 버튼 영역 (우측) ──────────────────────────────────
              [Java] GET 파라미터: roadType, searchType, searchKeyword
              [Java] /construction-info?roadType=&searchType=&searchKeyword=
         ─────────────────────────────────────────────────── -->
