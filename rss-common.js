@@ -410,6 +410,11 @@ _initUserInfo();
 /* ═══════════════════════════════════════════════════════════
    7. 사용자 유형별 UI 제어
    ─────────────────────────────────────────────────────────
+   역할 기반 UI 숨김 처리:
+   - 직원(employee) 로그인 시 다음 요소들이 숨겨집니다:
+     1. data-role-block="true" 속성을 가진 모든 요소 (월매출 정보 등)
+     2. .td-amount 클래스를 가진 모든 요소 (금액 관련 셀)
+   
    [Java Thymeleaf 전환 시]
      th:if, th:classappend 등을 사용하여 서버사이드에서 처리하세요.
    ═══════════════════════════════════════════════════════════ */
@@ -422,18 +427,24 @@ _initUserInfo();
     // 로그인 페이지가 아니면 실행
     if (!document.body.classList.contains('login-page')) {
       if (userType === 'employee') {
-        // 1. TMA 카드 관리만 숨기기 (승인관리는 이미 header에서 처리됨)
-        document.querySelectorAll('[data-menu-id="tma-card"]').forEach(el => el.style.display = 'none');
+        // ① data-role-block="true" 속성을 가진 모든 요소 숨기기
+        // 예: 월매출 정보, 승인관리 버튼 등 기업 전용 요소
+        document.querySelectorAll('[data-role-block="true"]').forEach(el => {
+          el.style.display = 'none';
+        });
 
-        // 2. 공사 현황 테이블의 '금액' 열 전체 숨기기 (colgroup, th, td 모두)
-        // colgroup
-        document.querySelectorAll('.rss-col-price').forEach(el => el.style.display = 'none');
-        // thead
-        document.querySelectorAll('[data-th="금액"]').forEach(el => el.style.display = 'none');
-        // tbody
-        document.querySelectorAll('.rss-col-amount').forEach(el => el.style.display = 'none');
+        // ② .td-amount 클래스를 가진 모든 요소 숨기기
+        // 예: 테이블 금액 열, 모바일 카드의 금액 행
+        document.querySelectorAll('.td-amount').forEach(el => {
+          el.style.display = 'none';
+        });
 
-        // 3. 담당자 이름 변경
+        // ③ TMA 카드 관리 숨기기 (대시보드 퀵메뉴)
+        document.querySelectorAll('[data-menu-id="tma-card"]').forEach(el => {
+          el.style.display = 'none';
+        });
+
+        // ④ 담당자 이름 변경 (대시보드)
         const approverEl = document.querySelector('#company-approver');
         if (approverEl) {
           approverEl.innerHTML = `<strong>담당자</strong><span>${userName}</span>`;
