@@ -229,8 +229,16 @@
     .mobile-construction-item {
       padding: 14px 16px;
       border-bottom: 1px solid #f3f4f6;
+      cursor: pointer;
+      transition: background 0.15s;
     }
+    .mobile-construction-item:hover { background: #fafafa; }
     .mobile-construction-item:last-child { border-bottom: none; }
+    .mobile-construction-item__title {
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .mobile-construction-item__title:hover { color: var(--rss-amber-dark); }
 
     /* ── 경고창(모달) ─────────────────────────────────────── */
     .rss-modal-backdrop {
@@ -572,31 +580,31 @@
         <div class="mobile-construction-list">
           <!-- [Java] th:each="item : ${constructionList}" -->
 
-          <div class="mobile-construction-item">
+          <div class="mobile-construction-item" onclick="location.href='construction-detail.html'">
             <div class="flex items-center justify-between mb-2">
               <span class="rss-badge rss-badge--scheduled">예정</span>
               <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
-                      onclick="openCancelModal(this)" data-nm="호남선 순천방향 포장공사">차단 취소</button>
+                      onclick="event.stopPropagation(); openCancelModal(this)" data-nm="호남선 순천방향 포장공사">차단 취소</button>
             </div>
-            <p class="text-base font-semibold text-gray-900 mb-1">호남선 순천방향 포장공사</p>
+            <p class="text-base font-semibold text-gray-900 mb-1 mobile-construction-item__title">호남선 순천방향 포장공사</p>
             <p class="text-sm text-gray-500">한국개발 | 2026-07-01 ~ 2026-07-03 (3일)</p>
           </div>
 
-          <div class="mobile-construction-item">
+          <div class="mobile-construction-item" onclick="location.href='construction-detail.html'">
             <div class="flex items-center justify-between mb-2">
               <span class="rss-badge rss-badge--progress">진행중</span>
               <button type="button" class="rss-btn rss-btn--outline-amber rss-btn--sm"
-                      onclick="openCompleteModal(this)" data-nm="국도 32번선 횡단보도 보수">오늘 완료</button>
+                      onclick="event.stopPropagation(); openCompleteModal(this)" data-nm="국도 32번선 횡단보도 보수">오늘 완료</button>
             </div>
-            <p class="text-base font-semibold text-gray-900 mb-1">국도 32번선 횡단보도 보수</p>
+            <p class="text-base font-semibold text-gray-900 mb-1 mobile-construction-item__title">국도 32번선 횡단보도 보수</p>
             <p class="text-sm text-gray-500">소망건설 | 2026-06-25 ~ 2026-06-25 (1일)</p>
           </div>
 
-          <div class="mobile-construction-item">
+          <div class="mobile-construction-item" onclick="location.href='construction-detail.html'">
             <div class="flex items-center justify-between mb-2">
               <span class="rss-badge rss-badge--progress">진행중</span>
             </div>
-            <p class="text-base font-semibold text-gray-900 mb-1">중앙분리대 시공</p>
+            <p class="text-base font-semibold text-gray-900 mb-1 mobile-construction-item__title">중앙분리대 시공</p>
             <p class="text-sm text-gray-500">오봉도건 | 2026-06-12 ~ 2026-06-18 (7일)</p>
           </div>
 
