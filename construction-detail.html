@@ -206,8 +206,26 @@
                 </tr>
                 <tr>
                   <th scope="row">책정 단가(1대당)</th>
-                  <!-- [Java] 긴급 여부에 따라 단가 분기 출력 -->
-                  <td>긴급 | TMA1 : 600,000, TMA3 : 1,000,000, PLCS : 900,000, 신호수 : 250,000</td>
+                  <!-- 
+                    [Java] 책정 단가 분기 가이드
+                    1. 긴급 여부 확인: ${construction.emrgcyYn == 'Y'}
+                    2. 긴급일 경우: 등록된 긴급 단가 세트 출력
+                    3. 일반일 경우: 기본 단가 세트 출력
+                  -->
+                  <td>
+                    <!-- [Java] th:if="${construction.emrgcyYn == 'Y'}" -->
+                    <div class="unit-price-box">
+                      <span class="rss-badge rss-badge--cancel" style="padding:2px 8px; font-size:11px; margin-right:6px;">긴급</span>
+                      TMA1 : 600,000, TMA3 : 1,000,000, PLCS : 900,000, 신호수 : 250,000
+                    </div>
+                    <!-- [Java] th:unless="${construction.emrgcyYn == 'Y'}" (기본 단가 예시) -->
+                    <!-- 
+                    <div class="unit-price-box" style="display:none;">
+                      <span class="rss-badge rss-badge--notice" style="padding:2px 8px; font-size:11px; margin-right:6px;">기본</span>
+                      TMA1 : 500,000, TMA3 : 800,000, PLCS : 700,000, 신호수 : 200,000
+                    </div>
+                    -->
+                  </td>
                 </tr>
               </tbody>
             </table>
