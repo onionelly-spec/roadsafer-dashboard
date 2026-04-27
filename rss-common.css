@@ -495,7 +495,7 @@ img { max-width: 100%; display: block; }
   padding: 9px 18px;
   height: 38px;
   border-radius: var(--rss-radius);
-  font-size: var(--rss-font-base); /* 15px */
+  font-size: var(--rss-font-base) !important; /* 15px */
   font-weight: 600;
   border: 1px solid transparent;
   cursor: pointer;
