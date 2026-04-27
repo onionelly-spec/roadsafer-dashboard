@@ -931,7 +931,7 @@ img { max-width: 100%; display: block; }
 
 /* ─── 공통 푸터 ─────────────────────────────────────────── */
 .rss-footer {
-  background: #f8f8f8;
+  background: var(--rss-bg);
   border-top: 1px solid var(--rss-border);
   padding: 18px 24px 16px;
   font-size: var(--rss-font-xs);
