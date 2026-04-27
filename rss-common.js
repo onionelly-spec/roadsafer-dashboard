@@ -295,10 +295,24 @@ var _bindToggleBtn = function() {};
    ═══════════════════════════════════════════════════════════ */
 function _initNavActive() {
   const current = location.pathname.split('/').pop() || 'index.html';
+  
+  /* 상세/등록 페이지 매핑 규칙 (하위 페이지 이동 시에도 부모 메뉴 활성화) */
+  const menuMap = {
+    'construction-detail.html': 'construction-list.html',
+    'notice-detail.html': 'notice.html',
+    'community-detail.html': 'community.html',
+    'community-write.html': 'community.html',
+    'market-detail.html': 'market.html',
+    'market-write.html': 'market.html',
+    'ad-detail.html': 'ad.html',
+    'construction-info-detail.html': 'construction-info.html'
+  };
+
+  const activeMenu = menuMap[current] || current;
+
   document.querySelectorAll('.rss-nav__link').forEach(function(link) {
     const href = link.getAttribute('href') || '';
-    const isActive = href === current
-      || (href !== 'index.html' && current.startsWith(href.replace('.html', '')));
+    const isActive = (href === activeMenu);
     link.classList.toggle('active', isActive);
   });
 }

@@ -445,7 +445,8 @@ img { max-width: 100%; display: block; }
   color: var(--rss-muted);
   background: #f9fafb;
 }
-.rss-table tbody tr:last-child td { border-bottom: none; }
+/* 테이블 하단 선 추가 (공통 규칙) */
+.rss-table tbody tr:last-child td { border-bottom: 1px solid var(--rss-border); }
 
 /* 테이블 컬럼 너비 및 정렬 */
 .rss-col-no { width: 60px; }
