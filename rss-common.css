@@ -621,9 +621,9 @@ img { max-width: 100%; display: block; }
   line-height: 1.6;
   text-align: center;
   font-size: var(--rss-font-base); /* 15px */
-  overflow: hidden;                /* 말줄임 처리 */
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  /* 말줄임표 제거 및 모든 내용 표시 (colgroup % 유지) */
+  word-break: break-all;
+  white-space: normal;
 }
 .rss-table tr:last-child td { border-bottom: none; }
 .rss-table tr:hover td { background: #fafafa; }
