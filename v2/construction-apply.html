@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>차단 신청 — 로드세이프티시스템</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ── 차단 신청 폼 전용 스타일 (공통 디자인 시스템 확장) ── */
+    /* 안내 박스는 rss-common.css의 .rss-info-box 클래스 사용 */
+    
+    /* ═══════════════════════════════════════════════════════════
+       개발 규칙 (B4-2 차단 신청)
+       ═══════════════════════════════════════════════════════════
+       
+       [규칙 1] TMA 차량 정보 선택 방식
+       ─────────────────────────────────────────────────────────
+       • TMA1, TMA3, PLCS는 'TMA 카드 관리'에 등록된 정보를 표시
+       • 사용자는 필요한 차량을 체크박스로 선택
+       • 선택한 차량의 'TMA 카드 번호'가 신청 데이터로 저장됨
+       • 신청 후 공사 상세(B3-1)에서는 선택한 차량의 '파일'이 표시됨
+       
+       [규칙 2] 필수 수량 검증
+       ─────────────────────────────────────────────────────────
+       • 차단 신청 시 각 품목별 필수 수량 확인
+       • 필수 수량 = 공사 정보의 품목별 수량 (예: TMA1 1대, TMA3 2대, PLCS 2대)
+       • 검증 규칙:
+         ① 체크한 수량 + 별도제출 수량 = 필수 수량 → 신청 가능
+         ② 체크한 수량 + 별도제출 수량 ≠ 필수 수량 → 경고 후 신청 불가
+         ③ 경고 메시지: "차단에 필요한 수량은 반드시 맞춰 주세요."
+       
+       [규칙 3] 별도제출 옵션
+       ─────────────────────────────────────────────────────────
+       • 별도제출 체크 시 수량 검증 예외 처리
+       • 예시: TMA3 2대 필요 → 차량 선택 1대 + 별도제출 체크
+         → 1대는 즉시 신청, 1대는 별도제출로 처리
+       • DB 저장: 
+         - tma3_vcl_no: [선택한 차량 번호들]
+         - tma3_sep_yn: Y (별도제출 여부)
+         - tma3_sep_cnt: 1 (별도제출 수량)
+       
+       [규칙 4] 신청 후 데이터 흐름
+       ─────────────────────────────────────────────────────────
+       • 차단신청 저장: rs_construction_block_request 테이블
+       • 필드: construction_seq, tma1_vcl_no, tma3_vcl_no, plcs_vcl_no,
+               tma3_sep_yn, plcs_sep_yn, signaler_cnt, opinion
+       • 공사 상세(B3-1) 차단정보 탭에서:
+         - 선택한 차량번호 → TMA 카드 테이블 조인
+         - tma_card.tma_card_no (파일) 표시
+         - 별도제출 항목은 "[별도제출]" 라벨로 표시
+       
+       [버튼 규칙]
+       ─────────────────────────────────────────────────────────
+       • 등록 버튼 (rss-btn--amber px-10)
+         - 클릭 시 수량 검증 실행
+         - 검증 실패 시 alert() 경고창 표시
+         - 검증 성공 시 form.submit()
+       • 취소 버튼 (rss-btn--outline px-10)
+         - 공사 정보 상세(construction-info-detail.html)로 이동
+    ═══════════════════════════════════════════════════════════ */
+    
+    
+    /* 폼 테이블 스타일 보강 */
+    .form-table th { width: 140px; background-color: #f9fafb; font-weight: 600; text-align: center !important; }
+    .form-table td { padding: 12px 16px; }
+    
+    /* 수량 배지 */
+    .item-count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      height: 24px;
+      padding: 0 8px;
+      background-color: #94a3b8;
+      color: #fff;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 12px;
+    }
+    
+    /* 차량 리스트 레이아웃 */
+    .vehicle-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+    .vehicle-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: var(--rss-font-sm);
+      color: #374151;
+    }
+    .vehicle-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    
+    /* 하단 버튼 영역 여백 최적화 */
+    .apply-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 32px 0 16px;
+      border-top: 1px solid #f3f4f6;
+      margin-top: 24px;
+    }
+    
+    @media (max-width: 640px) {
+      .form-table th { width: 100px; font-size: 13px; }
+      .vehicle-list { gap: 10px; }
+      .apply-footer { flex-direction: column; }
+      .apply-footer .rss-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="rss-app">
+
+  <div id="rss-sidebar-wrap"></div>
+
+  <div class="rss-main" id="rssMain">
+
+    <!-- 타이틀: 공사 정보 (요청 사항 반영) -->
+    <div id="rss-header-wrap" data-title="공사 정보" data-icon="file-text"></div>
+
+    <main class="rss-content">
+
+      <!-- rss-card__body를 사용하여 상하좌우 공통 여백(24px) 확보 -->
+      <div class="rss-card">
+        <div class="rss-card__body">
+          
+          <h2 class="text-xl font-bold mb-4">차단 신청</h2>
+          
+          <!-- 안내 문구 -->
+          <div class="rss-info-box">
+            차단 신청을 하기 위해서는 TMA 카드가 등록되어 있어야 하며, TMA3, PLCS는 별도 제출을 선택하여 추후 제출이 가능합니다.<br>
+            모든 차단 신청은 '선착순' 신청입니다. <b>차단 신청 후 별도의 통보 없이 공사 취소, 차단 신청 취소가 발생할 수 있습니다.</b>
+          </div>
+
+          <!-- ══════════════════════════════════════════════════
+               차단 신청 폼 (B4-2)
+               [Java] th:action="@{/construction/apply/save}"
+          ══════════════════════════════════════════════════ -->
+          <form id="applyForm" method="post">
+            <!-- [Java] <input type="hidden" name="construction_seq" th:value="${construction.constructionSeq}"> -->
+            <input type="hidden" name="construction_seq" value="123">
+
+            <div style="overflow-x:auto;">
+              <table class="rss-table form-table">
+                <tbody>
+                  <!-- 차단 구간 -->
+                  <tr>
+                    <th scope="row">차단 구간</th>
+                    <td>
+                      <input type="text" name="block_section" class="rss-input w-full" placeholder="차단 구간을 입력하세요 (예: 105.6km ~ 105.7km)" required>
+                    </td>
+                  </tr>
+
+                  <!-- TMA1 -->
+                  <tr>
+                    <th scope="row">TMA1</th>
+                    <td>
+                      <div class="vehicle-list">
+                        <span class="item-count-badge">1대</span>
+                        <!-- [Java] th:each="v : ${myTma1List}" -->
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="tma1_vcl_no" value="11누1111">
+                          <span>11누1111</span>
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- TMA3 -->
+                  <tr>
+                    <th scope="row">TMA3</th>
+                    <td>
+                      <div class="vehicle-list">
+                        <span class="item-count-badge">2대</span>
+                        <!-- [Java] th:each="v : ${myTma3List}" -->
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="tma3_vcl_no" value="22마2222">
+                          <span>22마2222</span>
+                        </label>
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="tma3_vcl_no" value="33다3333">
+                          <span>33다3333</span>
+                        </label>
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="tma3_vcl_no" value="55모3232">
+                          <span>55모3232</span>
+                        </label>
+                        <label class="vehicle-item text-amber-600 font-semibold">
+                          <input type="checkbox" name="tma3_sep_yn" value="Y">
+                          <span>별도 제출</span>
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- PLCS -->
+                  <tr>
+                    <th scope="row">PLCS</th>
+                    <td>
+                      <div class="vehicle-list">
+                        <span class="item-count-badge">2대</span>
+                        <!-- [Java] th:each="v : ${myPlcsList}" -->
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="plcs_vcl_no" value="11소6767">
+                          <span>11소6767</span>
+                        </label>
+                        <label class="vehicle-item">
+                          <input type="checkbox" name="plcs_vcl_no" value="32파0090">
+                          <span>32파0090</span>
+                        </label>
+                        <label class="vehicle-item text-amber-600 font-semibold">
+                          <input type="checkbox" name="plcs_sep_yn" value="Y">
+                          <span>별도 제출</span>
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 신호수 -->
+                  <tr>
+                    <th scope="row">신호수</th>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <span class="item-count-badge">0명</span>
+                        <select name="signaler_cnt" class="rss-input w-32">
+                          <option value="0">0명</option>
+                          <option value="1">1명</option>
+                          <option value="2">2명</option>
+                          <option value="3">3명</option>
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 의견 -->
+                  <tr>
+                    <th scope="row">의견</th>
+                    <td>
+                      <textarea name="opinion" class="rss-textarea w-full h-32 py-3" placeholder="차단방법, 일정에 대해 자유로운 의견을 남겨주세요."></textarea>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 하단 버튼: 공통 규격(rss-btn) 및 적절한 너비 적용 -->
+            <div class="apply-footer">
+              <button type="submit" class="rss-btn rss-btn--amber px-10">
+                <i data-lucide="check-circle" style="width:16px;height:16px;"></i>등록
+              </button>
+              <a href="construction-info-detail.html" class="rss-btn rss-btn--outline px-10">
+                <i data-lucide="x" style="width:16px;height:16px;"></i>취소
+              </a>
+            </div>
+          </form>
+
+        </div><!-- /rss-card__body -->
+      </div><!-- /rss-card -->
+
+    </main>
+
+    <div id="rss-footer-wrap"></div>
+
+  </div><!-- /rss-main -->
+
+</div><!-- /rss-app -->
+
+<script src="rss-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  // 폼 제출 시 유효성 검사 및 알림 (기획서 시나리오 반영)
+  document.getElementById('applyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // [기획서 규칙] 필수 수량 체크 로직 컨셉
+    if (confirm('등록하시겠습니까?')) {
+      alert('차단신청이 처리되었습니다.');
+      location.href = 'construction-list.html'; // 신청 후 내 공사 현황(B4)으로 이동
+    }
+  });
+</script>
+</body>
+</html>
