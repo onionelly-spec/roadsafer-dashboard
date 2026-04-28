@@ -346,21 +346,17 @@
               직원(employee): th:if="${loginType == 'employee'}" → .rss-cal-total 숨김(hidden)
             -->
             <div class="rss-cal-header">
-              <!-- [Java] th:if="${loginType == 'company'}" -->
+              <!-- [Java] th:if="${loginType == 'company'}" — 기업주만 표시 -->
               <div class="rss-cal-total">
                 현재 합계 :
                 <!-- [Java] th:text="${#numbers.formatInteger(currentTotal, 3, 'COMMA')} + '원'" -->
                 <span class="rss-cal-total__amount">7,850,000원</span>
               </div>
-              <!-- [Java] th:if="${loginType == 'employee'}" — 직원은 합계 숨김 -->
-              <!-- <div class="rss-cal-total" style="display:none;"></div> -->
+              <!-- [Java] th:if="${loginType == 'employee'}" — 직원: 합계 영역 자체를 렌더링 안 함 -->
+              <!-- 직원 렌더링 예시 (Java 연동 시 위 div를 제거하고 아래 div를 사용):
+              <div class="rss-cal-header"></div>
+              -->
             </div>
-
-            <!-- ── 안내 문구 ── -->
-            <p class="rss-cal-notice">
-              투입된 씨인카 수량이 바뀌었다면 콜센터(1566-0000)으로 연락해주세요.<br>
-              금액을 누르면 날짜별 공사 금액을 확인할 수 있습니다.
-            </p>
 
             <!-- ══════════════════════════════════════════════
                  PC: 7열 캘린더 (768px 초과에서 표시)
@@ -451,15 +447,15 @@
                       <div class="rss-cal-date">6/27</div>
                       <!-- [Java] th:if="${cell.progCd == 'SCHEDULED'}" — 예정 배지 -->
                       <span class="rss-cal-badge rss-cal-badge--scheduled">예정</span>
-                      <!-- 오늘 날짜 완료/취소 버튼 (용어사전 §17-4) -->
+                    <!-- 오늘 날짜 완료/취소 버튼 (용어사전 §17-4) -->
                       <div class="rss-cal-today-btns">
-                        <!-- 완료 버튼: RSS.action.openTodayDoneModal() (rss-common.js) -->
+                        <!-- 완료 버튼: amber 채움 (차단신청 버튼과 동일 계열) -->
                         <button type="button"
-                                class="rss-btn rss-action-btn rss-action-btn--complete"
+                                class="rss-cal-btn-done"
                                 onclick="RSS.action.openTodayDoneModal()">완료</button>
-                        <!-- 취소 버튼: RSS.action.openCancelSimpleModal() (rss-common.js) -->
+                        <!-- 취소 버튼: outline 계열 -->
                         <button type="button"
-                                class="rss-btn rss-action-btn rss-action-btn--cancel"
+                                class="rss-cal-btn-cancel"
                                 onclick="RSS.action.openCancelSimpleModal()">취소</button>
                       </div>
                     </td>
@@ -572,11 +568,13 @@
                 <div class="rss-cal-list-status">
                   <span class="rss-cal-badge rss-cal-badge--scheduled">예정</span>
                   <div class="rss-cal-list-btns">
+                    <!-- 완료: amber 채움 -->
                     <button type="button"
-                            class="rss-btn rss-action-btn rss-action-btn--complete"
+                            class="rss-cal-btn-done"
                             onclick="RSS.action.openTodayDoneModal()">완료</button>
+                    <!-- 취소: outline -->
                     <button type="button"
-                            class="rss-btn rss-action-btn rss-action-btn--cancel"
+                            class="rss-cal-btn-cancel"
                             onclick="RSS.action.openCancelSimpleModal()">취소</button>
                   </div>
                 </div>
@@ -610,6 +608,12 @@
               </div>
 
             </div><!-- /rss-cal-list -->
+
+            <!-- ── 안내 문구 — 캘린더/리스트 아래 배치 ── -->
+            <p class="rss-cal-notice">
+              투입된 씨인카 수량이 바뀌었다면 콜센터(1566-0000)으로 연락해주세요.<br>
+              금액을 누르면 날짜별 공사 금액을 확인할 수 있습니다.
+            </p>
 
           </div><!-- /rss-cal-wrap -->
 

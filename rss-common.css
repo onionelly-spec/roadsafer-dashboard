@@ -1822,12 +1822,17 @@ img { max-width: 100%; display: block; }
   margin-left: 4px;
 }
 
-/* ── 안내 문구 박스 ── */
+/* ── 안내 문구 박스 — 캘린더/리스트 아래 배치 ── */
 .rss-cal-notice {
-  font-size: var(--rss-font-xs);
+  font-size: var(--rss-font-sm);
   color: var(--rss-muted);
-  margin-bottom: 14px;
+  margin-top: 14px;
+  margin-bottom: 0;
   line-height: 1.6;
+  padding: 10px 14px;
+  background: #f9fafb;
+  border-radius: var(--rss-radius);
+  border: 1px solid var(--rss-border);
 }
 
 /* ── PC 캘린더 테이블 ── */
@@ -1857,10 +1862,14 @@ img { max-width: 100%; display: block; }
 .rss-cal-table td.rss-cal-cell--out {
   background: #f9fafb;
 }
-/* 오늘 날짜 셀 강조 */
+/* 오늘 날짜 셀 강조 — 4면 모두 amber 테두리 */
 .rss-cal-table td.rss-cal-cell--today {
   background: #fffbf0;
-  border-color: var(--rss-amber);
+  border-top: 2px solid var(--rss-amber) !important;
+  border-right: 2px solid var(--rss-amber) !important;
+  border-bottom: 2px solid var(--rss-amber) !important;
+  border-left: 2px solid var(--rss-amber) !important;
+  outline: none;
 }
 
 /* ── 날짜 숫자 ── */
@@ -1879,9 +1888,9 @@ img { max-width: 100%; display: block; }
 /* 공통 구조: 클릭 가능한 링크형 배지 */
 .rss-cal-badge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 99px;
-  font-size: var(--rss-font-xs);
+  font-size: var(--rss-font-base); /* 본문 폰트 크기(15px) 적용 */
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
@@ -1919,7 +1928,7 @@ img { max-width: 100%; display: block; }
 /* ── 금액 텍스트 (배지 아래) ── */
 .rss-cal-amount {
   display: block;
-  font-size: var(--rss-font-xs);
+  font-size: var(--rss-font-base); /* 본문 폰트 크기(15px) 적용 */
   color: var(--rss-muted);
   margin-top: 3px;
   white-space: nowrap;
@@ -1930,8 +1939,54 @@ img { max-width: 100%; display: block; }
   display: flex;
   gap: 4px;
   justify-content: center;
-  margin-top: 5px;
+  margin-top: 6px;
   flex-wrap: wrap;
+}
+
+/* 진행상황 탭 전용 완료 버튼 — amber 채움 (차단신청 버튼과 동일 계열, 너비 소형) */
+.rss-cal-btn-done {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--rss-radius);
+  border: none;
+  background: var(--rss-amber);
+  color: #1a0a00;
+  font-size: var(--rss-font-sm);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 3px var(--rss-amber-ring);
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+.rss-cal-btn-done:hover {
+  background: var(--rss-amber-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px var(--rss-amber-ring);
+}
+
+/* 진행상황 탭 전용 취소 버튼 — outline 계열 (소형) */
+.rss-cal-btn-cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--rss-radius);
+  border: 1.5px solid var(--rss-border);
+  background: transparent;
+  color: var(--rss-text);
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.rss-cal-btn-cancel:hover {
+  border-color: #dc2626;
+  color: #dc2626;
 }
 
 /* ── 모바일 리스트 (768px 이하에서만 표시) ── */
@@ -2014,6 +2069,12 @@ img { max-width: 100%; display: block; }
     display: flex;
     gap: 4px;
     flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* 모바일: 배지 폰트 크기 유지 (base) */
+  .rss-cal-badge {
+    font-size: var(--rss-font-base);
   }
 }
 
@@ -2024,7 +2085,10 @@ img { max-width: 100%; display: block; }
     padding: 8px 4px;
   }
   .rss-cal-badge {
-    font-size: 11px;
-    padding: 2px 5px;
+    font-size: var(--rss-font-sm); /* 태블릿: 13px */
+    padding: 2px 7px;
+  }
+  .rss-cal-amount {
+    font-size: var(--rss-font-sm);
   }
 }
