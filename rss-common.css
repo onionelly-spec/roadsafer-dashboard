@@ -1709,3 +1709,57 @@ img { max-width: 100%; display: block; }
     margin-top: 10px;
   }
 }
+
+/* ─── 공통 액션 모달 ──────────────────────────────────── */
+.rss-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 9000;
+  align-items: center;
+  justify-content: center;
+}
+.rss-modal-backdrop.open { display: flex; }
+.rss-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 28px 22px;
+  width: calc(100% - 40px);
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+.rss-modal__title {
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+  margin-bottom: 10px;
+}
+.rss-modal__body {
+  font-size: var(--rss-font-base);
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.rss-modal__body .highlight {
+  color: var(--rss-amber-dark);
+  font-weight: 600;
+}
+.rss-modal__footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.rss-modal textarea {
+  width: 100%;
+  border: 1px solid var(--rss-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: var(--rss-font-base);
+  color: var(--rss-text);
+  resize: vertical;
+  min-height: 80px;
+  margin-bottom: 16px;
+  outline: none;
+}
+.rss-modal textarea:focus { border-color: var(--rss-amber); }
