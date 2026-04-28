@@ -58,10 +58,13 @@
     /* ── 반응형 ── */
     @media (max-width: 768px) {
       .road-tabs { gap: 6px; }
-      .road-tab { padding: 5px 12px; font-size: var(--rss-font-xs); }
-      .info-toolbar { padding: 10px 16px; }
+      .road-tab { padding: 5px 12px; font-size: var(--rss-font-sm); } /* 툴바 폰트와 동일 */
       /* PC 테이블 숨김, 모바일 카드 표시 */
       .rss-table-wrap { display: none !important; }
+      /* 가로 스크롤 방지 */
+      .rss-card { overflow: hidden; }
+      .rss-mobile-cards { overflow: hidden; }
+      .rss-mobile-card { box-sizing: border-box; width: 100%; }
     }
   </style>
 </head>
@@ -85,7 +88,8 @@
              [Java] 파라미터: roadType ('all'|'highway'|'national')
              [Java] GET 파라미터: roadType, searchType, searchKeyword
         ─────────────────────────────────────────────────── -->
-        <div style="display: flex; align-items: center; gap: 0;">
+        <!-- PC: 필터(좌) + 검색(우) 한 줄 / 모바일: 필터 1줄 + 검색 2줄 스택 -->
+        <div class="rss-filter-toolbar-wrap" style="display: flex; align-items: center; gap: 0;">
           <div class="rss-filter-bar" style="flex: 0 0 auto; border-bottom: 1px solid var(--rss-border); padding: 12px 24px;">
             <div class="road-tabs" role="tablist">
               <button class="road-tab active" role="tab" data-road="all"      onclick="switchRoadTab(this)">전체</button>
@@ -94,20 +98,20 @@
             </div>
           </div>
           <div class="info-toolbar" style="flex: 1; border-left: none;">
-          <!-- [DB] 검색 기준 선택 -->
-          <select name="searchType" id="infoSearchType" class="rss-select">
-            <option value="">선택</option>
-            <option value="constructionNm">공사명</option>
-            <option value="orderCompanyNm">발주업체명</option>
-            <option value="roadNm">도로명</option>
-          </select>
-          <div class="rss-search-wrap">
-            <input type="text" name="searchKeyword" id="infoSearchKeyword" placeholder="검색어 입력" />
-            <button type="button" aria-label="검색">
-              <i data-lucide="search" style="width:15px;height:15px;"></i>
-            </button>
+            <!-- [DB] 검색 기준 선택 -->
+            <select name="searchType" id="infoSearchType" class="rss-select">
+              <option value="">선택</option>
+              <option value="constructionNm">공사명</option>
+              <option value="orderCompanyNm">발주업체명</option>
+              <option value="roadNm">도로명</option>
+            </select>
+            <div class="rss-search-wrap">
+              <input type="text" name="searchKeyword" id="infoSearchKeyword" placeholder="검색어 입력" />
+              <button type="button" aria-label="검색">
+                <i data-lucide="search" style="width:15px;height:15px;"></i>
+              </button>
+            </div>
           </div>
-        </div>
         </div>
 
         <!-- ── 공사 정보 테이블 ──────────────────────────────

@@ -113,10 +113,9 @@
     }
 
     /* ── 반응형 ── */
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
       .cat-tabs { gap: 6px; }
-      .cat-tab { padding: 5px 12px; font-size: var(--rss-font-xs); }
-      .market-toolbar { padding: 10px 16px; }
+      .cat-tab { padding: 5px 12px; font-size: var(--rss-font-sm); } /* 툴바 폰트와 동일 */
       .market-grid { padding: 14px 16px; gap: 10px; }
     }
   </style>
@@ -141,7 +140,8 @@
              [Java] 파라미터: category ('all'|'sinca'|'sign'|'safety'|'sinboard'|'tma')
              [Java] GET 파라미터: category, myYn, searchKeyword
         ─────────────────────────────────────────────────── -->
-        <div style="display: flex; align-items: center; gap: 0;">
+        <!-- PC: 필터(좌) + 검색(우) 한 줄 / 모바일: 필터 1줄 + 검색 2줄 스택 -->
+        <div class="rss-filter-toolbar-wrap" style="display: flex; align-items: center; gap: 0;">
           <div class="rss-filter-bar" style="flex: 0 0 auto; border-bottom: 1px solid var(--rss-border); padding: 12px 24px;">
             <div class="cat-tabs" role="tablist">
               <button class="cat-tab active" data-cat="all"      onclick="switchCatTab(this)">전체</button>

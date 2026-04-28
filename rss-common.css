@@ -1171,23 +1171,41 @@ img { max-width: 100%; display: block; }
 
 
 
-/* ─── 반응형 ────────────────────────────────────────────────── */
+/* ─── 반응형 ────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .rss-filter-bar,
+  /* ── 필터+툴바 모바일 2줄 배치 ──
+     PC: 필터(좌) + 툴바(우) 한 줄
+     모바일: 필터 1줄 / 툴바 2줄 스택
+     가로 스크롤 방지: flex-wrap + width 100%
+  ── */
+  .rss-filter-bar {
+    padding: 10px 16px;
+    gap: 8px;
+    height: auto;           /* 고정 높이 해제 → 내용에 맞게 자동 */
+    flex-wrap: wrap;
+    border-bottom: none;    /* 툴바와 구분선 공유 */
+  }
   .rss-board-toolbar,
   .info-toolbar,
   .market-toolbar {
     padding: 10px 16px;
-  }
-  .rss-filter-bar {
-    gap: 8px;
-  }
-  .rss-board-toolbar,
-  .info-toolbar,
-  .market-toolbar {
     gap: 6px;
+    height: auto;           /* 고정 높이 해제 */
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    border-top: none;
+    border-bottom: 1px solid var(--rss-border);
   }
-  
+  /* 필터+툴바 래퍼: 모바일에서 flex-direction column으로 스택 */
+  .rss-filter-toolbar-wrap {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  /* 필터바 내 요소들: 폰트 크기 툴바와 동일하게 */
+  .road-tab, .cat-tab {
+    font-size: var(--rss-font-sm) !important; /* 툴바 폰트와 동일 */
+  }
+
   /* 모바일 폰트 크기 감소 (1포인트씩) */
   .rss-btn,
   .rss-input,
@@ -1201,9 +1219,8 @@ img { max-width: 100%; display: block; }
 }
 
 
-
 /* ═══════════════════════════════════════════════════════════
-   ─── 페이지 하단 버튼 영역 공통 규칙 ────────────────────────
+   ─── 페이지 하단 버튼 영역 공통 규칙 ──────────────────────────
    ■ 규칙 요약
      .rss-page-actions        : 중요 버튼 (차단신청·목록·저장·등록·취소 등)
                                 → 가운데 정렬, 페이지 주요 액션
