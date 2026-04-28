@@ -649,25 +649,15 @@
      ─ 여기서는 프론트 데모용 시뮬레이션으로만 사용
      ─ 데모 페이지 기본값: 'company' (기업주 뷰)
   ══════════════════════════════════════════════════════ */
-  (function applyRoleVisibility() {
-    /*
-      [Java] 연동 시 이 전체 함수 제거 후
-      서버에서 th:if 로 직접 렌더링 제어할 것
-
-      데모 시뮬레이션 방법:
-        URL 파라미터 ?role=employee 로 직원 뷰 테스트 가능
-        예: construction-detail.html?role=employee
-    */
-    var params = new URLSearchParams(window.location.search);
-    var role = params.get('role') || 'company'; /* 기본값: company */
-
-    if (role !== 'company') {
-      /* 직원: data-role-block="true" 요소 모두 숨김 */
-      document.querySelectorAll('[data-role-block="true"]').forEach(function(el) {
-        el.style.display = 'none';
-      });
-    }
-  })();
+  /* ── 기업주/직원 로그인 분기 (construction-list.html 동일 패턴) ── */
+  /* [Java] 실제 환경: loginType = '${loginType}' */
+  var loginType = 'company'; /* 'company' | 'employee' */
+  if (loginType === 'employee') {
+    /* 직원: 현재합계 블록 및 날짜별 금액 숨김 */
+    document.querySelectorAll('[data-role-block="true"]').forEach(function(el) {
+      el.style.display = 'none';
+    });
+  }
 
   /* ── 탭 전환 ── */
   const tabs = document.querySelectorAll('.detail-tab');
