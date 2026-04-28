@@ -589,6 +589,131 @@ img { max-width: 100%; display: block; }
 .rss-textarea { resize: vertical; min-height: 130px; }
 .rss-form-group { margin-bottom: 18px; }
 
+/* ═══════════════════════════════════════════════════════════
+   폼 레이아웃 공통 클래스
+   ■ .rss-form-row       : 라벨+인풋 한 묶음 (세로 스택)
+   ■ .rss-form-label     : 폼 라벨 (굵은 텍스트, 배경 없음)
+   ■ .rss-form-table     : th+td 테이블형 폼 (PC: 2열, 모바일: 스택)
+   ■ .rss-notice         : 노란 안내 박스
+   ■ .rss-img-upload     : 이미지 업로드 드롭존
+   ■ .rss-img-preview    : 이미지 미리보기 리스트
+   ※ 신규 폼 페이지는 반드시 이 클래스를 사용할 것
+   ※ 페이지별 <style>에 중복 정의 금지
+═══════════════════════════════════════════════════════════ */
+
+/* 폼 행 (라벨 위 + 인풋 아래 세로 스택) */
+.rss-form-row {
+  margin-bottom: 18px;
+}
+.rss-form-row:last-child { margin-bottom: 0; }
+
+/* 폼 라벨 */
+.rss-form-label {
+  display: block;
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+  color: var(--rss-text);
+  margin-bottom: 6px;
+}
+.rss-form-label .required { color: #dc2626; margin-left: 2px; }
+
+/* 입력값 힌트 */
+.rss-form-hint {
+  font-size: var(--rss-font-xs);
+  color: var(--rss-muted);
+  margin-top: 4px;
+}
+.rss-form-hint--error { color: #ef4444; font-weight: 600; }
+
+/* 폼 테이블 (th:라벨 / td:인풋, PC: 2열, 모바일: 세로 스택) */
+.rss-form-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 4px;
+}
+.rss-form-table th {
+  width: 130px;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border: 1px solid var(--rss-border);
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+  color: var(--rss-muted);
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.rss-form-table td {
+  padding: 12px 16px;
+  border: 1px solid var(--rss-border);
+  font-size: var(--rss-font-base);
+  color: var(--rss-text);
+  vertical-align: middle;
+}
+@media (max-width: 640px) {
+  .rss-form-table,
+  .rss-form-table tbody,
+  .rss-form-table tr,
+  .rss-form-table th,
+  .rss-form-table td { display: block; width: 100%; box-sizing: border-box; }
+  .rss-form-table tr { margin-bottom: 12px; }
+  .rss-form-table th {
+    text-align: left;
+    border-bottom: none;
+    padding: 8px 12px 4px;
+    background: transparent;
+    font-size: var(--rss-font-sm);
+    color: var(--rss-text);
+    font-weight: 700;
+  }
+  .rss-form-table td {
+    border-top: none;
+    padding: 4px 12px 8px;
+  }
+}
+
+/* 노란 안내 박스 */
+.rss-notice {
+  padding: 14px 16px;
+  background-color: #fefce8;
+  border: 1px solid #fef08a;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: var(--rss-font-sm);
+  line-height: 1.7;
+  color: #854d0e;
+}
+.rss-notice strong, .rss-notice b { color: #dc2626; }
+
+/* 이미지 업로드 드롭존 */
+.rss-img-upload {
+  border: 2px dashed #e5e7eb;
+  border-radius: 8px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: #fafafa;
+}
+.rss-img-upload:hover { border-color: var(--rss-amber); background: #fffbf0; }
+.rss-img-upload input[type="file"] { display: none; }
+.rss-img-upload__icon { color: #9ca3af; margin-bottom: 8px; }
+.rss-img-upload__text { font-size: var(--rss-font-base); color: #6b7280; }
+.rss-img-upload__hint { font-size: var(--rss-font-xs); color: #9ca3af; margin-top: 4px; }
+
+/* 이미지 미리보기 리스트 */
+.rss-img-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.rss-img-preview__item { position: relative; width: 80px; height: 80px; }
+.rss-img-preview__item img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; border: 1.5px solid #e5e7eb; }
+.rss-img-preview__del {
+  position: absolute; top: -6px; right: -6px;
+  width: 20px; height: 20px;
+  background: #ef4444; color: #fff;
+  border: none; border-radius: 50%;
+  font-size: var(--rss-font-xs); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
 /* ─── 배지 / 상태 ──────────────────────────────────────── */
 .rss-badge {
   display: inline-flex;

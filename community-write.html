@@ -8,53 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
-  <style>
-    /* ── 폼 공통 ── */
-    /* 입력 요소: rss-common.css .rss-input / .rss-select / .rss-textarea 공통 클래스 사용 */
-    .write-form { padding: 24px; max-width: 800px; }
-    .form-row { margin-bottom: 18px; }
-    .form-label {
-      display: block;
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: #374151;
-      margin-bottom: 6px;
-    }
-    .form-label .required { color: #dc2626; margin-left: 2px; }
-
-    /* ── 이미지 업로드 ── */
-    .img-upload-area {
-      border: 2px dashed #e5e7eb;
-      border-radius: 8px;
-      padding: 28px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      background: #fafafa;
-    }
-    .img-upload-area:hover { border-color: var(--rss-amber); background: #fffbf0; }
-    .img-upload-area input[type="file"] { display: none; }
-    .img-upload-area__icon { color: #9ca3af; margin-bottom: 8px; }
-    .img-upload-area__text { font-size: var(--rss-font-base); color: #6b7280; }
-    .img-upload-area__hint { font-size: var(--rss-font-xs); color: #9ca3af; margin-top: 4px; }
-
-    .img-preview-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-    .img-preview-item { position: relative; width: 80px; height: 80px; }
-    .img-preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; border: 1.5px solid #e5e7eb; }
-    .img-preview-item__del {
-      position: absolute; top: -6px; right: -6px;
-      width: 20px; height: 20px;
-      background: #ef4444; color: #fff;
-      border: none; border-radius: 50%;
-      font-size: var(--rss-font-xs); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    /* 하단 버튼: rss-page-actions 공통 클래스 사용 (rss-common.css) */
-    @media (max-width: 640px) {
-      .write-form { padding: 16px; }
-    }
-  </style>
+  <!-- 커뮤니티 글쓰기 전용 스타일 없음 — 모두 rss-common.css 공통 클래스 사용 -->
 </head>
 <body>
 
@@ -69,84 +23,88 @@
 
     <main class="rss-content">
 
-      <div class="rss-card" style="padding:0;">
+      <div class="rss-card">
+        <div class="rss-card__body">
 
-        <!-- ══════════════════════════════════════════════════
-             커뮤니티 등록/수정 폼 (B5-2)
-             [Java] POST /community/save (등록)
-             [Java] POST /community/update (수정)
-             [DB] 테이블: community
-        ══════════════════════════════════════════════════ -->
-        <!-- [Java] th:action="@{/community/save}" method="post" enctype="multipart/form-data" -->
-        <form id="communityWriteForm" class="write-form" novalidate>
-          <!-- 수정 시 시퀀스 hidden 전달 -->
-          <!-- [Java] th:if="${post != null}" -->
-          <input type="hidden" name="communitySeq" id="communitySeq" /><!-- [DB] community.community_seq -->
+          <!-- ══════════════════════════════════════════════════
+               커뮤니티 등록/수정 폼 (B5-2)
+               [Java] POST /community/save (등록)
+               [Java] POST /community/update (수정)
+               [DB] 테이블: community
+          ══════════════════════════════════════════════════ -->
+          <!-- [Java] th:action="@{/community/save}" method="post" enctype="multipart/form-data" -->
+          <form id="communityWriteForm" novalidate>
+            <!-- 수정 시 시퀀스 hidden 전달 -->
+            <!-- [Java] th:if="${post != null}" -->
+            <input type="hidden" name="communitySeq" id="communitySeq" /><!-- [DB] community.community_seq -->
 
-          <!-- 카테고리 -->
-          <div class="form-row">
-            <label class="form-label" for="category">
-              카테고리<span class="required">*</span>
-            </label>
-            <!-- [DB] 컬럼: community.category ('info'|'qna'|'free') -->
-            <select name="category" id="category" class="rss-select">
-              <option value="">카테고리를 선택하세요</option>
-              <option value="info">정보공유</option>
-              <option value="qna">질문/답변</option>
-              <option value="free">자유게시판</option>
-            </select>
-          </div>
-
-          <!-- 제목 -->
-          <div class="form-row">
-            <label class="form-label" for="title">
-              제목<span class="required">*</span>
-            </label>
-            <!-- [DB] 컬럼: community.title -->
-            <input type="text" name="title" id="title" class="rss-input"
-                   placeholder="제목을 입력하세요" maxlength="100" />
-          </div>
-
-          <!-- 내용 -->
-          <div class="form-row">
-            <label class="form-label" for="content">
-              내용<span class="required">*</span>
-            </label>
-            <!-- [DB] 컬럼: community.content (TEXT) -->
-            <textarea name="content" id="content" class="rss-textarea"
-                      placeholder="내용을 입력하세요."></textarea>
-          </div>
-
-          <!-- 이미지 첨부 -->
-          <div class="form-row">
-            <label class="form-label">이미지 첨부 (최대 3장)</label>
-            <!-- [DB] 테이블: community_image (community_seq, img_url, original_file_nm, sort_order) -->
-            <div class="img-upload-area" onclick="document.getElementById('communityImages').click()">
-              <div class="img-upload-area__icon">
-                <i data-lucide="image-plus" style="width:32px;height:32px;"></i>
-              </div>
-              <p class="img-upload-area__text">클릭하여 이미지를 업로드하세요</p>
-              <p class="img-upload-area__hint">JPG, PNG, GIF 지원 / 파일당 최대 5MB</p>
-              <input type="file" name="communityImages" id="communityImages"
-                     accept="image/*" multiple onchange="previewImages(this)" />
+            <!-- 카테고리 — rss-form-row / rss-form-label (공통) -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="category">
+                카테고리<span class="required">*</span>
+              </label>
+              <!-- [DB] 컬럼: community.category ('info'|'qna'|'free') -->
+              <select name="category" id="category" class="rss-select">
+                <option value="">카테고리를 선택하세요</option>
+                <option value="info">정보공유</option>
+                <option value="qna">질문/답변</option>
+                <option value="free">자유게시판</option>
+              </select>
             </div>
-            <div class="img-preview-list" id="imgPreviewList"></div>
+
+            <!-- 제목 -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="title">
+                제목<span class="required">*</span>
+              </label>
+              <!-- [DB] 컬럼: community.title -->
+              <input type="text" name="title" id="title" class="rss-input"
+                     placeholder="제목을 입력하세요" maxlength="100" />
+            </div>
+
+            <!-- 내용 -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="content">
+                내용<span class="required">*</span>
+              </label>
+              <!-- [DB] 컬럼: community.content (TEXT) -->
+              <textarea name="content" id="content" class="rss-input rss-textarea"
+                        placeholder="내용을 입력하세요."></textarea>
+            </div>
+
+            <!-- 이미지 첨부 — rss-img-upload / rss-img-preview (공통) -->
+            <div class="rss-form-row">
+              <label class="rss-form-label">이미지 첨부 (최대 3장)</label>
+              <!-- [DB] 테이블: community_image (community_seq, img_url, original_file_nm, sort_order) -->
+              <div class="rss-img-upload" onclick="document.getElementById('communityImages').click()">
+                <div class="rss-img-upload__icon">
+                  <i data-lucide="image-plus" style="width:32px;height:32px;"></i>
+                </div>
+                <p class="rss-img-upload__text">클릭하여 이미지를 업로드하세요</p>
+                <p class="rss-img-upload__hint">JPG, PNG, GIF 지원 / 파일당 최대 5MB</p>
+                <input type="file" name="communityImages" id="communityImages"
+                       accept="image/*" multiple onchange="previewImages(this)" />
+              </div>
+              <div class="rss-img-preview" id="imgPreviewList"></div>
+            </div>
+
+          </form>
+
+          <!-- 하단 버튼 — rss-page-actions (공통, 취소→등록 순서) -->
+          <div class="rss-page-actions">
+            <a href="community.html" class="rss-btn rss-btn--outline px-10">취소</a>
+            <button type="button" class="rss-btn rss-btn--amber px-10" onclick="submitCommunityForm()">
+              <i data-lucide="save" style="width:14px;height:14px;"></i>등록하기
+            </button>
           </div>
 
-        </form>
-
-        <!-- 하단 버튼: .rss-page-actions = 가운데 정렬 (공통 규칙) -->
-        <div class="rss-page-actions">
-          <a href="community.html" class="rss-btn rss-btn--outline px-10">취소</a>
-          <button type="button" class="rss-btn rss-btn--amber px-10" onclick="submitCommunityForm()">
-            <i data-lucide="save" style="width:14px;height:14px;"></i>등록하기
-          </button>
-        </div>
-
+        </div><!-- /rss-card__body -->
       </div><!-- /rss-card -->
 
-    <div id="rss-footer-wrap"></div>
     </main>
+
+    <div id="rss-footer-wrap"></div>
+
   </div><!-- /rss-main -->
 
 </div><!-- /rss-app -->
@@ -160,22 +118,22 @@
     var list = document.getElementById('imgPreviewList');
     var files = Array.from(input.files);
     var maxCount = 3;
-    var current = list.querySelectorAll('.img-preview-item').length;
+    var current = list.querySelectorAll('.rss-img-preview__item').length;
     files.slice(0, maxCount - current).forEach(function(file) {
       if (!file.type.startsWith('image/')) return;
       var reader = new FileReader();
       reader.onload = function(e) {
         var item = document.createElement('div');
-        item.className = 'img-preview-item';
+        item.className = 'rss-img-preview__item';
         item.innerHTML = '<img src="' + e.target.result + '" alt="미리보기" />'
-          + '<button type="button" class="img-preview-item__del" onclick="removePreview(this)" aria-label="삭제">✕</button>';
+          + '<button type="button" class="rss-img-preview__del" onclick="removePreview(this)" aria-label="삭제">✕</button>';
         list.appendChild(item);
       };
       reader.readAsDataURL(file);
     });
   }
 
-  function removePreview(btn) { btn.closest('.img-preview-item').remove(); }
+  function removePreview(btn) { btn.closest('.rss-img-preview__item').remove(); }
 
   /* ── 폼 제출 ──────────────────────────────────────────────
      [Java] document.getElementById('communityWriteForm').submit();
