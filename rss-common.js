@@ -503,7 +503,7 @@ RSS.action = (function() {
 
   /* ── 모달 HTML 템플릿 ────────────────────────────────── */
   var MODAL_HTML = `
-<!-- ══ 취소 사유 모달 (진행상황 탭 전용) ══════════════════ -->
+<!-- ══ 취소 사유 모달 ═════════════════════════════════ -->
 <div class="rss-modal-backdrop" id="rssModalCancel">
   <div class="rss-modal" role="dialog" aria-modal="true" aria-labelledby="rssCancelTitle">
     <p class="rss-modal__title" id="rssCancelTitle">취소 사유</p>
