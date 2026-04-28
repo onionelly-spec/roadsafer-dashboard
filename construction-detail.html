@@ -398,9 +398,12 @@
                       <button class="rss-cal-badge rss-cal-badge--rehearsal"
                               onclick="openDailyProgModal('2026-06-22','REHEARSAL',2450000)"
                               title="금액 상세 보기">시연회</button>
-                      <!-- 금액: 기업주/직원 모두 표시 -->
+                      <!-- 금액: 기업주/직원 모두 표시 / 클릭 시 모달 열기 -->
                       <!-- [Java] th:text="'(' + ${#numbers.formatInteger(cell.amount, 3, 'COMMA')} + ')'" -->
-                      <span class="rss-cal-amount">(2,450,000)</span>
+                      <span class="rss-cal-amount rss-cal-amount--link"
+                            onclick="openDailyProgModal('2026-06-22','REHEARSAL',2450000)"
+                            role="button" tabindex="0"
+                            title="금액 상세 보기">(2,450,000)</span>
                     </td>
 
                     <!-- 6/23: 공사 기간 중 공사없음 -->
@@ -423,9 +426,12 @@
                       <button class="rss-cal-badge rss-cal-badge--complete"
                               onclick="openDailyProgModal('2026-06-25','WORK_COMPLETE',4900000)"
                               title="금액 상세 보기">공사완료</button>
-                      <!-- 금액: 기업주/직원 모두 표시 -->
+                      <!-- 금액: 기업주/직원 모두 표시 / 클릭 시 모달 열기 -->
                       <!-- [Java] th:text="'(' + ${#numbers.formatInteger(cell.amount, 3, 'COMMA')} + ')'" -->
-                      <span class="rss-cal-amount">(4,900,000)</span>
+                      <span class="rss-cal-amount rss-cal-amount--link"
+                            onclick="openDailyProgModal('2026-06-25','WORK_COMPLETE',4900000)"
+                            role="button" tabindex="0"
+                            title="금액 상세 보기">(4,900,000)</span>
                     </td>
 
                     <!-- 6/26: 취소 (cancel) -->
@@ -435,9 +441,12 @@
                       <button class="rss-cal-badge rss-cal-badge--cancel"
                               onclick="openDailyProgModal('2026-06-26','CANCEL',500000)"
                               title="금액 상세 보기">취소</button>
-                      <!-- 금액: 기업주/직원 모두 표시 -->
+                      <!-- 금액: 기업주/직원 모두 표시 / 클릭 시 모달 열기 -->
                       <!-- [Java] th:text="'(' + ${#numbers.formatInteger(cell.amount, 3, 'COMMA')} + ')'" -->
-                      <span class="rss-cal-amount">(500,000)</span>
+                      <span class="rss-cal-amount rss-cal-amount--link"
+                            onclick="openDailyProgModal('2026-06-26','CANCEL',500000)"
+                            role="button" tabindex="0"
+                            title="금액 상세 보기">(500,000)</span>
                     </td>
 
                     <!-- 6/27: 오늘 날짜 — 예정 + 완료/취소 버튼 -->
@@ -512,9 +521,12 @@
                 <div class="rss-cal-list-status">
                   <button class="rss-cal-badge rss-cal-badge--rehearsal"
                           onclick="openDailyProgModal('2026-06-22','REHEARSAL',2450000)">시연회</button>
-                  <!-- 금액: 기업주/직원 모두 표시 -->
+                  <!-- 금액: 기업주/직원 모두 표시 / 클릭 시 모달 열기 -->
                   <!-- [Java] th:text="'(' + ${#numbers.formatInteger(prog.amount, 3, 'COMMA')} + ')'" -->
-                  <span class="rss-cal-amount">(2,450,000)</span>
+                  <span class="rss-cal-amount rss-cal-amount--link"
+                        onclick="openDailyProgModal('2026-06-22','REHEARSAL',2450000)"
+                        role="button" tabindex="0"
+                        title="금액 상세 보기">(2,450,000)</span>
                 </div>
               </div>
 
@@ -543,9 +555,12 @@
                 <div class="rss-cal-list-status">
                   <button class="rss-cal-badge rss-cal-badge--complete"
                           onclick="openDailyProgModal('2026-06-25','WORK_COMPLETE',4900000)">공사완료</button>
-                  <!-- 금액: 기업주/직원 모두 표시 -->
+                  <!-- 금액: 기업주/직원 모두 표시 / 클릭 시 모달 열기 -->
                   <!-- [Java] th:text="'(' + ${#numbers.formatInteger(prog.amount, 3, 'COMMA')} + ')'" -->
-                  <span class="rss-cal-amount">(4,900,000)</span>
+                  <span class="rss-cal-amount rss-cal-amount--link"
+                        onclick="openDailyProgModal('2026-06-25','WORK_COMPLETE',4900000)"
+                        role="button" tabindex="0"
+                        title="금액 상세 보기">(4,900,000)</span>
                 </div>
               </div>
 
@@ -556,9 +571,12 @@
                 <div class="rss-cal-list-status">
                   <button class="rss-cal-badge rss-cal-badge--cancel"
                           onclick="openDailyProgModal('2026-06-26','CANCEL',500000)">취소</button>
-                  <!-- 금액: 기업주/직원 모두 표시 -->
+                  <!-- 금액: 기업주/직원 모두 표시 / 클릭 시 모달 열기 -->
                   <!-- [Java] th:text="'(' + ${#numbers.formatInteger(prog.amount, 3, 'COMMA')} + ')'" -->
-                  <span class="rss-cal-amount">(500,000)</span>
+                  <span class="rss-cal-amount rss-cal-amount--link"
+                        onclick="openDailyProgModal('2026-06-26','CANCEL',500000)"
+                        role="button" tabindex="0"
+                        title="금액 상세 보기">(500,000)</span>
                 </div>
               </div>
 

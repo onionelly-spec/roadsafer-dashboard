@@ -2355,3 +2355,19 @@ img { max-width: 100%; display: block; }
     font-size: var(--rss-font-sm);
   }
 }
+
+/* ── 금액 클릭 링크 스타일 (.rss-cal-amount--link) ── */
+.rss-cal-amount--link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s;
+}
+.rss-cal-amount--link:hover {
+  color: var(--rss-amber-dark);
+}
+.rss-cal-amount--link:focus-visible {
+  outline: 2px solid var(--rss-amber);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
