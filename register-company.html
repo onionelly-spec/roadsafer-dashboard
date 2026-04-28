@@ -146,58 +146,6 @@
     }
     .reg-input-hint--error { color: #ef4444; font-weight: 600; }
 
-    /* ══════════════════════════════════════════════════════
-       폼 테이블 — 공통 CSS rss-table--detail 규칙 준수
-       th: 가운데 정렬, 배경 #fafafa, 너비 130px
-       td: 왼쪽 정렬
-    ══════════════════════════════════════════════════════ */
-    .reg-form-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 4px;
-    }
-    .reg-form-table th {
-      width: 130px;
-      padding: 12px 16px;
-      background: #f9fafb;
-      border: 1px solid var(--rss-border);
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: var(--rss-muted);
-      text-align: center;
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-    .reg-form-table td {
-      padding: 12px 16px;
-      border: 1px solid var(--rss-border);
-      font-size: var(--rss-font-base);
-      color: var(--rss-text);
-      vertical-align: middle;
-    }
-    /* 모바일: 테이블 → 스택 레이아웃 */
-    @media (max-width: 640px) {
-      .reg-form-table,
-      .reg-form-table tbody,
-      .reg-form-table tr,
-      .reg-form-table th,
-      .reg-form-table td { display: block; width: 100%; }
-      .reg-form-table tr { margin-bottom: 12px; }
-      .reg-form-table th {
-        text-align: left;
-        border-bottom: none;
-        padding: 8px 12px 4px;
-        background: transparent;
-        font-size: var(--rss-font-sm);
-        color: var(--rss-text);
-        font-weight: 700;
-      }
-      .reg-form-table td {
-        border-top: none;
-        padding: 4px 12px 8px;
-      }
-    }
-
     /* 파일 첨부 */
     .reg-file-wrap {
       display: flex;
@@ -236,7 +184,7 @@
     .split-wrap .reg-input { flex: 1; min-width: 50px; }
     .split-sep { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
 
-    /* 라디오 수신 설정 — 인풋박스와 동일 레벨(rss-font-base) */
+    /* 라디오 수신 설정 */
     .receive-radio-wrap {
       display: flex;
       align-items: center;
@@ -287,7 +235,6 @@
       flex-wrap: wrap;
       gap: 10px 16px;
     }
-    /* 권역 설정 라벨 — 인풋박스와 동일 레벨(rss-font-base) */
     .region-wrap label {
       display: flex; align-items: center; gap: 4px;
       font-size: var(--rss-font-base); color: var(--rss-text);
@@ -378,7 +325,6 @@
         margin-bottom: 10px;
       }
       .tma-table tbody td:last-child { margin-bottom: 0; }
-      /* 각 셀 앞에 라벨 표시 */
       .tma-table tbody td[data-label]::before {
         content: attr(data-label);
         display: block;
@@ -387,10 +333,8 @@
         color: var(--rss-muted);
         margin-bottom: 5px;
       }
-      /* 종류 라디오 버튼 가로 정렬 */
       .tma-type-wrap { justify-content: flex-start; gap: 16px; }
       .tma-type-wrap label { font-size: var(--rss-font-base); }
-      /* 삭제 버튼 오른쪽 정렬 */
       .tma-table tbody td.tma-del-cell {
         text-align: right;
         margin-top: 4px;
@@ -484,236 +428,206 @@
         ══════════════════════════════════════════════════ -->
         <h2 class="reg-section-title">공통 정보</h2>
 
-        <table class="reg-form-table">
-          <tbody>
+        <!-- 아이디 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="mberId">아이디</label>
+          <input type="text" id="mberId" name="mberId" class="reg-input"
+                 placeholder="영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요."
+                 maxlength="12" pattern="[a-zA-Z0-9]{8,12}" required
+                 autocomplete="username" oninput="validateId(this)" />
+          <!-- [Java] 아이디 중복 체크: POST /register/check-id { mberId } -->
+          <p class="reg-input-hint" id="mberIdHint">* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.</p>
+        </div>
 
-            <!-- 아이디 -->
-            <tr>
-              <th><label for="mberId">아이디</label></th>
-              <td>
-                <input type="text" id="mberId" name="mberId" class="reg-input"
-                       placeholder="영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요."
-                       maxlength="12" pattern="[a-zA-Z0-9]{8,12}" required
-                       autocomplete="username" oninput="validateId(this)" />
-                <!-- [Java] 아이디 중복 체크: POST /register/check-id { mberId } -->
-                <p class="reg-input-hint" id="mberIdHint">* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.</p>
-              </td>
-            </tr>
+        <!-- 비밀번호 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="mberPassword">비밀번호</label>
+          <input type="password" id="mberPassword" name="mberPassword" class="reg-input"
+                 placeholder="대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요."
+                 maxlength="12" required autocomplete="new-password"
+                 oninput="validatePw(this)" />
+          <p class="reg-input-hint" id="mberPasswordHint">* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.</p>
+        </div>
 
-            <!-- 비밀번호 -->
-            <tr>
-              <th><label for="mberPassword">비밀번호</label></th>
-              <td>
-                <input type="password" id="mberPassword" name="mberPassword" class="reg-input"
-                       placeholder="대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요."
-                       maxlength="12" required autocomplete="new-password"
-                       oninput="validatePw(this)" />
-                <p class="reg-input-hint" id="mberPasswordHint">* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.</p>
-              </td>
-            </tr>
+        <!-- 비밀번호 확인 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="mberPasswordConfirm">비밀번호 확인</label>
+          <input type="password" id="mberPasswordConfirm" name="mberPasswordConfirm" class="reg-input"
+                 placeholder="비밀번호를 한 번 더 입력하세요"
+                 maxlength="12" required autocomplete="new-password"
+                 oninput="validatePwConfirm(this)" />
+          <p class="reg-input-hint" id="mberPasswordConfirmHint">* 비밀번호를 한 번 더 입력하세요.</p>
+        </div>
 
-            <!-- 비밀번호 확인 -->
-            <tr>
-              <th><label for="mberPasswordConfirm">비밀번호 확인</label></th>
-              <td>
-                <input type="password" id="mberPasswordConfirm" name="mberPasswordConfirm" class="reg-input"
-                       placeholder="비밀번호를 한 번 더 입력하세요"
-                       maxlength="12" required autocomplete="new-password"
-                       oninput="validatePwConfirm(this)" />
-                <p class="reg-input-hint" id="mberPasswordConfirmHint">* 비밀번호를 한 번 더 입력하세요.</p>
-              </td>
-            </tr>
+        <!-- 상호 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="companyNm">상호</label>
+          <input type="text" id="companyNm" name="companyNm" class="reg-input"
+                 placeholder="상호를 입력하세요" required />
+        </div>
 
-            <!-- 상호 -->
-            <tr>
-              <th><label for="companyNm">상호</label></th>
-              <td>
-                <input type="text" id="companyNm" name="companyNm" class="reg-input"
-                       placeholder="상호를 입력하세요" required />
-              </td>
-            </tr>
+        <!-- 사업자 번호 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="bizNo1">사업자 번호</label>
+          <div class="split-wrap">
+            <input type="text" id="bizNo1" name="bizNo1" class="reg-input"
+                   placeholder="000" maxlength="3"
+                   oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('bizNo2').focus();"
+                   required />
+            <span class="split-sep">-</span>
+            <input type="text" id="bizNo2" name="bizNo2" class="reg-input"
+                   placeholder="00" maxlength="2"
+                   oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=2) document.getElementById('bizNo3').focus();"
+                   required />
+            <span class="split-sep">-</span>
+            <input type="text" id="bizNo3" name="bizNo3" class="reg-input"
+                   placeholder="00000" maxlength="5"
+                   oninput="this.value=this.value.replace(/\D/g,'');" required />
+          </div>
+          <!-- [Java] 사업자번호: 숫자만 허용, 기타 문자 입력 차단 (oninput replace 처리) -->
+        </div>
 
-            <!-- 사업자 번호 -->
-            <tr>
-              <th><label for="bizNo1">사업자 번호</label></th>
-              <td>
-                <div class="split-wrap">
-                  <input type="text" id="bizNo1" name="bizNo1" class="reg-input"
-                         placeholder="000" maxlength="3"
-                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('bizNo2').focus();"
-                         required />
-                  <span class="split-sep">-</span>
-                  <input type="text" id="bizNo2" name="bizNo2" class="reg-input"
-                         placeholder="00" maxlength="2"
-                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=2) document.getElementById('bizNo3').focus();"
-                         required />
-                  <span class="split-sep">-</span>
-                  <input type="text" id="bizNo3" name="bizNo3" class="reg-input"
-                         placeholder="00000" maxlength="5"
-                         oninput="this.value=this.value.replace(/\D/g,'');" required />
-                </div>
-                <!-- [Java] 사업자번호: 숫자만 허용, 기타 문자 입력 차단 (oninput replace 처리) -->
-              </td>
-            </tr>
+        <!-- 사업자 등록증 -->
+        <div class="rss-form-row">
+          <span class="rss-form-label">사업자 등록증</span>
+          <!-- [Java] 파일 업로드: POST /register/upload { file } → 파일명 반환 -->
+          <div class="reg-file-wrap" id="bizRegFileWrap">
+            <button type="button" class="reg-file-btn" onclick="triggerFileInput('bizRegFile')">
+              <i data-lucide="paperclip"></i> 파일찾기
+            </button>
+            <input type="file" id="bizRegFile" name="bizRegFile" accept=".pdf,.jpg,.jpeg,.png"
+                   style="display:none;" onchange="handleFileSelect(this,'bizRegFileWrap','bizRegFile')" />
+            <!-- [Java] th:if="${bizRegFileName != null}" -->
+            <div class="reg-file-item" id="bizRegFileItem" style="display:none;">
+              <span id="bizRegFileName">이니인등록증.pdf</span>
+              <button type="button" class="reg-file-item__remove"
+                      onclick="removeFile('bizRegFile','bizRegFileItem','bizRegFileName')">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+          </div>
+          <p class="reg-input-hint">* 사업자등록증을 첨부해 주세요.</p>
+        </div>
 
-            <!-- 사업자 등록증 -->
-            <tr>
-              <th>사업자 등록증</th>
-              <td>
-                <!-- [Java] 파일 업로드: POST /register/upload { file } → 파일명 반환 -->
-                <div class="reg-file-wrap" id="bizRegFileWrap">
-                  <button type="button" class="reg-file-btn" onclick="triggerFileInput('bizRegFile')">
-                    <i data-lucide="paperclip"></i> 파일찾기
-                  </button>
-                  <input type="file" id="bizRegFile" name="bizRegFile" accept=".pdf,.jpg,.jpeg,.png"
-                         style="display:none;" onchange="handleFileSelect(this,'bizRegFileWrap','bizRegFile')" />
-                  <!-- [Java] th:if="${bizRegFileName != null}" -->
-                  <div class="reg-file-item" id="bizRegFileItem" style="display:none;">
-                    <span id="bizRegFileName">이니인등록증.pdf</span>
-                    <button type="button" class="reg-file-item__remove"
-                            onclick="removeFile('bizRegFile','bizRegFileItem','bizRegFileName')">
-                      <i data-lucide="x"></i>
-                    </button>
-                  </div>
-                </div>
-                <p class="reg-input-hint">* 사업자등록증을 첨부해 주세요.</p>
-              </td>
-            </tr>
+        <!-- 대표자명 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="ceoNm">대표자명</label>
+          <input type="text" id="ceoNm" name="ceoNm" class="reg-input"
+                 placeholder="대표자명을 입력하세요" required />
+        </div>
 
-            <!-- 대표자명 -->
-            <tr>
-              <th><label for="ceoNm">대표자명</label></th>
-              <td>
-                <input type="text" id="ceoNm" name="ceoNm" class="reg-input"
-                       placeholder="대표자명을 입력하세요" required />
-              </td>
-            </tr>
+        <!-- 대표 휴대폰 번호 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="ceoTel1">대표 휴대폰 번호</label>
+          <div class="split-wrap">
+            <input type="text" id="ceoTel1" name="ceoTel1" class="reg-input"
+                   placeholder="010" maxlength="3"
+                   oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('ceoTel2').focus();"
+                   required />
+            <span class="split-sep">-</span>
+            <input type="text" id="ceoTel2" name="ceoTel2" class="reg-input"
+                   placeholder="0000" maxlength="4"
+                   oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=4) document.getElementById('ceoTel3').focus();"
+                   required />
+            <span class="split-sep">-</span>
+            <input type="text" id="ceoTel3" name="ceoTel3" class="reg-input"
+                   placeholder="0000" maxlength="4"
+                   oninput="this.value=this.value.replace(/\D/g,'');" required />
+          </div>
+          <div class="receive-radio-wrap" style="margin-top:6px;">
+            <span>* sms 수신 :</span>
+            <label><input type="radio" name="smsReceiveYn" value="Y" checked /> 수신</label>
+            <label><input type="radio" name="smsReceiveYn" value="N" /> 거부</label>
+          </div>
+        </div>
 
-            <!-- 대표 휴대폰 번호 -->
-            <tr>
-              <th><label for="ceoTel1">대표 휴대폰 번호</label></th>
-              <td>
-                <div class="split-wrap">
-                  <input type="text" id="ceoTel1" name="ceoTel1" class="reg-input"
-                         placeholder="010" maxlength="3"
-                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('ceoTel2').focus();"
-                         required />
-                  <span class="split-sep">-</span>
-                  <input type="text" id="ceoTel2" name="ceoTel2" class="reg-input"
-                         placeholder="0000" maxlength="4"
-                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=4) document.getElementById('ceoTel3').focus();"
-                         required />
-                  <span class="split-sep">-</span>
-                  <input type="text" id="ceoTel3" name="ceoTel3" class="reg-input"
-                         placeholder="0000" maxlength="4"
-                         oninput="this.value=this.value.replace(/\D/g,'');" required />
-                </div>
-                <div class="receive-radio-wrap" style="margin-top:6px;">
-                  <span>* sms 수신 :</span>
-                  <label><input type="radio" name="smsReceiveYn" value="Y" checked /> 수신</label>
-                  <label><input type="radio" name="smsReceiveYn" value="N" /> 거부</label>
-                </div>
-              </td>
-            </tr>
+        <!-- 이메일 주소 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="emailId">이메일 주소</label>
+          <div class="email-wrap">
+            <input type="text" id="emailId" name="emailId" class="reg-input"
+                   placeholder="이메일 아이디" required />
+            <span class="email-at">@</span>
+            <input type="text" id="emailDomain" name="emailDomain" class="reg-input"
+                   placeholder="도메인" required />
+            <select class="email-domain-select" id="emailDomainSelect"
+                    onchange="applyEmailDomain(this.value)">
+              <option value="">선택</option>
+              <option value="naver.com">naver.com</option>
+              <option value="gmail.com">gmail.com</option>
+              <option value="daum.net">daum.net</option>
+              <option value="hanmail.net">hanmail.net</option>
+              <option value="kakao.com">kakao.com</option>
+              <option value="hanafos.com">hanafos.com</option>
+              <option value="korea.com">korea.com</option>
+              <option value="lycos.co.kr">lycos.co.kr</option>
+              <option value="direct">직접입력</option>
+            </select>
+          </div>
+          <div class="receive-radio-wrap" style="margin-top:6px;">
+            <span>* 이메일 수신 :</span>
+            <label><input type="radio" name="emailReceiveYn" value="Y" checked /> 수신</label>
+            <label><input type="radio" name="emailReceiveYn" value="N" /> 거부</label>
+          </div>
+        </div>
 
-            <!-- 이메일 주소 -->
-            <tr>
-              <th><label for="emailId">이메일 주소</label></th>
-              <td>
-                <div class="email-wrap">
-                  <input type="text" id="emailId" name="emailId" class="reg-input"
-                         placeholder="이메일 아이디" required />
-                  <span class="email-at">@</span>
-                  <input type="text" id="emailDomain" name="emailDomain" class="reg-input"
-                         placeholder="직접입력" />
-                  <select class="email-domain-select" id="emailDomainSelect"
-                          onchange="applyEmailDomain(this.value)">
-                    <option value="">선택</option>
-                    <option value="naver.com">naver.com</option>
-                    <option value="gmail.com">gmail.com</option>
-                    <option value="daum.net">daum.net</option>
-                    <option value="hanmail.net">hanmail.net</option>
-                    <option value="kakao.com">kakao.com</option>
-                    <option value="hanafos.com">hanafos.com</option>
-                    <option value="korea.com">korea.com</option>
-                    <option value="lycos.co.kr">lycos.co.kr</option>
-                    <option value="direct">직접입력</option>
-                  </select>
-                </div>
-                <div class="receive-radio-wrap" style="margin-top:6px;">
-                  <span>* 이메일 수신 :</span>
-                  <label><input type="radio" name="emailReceiveYn" value="Y" checked /> 수신</label>
-                  <label><input type="radio" name="emailReceiveYn" value="N" /> 거부</label>
-                </div>
-              </td>
-            </tr>
+        <!-- 사업장 주소 -->
+        <div class="rss-form-row">
+          <span class="rss-form-label">사업장 주소</span>
+          <div class="addr-wrap">
+            <div class="addr-search-row">
+              <input type="text" id="bizPostCode" name="bizPostCode" class="reg-input"
+                     placeholder="우편번호" readonly style="max-width:120px;" />
+              <!-- [Java] 주소 API 연동: 카카오 주소 API 또는 행정안전부 도로명주소 API -->
+              <button type="button" class="reg-file-btn" onclick="searchAddress()">
+                <i data-lucide="map-pin"></i> 주소 찾기
+              </button>
+            </div>
+            <input type="text" id="bizAddrMain" name="bizAddrMain" class="reg-input"
+                   placeholder="기본 주소" readonly />
+            <input type="text" id="bizAddrDetail" name="bizAddrDetail" class="reg-input"
+                   placeholder="상세 주소를 입력하세요" />
+          </div>
+        </div>
 
-            <!-- 사업장 주소 -->
-            <tr>
-              <th>사업장 주소</th>
-              <td>
-                <div class="addr-wrap">
-                  <div class="addr-search-row">
-                    <input type="text" id="bizPostCode" name="bizPostCode" class="reg-input"
-                           placeholder="우편번호" readonly style="max-width:120px;" />
-                    <!-- [Java] 주소 API 연동: 카카오 주소 API 또는 행정안전부 도로명주소 API -->
-                    <button type="button" class="reg-file-btn" onclick="searchAddress()">
-                      <i data-lucide="map-pin"></i> 주소 찾기
-                    </button>
-                  </div>
-                  <input type="text" id="bizAddrMain" name="bizAddrMain" class="reg-input"
-                         placeholder="기본 주소" readonly />
-                  <input type="text" id="bizAddrDetail" name="bizAddrDetail" class="reg-input"
-                         placeholder="상세 주소를 입력하세요" />
-                </div>
-              </td>
-            </tr>
+        <!-- 권역 설정 -->
+        <div class="rss-form-row">
+          <span class="rss-form-label">권역 설정</span>
+          <!-- [Java] 최대 3개 선택 제한 (4개 이상 선택 시 경고) -->
+          <div class="region-wrap" id="regionWrap">
+            <label><input type="checkbox" name="regionCd" value="SEL" onchange="limitRegion(this)" /> 서울, 경기</label>
+            <label><input type="checkbox" name="regionCd" value="GWN" onchange="limitRegion(this)" /> 강원</label>
+            <label><input type="checkbox" name="regionCd" value="CCB" onchange="limitRegion(this)" /> 충북</label>
+            <label><input type="checkbox" name="regionCd" value="CCS" onchange="limitRegion(this)" /> 대전,세종,충남</label>
+            <label><input type="checkbox" name="regionCd" value="JNB" onchange="limitRegion(this)" /> 전북</label>
+            <label><input type="checkbox" name="regionCd" value="JNS" onchange="limitRegion(this)" /> 광주,전남</label>
+            <label><input type="checkbox" name="regionCd" value="GNB" onchange="limitRegion(this)" /> 대구,경북</label>
+            <label><input type="checkbox" name="regionCd" value="GNS" onchange="limitRegion(this)" /> 부산,울산,경남</label>
+            <label><input type="checkbox" name="regionCd" value="JEJ" onchange="limitRegion(this)" /> 제주</label>
+          </div>
+          <!-- [Java] 4개 이상 선택 시 limitRegion() 함수에서 체크 해제 처리 -->
+        </div>
 
-            <!-- 권역 설정 -->
-            <tr>
-              <th>권역 설정</th>
-              <td>
-                <!-- [Java] 최대 3개 선택 제한 (4개 이상 선택 시 경고) -->
-                <div class="region-wrap" id="regionWrap">
-                  <label><input type="checkbox" name="regionCd" value="SEL" onchange="limitRegion(this)" /> 서울, 경기</label>
-                  <label><input type="checkbox" name="regionCd" value="GWN" onchange="limitRegion(this)" /> 강원</label>
-                  <label><input type="checkbox" name="regionCd" value="CCB" onchange="limitRegion(this)" /> 충북</label>
-                  <label><input type="checkbox" name="regionCd" value="CCS" onchange="limitRegion(this)" /> 대전,세종,충남</label>
-                  <label><input type="checkbox" name="regionCd" value="JNB" onchange="limitRegion(this)" /> 전북</label>
-                  <label><input type="checkbox" name="regionCd" value="JNS" onchange="limitRegion(this)" /> 광주,전남</label>
-                  <label><input type="checkbox" name="regionCd" value="GNB" onchange="limitRegion(this)" /> 대구,경북</label>
-                  <label><input type="checkbox" name="regionCd" value="GNS" onchange="limitRegion(this)" /> 부산,울산,경남</label>
-                  <label><input type="checkbox" name="regionCd" value="JEJ" onchange="limitRegion(this)" /> 제주</label>
-                </div>
-                <!-- [Java] 4개 이상 선택 시 limitRegion() 함수에서 체크 해제 처리 — 화면 안내문 불필요 -->
-              </td>
-            </tr>
-
-            <!-- 통장사본 -->
-            <tr>
-              <th>통장사본</th>
-              <td>
-                <!-- [Java] 파일 업로드: POST /register/upload { file } → 파일명 반환 -->
-                <div class="reg-file-wrap" id="bankFileWrap">
-                  <button type="button" class="reg-file-btn" onclick="triggerFileInput('bankFile')">
-                    <i data-lucide="paperclip"></i> 파일찾기
-                  </button>
-                  <input type="file" id="bankFile" name="bankFile" accept=".pdf,.jpg,.jpeg,.png"
-                         style="display:none;" onchange="handleFileSelect(this,'bankFileWrap','bankFile')" />
-                  <div class="reg-file-item" id="bankFileItem" style="display:none;">
-                    <span id="bankFileName"></span>
-                    <button type="button" class="reg-file-item__remove"
-                            onclick="removeFile('bankFile','bankFileItem','bankFileName')">
-                      <i data-lucide="x"></i>
-                    </button>
-                  </div>
-                </div>
-                <p class="reg-input-hint">* 통장사본을 첨부해 주세요. 마이페이지에서 정보를 수정할 수 있습니다.</p>
-              </td>
-            </tr>
-
-          </tbody>
-        </table>
+        <!-- 통장사본 -->
+        <div class="rss-form-row">
+          <span class="rss-form-label">통장사본</span>
+          <!-- [Java] 파일 업로드: POST /register/upload { file } → 파일명 반환 -->
+          <div class="reg-file-wrap" id="bankFileWrap">
+            <button type="button" class="reg-file-btn" onclick="triggerFileInput('bankFile')">
+              <i data-lucide="paperclip"></i> 파일찾기
+            </button>
+            <input type="file" id="bankFile" name="bankFile" accept=".pdf,.jpg,.jpeg,.png"
+                   style="display:none;" onchange="handleFileSelect(this,'bankFileWrap','bankFile')" />
+            <div class="reg-file-item" id="bankFileItem" style="display:none;">
+              <span id="bankFileName"></span>
+              <button type="button" class="reg-file-item__remove"
+                      onclick="removeFile('bankFile','bankFileItem','bankFileName')">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+          </div>
+          <p class="reg-input-hint">* 통장사본을 첨부해 주세요. 마이페이지에서 정보를 수정할 수 있습니다.</p>
+        </div>
 
         <!-- ══════════════════════════════════════════════════
              ② TMA 카드 섹션
@@ -851,7 +765,6 @@
 <!-- 경고 모달 — 가입 규칙 확인 (등록 전 최종 확인) -->
 <div class="reg-alert-modal" id="modalConfirm" role="alertdialog" aria-modal="true">
   <div class="reg-alert-modal__box">
-    <!-- [Java] 모달 타이틀 제거 - 가입하시겠습니까? 문구만 표시 -->
     <!-- [Java] 등록 버튼 클릭 시:
          - 필수 항목 누락 시 경고창: "모든 항목을 빠짐없이 입력하세요."
          - 정상 입력 시 확인 모달 표시 → 예 클릭 시 가입 대기 처리 후 register-complete.html(J2)로 이동

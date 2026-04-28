@@ -131,58 +131,6 @@
     }
     .reg-input-hint--error { color: #ef4444; font-weight: 600; }
 
-    /* ══════════════════════════════════════════════════════
-       폼 테이블 — 공통 CSS rss-table--detail 규칙 준수
-       th: 가운데 정렬, 배경 #fafafa, 너비 130px
-       td: 왼쪽 정렬
-    ══════════════════════════════════════════════════════ */
-    .reg-form-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 4px;
-    }
-    .reg-form-table th {
-      width: 130px;
-      padding: 12px 16px;
-      background: #f9fafb;
-      border: 1px solid var(--rss-border);
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: var(--rss-muted);
-      text-align: center;        /* ← 공통 규칙: 가운데 정렬 */
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-    .reg-form-table td {
-      padding: 12px 16px;
-      border: 1px solid var(--rss-border);
-      font-size: var(--rss-font-base);
-      color: var(--rss-text);
-      vertical-align: middle;
-    }
-    /* 모바일: 테이블 → 스택 레이아웃 (커뮤니티 글쓰기 방식) */
-    @media (max-width: 640px) {
-      .reg-form-table,
-      .reg-form-table tbody,
-      .reg-form-table tr,
-      .reg-form-table th,
-      .reg-form-table td { display: block; width: 100%; }
-      .reg-form-table tr { margin-bottom: 12px; }
-      .reg-form-table th {
-        text-align: left;
-        border-bottom: none;
-        padding: 8px 12px 4px;
-        background: transparent;
-        font-size: var(--rss-font-sm);
-        color: var(--rss-text);
-        font-weight: 700;
-      }
-      .reg-form-table td {
-        border-top: none;
-        padding: 4px 12px 8px;
-      }
-    }
-
     /* 분할 입력 (사업자번호, 전화번호) */
     .split-wrap {
       display: flex;
@@ -193,7 +141,7 @@
     .split-wrap .reg-input { flex: 1; min-width: 50px; }
     .split-sep { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
 
-    /* 라디오 수신 설정 — 인풋박스와 동일 레벨(rss-font-base) */
+    /* 라디오 수신 설정 */
     .receive-radio-wrap {
       display: flex;
       align-items: center;
@@ -445,191 +393,170 @@
         <!-- ══════════════════════════════════════════════════
              ① 공통 정보 섹션
         ══════════════════════════════════════════════════ -->
-        <table class="reg-form-table" aria-label="공통 정보 입력">
-          <tbody>
 
-            <!-- 아이디 -->
-            <!-- [Java] 아이디 중복 체크: POST /register/check-id { mberId } -->
-            <!-- [Java] 유효성: 영문·숫자만, 8~12자 -->
-            <tr>
-              <th scope="row"><label for="mberId">아이디</label></th>
-              <td>
-                <input type="text" id="mberId" name="mberId" class="reg-input"
-                       placeholder="아이디를 입력하세요"
-                       maxlength="12"
-                       oninput="validateId(this)"
-                       autocomplete="username"
-                       required />
-                <p class="reg-input-hint" id="mberIdHint">* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.</p>
-              </td>
-            </tr>
+        <!-- 아이디 -->
+        <!-- [Java] 아이디 중복 체크: POST /register/check-id { mberId } -->
+        <!-- [Java] 유효성: 영문·숫자만, 8~12자 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="mberId">아이디</label>
+          <input type="text" id="mberId" name="mberId" class="reg-input"
+                 placeholder="아이디를 입력하세요"
+                 maxlength="12"
+                 oninput="validateId(this)"
+                 autocomplete="username"
+                 required />
+          <p class="reg-input-hint" id="mberIdHint">* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.</p>
+        </div>
 
-            <!-- 비밀번호 -->
-            <!-- [Java] 유효성: 대/소문자 구분, 영문·숫자·특수문자 포함, 8~12자 -->
-            <tr>
-              <th scope="row"><label for="mberPassword">비밀번호</label></th>
-              <td>
-                <input type="password" id="mberPassword" name="mberPassword" class="reg-input"
-                       placeholder="비밀번호를 입력하세요"
-                       maxlength="12"
-                       oninput="validatePw(this)"
-                       autocomplete="new-password"
-                       required />
-                <p class="reg-input-hint" id="mberPasswordHint">* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.</p>
-              </td>
-            </tr>
+        <!-- 비밀번호 -->
+        <!-- [Java] 유효성: 대/소문자 구분, 영문·숫자·특수문자 포함, 8~12자 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="mberPassword">비밀번호</label>
+          <input type="password" id="mberPassword" name="mberPassword" class="reg-input"
+                 placeholder="비밀번호를 입력하세요"
+                 maxlength="12"
+                 oninput="validatePw(this)"
+                 autocomplete="new-password"
+                 required />
+          <p class="reg-input-hint" id="mberPasswordHint">* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.</p>
+        </div>
 
-            <!-- 비밀번호 확인 -->
-            <tr>
-              <th scope="row"><label for="mberPasswordConfirm">비밀번호 확인</label></th>
-              <td>
-                <input type="password" id="mberPasswordConfirm" name="mberPasswordConfirm" class="reg-input"
-                       placeholder="비밀번호를 한 번 더 입력하세요"
-                       maxlength="12"
-                       oninput="validatePwConfirm(this)"
-                       autocomplete="new-password"
-                       required />
-                <p class="reg-input-hint" id="mberPasswordConfirmHint">* 비밀번호를 한 번 더 입력하세요.</p>
-              </td>
-            </tr>
+        <!-- 비밀번호 확인 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="mberPasswordConfirm">비밀번호 확인</label>
+          <input type="password" id="mberPasswordConfirm" name="mberPasswordConfirm" class="reg-input"
+                 placeholder="비밀번호를 한 번 더 입력하세요"
+                 maxlength="12"
+                 oninput="validatePwConfirm(this)"
+                 autocomplete="new-password"
+                 required />
+          <p class="reg-input-hint" id="mberPasswordConfirmHint">* 비밀번호를 한 번 더 입력하세요.</p>
+        </div>
 
-            <!-- 상호 (기업 찾기) -->
-            <!-- [Java] 기업 찾기 모달(J1-1-1)에서 선택 후 자동 입력 → readonly 처리 -->
-            <!-- [Java] GET /register/company/search?keyword={companyNm}&page={page} → 목록 10개씩 반환 -->
-            <tr>
-              <th scope="row"><label for="companyNm">상호</label></th>
-              <td>
-                <div class="company-search-row">
-                  <!-- [Java] 기업 선택 후 value 자동 바인딩, readonly 적용 -->
-                  <input type="text" id="companyNm" name="companyNm" class="reg-input reg-input--readonly"
-                         placeholder="기업을 검색하여 선택하세요"
-                         readonly
-                         required />
-                  <button type="button" class="reg-file-btn" onclick="openCompanyModal()" aria-label="기업 찾기">
-                    <i data-lucide="search"></i> 찾기
-                  </button>
-                </div>
-              </td>
-            </tr>
+        <!-- 상호 (기업 찾기) -->
+        <!-- [Java] 기업 찾기 모달(J1-1-1)에서 선택 후 자동 입력 → readonly 처리 -->
+        <!-- [Java] GET /register/company/search?keyword={companyNm}&page={page} → 목록 10개씩 반환 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="companyNm">상호</label>
+          <div class="company-search-row">
+            <!-- [Java] 기업 선택 후 value 자동 바인딩, readonly 적용 -->
+            <input type="text" id="companyNm" name="companyNm" class="reg-input reg-input--readonly"
+                   placeholder="기업을 검색하여 선택하세요"
+                   readonly
+                   required />
+            <button type="button" class="reg-file-btn" onclick="openCompanyModal()" aria-label="기업 찾기">
+              <i data-lucide="search"></i> 찾기
+            </button>
+          </div>
+        </div>
 
-            <!-- 대표자명 (기업 찾기 후 자동 입력) -->
-            <!-- [Java] 기업 선택 시 해당 기업의 ceoNm 자동 바인딩 → readonly -->
-            <tr>
-              <th scope="row"><label for="ceoNm">대표자명</label></th>
-              <td>
-                <input type="text" id="ceoNm" name="ceoNm" class="reg-input reg-input--readonly"
-                       placeholder="기업 선택 후 자동 입력"
-                       readonly />
-              </td>
-            </tr>
+        <!-- 대표자명 (기업 찾기 후 자동 입력) -->
+        <!-- [Java] 기업 선택 시 해당 기업의 ceoNm 자동 바인딩 → readonly -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="ceoNm">대표자명</label>
+          <input type="text" id="ceoNm" name="ceoNm" class="reg-input reg-input--readonly"
+                 placeholder="기업 선택 후 자동 입력"
+                 readonly />
+        </div>
 
-            <!-- 사업자 번호 (기업 찾기 후 자동 입력) -->
-            <!-- [Java] 기업 선택 시 해당 기업의 bizNo 자동 바인딩 → readonly, 수정 불가 -->
-            <tr>
-              <th scope="row"><label for="bizNo1">사업자 번호</label></th>
-              <td>
-                <div class="split-wrap">
-                  <input type="text" id="bizNo1" name="bizNo1" class="reg-input reg-input--readonly"
-                         placeholder="000" maxlength="3" readonly />
-                  <span class="split-sep">-</span>
-                  <input type="text" id="bizNo2" name="bizNo2" class="reg-input reg-input--readonly"
-                         placeholder="00" maxlength="2" readonly />
-                  <span class="split-sep">-</span>
-                  <input type="text" id="bizNo3" name="bizNo3" class="reg-input reg-input--readonly"
-                         placeholder="00000" maxlength="5" readonly />
-                </div>
-              </td>
-            </tr>
+        <!-- 사업자 번호 (기업 찾기 후 자동 입력) -->
+        <!-- [Java] 기업 선택 시 해당 기업의 bizNo 자동 바인딩 → readonly, 수정 불가 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="bizNo1">사업자 번호</label>
+          <div class="split-wrap">
+            <input type="text" id="bizNo1" name="bizNo1" class="reg-input reg-input--readonly"
+                   placeholder="000" maxlength="3" readonly />
+            <span class="split-sep">-</span>
+            <input type="text" id="bizNo2" name="bizNo2" class="reg-input reg-input--readonly"
+                   placeholder="00" maxlength="2" readonly />
+            <span class="split-sep">-</span>
+            <input type="text" id="bizNo3" name="bizNo3" class="reg-input reg-input--readonly"
+                   placeholder="00000" maxlength="5" readonly />
+          </div>
+        </div>
 
-            <!-- 이름(부서명) -->
-            <tr>
-              <th scope="row"><label for="empNm">이름(부서명)</label></th>
-              <td>
-                <!-- [Java] 직원 또는 부서명 자유 입력 -->
-                <input type="text" id="empNm" name="empNm" class="reg-input"
-                       placeholder="이름 또는 부서명을 입력하세요"
-                       required />
-              </td>
-            </tr>
+        <!-- 이름(부서명) -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="empNm">이름(부서명)</label>
+          <!-- [Java] 직원 또는 부서명 자유 입력 -->
+          <input type="text" id="empNm" name="empNm" class="reg-input"
+                 placeholder="이름 또는 부서명을 입력하세요"
+                 required />
+        </div>
 
-            <!-- 휴대폰 번호 -->
-            <!-- [Java] 숫자만 허용: oninput replace(/\D/g,'') 처리 -->
-            <!-- [Java] SMS 수신 여부: smsReceiveYn (Y/N) -->
-            <tr>
-              <th scope="row"><label for="empTel1">휴대폰 번호</label></th>
-              <td>
-                <div class="split-wrap">
-                  <input type="text" id="empTel1" name="empTel1" class="reg-input"
-                         placeholder="010" maxlength="3"
-                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('empTel2').focus();"
-                         required />
-                  <span class="split-sep">-</span>
-                  <input type="text" id="empTel2" name="empTel2" class="reg-input"
-                         placeholder="0000" maxlength="4"
-                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=4) document.getElementById('empTel3').focus();" />
-                  <span class="split-sep">-</span>
-                  <input type="text" id="empTel3" name="empTel3" class="reg-input"
-                         placeholder="0000" maxlength="4"
-                         oninput="this.value=this.value.replace(/\D/g,'');" />
-                </div>
-                <!-- SMS 수신 여부 라디오 — 인풋박스와 동일 폰트 레벨(rss-font-base) -->
-                <div class="receive-radio-wrap" style="margin-top:8px;">
-                  <span>* sms 수신 :</span>
-                  <label><input type="radio" name="smsReceiveYn" value="Y" checked /> 수신</label>
-                  <label><input type="radio" name="smsReceiveYn" value="N" /> 거부</label>
-                </div>
-              </td>
-            </tr>
+        <!-- 휴대폰 번호 -->
+        <!-- [Java] 숫자만 허용: oninput replace(/\D/g,'') 처리 -->
+        <!-- [Java] SMS 수신 여부: smsReceiveYn (Y/N) -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="empTel1">휴대폰 번호</label>
+          <div class="split-wrap">
+            <input type="text" id="empTel1" name="empTel1" class="reg-input"
+                   placeholder="010" maxlength="3"
+                   oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('empTel2').focus();"
+                   required />
+            <span class="split-sep">-</span>
+            <input type="text" id="empTel2" name="empTel2" class="reg-input"
+                   placeholder="0000" maxlength="4"
+                   oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=4) document.getElementById('empTel3').focus();" />
+            <span class="split-sep">-</span>
+            <input type="text" id="empTel3" name="empTel3" class="reg-input"
+                   placeholder="0000" maxlength="4"
+                   oninput="this.value=this.value.replace(/\D/g,'');" />
+          </div>
+          <!-- SMS 수신 여부 라디오 -->
+          <div class="receive-radio-wrap" style="margin-top:8px;">
+            <span>* sms 수신 :</span>
+            <label><input type="radio" name="smsReceiveYn" value="Y" checked /> 수신</label>
+            <label><input type="radio" name="smsReceiveYn" value="N" /> 거부</label>
+          </div>
+        </div>
 
-            <!-- 이메일 주소 -->
-            <!-- [Java] emailReceiveYn (Y/N) -->
-            <!-- [Java] 이메일 도메인 목록: 네이버, 지메일, 다음, 한메일, 카카오, 한메일, 코리아닷컴, 직접입력 -->
-            <tr>
-              <th scope="row"><label for="emailId">이메일 주소</label></th>
-              <td>
-                <div class="email-wrap">
-                  <input type="text" id="emailId" name="emailId" class="reg-input"
-                         placeholder="이메일 아이디" />
-                  <span class="email-at">@</span>
-                  <input type="text" id="emailDomain" name="emailDomain" class="reg-input"
-                         placeholder="직접입력" />
-                  <select class="email-domain-select" id="emailDomainSelect"
-                          onchange="applyEmailDomain(this.value)"
-                          aria-label="이메일 도메인 선택">
-                    <option value="">선택</option>
-                    <option value="naver.com">naver.com</option>
-                    <option value="gmail.com">gmail.com</option>
-                    <option value="daum.net">daum.net</option>
-                    <option value="hanmail.net">hanmail.net</option>
-                    <option value="kakao.com">kakao.com</option>
-                    <option value="korea.com">korea.com</option>
-                    <option value="direct">직접입력</option>
-                  </select>
-                </div>
-                <!-- 이메일 수신 여부 라디오 — 인풋박스와 동일 폰트 레벨(rss-font-base) -->
-                <div class="receive-radio-wrap" style="margin-top:8px;">
-                  <span>* 이메일 수신 :</span>
-                  <label><input type="radio" name="emailReceiveYn" value="Y" checked /> 수신</label>
-                  <label><input type="radio" name="emailReceiveYn" value="N" /> 거부</label>
-                </div>
-              </td>
-            </tr>
-
-          </tbody>
-        </table>
+        <!-- 이메일 주소 -->
+        <!-- [Java] emailReceiveYn (Y/N) -->
+        <!-- [Java] 이메일 도메인 목록: 네이버, 지메일, 다음, 한메일, 카카오, 코리아닷컴, 직접입력 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="emailId">이메일 주소</label>
+          <div class="email-wrap">
+            <input type="text" id="emailId" name="emailId" class="reg-input"
+                   placeholder="이메일 아이디" />
+            <span class="email-at">@</span>
+            <input type="text" id="emailDomain" name="emailDomain" class="reg-input"
+                   placeholder="직접입력" />
+            <select class="email-domain-select" id="emailDomainSelect"
+                    onchange="applyEmailDomain(this.value)"
+                    aria-label="이메일 도메인 선택">
+              <option value="">선택</option>
+              <option value="naver.com">naver.com</option>
+              <option value="gmail.com">gmail.com</option>
+              <option value="daum.net">daum.net</option>
+              <option value="hanmail.net">hanmail.net</option>
+              <option value="kakao.com">kakao.com</option>
+              <option value="korea.com">korea.com</option>
+              <option value="direct">직접입력</option>
+            </select>
+          </div>
+          <!-- 이메일 수신 여부 라디오 -->
+          <div class="receive-radio-wrap" style="margin-top:8px;">
+            <span>* 이메일 수신 :</span>
+            <label><input type="radio" name="emailReceiveYn" value="Y" checked /> 수신</label>
+            <label><input type="radio" name="emailReceiveYn" value="N" /> 거부</label>
+          </div>
+        </div>
 
         <!-- ══════════════════════════════════════════════════
-             ② 등록 / 취소 버튼 (공통 CSS rss-page-actions)
+             ② 등록 / 취소 버튼 — 취소(좌) → 등록(우) 순서 (공통 규칙)
         ══════════════════════════════════════════════════ -->
         <!-- 하단 버튼: rss-page-actions--no-border = 테두리 없음 + margin-top 32px (공통 규칙) -->
         <div class="rss-page-actions rss-page-actions--no-border">
-          <button type="button" class="rss-btn rss-btn--amber px-10"
-                  onclick="submitRegister()">
-            <i data-lucide="clipboard-check" style="width:16px;height:16px;vertical-align:-2px;margin-right:4px;"></i>등록하기
-          </button>
+          <!-- 취소 → 약관동의 페이지로 이동 -->
           <button type="button" class="rss-btn rss-btn--outline px-10"
                   onclick="location.href='register-terms.html'">
             취소
+          </button>
+          <!-- 등록 버튼 → 입력 규칙 검증 후 가입 완료 페이지(J2)로 이동 -->
+          <button type="button" class="rss-btn rss-btn--amber px-10"
+                  onclick="submitRegister()">
+            <i data-lucide="clipboard-check" style="width:16px;height:16px;vertical-align:-2px;margin-right:4px;"></i>등록하기
           </button>
         </div>
 
