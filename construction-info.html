@@ -9,7 +9,10 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
   <style>
-    /* ── 도로 유형 필터 ── */
+    /* ── 도로 유형 필터 ──
+       .road-tab 스타일은 rss-common.css 공통 규칙 사용
+       (높이 38px, 폰트 rss-font-base — 검색 드롭다운과 동일)
+    ── */
     .road-tabs {
       display: flex;
       align-items: center;
@@ -17,48 +20,14 @@
       padding: 0;
       flex-wrap: wrap;
     }
-    .road-tab {
-      padding: 6px 14px;
-      font-size: var(--rss-font-sm);
-      font-weight: 500;
-      color: #6b7280;
-      cursor: pointer;
-      border: 1px solid #d1d5db;
-      border-radius: 4px;
-      background: #fff;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-      user-select: none;
-    }
-    .road-tab.active {
-      background: #1a1f2e;
-      color: #fff;
-      border-color: #1a1f2e;
-    }
-    .road-tab:not(.active):hover { 
-      background: #f9fafb;
-      border-color: #9ca3af;
-      color: #374151;
-    }
-
-    /* ── 검색 툴바 ── */
-    .info-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      padding: 12px 24px;
-      border-bottom: 1px solid #e5e7eb;
-      flex-wrap: wrap;
-    }
-    /* select: rss-common.css .rss-select + .info-toolbar .rss-select 공통 클래스 사용 */
 
     /* ── 공사 정보 테이블 col 스타일 ── */
     /* 링크 스타일: rss-common.css .rss-link 공통 클래스 사용 */
     .rss-link.urgent { color: #dc2626 !important; font-weight: 700; }
+
     /* ── 반응형 ── */
     @media (max-width: 768px) {
       .road-tabs { gap: 6px; }
-      .road-tab { padding: 5px 12px; font-size: var(--rss-font-sm); } /* 툴바 폰트와 동일 */
       /* PC 테이블 숨김, 모바일 카드 표시 */
       .rss-table-wrap { display: none !important; }
       /* 가로 스크롤 방지 */
@@ -290,16 +259,18 @@
           <button class="rss-pagination__btn" aria-label="이전 페이지">
             <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
           </button>
+          <!-- [Java] th:each="i : ${#numbers.sequence(1, totalPages)}" -->
           <button class="rss-pagination__btn active">1</button>
           <button class="rss-pagination__btn">2</button>
           <button class="rss-pagination__btn">3</button>
           <button class="rss-pagination__btn">4</button>
           <button class="rss-pagination__btn">5</button>
-          <button class="rss-pagination__btn">6</button>
-          <button class="rss-pagination__btn">7</button>
-          <button class="rss-pagination__btn">8</button>
-          <button class="rss-pagination__btn">9</button>
-          <button class="rss-pagination__btn">10</button>
+          <!-- 모바일에서 숨김 (6번 이후): rss-pagination__btn--page-extra -->
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">6</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">7</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">8</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">9</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">10</button>
           <button class="rss-pagination__btn" aria-label="다음 페이지">
             <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
           </button>

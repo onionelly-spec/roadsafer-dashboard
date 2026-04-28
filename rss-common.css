@@ -773,13 +773,60 @@ img { max-width: 100%; display: block; }
 ──────────────────────────────────────────────────────────── */
 .rss-board-toolbar .rss-select,
 .list-toolbar .rss-select,
-.info-toolbar .rss-select {
+.info-toolbar .rss-select,
+.market-toolbar .rss-select {
   width: auto;
   min-width: 90px;
   padding: 8px 10px;
   height: 38px;
   line-height: 1.4;
   font-size: var(--rss-font-base) !important; /* 15px */
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ─── 필터 탭 버튼 공통 규칙 (.road-tab, .cat-tab) ──────────────────────────
+   ■ 높이: 검색 영역의 입력창과 동일한 38px
+   ■ 폰트: rss-font-base (15px) — 검색 드롭다운과 동일
+   ■ 적용 대상: 공사정보(.road-tab), 장터(.cat-tab)
+   ■ 모바일: rss-common.css 반응형 섹션에서 font-size 동일하게 유지
+═══════════════════════════════════════════════════════════ */
+.road-tab,
+.cat-tab {
+  height: 38px;                          /* 검색 입력창과 동일 높이 */
+  padding: 0 14px;                       /* 상하 padding 제거하고 height로 통일 */
+  font-size: var(--rss-font-base);       /* 15px — 검색 드롭다운과 동일 */
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.road-tab.active,
+.cat-tab.active {
+  background: #1a1f2e;
+  color: #fff;
+  border-color: #1a1f2e;
+}
+.road-tab:not(.active):hover,
+.cat-tab:not(.active):hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #374151;
+}
+/* 모바일: 폰트 크기 검색 영역과 동일하게 유지 */
+@media (max-width: 768px) {
+  .road-tab,
+  .cat-tab {
+    height: 34px;
+    padding: 0 12px;
+    font-size: var(--rss-font-sm) !important; /* 13px */
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════

@@ -66,15 +66,6 @@
       overflow: hidden;
     }
 
-    /* ── 인피니티 스크롤 로딩 표시 ── */
-    .ad-loading {
-      text-align: center;
-      padding: 20px;
-      color: #9ca3af;
-      font-size: var(--rss-font-base);
-    }
-    .ad-loading.hidden { display: none; }
-
     @media (max-width: 640px) {
       .ad-grid { padding: 14px 16px; gap: 10px; }
     }
@@ -97,8 +88,10 @@
         <!-- ══════════════════════════════════════════════════
              광고 목록 (B7)
              [DB] 테이블: ad ORDER BY reg_dtm DESC
-             [Java] 인피니티 스크롤: GET /ad/list?page=#{page}&size=12
+             [Java] 페이지네이션: GET /ad/list?page=#{page}&size=12
+             [Java] Pageable pageable = PageRequest.of(page, 12);
              [Java] th:each="ad : ${adList}"
+             ■ 갤러리형 규칙: PC 4열 / 모바일 2열 / 페이지당 12개
         ══════════════════════════════════════════════════ -->
         <div class="ad-grid" id="adGrid">
 
@@ -194,13 +187,83 @@
             </div>
           </a>
 
+          <!-- 광고 카드 9 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/fdf2f8/be185d?text=교통안전"
+                 alt="교통안전 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">교통안전(주)</p>
+              <p class="ad-card__title">교통 안전 장비 전문 공급 업체</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 10 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/f0fdf4/15803d?text=현장안전"
+                 alt="현장안전 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">현장안전(주)</p>
+              <p class="ad-card__title">공사 현장 안전 컨설팅 및 장비 임대</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 11 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/fffbeb/b45309?text=도로공사"
+                 alt="도로공사 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">도로공사(주)</p>
+              <p class="ad-card__title">포장 공사 전문, 빠르고 안전한 시공</p>
+            </div>
+          </a>
+
+          <!-- 광고 카드 12 -->
+          <a href="ad-detail.html" class="ad-card">
+            <img class="ad-card__img"
+                 src="https://placehold.co/400x225/f8fafc/475569?text=안전장비"
+                 alt="안전장비 광고" loading="lazy" />
+            <div class="ad-card__body">
+              <p class="ad-card__company">안전장비(주)</p>
+              <p class="ad-card__title">도로 안전 장비 전문 판매 및 렌탈</p>
+            </div>
+          </a>
+
         </div><!-- /ad-grid -->
 
-        <!-- 인피니티 스크롤 로딩 표시 -->
-        <!-- [Java] 추가 데이터 없을 시 hidden 처리 -->
-        <div class="ad-loading" id="adLoading">
-          <i data-lucide="loader" style="width:18px;height:18px;display:inline;vertical-align:middle;margin-right:6px;"></i>
-          더 불러오는 중...
+        <!-- ══ 페이지네이션 ═══════════════════════════════════════════════
+             [Java] th:with="totalPages=${adPage.totalPages}"
+             ■ 갤러리형 규칙: 페이지당 12개
+             [Java] Pageable pageable = PageRequest.of(page, 12);
+             ■ 페이지 번호 표시: PC 10개 / 모바일 5개 (6번 이후 hidden)
+        ═══════════════════════════════════════════════════════════════ -->
+        <div class="rss-pagination" style="padding: 16px 0 20px;">
+          <button class="rss-pagination__btn" aria-label="처음 페이지">
+            <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="이전 페이지">
+            <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
+          </button>
+          <!-- [Java] th:each="i : ${#numbers.sequence(1, totalPages)}" -->
+          <button class="rss-pagination__btn active">1</button>
+          <button class="rss-pagination__btn">2</button>
+          <button class="rss-pagination__btn">3</button>
+          <button class="rss-pagination__btn">4</button>
+          <button class="rss-pagination__btn">5</button>
+          <!-- 모바일에서 숨김 (6번 이후): rss-pagination__btn--page-extra -->
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">6</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">7</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">8</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">9</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">10</button>
+          <button class="rss-pagination__btn" aria-label="다음 페이지">
+            <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="rss-pagination__btn" aria-label="마지막 페이지">
+            <i data-lucide="chevrons-right" style="width:14px;height:14px;"></i>
+          </button>
         </div>
 
       </div><!-- /rss-card -->
@@ -214,45 +277,6 @@
 <script src="rss-common.js"></script>
 <script>
   lucide.createIcons();
-
-  /* ── 인피니티 스크롤 ──────────────────────────────────────
-     [Java] GET /ad/list?page=#{currentPage}&size=12
-     응답: { adList: [...], hasNext: true/false }
-  ─────────────────────────────────────────────────────────── */
-  var currentPage = 1;
-  var isLoading   = false;
-  var hasNext     = true; // [Java] 서버 응답에서 hasNext 값으로 제어
-
-  function loadMoreAds() {
-    if (isLoading || !hasNext) return;
-    isLoading = true;
-    document.getElementById('adLoading').classList.remove('hidden');
-
-    /* [Java] 실제 환경에서는 아래 fetch 코드로 교체:
-    fetch('/ad/list?page=' + (currentPage + 1) + '&size=12')
-      .then(r => r.json())
-      .then(data => {
-        data.adList.forEach(ad => appendAdCard(ad));
-        currentPage++;
-        hasNext = data.hasNext;
-        if (!hasNext) document.getElementById('adLoading').classList.add('hidden');
-        isLoading = false;
-      });
-    */
-
-    // 더미: 2페이지 이후는 더 불러오지 않음
-    setTimeout(function() {
-      hasNext = false;
-      document.getElementById('adLoading').classList.add('hidden');
-      isLoading = false;
-    }, 800);
-  }
-
-  /* 스크롤 감지 */
-  window.addEventListener('scroll', function() {
-    var scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
-    if (scrollBottom < 200) loadMoreAds();
-  });
 </script>
 </body>
 </html>

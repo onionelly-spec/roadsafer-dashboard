@@ -433,7 +433,12 @@
 
         </div><!-- /clist-mobile -->
 
-        <!-- 페이지네이션 -->
+        <!-- ══ 페이지네이션 ═══════════════════════════════════════════════════════════
+             [Java] th:with="totalPages=${constructionPage.totalPages}"
+             ■ 목록형 규칙: 페이지당 10개
+             [Java] Pageable pageable = PageRequest.of(page, 10);
+             ■ 페이지 번호 표시: PC 10개 / 모바일 5개 (6번 이후 hidden)
+        ═══════════════════════════════════════════════════════════════ -->
         <div class="rss-pagination" style="padding: 16px 0 20px;">
           <button class="rss-pagination__btn" aria-label="처음">
             <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
@@ -441,9 +446,18 @@
           <button class="rss-pagination__btn" aria-label="이전">
             <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
           </button>
+          <!-- [Java] th:each="i : ${#numbers.sequence(1, totalPages)}" -->
           <button class="rss-pagination__btn active">1</button>
           <button class="rss-pagination__btn">2</button>
           <button class="rss-pagination__btn">3</button>
+          <button class="rss-pagination__btn">4</button>
+          <button class="rss-pagination__btn">5</button>
+          <!-- 모바일에서 숨김 (6번 이후): rss-pagination__btn--page-extra -->
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">6</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">7</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">8</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">9</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra">10</button>
           <button class="rss-pagination__btn" aria-label="다음">
             <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
           </button>
