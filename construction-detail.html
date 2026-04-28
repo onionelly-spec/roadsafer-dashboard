@@ -638,6 +638,138 @@
 <div id="rss-action-modals"></div>
 <!-- 위 모달들은 rss-common.js의 RSS.action이 #rss-action-modals에 자동 주입합니다 -->
 
+<!-- ══════════════════════════════════════════════════
+     공사 금액 모달 (B3-1-1) — 용어사전 §17-4, §18
+     openDailyProgModal(dt, progCd, amount) 호출 시 표시
+     [Java] 실제 데이터: GET /api/construction/daily-prog?seq={seq}&dt={dt}
+══════════════════════════════════════════════════ -->
+<div id="dailyProgModalBackdrop" class="rss-prog-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="dailyProgModalTitle">
+  <article class="rss-prog-modal">
+
+    <!-- ── 모달 헤더 ── -->
+    <header class="rss-prog-modal__head">
+      <h2 class="rss-prog-modal__title" id="dailyProgModalTitle">공사 금액</h2>
+      <button type="button" class="rss-prog-modal__close" onclick="closeDailyProgModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:16px;height:16px;"></i>
+      </button>
+    </header>
+
+    <!-- ── 모달 바디 ── -->
+    <div class="rss-prog-modal__body">
+
+      <!-- ① 날짜 네비게이터 (용어사전 §18-4) -->
+      <nav class="rss-prog-modal__nav" aria-label="날짜 이동">
+        <!-- [Java] 이전 날짜 없으면 disabled -->
+        <button type="button" class="rss-prog-modal__nav-btn" id="dailyProgPrevBtn"
+                onclick="navigateDailyProg(-1)" aria-label="이전 날짜">
+          <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
+        </button>
+        <!-- [Java] th:text="${#temporals.format(cell.dt, 'yyyy년 M월 d일')}" -->
+        <span class="rss-prog-modal__nav-date" id="dailyProgNavDate">2026년 6월 25일</span>
+        <!-- [Java] 다음 날짜 없으면 disabled -->
+        <button type="button" class="rss-prog-modal__nav-btn" id="dailyProgNextBtn"
+                onclick="navigateDailyProg(1)" aria-label="다음 날짜">
+          <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+        </button>
+      </nav>
+
+      <!-- ② 안내 문구 -->
+      <p class="rss-prog-modal__notice">
+        씨인카 투입 수량 및 완료 취소 여부에 따라 금액이 조정됩니다.<br>
+        공사 금액 문의는 콜센터(1500-0000)으로 해주세요.
+      </p>
+
+      <!-- ③ 구분/시간대 정보 테이블 (용어사전 §17-1, §18-1) -->
+      <table class="rss-prog-modal__info-table" aria-label="공사 구분 정보">
+        <tbody>
+          <tr>
+            <th scope="row">구분</th>
+            <!-- [Java] th:text="${cell.progLabel}" -->
+            <td id="dailyProgInfoLabel">공사 완료</td>
+          </tr>
+          <tr>
+            <th scope="row">시간대</th>
+            <!-- [Java] th:text="${construction.timeSlot == 'night' ? '야간' : '주간'}" -->
+            <td id="dailyProgInfoTimeSlot">야간</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ④ 품목별 금액 테이블 — 공사완료/시연회 시 표시 (§18-2) -->
+      <!-- [Java] th:if="${cell.progCd == 'WORK_COMPLETE' or cell.progCd == 'REHEARSAL'}" -->
+      <div id="dailyProgItemSection">
+        <table class="rss-prog-modal__item-table" aria-label="품목별 공사 금액">
+          <thead>
+            <tr>
+              <th scope="col">품목</th>
+              <th scope="col">투입수량</th>
+              <th scope="col">금액</th>
+            </tr>
+          </thead>
+          <tbody id="dailyProgItemTbody">
+            <!--
+              [Java] th:each="item : ${cell.items}"
+              더미 데이터: 공사완료(6/25) 기준
+            -->
+            <tr>
+              <!-- [Java] th:text="${item.itemNm}" -->
+              <td>TMA1</td>
+              <!-- [Java] th:text="${item.inputQty} + '대'" -->
+              <td>1대</td>
+              <!-- [Java] th:text="${#numbers.formatInteger(item.amount, 3, 'COMMA')}" -->
+              <td>550,000</td>
+            </tr>
+            <tr>
+              <td>TMA3</td>
+              <td>2대</td>
+              <td>1,800,000</td>
+            </tr>
+            <tr>
+              <td>PLCS</td>
+              <td>2대</td>
+              <td>1,500,000</td>
+            </tr>
+            <tr>
+              <td>신호수</td>
+              <td>1명</td>
+              <td>200,000</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <!-- [Java] colspan 조정 불필요 -->
+              <td colspan="2">지급액</td>
+              <!-- [Java] th:text="${#numbers.formatInteger(cell.payAmt, 3, 'COMMA')}" -->
+              <td id="dailyProgPayTotal">4,050,000</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- ⑤ 취소 시 지급액 단순 행 (§18-2) -->
+      <!-- [Java] th:if="${cell.progCd == 'CANCEL'}" -->
+      <div id="dailyProgCancelSection" style="display:none;">
+        <div class="rss-prog-modal__pay-row">
+          <span class="rss-prog-modal__pay-label">지급액</span>
+          <!-- [Java]
+            금액 있으면: th:text="${#numbers.formatInteger(cell.cancelAmt, 3, 'COMMA')}"
+            대기중이면: th:text="'대기중'" + class="rss-prog-modal__pay-amount--pending"
+          -->
+          <span class="rss-prog-modal__pay-amount" id="dailyProgCancelAmt">500,000</span>
+        </div>
+      </div>
+
+    </div><!-- /rss-prog-modal__body -->
+
+    <!-- ⑥ 닫기 버튼 -->
+    <footer class="rss-prog-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline px-10"
+              onclick="closeDailyProgModal()">닫기</button>
+    </footer>
+
+  </article>
+</div><!-- /dailyProgModalBackdrop -->
+
 <script src="rss-common.js"></script>
 <script>
   lucide.createIcons();
@@ -678,35 +810,143 @@
     });
   });
 
-  /* ══════════════════════════════════════════════════════════
-     진행상황 탭: 날짜별 금액 정보 모달 (용어사전 §17-4)
-     openDailyProgModal(dt, progCd, amount)
-     - dt      : 날짜 문자열 (예: '2026-06-25')
-     - progCd  : 구분 코드 (REHEARSAL / WORK_COMPLETE / CANCEL / NO_WORK / SCHEDULED)
-     - amount  : 금액 (숫자)
-     ※ 모달 스토리보드 확정 후 상세 구현 예정
-        현재는 빈 모달 틀만 표시
-     [Java] 실제 연동 시: fetch('/api/construction/daily-prog?dt=' + dt + '&seq=' + constructionSeq)
-  ══════════════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════════════
+     공사 금액 모달 (B3-1-1) — 용어사전 §17-4, §18
+  ══════════════════════════════════════════════════════ */
+
+  /* ── 데모용 데이터: 실제 Java 연동 시 API 응답으로 대체 ── */
+  var DAILY_PROG_DATA = [
+    /* [Java] 이 배열은 API 응답으로 대체: GET /api/construction/daily-prog?seq={seq} */
+    {
+      dt: '2026-06-22', progCd: 'REHEARSAL', progLabel: '시연회',
+      timeSlot: '주간',
+      items: [
+        { itemNm: 'TMA1', inputQty: '1대', amount: 550000 },
+        { itemNm: 'TMA3', inputQty: '2대', amount: 1800000 },
+        { itemNm: 'PLCS', inputQty: '2대', amount: 1500000 },
+        { itemNm: '신호수', inputQty: '1명', amount: 200000 }
+      ],
+      payAmt: 4050000, cancelAmt: null
+    },
+    {
+      dt: '2026-06-25', progCd: 'WORK_COMPLETE', progLabel: '공사완료',
+      timeSlot: '야간',
+      items: [
+        { itemNm: 'TMA1', inputQty: '1대', amount: 550000 },
+        { itemNm: 'TMA3', inputQty: '2대', amount: 1800000 },
+        { itemNm: 'PLCS', inputQty: '2대', amount: 1500000 },
+        { itemNm: '신호수', inputQty: '1명', amount: 200000 }
+      ],
+      payAmt: 4050000, cancelAmt: null
+    },
+    {
+      dt: '2026-06-26', progCd: 'CANCEL', progLabel: '취소',
+      timeSlot: '야간',
+      items: [], payAmt: null, cancelAmt: 500000
+    }
+    /* 취소 + 대기중 예시 (cancelAmt: null 이면 대기중 표시):
+    { dt: '2026-06-26', progCd: 'CANCEL', progLabel: '취소',
+      timeSlot: '야간', items: [], payAmt: null, cancelAmt: null } */
+  ];
+
+  /* 현재 모달에 표시된 날짜 인덱스 */
+  var _currentDailyProgIdx = 0;
+
+  /* ── 모달 열기 ── */
   function openDailyProgModal(dt, progCd, amount) {
-    /* TODO: 금액 정보 모달 스토리보드 확정 후 구현 예정 */
-    /* 임시: 콘솔 로그 및 알림 */
-    console.log('[daily_prog modal]', { dt, progCd, amount });
-
-    /* 임시 모달 표시 (스토리보드 확정 전 placeholder) */
-    const progLabels = {
-      'REHEARSAL':     '시연회',
-      'WORK_COMPLETE': '공사완료',
-      'CANCEL':        '취소',
-      'NO_WORK':       '공사없음',
-      'SCHEDULED':     '예정'
-    };
-    const label = progLabels[progCd] || progCd;
-    const amountStr = amount ? amount.toLocaleString() + '원' : '대기중';
-
-    /* 임시 알림 (모달 스토리보드 확정 전) */
-    alert(dt + ' [' + label + ']\n금액: ' + amountStr + '\n\n※ 금액 상세 모달은 스토리보드 확정 후 구현됩니다.');
+    /* [Java] 실제 연동 시: fetch('/api/construction/daily-prog?seq='+constructionSeq+'&dt='+dt)
+       응답 JSON으로 renderDailyProgModal() 호출 */
+    var idx = DAILY_PROG_DATA.findIndex(function(d) { return d.dt === dt; });
+    if (idx === -1) idx = 0;
+    _currentDailyProgIdx = idx;
+    renderDailyProgModal(DAILY_PROG_DATA[idx]);
+    var backdrop = document.getElementById('dailyProgModalBackdrop');
+    backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    lucide.createIcons(); /* X, 좌우 화살표 아이콘 재렌더링 */
   }
+
+  /* ── 모달 닫기 ── */
+  function closeDailyProgModal() {
+    var backdrop = document.getElementById('dailyProgModalBackdrop');
+    backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── 날짜 이동 (direction: -1 이전 / +1 다음) ── */
+  function navigateDailyProg(direction) {
+    var newIdx = _currentDailyProgIdx + direction;
+    if (newIdx < 0 || newIdx >= DAILY_PROG_DATA.length) return;
+    _currentDailyProgIdx = newIdx;
+    renderDailyProgModal(DAILY_PROG_DATA[newIdx]);
+    lucide.createIcons();
+  }
+
+  /* ── 모달 렌더링 ── */
+  function renderDailyProgModal(data) {
+    /* 날짜 표시 */
+    var d = new Date(data.dt);
+    var dateStr = d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일';
+    document.getElementById('dailyProgNavDate').textContent = dateStr;
+
+    /* 네비게이터 버튼 활성화/비활성화 */
+    document.getElementById('dailyProgPrevBtn').disabled = (_currentDailyProgIdx === 0);
+    document.getElementById('dailyProgNextBtn').disabled = (_currentDailyProgIdx === DAILY_PROG_DATA.length - 1);
+
+    /* 구분/시간대 */
+    document.getElementById('dailyProgInfoLabel').textContent = data.progLabel;
+    document.getElementById('dailyProgInfoTimeSlot').textContent = data.timeSlot;
+
+    var itemSection   = document.getElementById('dailyProgItemSection');
+    var cancelSection = document.getElementById('dailyProgCancelSection');
+
+    if (data.progCd === 'WORK_COMPLETE' || data.progCd === 'REHEARSAL') {
+      /* ④ 품목별 금액 테이블 */
+      itemSection.style.display = '';
+      cancelSection.style.display = 'none';
+
+      /* tbody 재생성 */
+      var tbody = document.getElementById('dailyProgItemTbody');
+      tbody.innerHTML = '';
+      data.items.forEach(function(item) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + item.itemNm + '</td>' +
+          '<td>' + item.inputQty + '</td>' +
+          '<td>' + item.amount.toLocaleString() + '</td>';
+        tbody.appendChild(tr);
+      });
+
+      /* 지급액 합계 */
+      var total = data.payAmt || data.items.reduce(function(s,i){ return s + i.amount; }, 0);
+      document.getElementById('dailyProgPayTotal').textContent = total.toLocaleString();
+
+    } else if (data.progCd === 'CANCEL') {
+      /* ⑤ 취소: 지급액 단순 행 */
+      itemSection.style.display = 'none';
+      cancelSection.style.display = '';
+
+      var amtEl = document.getElementById('dailyProgCancelAmt');
+      if (data.cancelAmt) {
+        amtEl.textContent = data.cancelAmt.toLocaleString();
+        amtEl.className = 'rss-prog-modal__pay-amount';
+      } else {
+        /* ⑥ 대기중 */
+        amtEl.textContent = '대기중';
+        amtEl.className = 'rss-prog-modal__pay-amount--pending';
+      }
+    }
+  }
+
+  /* ── 백드롭 클릭으로 닫기 ── */
+  document.getElementById('dailyProgModalBackdrop').addEventListener('click', function(e) {
+    if (e.target === this) closeDailyProgModal();
+  });
+
+  /* ── ESC 키로 닫기 ── */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDailyProgModal();
+  });
 </script>
 </body>
 </html>

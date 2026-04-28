@@ -2092,3 +2092,266 @@ img { max-width: 100%; display: block; }
     font-size: var(--rss-font-sm);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   ─── 공사 금액 모달 (.rss-prog-modal-*) ─────────────────────
+   ■ 용도: 진행상황 탭 > 구분/금액 클릭 시 표시되는 날짜별 금액 정보 모달
+   ■ 페이지 코드: B3-1-1
+   ■ 구성:
+     - 날짜 네비게이터 (◀ 날짜 ▶)
+     - 안내 문구
+     - 구분 / 시간대 정보 행
+     - 품목별 금액 테이블 (공사완료/시연회 시)
+     - 지급액 단순 행 (취소 시)
+     - 대기중 상태 (금액 미책정 시)
+     - 닫기 버튼
+   ■ 용어사전 §17, §18 참조
+═══════════════════════════════════════════════════════════ */
+
+/* ── 백드롭 (기존 .rss-modal-backdrop 확장) ── */
+.rss-prog-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 9100;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.rss-prog-modal-backdrop.open { display: flex; }
+
+/* ── 모달 컨테이너 ── */
+.rss-prog-modal {
+  background: #fff;
+  border-radius: var(--rss-radius-lg);
+  width: calc(100% - 32px);
+  max-width: 480px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── 모달 헤더: 타이틀 + 닫기 X ── */
+.rss-prog-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid var(--rss-border);
+}
+.rss-prog-modal__title {
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+}
+.rss-prog-modal__close {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--rss-muted);
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.rss-prog-modal__close:hover {
+  background: #f3f4f6;
+  color: var(--rss-text);
+}
+
+/* ── 모달 바디 ── */
+.rss-prog-modal__body {
+  padding: 18px 22px 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ── 날짜 네비게이터 ── */
+.rss-prog-modal__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.rss-prog-modal__nav-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--rss-border);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--rss-muted);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+.rss-prog-modal__nav-btn:hover {
+  border-color: var(--rss-amber);
+  color: var(--rss-amber-dark);
+  background: var(--rss-amber-light);
+}
+.rss-prog-modal__nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.rss-prog-modal__nav-date {
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+  min-width: 140px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── 안내 문구 ── */
+.rss-prog-modal__notice {
+  font-size: var(--rss-font-sm);
+  color: var(--rss-muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-radius: var(--rss-radius);
+  border: 1px solid var(--rss-border);
+}
+
+/* ── 구분/시간대 정보 테이블 ── */
+.rss-prog-modal__info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+  font-size: var(--rss-font-base);
+}
+.rss-prog-modal__info-table th,
+.rss-prog-modal__info-table td {
+  padding: 9px 14px;
+  border: 1px solid var(--rss-border);
+  text-align: left;
+}
+.rss-prog-modal__info-table th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: var(--rss-muted);
+  width: 90px;
+  white-space: nowrap;
+}
+.rss-prog-modal__info-table td {
+  color: var(--rss-text);
+  font-weight: 500;
+}
+
+/* ── 품목별 금액 테이블 (공사완료/시연회) ── */
+.rss-prog-modal__item-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+  font-size: var(--rss-font-base);
+}
+.rss-prog-modal__item-table thead th {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: var(--rss-muted);
+  padding: 9px 14px;
+  border: 1px solid var(--rss-border);
+  text-align: center;
+}
+.rss-prog-modal__item-table tbody td {
+  padding: 9px 14px;
+  border: 1px solid var(--rss-border);
+  text-align: center;
+  color: var(--rss-text);
+}
+.rss-prog-modal__item-table tbody td:first-child {
+  font-weight: 600;
+}
+.rss-prog-modal__item-table tbody td:last-child {
+  text-align: right;
+}
+/* 지급액 합계 행 */
+.rss-prog-modal__item-table tfoot td {
+  padding: 10px 14px;
+  border: 1px solid var(--rss-border);
+  background: #f9fafb;
+  font-weight: 700;
+  color: var(--rss-text);
+}
+.rss-prog-modal__item-table tfoot td:first-child {
+  text-align: center;
+}
+.rss-prog-modal__item-table tfoot td:last-child {
+  text-align: right;
+  color: var(--rss-text);
+  font-size: var(--rss-font-md);
+}
+
+/* ── 취소: 지급액 단순 행 ── */
+.rss-prog-modal__pay-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid var(--rss-border);
+  border-radius: var(--rss-radius);
+  background: #f9fafb;
+  margin-bottom: 0;
+  font-size: var(--rss-font-base);
+}
+.rss-prog-modal__pay-label {
+  font-weight: 600;
+  color: var(--rss-muted);
+}
+.rss-prog-modal__pay-amount {
+  font-weight: 700;
+  color: var(--rss-text);
+  font-size: var(--rss-font-md);
+}
+/* 대기중 상태 */
+.rss-prog-modal__pay-amount--pending {
+  color: var(--rss-muted);
+  font-weight: 600;
+  font-size: var(--rss-font-base);
+}
+
+/* ── 모달 푸터: 닫기 버튼 ── */
+.rss-prog-modal__footer {
+  padding: 16px 22px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── 반응형: 모바일 ── */
+@media (max-width: 480px) {
+  .rss-prog-modal {
+    max-width: 100%;
+    border-radius: var(--rss-radius);
+  }
+  .rss-prog-modal__head,
+  .rss-prog-modal__body {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .rss-prog-modal__footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .rss-prog-modal__nav-date {
+    font-size: var(--rss-font-base);
+    min-width: 120px;
+  }
+  .rss-prog-modal__info-table th,
+  .rss-prog-modal__info-table td,
+  .rss-prog-modal__item-table thead th,
+  .rss-prog-modal__item-table tbody td,
+  .rss-prog-modal__item-table tfoot td {
+    padding: 8px 10px;
+    font-size: var(--rss-font-sm);
+  }
+}
