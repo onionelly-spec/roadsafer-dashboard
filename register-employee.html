@@ -621,10 +621,11 @@
         <!-- ══════════════════════════════════════════════════
              ② 등록 / 취소 버튼 (공통 CSS rss-page-actions)
         ══════════════════════════════════════════════════ -->
-        <div class="rss-page-actions" style="margin-top: 32px;">
+        <!-- 하단 버튼: rss-page-actions--no-border = 테두리 없음 + margin-top 32px (공통 규칙) -->
+        <div class="rss-page-actions rss-page-actions--no-border">
           <button type="button" class="rss-btn rss-btn--amber px-10"
                   onclick="submitRegister()">
-            <i data-lucide="clipboard-check"></i> 등록하기
+            <i data-lucide="clipboard-check" style="width:16px;height:16px;vertical-align:-2px;margin-right:4px;"></i>등록하기
           </button>
           <button type="button" class="rss-btn rss-btn--outline px-10"
                   onclick="location.href='register-terms.html'">

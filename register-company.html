@@ -791,11 +791,12 @@
         <!-- ══════════════════════════════════════════════════
              ③ 등록 / ④ 취소 버튼 — 공통 CSS rss-page-actions (가운데 정렬)
         ══════════════════════════════════════════════════ -->
-        <div class="rss-page-actions" style="margin-top:32px;">
+        <!-- 하단 버튼: rss-page-actions--no-border = 테두리 없음 + margin-top 32px (공통 규칙) -->
+        <div class="rss-page-actions rss-page-actions--no-border">
           <!-- ④ 취소 → 로그인 페이지로 이동 -->
-          <a href="login.html" class="rss-btn rss-btn--outline" style="min-width:120px;">취소</a>
+          <a href="login.html" class="rss-btn rss-btn--outline px-10">취소</a>
           <!-- ③ 등록 버튼 → 입력 규칙 검증 후 가입 완료 페이지(J2)로 이동 -->
-          <button type="button" class="rss-btn rss-btn--amber" style="min-width:160px;"
+          <button type="button" class="rss-btn rss-btn--amber px-10"
                   onclick="submitRegister()">
             <i data-lucide="clipboard-check" style="width:16px;height:16px;vertical-align:-2px;margin-right:4px;"></i>
             등록하기
