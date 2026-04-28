@@ -239,11 +239,6 @@
         ══════════════════════════════════════════════════ -->
         <div id="tab-block" class="tab-panel" role="tabpanel">
 
-          <!-- 안내 박스 (.rss-notice 공통 클래스 사용) -->
-          <div class="rss-notice">
-            투입될 씨인카 수량이 바뀌었다면 콜센터(<strong>1566-0000</strong>)로 연락해주세요.
-          </div>
-
           <!-- 차단 신청 정보 테이블 (.rss-table--detail 공통 클래스 사용) -->
           <div style="overflow-x:auto;">
             <table class="rss-table rss-table--detail">
@@ -339,19 +334,19 @@
                - 수정: 항상 표시. 차단 신청 페이지로 이동 (신청 정보 pre-fill)
                - 차단신청 취소: 상태가 '예정(SCHEDULED)'인 경우에만 표시
                [Java] th:if="${blockReq.status == 'SCHEDULED'}" 로 조건부 렌더링
-               버튼 정렬: .rss-page-actions--left (수정·삭제 등 조건부 버튼 규칙)
+               버튼 정렬: .rss-page-actions (가운데 정렬 — 중요 버튼 공통 규칙)
           ══════════════════════════════════════════════════ -->
-          <div class="rss-page-actions rss-page-actions--left">
-            <!-- 수정 버튼: 항상 표시 -->
-            <a href="construction-block-req.html?mode=edit&seq=1" class="rss-btn rss-btn--outline rss-btn--sm">
+          <div class="rss-page-actions">
+            <!-- 수정 버튼: 항상 표시 → construction-apply.html로 이동 -->
+            <a href="construction-apply.html" class="rss-btn rss-btn--outline rss-btn--sm">
               <i data-lucide="pencil" style="width:13px;height:13px;"></i> 수정
             </a>
             <!-- 차단신청 취소 버튼: 예정(SCHEDULED) 상태일 때만 표시 -->
             <!-- [Java] th:if="${blockReq.status == 'SCHEDULED'}" -->
             <button type="button"
-                    class="rss-btn rss-btn--outline-danger rss-btn--sm"
+                    class="rss-btn rss-action-btn rss-action-btn--cancel"
                     onclick="RSS.action.openCancelModal(1, '국도 32번 횡단보도 시공')">
-              <i data-lucide="x-circle" style="width:13px;height:13px;"></i> 차단신청 취소
+              차단신청 취소
             </button>
           </div>
 
