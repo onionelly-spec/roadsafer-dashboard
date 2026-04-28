@@ -232,30 +232,130 @@
           </div>
         </div><!-- /tab-info -->
 
-        <!-- 탭 2: 차단 정보 (기존 구조 유지) -->
+        <!-- ══════════════════════════════════════════════════
+             탭 2: 차단 정보 (block_info)
+             [DB] 테이블: rs_construction_block_req WHERE construction_seq = #{constructionSeq}
+             [Java] ${blockReq} — 차단신청 VO
+        ══════════════════════════════════════════════════ -->
         <div id="tab-block" class="tab-panel" role="tabpanel">
-          <div class="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800 leading-relaxed">
-            투입될 씨인카 수량이 바뀌었다면 콜센터(1566-0000)로 연락해주세요.
+
+          <!-- 안내 박스 (.rss-notice 공통 클래스 사용) -->
+          <div class="rss-notice">
+            투입될 씨인카 수량이 바뀌었다면 콜센터(<strong>1566-0000</strong>)로 연락해주세요.
           </div>
+
+          <!-- 차단 신청 정보 테이블 (.rss-table--detail 공통 클래스 사용) -->
           <div style="overflow-x:auto;">
             <table class="rss-table rss-table--detail">
               <tbody>
+
+                <!-- 담당자: manager (용어사전 §10) -->
                 <tr>
                   <th scope="row">담당자</th>
-                  <td>이차단 (010-9876-5432)</td>
+                  <!-- [Java] th:text="${blockReq.managerNm} + ' (' + ${blockReq.managerTel} + ')'" -->
+                  <td>김석진 (010-1234-5678)</td>
                 </tr>
+
+                <!-- 차단구간: block_section (용어사전 §10) -->
                 <tr>
-                  <th scope="row">차단구간</th>
-                  <td>105.6km ~ 105.7km (상행)</td>
+                  <th scope="row">차단 구간</th>
+                  <!-- [Java] th:text="${blockReq.blockSection}" -->
+                  <td>32번 국도 대전방향 105.5km ~ 105.8km 400미터</td>
                 </tr>
+
+                <!-- TMA1: tma + tma_kind=TMA1 (용어사전 §10-2, §14-3) -->
+                <tr>
+                  <th scope="row">TMA1</th>
+                  <!-- [Java] th:each="item : ${blockReq.tma1List}" -->
+                  <td>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <!-- 수량 배지 -->
+                      <span class="rss-badge rss-badge--scheduled">1대</span>
+                      <!-- TMA 파일 링크 목록 -->
+                      <div class="flex flex-col gap-1">
+                        <!-- [Java] th:each="tma : ${blockReq.tma1List}" -->
+                        <a href="#" class="rss-link" style="font-size:var(--rss-font-sm);">11누1111 우리국도차단.pdf</a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- TMA3: tma + tma_kind=TMA3 (용어사전 §10-2, §14-3) -->
+                <tr>
+                  <th scope="row">TMA3</th>
+                  <!-- [Java] th:each="item : ${blockReq.tma3List}" -->
+                  <td>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="rss-badge rss-badge--scheduled">2대</span>
+                      <div class="flex flex-col gap-1">
+                        <!-- [Java] th:each="tma : ${blockReq.tma3List}" -->
+                        <a href="#" class="rss-link" style="font-size:var(--rss-font-sm);">11소1111 우리국도차단.pdf</a>
+                        <!-- [Java] th:if="${tma.separateSubmitYn == 'Y'}" -->
+                        <span style="font-size:var(--rss-font-sm); color:var(--rss-muted);">1건 : 별도제출</span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- PLCS: tma + tma_kind=PLCS (용어사전 §10-2, §14-3) -->
+                <tr>
+                  <th scope="row">PLCS</th>
+                  <!-- [Java] th:each="item : ${blockReq.plcsList}" -->
+                  <td>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="rss-badge rss-badge--scheduled">2대</span>
+                      <div class="flex flex-col gap-1">
+                        <!-- [Java] th:if="${blockReq.plcsSeparateCnt > 0}" -->
+                        <span style="font-size:var(--rss-font-sm); color:var(--rss-muted);">2건 : 별도제출</span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 신호수: signaler (용어사전 §10) -->
                 <tr>
                   <th scope="row">신호수</th>
-                  <td>2명</td>
+                  <!-- [Java] th:text="${blockReq.signalerCnt} + '명'" -->
+                  <td>
+                    <span class="rss-badge rss-badge--scheduled">0명</span>
+                  </td>
                 </tr>
+
+                <!-- 의견: opinion (용어사전 §10) -->
+                <tr>
+                  <th scope="row">의견</th>
+                  <!-- [Java] th:text="${blockReq.opinion}" -->
+                  <td>
+                    <a href="#" class="rss-link">신호수도 1명 필요보입니다</a>
+                  </td>
+                </tr>
+
               </tbody>
             </table>
           </div>
-        </div>
+
+          <!-- ══════════════════════════════════════════════════
+               하단 버튼 영역
+               - 수정: 항상 표시. 차단 신청 페이지로 이동 (신청 정보 pre-fill)
+               - 차단신청 취소: 상태가 '예정(SCHEDULED)'인 경우에만 표시
+               [Java] th:if="${blockReq.status == 'SCHEDULED'}" 로 조건부 렌더링
+               버튼 정렬: .rss-page-actions--left (수정·삭제 등 조건부 버튼 규칙)
+          ══════════════════════════════════════════════════ -->
+          <div class="rss-page-actions rss-page-actions--left">
+            <!-- 수정 버튼: 항상 표시 -->
+            <a href="construction-block-req.html?mode=edit&seq=1" class="rss-btn rss-btn--outline rss-btn--sm">
+              <i data-lucide="pencil" style="width:13px;height:13px;"></i> 수정
+            </a>
+            <!-- 차단신청 취소 버튼: 예정(SCHEDULED) 상태일 때만 표시 -->
+            <!-- [Java] th:if="${blockReq.status == 'SCHEDULED'}" -->
+            <button type="button"
+                    class="rss-btn rss-btn--outline-danger rss-btn--sm"
+                    onclick="RSS.action.openCancelModal(1, '국도 32번 횡단보도 시공')">
+              <i data-lucide="x-circle" style="width:13px;height:13px;"></i> 차단신청 취소
+            </button>
+          </div>
+
+        </div><!-- /tab-block -->
 
         <!-- 탭 3: 진행 상황 (기존 구조 유지) -->
         <div id="tab-status" class="tab-panel" role="tabpanel">

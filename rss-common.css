@@ -530,6 +530,14 @@ img { max-width: 100%; display: block; }
 .rss-btn--outline-amber:hover {
   background: var(--rss-amber-light);
 }
+.rss-btn--outline-danger {
+  background: transparent;
+  border: 1.5px solid #ef4444;
+  color: #dc2626;
+}
+.rss-btn--outline-danger:hover {
+  background: #fef2f2;
+}
 .rss-btn--sm {
   padding: 6px 13px;
   font-size: var(--rss-font-sm);   /* 13px */
