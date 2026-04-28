@@ -75,14 +75,7 @@
     .cal-date.today { font-weight: 700; color: #1f2937; }
     .cal-status { font-size: var(--rss-font-xs); }
 
-    /* ── 하단 버튼 ── */
-    .detail-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 24px;
-      border-top: 1px solid #f3f4f6;
-    }
+    /* ── 하단 버튼: rss-page-actions 공통 클래스 사용 (rss-common.css) ── */
 
     /* ── 반응형 ── */
     @media (max-width: 640px) {
@@ -231,7 +224,8 @@
             </table>
           </div>
 
-          <div class="detail-footer" style="margin-top:16px;padding-left:0;padding-right:0;border-top:1px solid #f3f4f6;">
+          <!-- 하단 버튼: .rss-page-actions = 가운데 정렬 (공통 규칙) -->
+          <div class="rss-page-actions" style="margin-top:16px;">
             <a href="construction-list.html" class="rss-btn rss-btn--outline px-10">
               <i data-lucide="list" style="width:14px;height:14px;"></i>목록
             </a>

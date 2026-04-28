@@ -18,20 +18,7 @@
       background: #f3f4f6;
     }
 
-    /* ── 하단 버튼 ── */
-    .ad-detail-footer {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      padding: 16px 24px;
-      border-top: 1px solid #f3f4f6;
-    }
-
-    @media (max-width: 480px) {
-      .ad-detail-footer { padding: 14px 16px; }
-      .ad-detail-footer .rss-btn { flex: 1; justify-content: center; }
-    }
+    /* 하단 버튼: rss-page-actions 공통 클래스 사용 (rss-common.css) */
   </style>
 </head>
 <body>
@@ -102,9 +89,9 @@
           <p>문의: 02-1234-5678 | 이메일: info@koreacutoff.co.kr</p>
         </div>
 
-        <!-- 하단 버튼 -->
-        <div class="ad-detail-footer">
-          <a href="ad.html" class="rss-btn rss-btn--outline">
+        <!-- 하단 버튼: .rss-page-actions = 가운데 정렬 (공통 규칙) -->
+        <div class="rss-page-actions">
+          <a href="ad.html" class="rss-btn rss-btn--outline px-10">
             <i data-lucide="list" style="width:14px;height:14px;"></i>목록
           </a>
         </div>

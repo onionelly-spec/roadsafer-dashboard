@@ -75,19 +75,10 @@
     }
 
     /* ── 하단 버튼 ── */
-    .write-footer {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      padding: 16px 24px;
-      border-top: 1px solid #f3f4f6;
-    }
-
+    /* 하단 버튼: rss-page-actions 공통 클래스 사용 (rss-common.css) */
     /* ── 반응형 ── */
     @media (max-width: 640px) {
       .write-form { padding: 16px; }
-      .write-footer { padding: 14px 16px; }
     }
   </style>
 </head>
@@ -195,10 +186,10 @@
 
         </form>
 
-        <!-- ── 하단 버튼 ── -->
-        <div class="write-footer">
-          <a href="market.html" class="rss-btn rss-btn--outline">취소</a>
-          <button type="button" class="rss-btn rss-btn--amber" onclick="submitMarketForm()">
+        <!-- 하단 버튼: .rss-page-actions = 가운데 정렬 (공통 규칙) -->
+        <div class="rss-page-actions">
+          <a href="market.html" class="rss-btn rss-btn--outline px-10">취소</a>
+          <button type="button" class="rss-btn rss-btn--amber px-10" onclick="submitMarketForm()">
             <i data-lucide="save" style="width:14px;height:14px;"></i>등록하기
           </button>
         </div>

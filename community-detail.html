@@ -144,18 +144,23 @@
           <p>더 궁금한 점이 있으시면 댓글로 질문해주세요!</p>
         </div>
 
-        <!-- 하단 버튼 -->
-        <div class="rss-post-footer">
-          <!-- 작성자 본인만 수정/삭제 표시 -->
-          <!-- [Java] th:if="${loginUsr.mberSeq == post.mberSeq}" -->
+        <!-- 하단 버튼: 수정/삭제 = 왼쪽 정렬, 목록 = 가운데 정렬 (공통 규칙) -->
+
+        <!-- 수정/삭제: 왼쪽 정렬 — 내 글일 때만 표시 -->
+        <!-- [Java] th:if="${loginUsr.mberSeq == post.mberSeq}" -->
+        <div class="rss-page-actions rss-page-actions--left" style="border-top:none; padding-bottom:0;">
           <a href="community-write.html" class="rss-btn rss-btn--outline rss-btn--sm">
             <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
           </a>
-          <button type="button" class="rss-btn rss-btn--sm" style="border:1.5px solid #fecaca; color:#dc2626; background:transparent; border-radius:6px; cursor:pointer;"
+          <button type="button" class="rss-btn rss-btn--outline-danger rss-btn--sm"
                   onclick="if(confirm('삭제하시겠습니까?')) location.href='community.html'">
             <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
           </button>
-          <a href="community.html" class="rss-btn rss-btn--outline">
+        </div>
+
+        <!-- 목록: 가운데 정렬 — 항상 표시 -->
+        <div class="rss-page-actions">
+          <a href="community.html" class="rss-btn rss-btn--outline px-10">
             <i data-lucide="list" style="width:14px;height:14px;"></i>목록
           </a>
         </div>

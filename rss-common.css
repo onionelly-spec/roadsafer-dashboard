@@ -1201,3 +1201,56 @@ img { max-width: 100%; display: block; }
 }
 
 
+
+/* ═══════════════════════════════════════════════════════════
+   ─── 페이지 하단 버튼 영역 공통 규칙 ────────────────────────
+   ■ 규칙 요약
+     .rss-page-actions        : 중요 버튼 (차단신청·목록·저장·등록·취소 등)
+                                → 가운데 정렬, 페이지 주요 액션
+     .rss-page-actions--left  : 조건부 버튼 (수정·삭제 등 내 글일 때만 표시)
+                                → 왼쪽 정렬
+   ■ 사용 예
+     <div class="rss-page-actions">
+       <button class="rss-btn rss-btn--amber px-10">차단신청</button>
+       <a href="..." class="rss-btn rss-btn--outline px-10">목록</a>
+     </div>
+
+     <div class="rss-page-actions rss-page-actions--left">
+       <a href="..." class="rss-btn rss-btn--outline rss-btn--sm">수정</a>
+       <button class="rss-btn rss-btn--outline-danger rss-btn--sm">삭제</button>
+     </div>
+   ■ 신규 페이지 작성 시 반드시 이 클래스를 사용할 것
+     (페이지 개별 CSS에 footer 스타일을 새로 만들지 말 것)
+═══════════════════════════════════════════════════════════ */
+
+.rss-page-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* ← 가운데 정렬 (기본) */
+  gap: 10px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--rss-border);
+  flex-wrap: wrap;
+}
+
+/* 왼쪽 정렬 변형 — 수정·삭제 등 조건부 버튼 */
+.rss-page-actions--left {
+  justify-content: flex-start;
+}
+
+/* 모바일: 버튼 너비 100% 확장 */
+@media (max-width: 640px) {
+  .rss-page-actions {
+    padding: 16px;
+    gap: 8px;
+  }
+  .rss-page-actions .rss-btn {
+    flex: 1 1 auto;
+    min-width: 120px;
+    justify-content: center;
+  }
+  .rss-page-actions--left .rss-btn {
+    flex: 0 0 auto;
+    min-width: 80px;
+  }
+}

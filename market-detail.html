@@ -95,26 +95,10 @@
       white-space: pre-line;
     }
 
-    /* ── 하단 버튼 ── */
-    .market-detail-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 24px;
-      border-top: 1px solid #f3f4f6;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .market-detail-footer__left { display: flex; gap: 8px; }
-    .market-detail-footer__right { display: flex; gap: 8px; }
-
+    /* 하단 버튼: rss-page-actions 공통 클래스 사용 (rss-common.css) */
     @media (max-width: 480px) {
       .market-info__title { font-size: var(--rss-font-md); }
       .market-info__price { font-size: var(--rss-font-lg); }
-      .market-detail-footer { flex-direction: column; }
-      .market-detail-footer__left,
-      .market-detail-footer__right { width: 100%; }
-      .market-detail-footer .rss-btn { flex: 1; justify-content: center; }
     }
   </style>
 </head>
@@ -211,33 +195,31 @@
 
         </div><!-- /market-detail-wrap -->
 
-        <!-- ── 하단 버튼 ──────────────────────────────────────
-             [Java] 수정/삭제: 작성자 본인만 표시
-             [Java] th:if="${loginUsr.mberSeq == market.mberSeq}"
-        ─────────────────────────────────────────────────── -->
-        <div class="market-detail-footer">
-          <div class="market-detail-footer__left">
-            <!-- 작성자 본인만 표시 -->
-            <!-- [Java] th:if="${loginUsr.mberSeq == market.mberSeq}" -->
-            <a href="market-write.html" class="rss-btn rss-btn--outline">
-              <i data-lucide="pencil" style="width:14px;height:14px;"></i>수정
-            </a>
-            <button type="button" class="rss-btn rss-btn--outline-danger"
-                    onclick="deleteMarket()">
-              <i data-lucide="trash-2" style="width:14px;height:14px;"></i>삭제
-            </button>
-          </div>
-          <div class="market-detail-footer__right">
-            <!-- 상담 신청 버튼 (작성자 본인 제외) -->
-            <!-- [Java] th:unless="${loginUsr.mberSeq == market.mberSeq}" -->
-            <button type="button" class="rss-btn rss-btn--amber"
-                    onclick="requestConsult()">
-              <i data-lucide="message-circle" style="width:14px;height:14px;"></i>상담 신청
-            </button>
-            <a href="market.html" class="rss-btn rss-btn--outline">
-              <i data-lucide="list" style="width:14px;height:14px;"></i>목록
-            </a>
-          </div>
+        <!-- 하단 버튼: 수정/삭제 = 왼쪽 정렬, 상담신청/목록 = 가운데 정렬 (공통 규칙) -->
+
+        <!-- 수정/삭제: 왼쪽 정렬 — 내 글일 때만 표시 -->
+        <!-- [Java] th:if="${loginUsr.mberSeq == market.mberSeq}" -->
+        <div class="rss-page-actions rss-page-actions--left" style="border-top:none; padding-bottom:0;">
+          <a href="market-write.html" class="rss-btn rss-btn--outline rss-btn--sm">
+            <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
+          </a>
+          <button type="button" class="rss-btn rss-btn--outline-danger rss-btn--sm"
+                  onclick="deleteMarket()">
+            <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
+          </button>
+        </div>
+
+        <!-- 상담신청/목록: 가운데 정렬 — 항상 표시 -->
+        <div class="rss-page-actions">
+          <!-- 상담 신청 버튼 (작성자 본인 제외) -->
+          <!-- [Java] th:unless="${loginUsr.mberSeq == market.mberSeq}" -->
+          <button type="button" class="rss-btn rss-btn--amber px-10"
+                  onclick="requestConsult()">
+            <i data-lucide="message-circle" style="width:14px;height:14px;"></i>상담 신청
+          </button>
+          <a href="market.html" class="rss-btn rss-btn--outline px-10">
+            <i data-lucide="list" style="width:14px;height:14px;"></i>목록
+          </a>
         </div>
 
       </div><!-- /rss-card -->
