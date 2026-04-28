@@ -568,7 +568,7 @@
                          placeholder="00000" maxlength="5"
                          oninput="this.value=this.value.replace(/\D/g,'');" required />
                 </div>
-                <p class="reg-input-hint">* 숫자만 허용. 기타 문자는 입력 못하게 막음.</p>
+                <!-- [Java] 사업자번호: 숫자만 허용, 기타 문자 입력 차단 (oninput replace 처리) -->
               </td>
             </tr>
 
@@ -870,12 +870,12 @@
       <i data-lucide="info"></i>
       가입 규칙에 맞는지 확인하세요
     </p>
+    <!-- [Java] 등록 버튼 클릭 시:
+         - 필수 항목 누락 시 경고창: "모든 항목을 빠짐없이 입력하세요."
+         - 정상 입력 시 확인 모달 표시 → 예 클릭 시 가입 대기 처리 후 register-complete.html(J2)로 이동
+    -->
     <p class="reg-alert-modal__body">
-      입력하신 정보를 확인했습니다.<br>
-      <strong>가입하시겠습니까?</strong><br>
-      <span style="font-size:var(--rss-font-sm);color:#9ca3af;">
-        가입 대기 처리 후 가입완료(J2)로 이동합니다.
-      </span>
+      가입하시겠습니까?
     </p>
     <div class="reg-alert-modal__footer">
       <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
