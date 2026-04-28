@@ -241,24 +241,7 @@
     }
     .company-search-row .reg-input { flex: 1; }
 
-    /* 찾기 버튼 (기업주 가입페이지 .reg-file-btn과 동일 스타일) */
-    .reg-file-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 8px 14px;
-      border: 1.5px solid var(--rss-border);
-      border-radius: var(--rss-radius);
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: var(--rss-text-muted);
-      background: #fff;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: border-color .15s, color .15s;
-    }
-    .reg-file-btn:hover { border-color: var(--rss-amber); color: var(--rss-text); }
-    .reg-file-btn svg { width: 14px; height: 14px; }
+    /* .reg-file-btn → rss-common.css 공통 스타일로 이전 (중복 정의 제거) */
 
     /* 경고 모달 */
     .reg-alert-modal {
@@ -683,7 +666,7 @@
                placeholder="상호를 입력하세요"
                onkeydown="if(event.key==='Enter') searchCompany(1)" />
         <!-- [Java] 검색 버튼 클릭 시 GET /register/company/search?keyword={companySearchKeyword}&page=1 -->
-        <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+        <button type="button" class="reg-file-btn"
                 onclick="searchCompany(1)">
           <i data-lucide="search"></i> 찾기
         </button>

@@ -1305,3 +1305,50 @@ img { max-width: 100%; display: block; }
     padding: 0 10px;
   }
 }
+
+
+/* ═══════════════════════════════════════════════════════════
+   ─── 회원가입 폼 인라인 찾기 버튼 (.reg-file-btn) ────────────
+   ■ 용도: 회원가입 폼 내 인풋박스 옆에 붙는 "찾기" 버튼
+          (주소 찾기, 기업 찾기, 사업자번호 확인 등)
+   ■ 규칙:
+     - 인풋박스(.reg-input)와 동일한 높이(padding: 10px 14px)
+     - 폰트 컬러는 var(--rss-text-muted) — 주소찾기 버튼과 동일
+     - 중요 버튼이 아니므로 amber 색상 사용 금지
+     - 호버 시 테두리만 amber로 변경
+   ■ 사용 예:
+     <div style="display:flex;gap:8px;">
+       <input class="reg-input" ...>
+       <button type="button" class="reg-file-btn">
+         <i data-lucide="search"></i> 찾기
+       </button>
+     </div>
+   ■ 신규 페이지에서도 이 클래스를 사용할 것
+     (페이지 개별 style 태그에 중복 정의 금지)
+═══════════════════════════════════════════════════════════ */
+
+.reg-file-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 14px;         /* reg-input과 동일한 상하 패딩 → 높이 일치 */
+  border: 1.5px solid var(--rss-border);
+  border-radius: var(--rss-radius);
+  font-size: var(--rss-font-sm);   /* 13px */
+  font-weight: 600;
+  color: var(--rss-muted);         /* 주소찾기 버튼과 동일한 muted 컬러 */
+  background: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color .15s, color .15s;
+  line-height: 1.5;
+}
+.reg-file-btn:hover {
+  border-color: var(--rss-amber);
+  color: var(--rss-text);
+}
+.reg-file-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
