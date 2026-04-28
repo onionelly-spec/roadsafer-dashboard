@@ -503,19 +503,16 @@ RSS.action = (function() {
 
   /* ── 모달 HTML 템플릿 ────────────────────────────────── */
   var MODAL_HTML = `
-<!-- ══ 차단 취소 모달 ══════════════════════════════════ -->
+<!-- ══ 취소 사유 모달 (진행상황 탭 전용) ══════════════════ -->
 <div class="rss-modal-backdrop" id="rssModalCancel">
   <div class="rss-modal" role="dialog" aria-modal="true" aria-labelledby="rssCancelTitle">
-    <p class="rss-modal__title" id="rssCancelTitle">차단신청 취소</p>
-    <p class="rss-modal__body">
-      차단 취소에 대해 <span class="highlight">발주업체와 협의</span>가 되었습니까?
-    </p>
+    <p class="rss-modal__title" id="rssCancelTitle">취소 사유</p>
     <textarea id="rssCancelReason" placeholder="취소 사유를 입력하세요 (필수)"></textarea>
     <div class="rss-modal__footer">
       <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
-              onclick="RSS.action.closeModal('rssModalCancel')">아니오</button>
+              onclick="RSS.action.closeModal('rssModalCancel')">취소</button>
       <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
-              onclick="RSS.action.submitCancel()">예</button>
+              onclick="RSS.action.submitCancel()">확인</button>
     </div>
   </div>
 </div>
