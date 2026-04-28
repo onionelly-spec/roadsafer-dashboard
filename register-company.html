@@ -372,6 +372,48 @@
     .tma-del-btn:hover { color: #ef4444; }
     .tma-del-btn svg { width: 16px; height: 16px; }
 
+    /* TMA 모바일 카드 UI (640px 이하) */
+    @media (max-width: 640px) {
+      .tma-table-scroll { overflow: visible; }
+      .tma-table-wrap { border: none; border-radius: 0; background: transparent; }
+      .tma-table thead { display: none; }
+      .tma-table tbody tr {
+        display: block;
+        background: #fff;
+        border: 1.5px solid var(--rss-border);
+        border-radius: var(--rss-radius);
+        padding: 14px 16px;
+        margin-bottom: 12px;
+      }
+      .tma-table tbody tr:last-child { margin-bottom: 0; }
+      .tma-table tbody td {
+        display: block;
+        padding: 0;
+        border: none;
+        text-align: left;
+        margin-bottom: 10px;
+      }
+      .tma-table tbody td:last-child { margin-bottom: 0; }
+      /* 각 셀 앞에 라벨 표시 */
+      .tma-table tbody td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-size: var(--rss-font-xs);
+        font-weight: 700;
+        color: var(--rss-muted);
+        margin-bottom: 5px;
+      }
+      /* 종류 라디오 버튼 가로 정렬 */
+      .tma-type-wrap { justify-content: flex-start; gap: 16px; }
+      .tma-type-wrap label { font-size: var(--rss-font-base); }
+      /* 삭제 버튼 오른쪽 정렬 */
+      .tma-table tbody td.tma-del-cell {
+        text-align: right;
+        margin-top: 4px;
+        margin-bottom: 0;
+      }
+    }
+
     /* 경고 모달 */
     .reg-alert-modal {
       display: none;
@@ -714,24 +756,24 @@
                 <!-- [Java] th:each="tma : ${tmaList}" → 행 반복 -->
                 <!-- 기본 1행 -->
                 <tr id="tmaRow_1">
-                  <td>
+                  <td data-label="종류">
                     <div class="tma-type-wrap">
                       <label><input type="radio" name="tmaType_1" value="TMA1" checked /> TMA1</label>
                       <label><input type="radio" name="tmaType_1" value="TMA3" /> TMA3</label>
                       <label><input type="radio" name="tmaType_1" value="PLCS" /> PLCS</label>
                     </div>
                   </td>
-                  <td>
+                  <td data-label="차량 번호">
                     <input type="text" name="tmaCarNo_1" class="reg-input"
-                           placeholder="차량번호" style="text-align:center;" />
+                           placeholder="차량번호" />
                   </td>
-                  <td>
+                  <td data-label="소유주">
                     <!-- [Java] 소유주: 자율 입력 -->
                     <input type="text" name="tmaOwner_1" class="reg-input"
-                           placeholder="소유주" style="text-align:center;" />
+                           placeholder="소유주" />
                   </td>
-                  <td>
-                    <div class="reg-file-wrap" style="justify-content:center;" id="tmaFileWrap_1">
+                  <td data-label="파일 첨부">
+                    <div class="reg-file-wrap" id="tmaFileWrap_1">
                       <button type="button" class="reg-file-btn" onclick="triggerFileInput('tmaFile_1')">
                         <i data-lucide="paperclip"></i> 파일찾기
                       </button>
@@ -747,7 +789,7 @@
                       </div>
                     </div>
                   </td>
-                  <td><!-- 첫 행은 삭제 불가 --></td>
+                  <td class="tma-del-cell"><!-- 첫 행은 삭제 불가 --></td>
                 </tr>
               </tbody>
             </table>
@@ -953,17 +995,17 @@
     var tr = document.createElement('tr');
     tr.id = 'tmaRow_' + n;
     tr.innerHTML =
-      '<td>' +
+      '<td data-label="종류">' +
         '<div class="tma-type-wrap">' +
           '<label><input type="radio" name="tmaType_' + n + '" value="TMA1" checked /> TMA1</label>' +
           '<label><input type="radio" name="tmaType_' + n + '" value="TMA3" /> TMA3</label>' +
           '<label><input type="radio" name="tmaType_' + n + '" value="PLCS" /> PLCS</label>' +
         '</div>' +
       '</td>' +
-      '<td><input type="text" name="tmaCarNo_' + n + '" class="reg-input" placeholder="차량번호" style="text-align:center;" /></td>' +
-      '<td><input type="text" name="tmaOwner_' + n + '" class="reg-input" placeholder="소유주" style="text-align:center;" /></td>' +
-      '<td>' +
-        '<div class="reg-file-wrap" style="justify-content:center;" id="tmaFileWrap_' + n + '">' +
+      '<td data-label="차량 번호"><input type="text" name="tmaCarNo_' + n + '" class="reg-input" placeholder="차량번호" /></td>' +
+      '<td data-label="소유주"><input type="text" name="tmaOwner_' + n + '" class="reg-input" placeholder="소유주" /></td>' +
+      '<td data-label="파일 첨부">' +
+        '<div class="reg-file-wrap" id="tmaFileWrap_' + n + '">' +
           '<button type="button" class="reg-file-btn" onclick="triggerFileInput(\'tmaFile_' + n + '\')">' +
             '<i data-lucide="paperclip"></i>파일찾기' +
           '</button>' +
@@ -976,7 +1018,7 @@
           '</div>' +
         '</div>' +
       '</td>' +
-      '<td>' +
+      '<td class="tma-del-cell">' +
         '<button type="button" class="tma-del-btn" onclick="deleteTmaRow(' + n + ')" aria-label="행 삭제">' +
           '<i data-lucide="trash-2"></i>' +
         '</button>' +
