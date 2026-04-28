@@ -344,9 +344,9 @@
             <!-- 차단신청 취소 버튼: 예정(SCHEDULED) 상태일 때만 표시 -->
             <!-- [Java] th:if="${blockReq.status == 'SCHEDULED'}" -->
             <button type="button"
-                    class="rss-btn rss-action-btn rss-action-btn--cancel"
+                    class="rss-btn rss-btn--outline-cancel"
                     onclick="RSS.action.openCancelSimpleModal()">
-              차단신청 취소
+              <i data-lucide="x-circle" style="width:14px;height:14px;"></i> 차단신청 취소
             </button>
           </div>
 
@@ -381,10 +381,10 @@
     </main>
 
     <div id="rss-footer-wrap"></div>
-
   </div><!-- /rss-main -->
-
 </div><!-- /rss-app -->
+<div id="rss-action-modals"></div>
+<!-- 위 모달들은 rss-common.js의 RSS.action이 #rss-action-modals에 자동 주입합니다 -->
 
 <script src="rss-common.js"></script>
 <script>

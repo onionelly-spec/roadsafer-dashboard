@@ -538,6 +538,18 @@ img { max-width: 100%; display: block; }
 .rss-btn--outline-danger:hover {
   background: #fef2f2;
 }
+/* 상세정보 페이지용 차단신청 취소 버튼
+   height 38px, font 15px — .rss-btn 기본 크기 사용
+   목록용 .rss-action-btn--cancel과 구분 */
+.rss-btn--outline-cancel {
+  background: transparent;
+  border: 1.5px solid var(--rss-border);
+  color: var(--rss-text);
+}
+.rss-btn--outline-cancel:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
 .rss-btn--sm {
   height: 32px;
   padding: 0 13px;
