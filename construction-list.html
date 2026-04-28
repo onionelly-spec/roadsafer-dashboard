@@ -252,13 +252,15 @@
                 <td>2026-07-01 ~ 2026-07-03 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(3일)</span></td>
                 <!-- [Java] th:if="${loginType == 'company'}" → 예정은 금액 미확정 공란 -->
                 <td class="td-amount"><!-- 예정 미확정 --></td>
-                              <!-- 예정 상태: 차단신청 취소 버튼 -->
+                <td>
+                  <!-- 예정 상태: 차단신청 취소 버튼 -->
                   <!-- [Java] th:if="${item.status == 'SCHEDULED'}" -->
                   <button type="button" class="rss-btn rss-action-btn rss-action-btn--cancel"
                           onclick="RSS.action.openCancelModal(this)"
                           data-nm="호남선 순청방향 포장공사">
                     차단신청 취소
-                  </button></td>
+                  </button>
+                </td>
               </tr>
 
               <!-- 진행중 행 → 오늘 완료 버튼 (오늘 공사인 경우만) -->
