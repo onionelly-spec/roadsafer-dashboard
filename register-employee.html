@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>기업회원 부서·직원 정보 입력 — 로드세이프티시스템</title>
+  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- 공통 커스텀 CSS -->
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* ══════════════════════════════════════════════════════
+       회원가입 공통 레이아웃 (register-company.html과 동일)
+    ══════════════════════════════════════════════════════ */
+    .reg-page {
+      min-height: 100vh;
+      background: #f0ede6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 60px;
+    }
+    .reg-header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .reg-header__logo { height: 40px; width: auto; }
+    .reg-header__name {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      letter-spacing: -0.01em;
+    }
+    .reg-card {
+      width: 100%;
+      max-width: 900px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .reg-card__top-line {
+      height: 4px;
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
+    }
+    .reg-card__body { padding: 32px 36px 36px; }
+    @media (max-width: 640px) { .reg-card__body { padding: 20px 16px 24px; } }
+
+    .reg-title {
+      font-size: var(--rss-font-2xl);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    /* 스텝 인디케이터 */
+    .reg-steps {
+      display: flex;
+      border-bottom: 2px solid var(--rss-border);
+      margin-bottom: 20px;
+    }
+    .reg-step {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: var(--rss-font-base);
+      font-weight: 600;
+      color: #c4c9d4;
+      position: relative;
+    }
+    .reg-step--active { color: var(--rss-text); }
+    .reg-step--active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 2px;
+      background: var(--rss-amber);
+    }
+    .reg-step--done { color: var(--rss-muted); }
+
+    /* 안내 문구 */
+    .reg-guide-text {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      text-align: center;
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       폼 입력 공통 (rss-common.css의 rss-input과 동일 계열)
+    ══════════════════════════════════════════════════════ */
+    .reg-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    .reg-input:focus { border-color: var(--rss-amber); background: #fff; }
+    .reg-input::placeholder { color: #c4c9d4; }
+    .reg-input--error { border-color: #ef4444 !important; }
+    /* readonly 입력 (기업 선택 후 자동 입력) */
+    .reg-input--readonly {
+      background: #f3f4f6;
+      color: var(--rss-muted);
+      cursor: not-allowed;
+    }
+    .reg-input--readonly:focus { border-color: var(--rss-border); background: #f3f4f6; }
+    .reg-input-hint {
+      font-size: var(--rss-font-xs);
+      color: var(--rss-muted);
+      margin-top: 4px;
+    }
+    .reg-input-hint--error { color: #ef4444; font-weight: 600; }
+
+    /* ══════════════════════════════════════════════════════
+       폼 테이블 — 공통 CSS rss-table--detail 규칙 준수
+       th: 가운데 정렬, 배경 #fafafa, 너비 130px
+       td: 왼쪽 정렬
+    ══════════════════════════════════════════════════════ */
+    .reg-form-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 4px;
+    }
+    .reg-form-table th {
+      width: 130px;
+      padding: 12px 16px;
+      background: #f9fafb;
+      border: 1px solid var(--rss-border);
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-muted);
+      text-align: center;        /* ← 공통 규칙: 가운데 정렬 */
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .reg-form-table td {
+      padding: 12px 16px;
+      border: 1px solid var(--rss-border);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      vertical-align: middle;
+    }
+    /* 모바일: 테이블 → 스택 레이아웃 (커뮤니티 글쓰기 방식) */
+    @media (max-width: 640px) {
+      .reg-form-table,
+      .reg-form-table tbody,
+      .reg-form-table tr,
+      .reg-form-table th,
+      .reg-form-table td { display: block; width: 100%; }
+      .reg-form-table tr { margin-bottom: 12px; }
+      .reg-form-table th {
+        text-align: left;
+        border-bottom: none;
+        padding: 8px 12px 4px;
+        background: transparent;
+        font-size: var(--rss-font-sm);
+        color: var(--rss-text);
+        font-weight: 700;
+      }
+      .reg-form-table td {
+        border-top: none;
+        padding: 4px 12px 8px;
+      }
+    }
+
+    /* 분할 입력 (사업자번호, 전화번호) */
+    .split-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .split-wrap .reg-input { flex: 1; min-width: 50px; }
+    .split-sep { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
+
+    /* 라디오 수신 설정 — 인풋박스와 동일 레벨(rss-font-base) */
+    .receive-radio-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      flex-wrap: wrap;
+    }
+    .receive-radio-wrap label {
+      display: flex; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .receive-radio-wrap input[type="radio"] { accent-color: var(--rss-amber); }
+    @media (max-width: 640px) {
+      .receive-radio-wrap { margin-top: 6px; }
+    }
+
+    /* 이메일 입력 */
+    .email-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .email-wrap .reg-input { flex: 1; min-width: 80px; }
+    .email-at { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
+    .email-domain-select {
+      padding: 9px 10px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      min-width: 110px;
+    }
+    .email-domain-select:focus { border-color: var(--rss-amber); }
+
+    /* 상호 찾기 행 */
+    .company-search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .company-search-row .reg-input { flex: 1; }
+
+    /* 경고 모달 */
+    .reg-alert-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .reg-alert-modal.open { display: flex; }
+    .reg-alert-modal__box {
+      background: #fff;
+      border-radius: var(--rss-radius-lg);
+      padding: 28px 28px 24px;
+      max-width: 400px; width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+    }
+    .reg-alert-modal__title {
+      font-size: var(--rss-font-lg);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .reg-alert-modal__title svg { width: 22px; height: 22px; }
+    .reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
+    .reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
+    .reg-alert-modal__body {
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .reg-alert-modal__footer {
+      display: flex; justify-content: center; gap: 8px;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       기업 찾기 모달 (J1-1-1)
+    ══════════════════════════════════════════════════════ */
+    .company-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .company-modal.open { display: flex; }
+    .company-modal__box {
+      background: #fff;
+      border-radius: var(--rss-radius-lg);
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+      overflow: hidden;
+    }
+    .company-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--rss-border);
+      background: #f9fafb;
+    }
+    .company-modal__title {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+    }
+    .company-modal__close {
+      background: none; border: none; cursor: pointer;
+      color: var(--rss-muted); padding: 4px;
+      display: flex; align-items: center;
+      transition: color 0.15s;
+    }
+    .company-modal__close:hover { color: var(--rss-text); }
+    .company-modal__close svg { width: 20px; height: 20px; }
+    .company-modal__body { padding: 20px; }
+    .company-modal__guide {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .company-modal__search-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .company-modal__search-row .reg-input { flex: 1; }
+    .company-modal__result {
+      border: 1px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      overflow: hidden;
+      min-height: 80px;
+    }
+    .company-modal__result-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .company-modal__result-table thead th {
+      background: #f9fafb;
+      padding: 9px 12px;
+      font-size: var(--rss-font-sm);
+      font-weight: 700;
+      color: var(--rss-muted);
+      border-bottom: 1px solid var(--rss-border);
+      text-align: center;
+    }
+    .company-modal__result-table tbody td {
+      padding: 10px 12px;
+      font-size: var(--rss-font-sm);
+      border-bottom: 1px solid var(--rss-border);
+      text-align: center;
+      vertical-align: middle;
+    }
+    .company-modal__result-table tbody tr:last-child td { border-bottom: none; }
+    .company-modal__result-table tbody tr:hover { background: rgba(245,158,11,0.04); }
+    .company-modal__empty {
+      padding: 24px;
+      text-align: center;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+    }
+    /* 페이지네이션 */
+    .company-modal__pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 0 0;
+      flex-wrap: wrap;
+    }
+    .company-modal__page-btn {
+      min-width: 28px; height: 28px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-xs);
+      color: var(--rss-muted);
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0 6px;
+    }
+    .company-modal__page-btn:hover { border-color: var(--rss-amber); color: var(--rss-amber-dark); }
+    .company-modal__page-btn--active {
+      background: var(--rss-amber);
+      border-color: var(--rss-amber);
+      color: #fff;
+      font-weight: 700;
+    }
+    .company-modal__page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* 뒤로가기 링크 */
+    .reg-back-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: var(--rss-font-sm); color: var(--rss-muted);
+      margin-top: 20px; cursor: pointer; transition: color 0.15s;
+    }
+    .reg-back-link:hover { color: var(--rss-text); }
+    .reg-back-link svg { width: 14px; height: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="reg-page">
+
+  <!-- 헤더 로고 -->
+  <header class="reg-header">
+    <a href="login.html">
+      <img src="assets/images/logo-rss-new.png" alt="로드세이프티시스템" class="reg-header__logo" />
+    </a>
+    <span class="reg-header__name">로드세이프티시스템</span>
+  </header>
+
+  <!-- 메인 카드 -->
+  <main class="reg-card" role="main">
+    <div class="reg-card__top-line"></div>
+    <div class="reg-card__body">
+
+      <h1 class="reg-title">회원가입</h1>
+
+      <!-- 스텝 인디케이터 -->
+      <nav class="reg-steps" aria-label="가입 단계">
+        <div class="reg-step reg-step--done">약관동의</div>
+        <div class="reg-step reg-step--active" aria-current="step">정보 입력</div>
+        <div class="reg-step">가입 완료</div>
+      </nav>
+
+      <!-- 안내 문구 -->
+      <p class="reg-guide-text">
+        모든 정보를 빠짐없이 입력해주세요.<br>
+        기업의 운영자가 정보 확인 후 '승인' 한 경우에만 서비스를 이용할 수 있습니다.
+      </p>
+
+      <form id="regEmployeeForm" novalidate>
+
+        <!-- ══════════════════════════════════════════════════
+             ① 공통 정보 섹션
+        ══════════════════════════════════════════════════ -->
+        <table class="reg-form-table" aria-label="공통 정보 입력">
+          <tbody>
+
+            <!-- 아이디 -->
+            <!-- [Java] 아이디 중복 체크: POST /register/check-id { mberId } -->
+            <!-- [Java] 유효성: 영문·숫자만, 8~12자 -->
+            <tr>
+              <th scope="row"><label for="mberId">아이디</label></th>
+              <td>
+                <input type="text" id="mberId" name="mberId" class="reg-input"
+                       placeholder="아이디를 입력하세요"
+                       maxlength="12"
+                       oninput="validateId(this)"
+                       autocomplete="username"
+                       required />
+                <p class="reg-input-hint" id="mberIdHint">* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.</p>
+              </td>
+            </tr>
+
+            <!-- 비밀번호 -->
+            <!-- [Java] 유효성: 대/소문자 구분, 영문·숫자·특수문자 포함, 8~12자 -->
+            <tr>
+              <th scope="row"><label for="mberPassword">비밀번호</label></th>
+              <td>
+                <input type="password" id="mberPassword" name="mberPassword" class="reg-input"
+                       placeholder="비밀번호를 입력하세요"
+                       maxlength="12"
+                       oninput="validatePw(this)"
+                       autocomplete="new-password"
+                       required />
+                <p class="reg-input-hint" id="mberPasswordHint">* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.</p>
+              </td>
+            </tr>
+
+            <!-- 비밀번호 확인 -->
+            <tr>
+              <th scope="row"><label for="mberPasswordConfirm">비밀번호 확인</label></th>
+              <td>
+                <input type="password" id="mberPasswordConfirm" name="mberPasswordConfirm" class="reg-input"
+                       placeholder="비밀번호를 한 번 더 입력하세요"
+                       maxlength="12"
+                       oninput="validatePwConfirm(this)"
+                       autocomplete="new-password"
+                       required />
+                <p class="reg-input-hint" id="mberPasswordConfirmHint">* 비밀번호를 한 번 더 입력하세요.</p>
+              </td>
+            </tr>
+
+            <!-- 상호 (기업 찾기) -->
+            <!-- [Java] 기업 찾기 모달(J1-1-1)에서 선택 후 자동 입력 → readonly 처리 -->
+            <!-- [Java] GET /register/company/search?keyword={companyNm}&page={page} → 목록 10개씩 반환 -->
+            <tr>
+              <th scope="row"><label for="companyNm">상호</label></th>
+              <td>
+                <div class="company-search-row">
+                  <!-- [Java] 기업 선택 후 value 자동 바인딩, readonly 적용 -->
+                  <input type="text" id="companyNm" name="companyNm" class="reg-input reg-input--readonly"
+                         placeholder="기업을 검색하여 선택하세요"
+                         readonly
+                         required />
+                  <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+                          onclick="openCompanyModal()"
+                          aria-label="기업 찾기">
+                    <i data-lucide="search"></i> 찾기
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 대표자명 (기업 찾기 후 자동 입력) -->
+            <!-- [Java] 기업 선택 시 해당 기업의 ceoNm 자동 바인딩 → readonly -->
+            <tr>
+              <th scope="row"><label for="ceoNm">대표자명</label></th>
+              <td>
+                <input type="text" id="ceoNm" name="ceoNm" class="reg-input reg-input--readonly"
+                       placeholder="기업 선택 후 자동 입력"
+                       readonly />
+              </td>
+            </tr>
+
+            <!-- 사업자 번호 (기업 찾기 후 자동 입력) -->
+            <!-- [Java] 기업 선택 시 해당 기업의 bizNo 자동 바인딩 → readonly, 수정 불가 -->
+            <tr>
+              <th scope="row"><label for="bizNo1">사업자 번호</label></th>
+              <td>
+                <div class="split-wrap">
+                  <input type="text" id="bizNo1" name="bizNo1" class="reg-input reg-input--readonly"
+                         placeholder="000" maxlength="3" readonly />
+                  <span class="split-sep">-</span>
+                  <input type="text" id="bizNo2" name="bizNo2" class="reg-input reg-input--readonly"
+                         placeholder="00" maxlength="2" readonly />
+                  <span class="split-sep">-</span>
+                  <input type="text" id="bizNo3" name="bizNo3" class="reg-input reg-input--readonly"
+                         placeholder="00000" maxlength="5" readonly />
+                </div>
+              </td>
+            </tr>
+
+            <!-- 이름(부서명) -->
+            <tr>
+              <th scope="row"><label for="empNm">이름(부서명)</label></th>
+              <td>
+                <!-- [Java] 직원 또는 부서명 자유 입력 -->
+                <input type="text" id="empNm" name="empNm" class="reg-input"
+                       placeholder="이름 또는 부서명을 입력하세요"
+                       required />
+              </td>
+            </tr>
+
+            <!-- 휴대폰 번호 -->
+            <!-- [Java] 숫자만 허용: oninput replace(/\D/g,'') 처리 -->
+            <!-- [Java] SMS 수신 여부: smsReceiveYn (Y/N) -->
+            <tr>
+              <th scope="row"><label for="empTel1">휴대폰 번호</label></th>
+              <td>
+                <div class="split-wrap">
+                  <input type="text" id="empTel1" name="empTel1" class="reg-input"
+                         placeholder="010" maxlength="3"
+                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('empTel2').focus();"
+                         required />
+                  <span class="split-sep">-</span>
+                  <input type="text" id="empTel2" name="empTel2" class="reg-input"
+                         placeholder="0000" maxlength="4"
+                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=4) document.getElementById('empTel3').focus();" />
+                  <span class="split-sep">-</span>
+                  <input type="text" id="empTel3" name="empTel3" class="reg-input"
+                         placeholder="0000" maxlength="4"
+                         oninput="this.value=this.value.replace(/\D/g,'');" />
+                </div>
+                <!-- SMS 수신 여부 라디오 — 인풋박스와 동일 폰트 레벨(rss-font-base) -->
+                <div class="receive-radio-wrap" style="margin-top:8px;">
+                  <span>* sms 수신 :</span>
+                  <label><input type="radio" name="smsReceiveYn" value="Y" checked /> 수신</label>
+                  <label><input type="radio" name="smsReceiveYn" value="N" /> 거부</label>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 이메일 주소 -->
+            <!-- [Java] emailReceiveYn (Y/N) -->
+            <!-- [Java] 이메일 도메인 목록: 네이버, 지메일, 다음, 한메일, 카카오, 한메일, 코리아닷컴, 직접입력 -->
+            <tr>
+              <th scope="row"><label for="emailId">이메일 주소</label></th>
+              <td>
+                <div class="email-wrap">
+                  <input type="text" id="emailId" name="emailId" class="reg-input"
+                         placeholder="이메일 아이디" />
+                  <span class="email-at">@</span>
+                  <input type="text" id="emailDomain" name="emailDomain" class="reg-input"
+                         placeholder="직접입력" />
+                  <select class="email-domain-select" id="emailDomainSelect"
+                          onchange="applyEmailDomain(this.value)"
+                          aria-label="이메일 도메인 선택">
+                    <option value="">선택</option>
+                    <option value="naver.com">naver.com</option>
+                    <option value="gmail.com">gmail.com</option>
+                    <option value="daum.net">daum.net</option>
+                    <option value="hanmail.net">hanmail.net</option>
+                    <option value="kakao.com">kakao.com</option>
+                    <option value="korea.com">korea.com</option>
+                    <option value="direct">직접입력</option>
+                  </select>
+                </div>
+                <!-- 이메일 수신 여부 라디오 — 인풋박스와 동일 폰트 레벨(rss-font-base) -->
+                <div class="receive-radio-wrap" style="margin-top:8px;">
+                  <span>* 이메일 수신 :</span>
+                  <label><input type="radio" name="emailReceiveYn" value="Y" checked /> 수신</label>
+                  <label><input type="radio" name="emailReceiveYn" value="N" /> 거부</label>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+
+        <!-- ══════════════════════════════════════════════════
+             ② 등록 / 취소 버튼 (공통 CSS rss-page-actions)
+        ══════════════════════════════════════════════════ -->
+        <div class="rss-page-actions" style="margin-top: 32px;">
+          <button type="button" class="rss-btn rss-btn--amber px-10"
+                  onclick="submitRegister()">
+            <i data-lucide="clipboard-check"></i> 등록하기
+          </button>
+          <button type="button" class="rss-btn rss-btn--outline px-10"
+                  onclick="location.href='register-terms.html'">
+            취소
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- 뒤로가기 -->
+  <a href="register-terms.html" class="reg-back-link">
+    <i data-lucide="arrow-left"></i>
+    약관동의로 돌아가기
+  </a>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     기업 찾기 모달 (J1-1-1)
+     [Java] GET /register/company/search?keyword={companyNm}&page={page}
+     - 결과: { list: [{companyNm, bizNo, ceoNm}], totalPage }
+     - 선택 시: 모달 닫힘 + companyNm / ceoNm / bizNo1~3 자동 입력 (readonly)
+══════════════════════════════════════════════════════ -->
+<div class="company-modal" id="modalCompanySearch" role="dialog" aria-modal="true" aria-labelledby="companyModalTitle">
+  <div class="company-modal__box">
+    <div class="company-modal__header">
+      <span class="company-modal__title" id="companyModalTitle">기업 찾기</span>
+      <button type="button" class="company-modal__close" onclick="closeCompanyModal()" aria-label="닫기">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="company-modal__body">
+      <p class="company-modal__guide">소속 기업을 선택하세요</p>
+      <div class="company-modal__search-row">
+        <input type="text" id="companySearchKeyword" class="reg-input"
+               placeholder="상호를 입력하세요"
+               onkeydown="if(event.key==='Enter') searchCompany(1)" />
+        <!-- [Java] 검색 버튼 클릭 시 GET /register/company/search?keyword={companySearchKeyword}&page=1 -->
+        <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+                onclick="searchCompany(1)">
+          <i data-lucide="search"></i> 찾기
+        </button>
+      </div>
+
+      <!-- 검색 결과 영역 -->
+      <!-- [Java] 결과 없음: <div class="company-modal__empty">찾는 기업이 없습니다.</div> -->
+      <div class="company-modal__result" id="companySearchResult">
+        <table class="company-modal__result-table" id="companyResultTable">
+          <thead>
+            <tr>
+              <th>상호</th>
+              <th>사업자 등록번호</th>
+              <th>선택</th>
+            </tr>
+          </thead>
+          <!-- [Java] tbody에 검색 결과 바인딩 (10개씩) -->
+          <tbody id="companyResultBody">
+            <!-- 더미 데이터 — [Java] 실제 데이터로 교체 -->
+            <tr>
+              <td>한국도로차단</td>
+              <td>000-01-00001</td>
+              <td>
+                <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+                        onclick="selectCompany('한국도로차단', '000', '01', '00001', '홍길동')">
+                  선택
+                </button>
+              </td>
+            </tr>
+            <!-- // [Java] 더미 데이터 끝 -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 페이지네이션 -->
+      <!-- [Java] totalPage 기준으로 페이지 버튼 동적 생성 -->
+      <div class="company-modal__pagination" id="companyPagination">
+        <button type="button" class="company-modal__page-btn" onclick="searchCompany(1)" aria-label="처음">&lt;&lt;</button>
+        <button type="button" class="company-modal__page-btn" id="companyPagePrev" onclick="changePage(-1)" aria-label="이전">&lt;</button>
+        <button type="button" class="company-modal__page-btn company-modal__page-btn--active" id="companyPage1" onclick="searchCompany(1)">1</button>
+        <button type="button" class="company-modal__page-btn" id="companyPage2" onclick="searchCompany(2)">2</button>
+        <button type="button" class="company-modal__page-btn" id="companyPage3" onclick="searchCompany(3)">3</button>
+        <button type="button" class="company-modal__page-btn" id="companyPage4" onclick="searchCompany(4)">4</button>
+        <button type="button" class="company-modal__page-btn" id="companyPage5" onclick="searchCompany(5)">5</button>
+        <button type="button" class="company-modal__page-btn" id="companyPage6" onclick="searchCompany(6)">6</button>
+        <button type="button" class="company-modal__page-btn" id="companyPage7" onclick="searchCompany(7)">7</button>
+        <button type="button" class="company-modal__page-btn" id="companyPage8" onclick="searchCompany(8)">8</button>
+        <button type="button" class="company-modal__page-btn" id="companyPage9" onclick="searchCompany(9)">9</button>
+        <button type="button" class="company-modal__page-btn" id="companyPage10" onclick="searchCompany(10)">10</button>
+        <button type="button" class="company-modal__page-btn" id="companyPageNext" onclick="changePage(1)" aria-label="다음">&gt;</button>
+        <button type="button" class="company-modal__page-btn" id="companyPageLast" aria-label="마지막">&gt;&gt;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     경고 모달 — 필수 항목 미입력
+     [Java] 빠진 항목 있을 경우 경고창: "모든 항목을 빠짐없이 입력하세요."
+══════════════════════════════════════════════════════ -->
+<div class="reg-alert-modal" id="modalValidAlert" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title reg-alert-modal__title--warn">
+      <i data-lucide="alert-circle"></i>
+      입력 오류
+    </p>
+    <p class="reg-alert-modal__body" id="modalValidMsg">필수 항목을 모두 입력해 주세요.</p>
+    <div class="reg-alert-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber px-8"
+              onclick="closeModal('modalValidAlert')">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     확인 모달 — 등록 최종 확인
+     [Java] 입력 규칙에 맞으면 가입 대기 처리 후 가입완료(J2)로 이동
+══════════════════════════════════════════════════════ -->
+<div class="reg-alert-modal" id="modalConfirm" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title reg-alert-modal__title--info">
+      <i data-lucide="info"></i>
+    </p>
+    <p class="reg-alert-modal__body">가입하시겠습니까?</p>
+    <div class="reg-alert-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+              onclick="closeModal('modalConfirm')">아니오</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+              onclick="confirmRegister()">예</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  /* ── 현재 페이지 번호 관리 ── */
+  var currentPage = 1;
+  var totalPage = 10; /* [Java] 실제 totalPage 값으로 교체 */
+
+  /* ── 아이디 유효성 검사 ── */
+  /* [Java] 유효성: 영문·숫자만, 8~12자 */
+  function validateId(input) {
+    var val = input.value;
+    var hint = document.getElementById('mberIdHint');
+    var pattern = /^[a-zA-Z0-9]{8,12}$/;
+    if (val && !pattern.test(val)) {
+      input.classList.add('reg-input--error');
+      hint.className = 'reg-input-hint reg-input-hint--error';
+      hint.textContent = '* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.';
+    } else {
+      input.classList.remove('reg-input--error');
+      hint.className = 'reg-input-hint';
+      hint.textContent = '* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.';
+    }
+  }
+
+  /* ── 비밀번호 유효성 검사 ── */
+  /* [Java] 유효성: 대/소문자 구분, 영문·숫자·특수문자 포함, 8~12자 */
+  function validatePw(input) {
+    var val = input.value;
+    var hint = document.getElementById('mberPasswordHint');
+    var pattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,12}$/;
+    if (val && !pattern.test(val)) {
+      input.classList.add('reg-input--error');
+      hint.className = 'reg-input-hint reg-input-hint--error';
+      hint.textContent = '* 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자로 입력하세요.';
+    } else {
+      input.classList.remove('reg-input--error');
+      hint.className = 'reg-input-hint';
+      hint.textContent = '* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.';
+    }
+  }
+
+  /* ── 비밀번호 확인 유효성 검사 ── */
+  function validatePwConfirm(input) {
+    var pw = document.getElementById('mberPassword').value;
+    var hint = document.getElementById('mberPasswordConfirmHint');
+    if (input.value && input.value !== pw) {
+      input.classList.add('reg-input--error');
+      hint.className = 'reg-input-hint reg-input-hint--error';
+      hint.textContent = '* 비밀번호가 일치하지 않습니다.';
+    } else {
+      input.classList.remove('reg-input--error');
+      hint.className = 'reg-input-hint';
+      hint.textContent = '* 비밀번호를 한 번 더 입력하세요.';
+    }
+  }
+
+  /* ── 이메일 도메인 선택 ── */
+  function applyEmailDomain(val) {
+    var domainInput = document.getElementById('emailDomain');
+    if (val === 'direct' || val === '') {
+      domainInput.value = '';
+      domainInput.readOnly = false;
+      domainInput.focus();
+    } else {
+      domainInput.value = val;
+      domainInput.readOnly = true;
+    }
+  }
+
+  /* ── 기업 찾기 모달 열기 ── */
+  function openCompanyModal() {
+    document.getElementById('modalCompanySearch').classList.add('open');
+    document.getElementById('companySearchKeyword').focus();
+    lucide.createIcons();
+  }
+
+  /* ── 기업 찾기 모달 닫기 ── */
+  function closeCompanyModal() {
+    document.getElementById('modalCompanySearch').classList.remove('open');
+  }
+
+  /* ── 기업 검색 ── */
+  /* [Java] GET /register/company/search?keyword={keyword}&page={page} → { list, totalPage } */
+  function searchCompany(page) {
+    currentPage = page || 1;
+    var keyword = document.getElementById('companySearchKeyword').value.trim();
+    /* [Java] 실제 API 호출로 교체:
+       fetch('/register/company/search?keyword=' + encodeURIComponent(keyword) + '&page=' + currentPage)
+         .then(res => res.json())
+         .then(data => renderCompanyResult(data.list, data.totalPage));
+    */
+    /* 더미 처리 — [Java] 실제 데이터 바인딩 후 제거 */
+    if (!keyword) {
+      document.getElementById('companyResultBody').innerHTML =
+        '<tr><td colspan="3" class="company-modal__empty">상호를 입력 후 검색하세요.</td></tr>';
+      return;
+    }
+    /* 더미 결과 렌더링 */
+    renderCompanyResult([
+      { companyNm: '한국도로차단', bizNo: '000-01-00001', ceoNm: '홍길동' }
+    ], 1);
+  }
+
+  /* ── 검색 결과 렌더링 ── */
+  /* [Java] data.list 배열 기준으로 tbody 동적 생성 */
+  function renderCompanyResult(list, tp) {
+    totalPage = tp || 1;
+    var tbody = document.getElementById('companyResultBody');
+    if (!list || list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3"><div class="company-modal__empty">찾는 기업이 없습니다.</div></td></tr>';
+      return;
+    }
+    var html = '';
+    list.forEach(function(item) {
+      html += '<tr>' +
+        '<td>' + item.companyNm + '</td>' +
+        '<td>' + item.bizNo + '</td>' +
+        '<td>' +
+          '<button type="button" class="rss-btn rss-btn--outline rss-btn--sm" ' +
+          'onclick="selectCompanyFromResult(\'' + item.companyNm + '\',\'' + item.bizNo + '\',\'' + item.ceoNm + '\')">' +
+          '선택</button>' +
+        '</td>' +
+      '</tr>';
+    });
+    tbody.innerHTML = html;
+    lucide.createIcons();
+    renderPagination();
+  }
+
+  /* ── 페이지네이션 렌더링 ── */
+  function renderPagination() {
+    for (var i = 1; i <= 10; i++) {
+      var btn = document.getElementById('companyPage' + i);
+      if (btn) {
+        btn.style.display = (i <= totalPage) ? 'inline-flex' : 'none';
+        btn.classList.toggle('company-modal__page-btn--active', i === currentPage);
+      }
+    }
+    var lastBtn = document.getElementById('companyPageLast');
+    if (lastBtn) lastBtn.onclick = function() { searchCompany(totalPage); };
+  }
+
+  /* ── 페이지 변경 ── */
+  function changePage(dir) {
+    var next = currentPage + dir;
+    if (next < 1 || next > totalPage) return;
+    searchCompany(next);
+  }
+
+  /* ── 기업 선택 (결과 목록에서) ── */
+  /* [Java] 선택 시 companyNm / ceoNm / bizNo1~3 자동 바인딩 → readonly 적용 */
+  function selectCompanyFromResult(companyNm, bizNo, ceoNm) {
+    var parts = bizNo.replace(/-/g,'');
+    selectCompany(companyNm, parts.substring(0,3), parts.substring(3,5), parts.substring(5,10), ceoNm);
+  }
+
+  function selectCompany(companyNm, biz1, biz2, biz3, ceoNm) {
+    document.getElementById('companyNm').value = companyNm;
+    document.getElementById('ceoNm').value = ceoNm;
+    document.getElementById('bizNo1').value = biz1;
+    document.getElementById('bizNo2').value = biz2;
+    document.getElementById('bizNo3').value = biz3;
+    closeCompanyModal();
+  }
+
+  /* ── 모달 닫기 ── */
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  /* ── 등록 유효성 검사 및 확인 모달 ── */
+  /* [Java] 빠진 항목 있을 경우 경고창: "모든 항목을 빠짐없이 입력하세요." */
+  function submitRegister() {
+    var required = [
+      { id: 'mberId',                label: '아이디' },
+      { id: 'mberPassword',          label: '비밀번호' },
+      { id: 'mberPasswordConfirm',   label: '비밀번호 확인' },
+      { id: 'companyNm',             label: '상호' },
+      { id: 'empNm',                 label: '이름(부서명)' },
+      { id: 'empTel1',               label: '휴대폰 번호' }
+    ];
+    for (var i = 0; i < required.length; i++) {
+      var el = document.getElementById(required[i].id);
+      if (!el || !el.value.trim()) {
+        document.getElementById('modalValidMsg').textContent = required[i].label + ' 항목을 입력해 주세요.';
+        document.getElementById('modalValidAlert').classList.add('open');
+        el && el.focus();
+        return;
+      }
+    }
+    if (document.getElementById('mberPassword').value !== document.getElementById('mberPasswordConfirm').value) {
+      document.getElementById('modalValidMsg').textContent = '비밀번호가 일치하지 않습니다.';
+      document.getElementById('modalValidAlert').classList.add('open');
+      return;
+    }
+    document.getElementById('modalConfirm').classList.add('open');
+  }
+
+  /* ── 최종 등록 처리 ── */
+  /* [Java] POST /register/employee { formData } → 가입 완료 페이지(J2)로 리다이렉트 */
+  function confirmRegister() {
+    closeModal('modalConfirm');
+    location.href = 'register-complete.html';
+  }
+
+  /* ── 모달 배경 클릭 시 닫기 ── */
+  ['modalValidAlert', 'modalConfirm'].forEach(function(id) {
+    document.getElementById(id).addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+  });
+  document.getElementById('modalCompanySearch').addEventListener('click', function(e) {
+    if (e.target === this) closeCompanyModal();
+  });
+</script>
+</body>
+</html>
