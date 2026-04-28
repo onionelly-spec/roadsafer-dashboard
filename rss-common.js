@@ -517,7 +517,10 @@ RSS.action = (function() {
   </div>
 </div>
 
-<!-- 차단 취소 완료 -->
+<!-- 취소 완료
+     [Java] 운영관리시스템: 취소 대역에 등록되고 차단 합니다.
+     [Java] POST /construction/cancel { constructionSeq, reason } 완료 후 표시
+     확인 클릭 시: 페이지 새로고침 (state: 취소로 변경) -->
 <div class="rss-modal-backdrop" id="rssModalCancelDone">
   <div class="rss-modal">
     <p class="rss-modal__title">처리 완료</p>
@@ -598,7 +601,10 @@ RSS.action = (function() {
   </div>
 </div>
 
-<!-- Step 2-예: 다음 일정 알림 후 완료 -->
+<!-- Step 2-예: 다음 일정 알림 후 완료
+     [Java] POST /construction/complete-today { constructionSeq } 완료 후 표시
+     [Java] 발주업체, 차단업체에 카톡 알림 (코드: P09)
+     확인 클릭 시: 페이지 새로고침 (진행상황 탭에 공사 금액 자동 계산 후 표시) -->
 <div class="rss-modal-backdrop" id="rssModalComplete2YesDone">
   <div class="rss-modal">
     <p class="rss-modal__title">진행 완료</p>
@@ -659,7 +665,9 @@ RSS.action = (function() {
   </div>
 </div>
 
-<!-- 마지막 날: 모든 공사 종료 -->
+<!-- 마지막 날 분기: 모든 공사 종료
+     [Java] ${item.hasNextSchedule} == false 일 때 이 모달로 분기
+     확인 클릭 시: completeLastDayConfirm() 호출 → rssModalCompleteFinal 표시 -->
 <div class="rss-modal-backdrop" id="rssModalCompleteLastDay">
   <div class="rss-modal">
     <p class="rss-modal__title">공사 종료</p>
@@ -671,7 +679,9 @@ RSS.action = (function() {
   </div>
 </div>
 
-<!-- 최종 완료 -->
+<!-- 마지막 날 최종 완료
+     [Java] POST /construction/complete-final { constructionSeq } 완료 후 표시
+     확인 클릭 시: 페이지 새로고침 (state: 종료로 변경, 이후 차단 공사 불가) -->
 <div class="rss-modal-backdrop" id="rssModalCompleteFinal">
   <div class="rss-modal">
     <p class="rss-modal__title">진행 완료</p>
