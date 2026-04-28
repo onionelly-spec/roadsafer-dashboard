@@ -487,8 +487,8 @@
                 <td>
                   <!-- 예정 상태 → 차단 취소 버튼 -->
                   <button type="button" class="rss-btn rss-action-btn rss-action-btn--cancel"
-                          onclick="RSS.action.openCancelModal(this)" data-nm="호남선 순청방향 포장공사">
-                    차단 취소
+                          onclick="RSS.action.openCancelSimpleModal()" data-nm="호남선 순청방향 포장공사">
+                    차단신청 취소
                   </button>
                 </td>
               </tr>
@@ -533,7 +533,7 @@
             <div class="flex items-center justify-between mb-2">
               <span class="rss-badge rss-badge--scheduled">예정</span>
               <button type="button" class="rss-btn rss-action-btn rss-action-btn--cancel"
-                      onclick="event.stopPropagation(); RSS.action.openCancelModal(this)" data-nm="호남선 순청방향 포장공사">차단 취소</button>
+                      onclick="event.stopPropagation(); RSS.action.openCancelSimpleModal()" data-nm="호남선 순청방향 포장공사">차단신청 취소</button>
             </div>
             <p class="text-base font-semibold text-gray-900 mb-1 mobile-construction-item__title">호남선 순천방향 포장공사</p>
             <p class="text-sm text-gray-500">한국개발 | 2026-07-01 ~ 2026-07-03 (3일)</p>
