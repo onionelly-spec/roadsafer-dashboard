@@ -252,12 +252,12 @@
     .split-wrap .reg-input { flex: 1; min-width: 50px; }
     .split-sep { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
 
-    /* 라디오 수신 설정 */
+    /* 라디오 수신 설정 — 인풋박스와 동일 레벨(rss-font-base) */
     .receive-radio-wrap {
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: var(--rss-font-sm);
+      font-size: var(--rss-font-base);
       color: var(--rss-muted);
       flex-wrap: wrap;
     }
@@ -303,9 +303,10 @@
       flex-wrap: wrap;
       gap: 10px 16px;
     }
+    /* 권역 설정 라벨 — 인풋박스와 동일 레벨(rss-font-base) */
     .region-wrap label {
-      display: flex; align-items: center; gap: 5px;
-      font-size: var(--rss-font-sm); color: var(--rss-text);
+      display: flex; align-items: center; gap: 4px;
+      font-size: var(--rss-font-base); color: var(--rss-text);
       cursor: pointer; white-space: nowrap;
     }
     .region-wrap input[type="checkbox"] {
