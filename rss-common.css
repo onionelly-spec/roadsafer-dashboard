@@ -1352,3 +1352,105 @@ img { max-width: 100%; display: block; }
   height: 14px;
   flex-shrink: 0;
 }
+
+
+/* ═══════════════════════════════════════════════════════════
+   ─── 모바일 공통 카드 UI (.rss-mobile-card) ────────────────────
+   ■ 용도: 모바일(768px 이하)에서 테이블 대신 카드형 UI로 표시
+          공사 정보, 내 공사현황 등 목록 페이지 공통 사용
+   ■ 구조:
+     .rss-mobile-cards          : 카드 목록 래퍼 (display:none 기본, 모바일에서만 표시)
+     .rss-mobile-card           : 개별 카드
+     .rss-mobile-card__title    : 공사명 (클릭 시 상세페이지 이동)
+     .rss-mobile-card__title.urgent : 긴급 공사 (빨간색)
+     .rss-mobile-card__row      : 항목 행 (label + value)
+     .rss-mobile-card__label    : 항목명 (회색)
+     .rss-mobile-card__value    : 항목값
+     .rss-mobile-card__footer   : 하단 (배지 등)
+   ■ 사용 예:
+     <div class="rss-mobile-cards">
+       <div class="rss-mobile-card">
+         <div class="rss-mobile-card__title" onclick="...">...ㅠ</div>
+         <div class="rss-mobile-card__row">
+           <span class="rss-mobile-card__label">기간</span>
+           <span class="rss-mobile-card__value">2026-06-01 ~ 2026-06-02</span>
+         </div>
+         <div class="rss-mobile-card__footer">
+           <span class="rss-badge rss-badge--progress">진행중</span>
+         </div>
+       </div>
+     </div>
+   ■ PC에서는 .rss-table-wrap만 표시, 모바일에서는 .rss-mobile-cards만 표시
+     (CSS로 자동 전환, JS 불필요)
+═══════════════════════════════════════════════════════════ */
+
+/* 모바일 카드 래퍼: 기본 숨김, 768px 이하에서만 표시 */
+.rss-mobile-cards { display: none; }
+
+@media (max-width: 768px) {
+  /* PC 테이블 숨김 */
+  .rss-mobile-cards + .rss-table-wrap,
+  .rss-table-wrap:has(~ .rss-mobile-cards) {
+    display: none !important;
+  }
+
+  .rss-mobile-cards {
+    display: block;
+    padding: 12px 16px;
+  }
+
+  .rss-mobile-card {
+    border: 1.5px solid var(--rss-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .rss-mobile-card:hover {
+    border-color: var(--rss-amber);
+    box-shadow: 0 2px 8px rgba(245,158,11,0.12);
+  }
+
+  .rss-mobile-card__title {
+    font-size: var(--rss-font-base);
+    font-weight: 700;
+    color: var(--rss-text);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: color 0.15s;
+    line-height: 1.5;
+    word-break: keep-all;
+  }
+  .rss-mobile-card__title:hover { color: var(--rss-amber-dark); }
+  .rss-mobile-card__title.urgent { color: #dc2626; }
+
+  .rss-mobile-card__row {
+    display: flex;
+    gap: 6px;
+    font-size: var(--rss-font-sm);
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+  .rss-mobile-card__label {
+    color: #9ca3af;
+    font-weight: 600;
+    min-width: 52px;
+    flex-shrink: 0;
+  }
+  .rss-mobile-card__value {
+    color: #374151;
+    word-break: break-all;
+    flex: 1;
+  }
+  .rss-mobile-card__value.urgent { color: #dc2626; font-weight: 600; }
+
+  .rss-mobile-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-top: 10px;
+  }
+}

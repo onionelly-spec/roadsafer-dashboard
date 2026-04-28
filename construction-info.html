@@ -60,6 +60,8 @@
       .road-tabs { gap: 6px; }
       .road-tab { padding: 5px 12px; font-size: var(--rss-font-xs); }
       .info-toolbar { padding: 10px 16px; }
+      /* PC 테이블 숨김, 모바일 카드 표시 */
+      .rss-table-wrap { display: none !important; }
     }
   </style>
 </head>
@@ -202,6 +204,78 @@
             </tbody>
           </table>
         </div><!-- /info-table-wrap -->
+
+        <!-- ══ 모바일 카드형 목록 (768px 이하) ═══════════════════════════════
+             표시 항목: 공사명, 기간, 품목별 수량
+             히든 항목: 발주업체명, 도로명, 방향 (PC에서만 표시)
+             [Java] th:each="info : ${constructionInfoList}"
+        ─────────────────────────────────────────────────────────────── -->
+        <div class="rss-mobile-cards">
+
+          <!-- [Java] th:classappend="${info.urgentYn == 1} ? 'urgent'" -->
+          <!-- 긴급 공사 -->
+          <div class="rss-mobile-card" onclick="location.href='construction-info-detail.html'">
+            <!-- [Java] th:text="${info.constructionNm}" -->
+            <!-- [Java] th:classappend="${info.urgentYn == 1} ? 'urgent'" -->
+            <div class="rss-mobile-card__title urgent">[긴급] 호남선 순천방향 포장공사</div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">기간</span>
+              <!-- [Java] th:text="${info.startDt} + ' ~ ' + ${info.endDt}" -->
+              <span class="rss-mobile-card__value urgent">2026-07-01 ~ 2026-07-03</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">품목</span>
+              <!-- [Java] th:text="${info.equipSummary}" -->
+              <span class="rss-mobile-card__value urgent">TMA1 : 1대, TMA3 : 2대, PLCS : 2대</span>
+            </div>
+          </div>
+
+          <div class="rss-mobile-card" onclick="location.href='construction-info-detail.html'">
+            <!-- [Java] th:text="${info.constructionNm}" -->
+            <div class="rss-mobile-card__title">국도 32번선 횊단보도 보수</div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">기간</span>
+              <!-- [Java] th:text="${info.startDt} + ' ~ ' + ${info.endDt}" -->
+              <span class="rss-mobile-card__value">2026-06-25 ~ 2026-06-25</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">품목</span>
+              <!-- [Java] th:text="${info.equipSummary}" -->
+              <span class="rss-mobile-card__value">TMA1 : 2대, TMA3 : 1대</span>
+            </div>
+          </div>
+
+          <div class="rss-mobile-card" onclick="location.href='construction-info-detail.html'">
+            <!-- [Java] th:text="${info.constructionNm}" -->
+            <div class="rss-mobile-card__title">중앙분리대 시공</div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">기간</span>
+              <!-- [Java] th:text="${info.startDt} + ' ~ ' + ${info.endDt}" -->
+              <span class="rss-mobile-card__value">2026-06-12 ~ 2026-06-18</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">품목</span>
+              <!-- [Java] th:text="${info.equipSummary}" -->
+              <span class="rss-mobile-card__value">TMA3 : 2대, PLCS : 2대</span>
+            </div>
+          </div>
+
+          <div class="rss-mobile-card" onclick="location.href='construction-info-detail.html'">
+            <!-- [Java] th:text="${info.constructionNm}" -->
+            <div class="rss-mobile-card__title">호남선 서울방향 포장공사</div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">기간</span>
+              <!-- [Java] th:text="${info.startDt} + ' ~ ' + ${info.endDt}" -->
+              <span class="rss-mobile-card__value">2026-06-01 ~ 2026-06-02</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">품목</span>
+              <!-- [Java] th:text="${info.equipSummary}" -->
+              <span class="rss-mobile-card__value">TMA1 : 1대, TMA3 : 2대, PLCS : 1대</span>
+            </div>
+          </div>
+
+        </div><!-- /rss-mobile-cards -->
 
         <!-- 페이지네이션 -->
         <!-- [Java] th:with="totalPages=${constructionInfoPage.totalPages}" -->
