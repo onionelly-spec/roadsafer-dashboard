@@ -666,7 +666,7 @@ RSS.action = (function() {
 </div>
 
 <!-- 마지막 날 분기: 모든 공사 종료
-     [Java] ${item.hasNextSchedule} == false 일 때 이 모달로 분기
+     [Java] \${item.hasNextSchedule} == false 일 때 이 모달로 분기
      확인 클릭 시: completeLastDayConfirm() 호출 → rssModalCompleteFinal 표시 -->
 <div class="rss-modal-backdrop" id="rssModalCompleteLastDay">
   <div class="rss-modal">
@@ -775,7 +775,7 @@ RSS.action = (function() {
 
     completeStep1No: function() {
       this.closeModal('rssModalComplete1');
-      /* [Java] ${item.hasNextSchedule} 로 분기
+      /* [Java] \${item.hasNextSchedule} 로 분기
          더미: 다음 일정 있음 시나리오 */
       var hasNextSchedule = true;
       if (hasNextSchedule) {
