@@ -339,23 +339,19 @@
 
           <div class="rss-cal-wrap">
 
-            <!-- ── 상단 헤더: 현재 합계 (기업주만 표시) ── -->
             <!--
-              [Java] 기업주/직원 분기 가이드 (용어사전 §12, §17-2)
-              기업주(company): th:if="${loginType == 'company'}"  → .rss-cal-total 표시
-              직원(employee): th:if="${loginType == 'employee'}" → .rss-cal-total 숨김(hidden)
+              ① 현재 합계 — 기업주 로그인 전용 (직원 로그인 시 hidden)
+              [Java] th:if="${loginType == 'company'}"
+              [DB]  SELECT SUM(amount) FROM rs_daily_prog WHERE construction_seq=? AND prog_cd IN ('REHEARSAL','WORK_COMPLETE','CANCEL')
+              [Java] ${currentTotal} (숫자, 포맷: #,###원)
             -->
-            <div class="rss-cal-header">
-              <!-- [Java] th:if="${loginType == 'company'}" — 기업주만 표시 -->
+            <!-- [Java] th:if="${loginType == 'company'}" -->
+            <div class="rss-cal-header" id="currentTotalBlock" data-role-block="true">
               <div class="rss-cal-total">
                 현재 합계 :
-                <!-- [Java] th:text="${#numbers.formatInteger(currentTotal, 3, 'COMMA')} + '원'" -->
+                <!-- [Java] th:text="'현재 합계 : ' + ${#numbers.formatInteger(currentTotal, 3, 'COMMA')} + '원'" -->
                 <span class="rss-cal-total__amount">7,850,000원</span>
               </div>
-              <!-- [Java] th:if="${loginType == 'employee'}" — 직원: 합계 영역 자체를 렌더링 안 함 -->
-              <!-- 직원 렌더링 예시 (Java 연동 시 위 div를 제거하고 아래 div를 사용):
-              <div class="rss-cal-header"></div>
-              -->
             </div>
 
             <!-- ══════════════════════════════════════════════
@@ -403,7 +399,8 @@
                               onclick="openDailyProgModal('2026-06-22','REHEARSAL',2450000)"
                               title="금액 상세 보기">시연회</button>
                       <!-- [Java] th:if="${loginType == 'company'}" — 기업주만 금액 표시 -->
-                      <span class="rss-cal-amount">(2,450,000)</span>
+                      <!-- [Java] th:text="'(' + ${#numbers.formatInteger(cell.amount, 3, 'COMMA')} + ')'" -->
+                      <span class="rss-cal-amount" data-role-block="true">(2,450,000)</span>
                     </td>
 
                     <!-- 6/23: 공사 기간 중 공사없음 -->
@@ -427,7 +424,8 @@
                               onclick="openDailyProgModal('2026-06-25','WORK_COMPLETE',4900000)"
                               title="금액 상세 보기">공사완료</button>
                       <!-- [Java] th:if="${loginType == 'company'}" -->
-                      <span class="rss-cal-amount">(4,900,000)</span>
+                      <!-- [Java] th:text="'(' + ${#numbers.formatInteger(cell.amount, 3, 'COMMA')} + ')'" -->
+                      <span class="rss-cal-amount" data-role-block="true">(4,900,000)</span>
                     </td>
 
                     <!-- 6/26: 취소 (cancel) -->
@@ -438,7 +436,8 @@
                               onclick="openDailyProgModal('2026-06-26','CANCEL',500000)"
                               title="금액 상세 보기">취소</button>
                       <!-- [Java] th:if="${loginType == 'company'}" -->
-                      <span class="rss-cal-amount">(500,000)</span>
+                      <!-- [Java] th:text="'(' + ${#numbers.formatInteger(cell.amount, 3, 'COMMA')} + ')'" -->
+                      <span class="rss-cal-amount" data-role-block="true">(500,000)</span>
                     </td>
 
                     <!-- 6/27: 오늘 날짜 — 예정 + 완료/취소 버튼 -->
@@ -514,7 +513,8 @@
                   <button class="rss-cal-badge rss-cal-badge--rehearsal"
                           onclick="openDailyProgModal('2026-06-22','REHEARSAL',2450000)">시연회</button>
                   <!-- [Java] th:if="${loginType == 'company'}" -->
-                  <span class="rss-cal-amount">(2,450,000)</span>
+                  <!-- [Java] th:text="'(' + ${#numbers.formatInteger(prog.amount, 3, 'COMMA')} + ')'" -->
+                  <span class="rss-cal-amount" data-role-block="true">(2,450,000)</span>
                 </div>
               </div>
 
@@ -544,7 +544,8 @@
                   <button class="rss-cal-badge rss-cal-badge--complete"
                           onclick="openDailyProgModal('2026-06-25','WORK_COMPLETE',4900000)">공사완료</button>
                   <!-- [Java] th:if="${loginType == 'company'}" -->
-                  <span class="rss-cal-amount">(4,900,000)</span>
+                  <!-- [Java] th:text="'(' + ${#numbers.formatInteger(prog.amount, 3, 'COMMA')} + ')'" -->
+                  <span class="rss-cal-amount" data-role-block="true">(4,900,000)</span>
                 </div>
               </div>
 
@@ -556,7 +557,8 @@
                   <button class="rss-cal-badge rss-cal-badge--cancel"
                           onclick="openDailyProgModal('2026-06-26','CANCEL',500000)">취소</button>
                   <!-- [Java] th:if="${loginType == 'company'}" -->
-                  <span class="rss-cal-amount">(500,000)</span>
+                  <!-- [Java] th:text="'(' + ${#numbers.formatInteger(prog.amount, 3, 'COMMA')} + ')'" -->
+                  <span class="rss-cal-amount" data-role-block="true">(500,000)</span>
                 </div>
               </div>
 
@@ -639,6 +641,33 @@
 <script src="rss-common.js"></script>
 <script>
   lucide.createIcons();
+
+  /* ══════════════════════════════════════════════════════
+     진행상황 탭: 기업주/직원 역할 분기 (용어사전 §12, §17-2)
+     ─ construction-list.html의 data-role-block 패턴과 동일한 방식
+     ─ [Java] 연동 시: th:if="${loginType == 'company'}" 로 서버사이드에서 처리
+     ─ 여기서는 프론트 데모용 시뮬레이션으로만 사용
+     ─ 데모 페이지 기본값: 'company' (기업주 뷰)
+  ══════════════════════════════════════════════════════ */
+  (function applyRoleVisibility() {
+    /*
+      [Java] 연동 시 이 전체 함수 제거 후
+      서버에서 th:if 로 직접 렌더링 제어할 것
+
+      데모 시뮬레이션 방법:
+        URL 파라미터 ?role=employee 로 직원 뷰 테스트 가능
+        예: construction-detail.html?role=employee
+    */
+    var params = new URLSearchParams(window.location.search);
+    var role = params.get('role') || 'company'; /* 기본값: company */
+
+    if (role !== 'company') {
+      /* 직원: data-role-block="true" 요소 모두 숨김 */
+      document.querySelectorAll('[data-role-block="true"]').forEach(function(el) {
+        el.style.display = 'none';
+      });
+    }
+  })();
 
   /* ── 탭 전환 ── */
   const tabs = document.querySelectorAll('.detail-tab');
