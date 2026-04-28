@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="rss-common.css" />
   <style>
     /* ── 차단 신청 전용 스타일 (공통 CSS에 없는 것만) ──
-       ※ 폼 구조:     rss-form-table (공통)
+       ※ 폼 구조:     rss-form-row / rss-form-label (공통)
        ※ 안내 박스:   rss-notice (공통)
        ※ 하단 버튼:   rss-page-actions (공통)
     ── */
@@ -89,117 +89,98 @@
             <!-- [Java] <input type="hidden" name="construction_seq" th:value="${construction.constructionSeq}"> -->
             <input type="hidden" name="construction_seq" value="123">
 
-            <!-- 폼 테이블 — rss-form-table (공통, PC: 2열 th+td, 모바일: 세로 스택) -->
-            <table class="rss-form-table">
-              <tbody>
+            <!-- 차단 구간 — rss-form-row / rss-form-label (공통) -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="block_section">차단 구간</label>
+              <!-- [Java] th:value="${apply.blockSection}" -->
+              <input type="text" name="block_section" id="block_section" class="rss-input"
+                     placeholder="차단 구간을 입력하세요 (예: 105.6km ~ 105.7km)" required>
+            </div>
 
-                <!-- 차단 구간 -->
-                <tr>
-                  <th scope="row">차단 구간</th>
-                  <td>
-                    <!-- [Java] th:value="${apply.blockSection}" -->
-                    <input type="text" name="block_section" class="rss-input w-full"
-                           placeholder="차단 구간을 입력하세요 (예: 105.6km ~ 105.7km)" required>
-                  </td>
-                </tr>
+            <!-- TMA1 -->
+            <div class="rss-form-row">
+              <label class="rss-form-label">TMA1</label>
+              <div class="vehicle-list">
+                <!-- [Java] 보유 대수 배지: ${myTma1List.size()} -->
+                <span class="item-count-badge">1대</span>
+                <!-- [Java] th:each="v : ${myTma1List}" -->
+                <label class="vehicle-item">
+                  <input type="checkbox" name="tma1_vcl_no" value="11누1111">
+                  <span>11누1111</span>
+                </label>
+              </div>
+            </div>
 
-                <!-- TMA1 -->
-                <tr>
-                  <th scope="row">TMA1</th>
-                  <td>
-                    <div class="vehicle-list">
-                      <!-- [Java] 보유 대수 배지: ${myTma1List.size()} -->
-                      <span class="item-count-badge">1대</span>
-                      <!-- [Java] th:each="v : ${myTma1List}" -->
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="tma1_vcl_no" value="11누1111">
-                        <span>11누1111</span>
-                      </label>
-                    </div>
-                  </td>
-                </tr>
+            <!-- TMA3 -->
+            <div class="rss-form-row">
+              <label class="rss-form-label">TMA3</label>
+              <div class="vehicle-list">
+                <!-- [Java] 보유 대수 배지: ${myTma3List.size()} -->
+                <span class="item-count-badge">2대</span>
+                <!-- [Java] th:each="v : ${myTma3List}" -->
+                <label class="vehicle-item">
+                  <input type="checkbox" name="tma3_vcl_no" value="22마2222">
+                  <span>22마2222</span>
+                </label>
+                <label class="vehicle-item">
+                  <input type="checkbox" name="tma3_vcl_no" value="33다3333">
+                  <span>33다3333</span>
+                </label>
+                <label class="vehicle-item">
+                  <input type="checkbox" name="tma3_vcl_no" value="55모3232">
+                  <span>55모3232</span>
+                </label>
+                <label class="vehicle-item" style="color:var(--rss-amber);font-weight:600;">
+                  <input type="checkbox" name="tma3_sep_yn" value="Y">
+                  <span>별도 제출</span>
+                </label>
+              </div>
+            </div>
 
-                <!-- TMA3 -->
-                <tr>
-                  <th scope="row">TMA3</th>
-                  <td>
-                    <div class="vehicle-list">
-                      <!-- [Java] 보유 대수 배지: ${myTma3List.size()} -->
-                      <span class="item-count-badge">2대</span>
-                      <!-- [Java] th:each="v : ${myTma3List}" -->
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="tma3_vcl_no" value="22마2222">
-                        <span>22마2222</span>
-                      </label>
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="tma3_vcl_no" value="33다3333">
-                        <span>33다3333</span>
-                      </label>
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="tma3_vcl_no" value="55모3232">
-                        <span>55모3232</span>
-                      </label>
-                      <label class="vehicle-item" style="color:var(--rss-amber);font-weight:600;">
-                        <input type="checkbox" name="tma3_sep_yn" value="Y">
-                        <span>별도 제출</span>
-                      </label>
-                    </div>
-                  </td>
-                </tr>
+            <!-- PLCS -->
+            <div class="rss-form-row">
+              <label class="rss-form-label">PLCS</label>
+              <div class="vehicle-list">
+                <!-- [Java] 보유 대수 배지: ${myPlcsList.size()} -->
+                <span class="item-count-badge">2대</span>
+                <!-- [Java] th:each="v : ${myPlcsList}" -->
+                <label class="vehicle-item">
+                  <input type="checkbox" name="plcs_vcl_no" value="11소6767">
+                  <span>11소6767</span>
+                </label>
+                <label class="vehicle-item">
+                  <input type="checkbox" name="plcs_vcl_no" value="32파0090">
+                  <span>32파0090</span>
+                </label>
+                <label class="vehicle-item" style="color:var(--rss-amber);font-weight:600;">
+                  <input type="checkbox" name="plcs_sep_yn" value="Y">
+                  <span>별도 제출</span>
+                </label>
+              </div>
+            </div>
 
-                <!-- PLCS -->
-                <tr>
-                  <th scope="row">PLCS</th>
-                  <td>
-                    <div class="vehicle-list">
-                      <!-- [Java] 보유 대수 배지: ${myPlcsList.size()} -->
-                      <span class="item-count-badge">2대</span>
-                      <!-- [Java] th:each="v : ${myPlcsList}" -->
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="plcs_vcl_no" value="11소6767">
-                        <span>11소6767</span>
-                      </label>
-                      <label class="vehicle-item">
-                        <input type="checkbox" name="plcs_vcl_no" value="32파0090">
-                        <span>32파0090</span>
-                      </label>
-                      <label class="vehicle-item" style="color:var(--rss-amber);font-weight:600;">
-                        <input type="checkbox" name="plcs_sep_yn" value="Y">
-                        <span>별도 제출</span>
-                      </label>
-                    </div>
-                  </td>
-                </tr>
+            <!-- 신호수 -->
+            <div class="rss-form-row">
+              <label class="rss-form-label">신호수</label>
+              <div class="flex items-center gap-3">
+                <!-- [Java] 보유 신호수 수: ${signalerCnt} -->
+                <span class="item-count-badge">0명</span>
+                <select name="signaler_cnt" class="rss-input" style="width:120px;">
+                  <option value="0">0명</option>
+                  <option value="1">1명</option>
+                  <option value="2">2명</option>
+                  <option value="3">3명</option>
+                </select>
+              </div>
+            </div>
 
-                <!-- 신호수 -->
-                <tr>
-                  <th scope="row">신호수</th>
-                  <td>
-                    <div class="flex items-center gap-3">
-                      <!-- [Java] 보유 신호수 수: ${signalerCnt} -->
-                      <span class="item-count-badge">0명</span>
-                      <select name="signaler_cnt" class="rss-input" style="width:120px;">
-                        <option value="0">0명</option>
-                        <option value="1">1명</option>
-                        <option value="2">2명</option>
-                        <option value="3">3명</option>
-                      </select>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- 의견 -->
-                <tr>
-                  <th scope="row">의견</th>
-                  <td>
-                    <!-- [Java] th:text="${apply.opinion}" -->
-                    <textarea name="opinion" class="rss-input rss-textarea w-full"
-                              placeholder="차단방법, 일정에 대해 자유로운 의견을 남겨주세요."></textarea>
-                  </td>
-                </tr>
-
-              </tbody>
-            </table>
+            <!-- 의견 -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="opinion">의견</label>
+              <!-- [Java] th:text="${apply.opinion}" -->
+              <textarea name="opinion" id="opinion" class="rss-input rss-textarea"
+                        placeholder="차단방법, 일정에 대해 자유로운 의견을 남겨주세요."></textarea>
+            </div>
 
             <!-- 하단 버튼 — rss-page-actions (공통, 취소→등록 순서) -->
             <div class="rss-page-actions">
