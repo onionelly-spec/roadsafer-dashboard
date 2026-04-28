@@ -1254,3 +1254,54 @@ img { max-width: 100%; display: block; }
     min-width: 80px;
   }
 }
+
+
+/* ═══════════════════════════════════════════════════════════
+   테이블 관리 버튼 (공사현황 차단취소·오늘완료 등)
+   ■ 사용법:
+     차단 취소  → <button class="rss-btn rss-action-btn rss-action-btn--cancel">차단 취소</button>
+     오늘 완료  → <button class="rss-btn rss-action-btn rss-action-btn--complete">오늘 완료</button>
+   ■ 규칙:
+     - 테이블/카드 내 관리 열(관리 컬럼)에 배치되는 기능 버튼
+     - 고정 너비(80px)로 통일하여 열 너비 일관성 유지
+     - 색상은 기존 rss-btn 변형 클래스(--outline, --outline-amber)를 그대로 사용
+     - 신규 페이지에서도 이 클래스를 사용할 것
+═══════════════════════════════════════════════════════════ */
+
+.rss-action-btn {
+  min-width: 80px;
+  height: 32px;
+  padding: 0 12px;
+  font-size: var(--rss-font-sm) !important; /* 13px */
+  font-weight: 600;
+}
+
+/* 차단 취소 — outline 스타일 */
+.rss-action-btn--cancel {
+  border: 1.5px solid var(--rss-border);
+  background: transparent;
+  color: var(--rss-text);
+}
+.rss-action-btn--cancel:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+/* 오늘 완료 — amber outline 스타일 */
+.rss-action-btn--complete {
+  border: 1.5px solid var(--rss-amber);
+  background: transparent;
+  color: var(--rss-amber-dark);
+}
+.rss-action-btn--complete:hover {
+  background: var(--rss-amber-light);
+}
+
+/* 모바일: 카드 내 버튼 너비 자동 */
+@media (max-width: 768px) {
+  .rss-action-btn {
+    min-width: 72px;
+    height: 30px;
+    padding: 0 10px;
+  }
+}

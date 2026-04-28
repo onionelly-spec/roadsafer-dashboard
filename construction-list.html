@@ -252,14 +252,13 @@
                 <td>2026-07-01 ~ 2026-07-03 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(3일)</span></td>
                 <!-- [Java] th:if="${loginType == 'company'}" → 예정은 금액 미확정 공란 -->
                 <td class="td-amount"><!-- 예정 미확정 --></td>
-                <td>
-                  <!-- 예정 상태: 차단신청 취소 버튼 -->
-                  <!-- [Java] th:if="${item.status == 'scheduled'}" -->
-                  <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
-                          onclick="openCancelModal(this)" data-nm="호남선 순천방향 포장공사">
+                              <!-- 예정 상태: 차단신청 취소 버튼 -->
+                  <!-- [Java] th:if="${item.status == 'SCHEDULED'}" -->
+                  <button type="button" class="rss-btn rss-action-btn rss-action-btn--cancel"
+                          onclick="RSS.action.openCancelModal(this)"
+                          data-nm="호남선 순청방향 포장공사">
                     차단신청 취소
-                  </button>
-                </td>
+                  </button></td>
               </tr>
 
               <!-- 진행중 행 → 오늘 완료 버튼 (오늘 공사인 경우만) -->
@@ -276,8 +275,8 @@
                 <td>
                   <!-- 진행중 + 오늘 공사: 오늘 완료 버튼 -->
                   <!-- [Java] th:if="${item.status == 'progress' and item.todayYn == 1}" -->
-                  <button type="button" class="rss-btn rss-btn--outline-amber rss-btn--sm"
-                          onclick="openCompleteModal(this)" data-nm="국도 32번선 횡단보도 보수">
+                  <button type="button" class="rss-btn rss-action-btn rss-action-btn--complete"
+                          onclick="RSS.action.openCompleteModal(this)" data-nm="국도 32번선 횟단보도 보수">
                     오늘 완료
                   </button>
                 </td>
@@ -339,8 +338,8 @@
             </div>
             <div class="clist-mobile-card__footer">
               <span class="rss-badge rss-badge--scheduled">예정</span>
-              <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
-                      onclick="openCancelModal(this)" data-nm="호남선 순천방향 포장공사">차단신청 취소</button>
+              <button type="button" class="rss-btn rss-action-btn rss-action-btn--cancel"
+                      onclick="RSS.action.openCancelModal(this)" data-nm="호남선 순청방향 포장공사">차단신청 취소</button>
             </div>
           </div>
 
@@ -361,8 +360,8 @@
             </div>
             <div class="clist-mobile-card__footer">
               <span class="rss-badge rss-badge--progress">진행중</span>
-              <button type="button" class="rss-btn rss-btn--outline-amber rss-btn--sm"
-                      onclick="openCompleteModal(this)" data-nm="국도 32번선 횡단보도 보수">오늘 완료</button>
+              <button type="button" class="rss-btn rss-action-btn rss-action-btn--complete"
+                      onclick="RSS.action.openCompleteModal(this)" data-nm="국도 32번선 횟단보도 보수">오늘 완료</button>
             </div>
           </div>
 
@@ -434,167 +433,10 @@
     </main>
   </div><!-- /rss-main -->
 
-</div><!-- /rss-app -->
+</div><!-- /rss-app --><!-- 공사 액션 모달: rss-common.js가 자동 주입 (RSS.action) -->
+<div id="rss-action-modals"></div>
 
-
-<!-- ══════════════════════════════════════════════════════════
-     경고창 — 차단신청 취소
-     [Java] 취소 처리 후 페이지 새로고침 / 목록에서 해당 행 제거
-══════════════════════════════════════════════════════════ -->
-<div class="rss-modal-backdrop" id="modalCancel">
-  <div class="rss-modal" role="dialog" aria-modal="true" aria-labelledby="cancelTitle">
-    <p class="rss-modal__title" id="cancelTitle">차단신청 취소</p>
-    <p class="rss-modal__body">
-      차단 취소에 대해 <span class="highlight">발주업체와 협의</span>가 되었습니까?
-    </p>
-    <textarea id="cancelReason" placeholder="취소 사유를 입력하세요 (필수)"></textarea>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="closeModal('modalCancel')">아니오</button>
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="submitCancel()">예</button>
-    </div>
-  </div>
-</div>
-
-<!-- 차단신청 취소 완료 -->
-<div class="rss-modal-backdrop" id="modalCancelDone">
-  <div class="rss-modal">
-    <p class="rss-modal__title">처리 완료</p>
-    <p class="rss-modal__body">
-      공사가 취소되었습니다.<br>
-      차단 비용은 별도 협의 후 안내됩니다.
-    </p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="location.reload()">확인</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════
-     경고창 — 오늘 완료 (플로우차트 기준)
-══════════════════════════════════════════════════════════ -->
-<!-- Step 1: 수량 변경 여부 -->
-<div class="rss-modal-backdrop" id="modalComplete1">
-  <div class="rss-modal" role="dialog" aria-modal="true">
-    <p class="rss-modal__title">오늘 완료 처리</p>
-    <p class="rss-modal__body">
-      투입된 씨인카 수량이 바뀌었다면 콜센터(<span class="highlight">1566-0000</span>)으로 연락해주세요.<br><br>
-      수량이 바뀌었나요?
-    </p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="completeStep1No()">아니오</button>
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="completeStep1Yes()">예</button>
-    </div>
-  </div>
-</div>
-
-<!-- Step 1-Yes: 콜센터 안내 -->
-<div class="rss-modal-backdrop" id="modalCompleteCallCenter">
-  <div class="rss-modal">
-    <p class="rss-modal__title">콜센터 안내</p>
-    <p class="rss-modal__body">
-      콜센터(<span class="highlight">1566-0000</span>)으로 연락해주세요.<br>
-      콜센터에서 처리해드립니다.
-    </p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="closeModal('modalCompleteCallCenter')">확인</button>
-    </div>
-  </div>
-</div>
-
-<!-- Step 1-No: 다음 공사 일정 확인 -->
-<div class="rss-modal-backdrop" id="modalComplete2">
-  <div class="rss-modal">
-    <p class="rss-modal__title">다음 공사 일정 확인</p>
-    <p class="rss-modal__body">
-      다음 공사 일정에 대해<br>
-      <span class="highlight">상호 차단 협의</span>가 되었습니까?
-    </p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="completeStep2No()">아니오</button>
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="completeStep2Yes()">예</button>
-    </div>
-  </div>
-</div>
-
-<!-- Step 2-Yes: 다음 일정 알림 -->
-<div class="rss-modal-backdrop" id="modalComplete2YesDone">
-  <div class="rss-modal">
-    <p class="rss-modal__title">진행 완료</p>
-    <p class="rss-modal__body">
-      다음 공사는 <span class="highlight">**월 **일 **시</span>에 차단 시작입니다.
-      <!-- [Java] th:text="'다음 공사는 '+${nextSchedule}+'에 차단 시작입니다.'" -->
-    </p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="location.reload()">확인</button>
-    </div>
-  </div>
-</div>
-
-<!-- Step 2-No: 추가 진행 불가 확인 -->
-<div class="rss-modal-backdrop" id="modalComplete2NoPenalty">
-  <div class="rss-modal">
-    <p class="rss-modal__title">추가 진행 불가</p>
-    <p class="rss-modal__body">
-      추가 진행이 불가능합니까?<br>
-      추가불진행시 공사는 종료되고 <span class="highlight">패널티가 발생</span>합니다.
-    </p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="completeNoPenaltyNo()">아니오</button>
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="completeNoPenaltyYes()">예</button>
-    </div>
-  </div>
-</div>
-
-<!-- Step 2-No-Yes: 운영자 알림 -->
-<div class="rss-modal-backdrop" id="modalCompleteNoPenaltyDone">
-  <div class="rss-modal">
-    <p class="rss-modal__title">운영자 알림</p>
-    <p class="rss-modal__body">
-      운영자에게 알림되었습니다.<br>
-      추가 불진행시 패널티가 발생합니다.
-    </p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="closeModal('modalCompleteNoPenaltyDone')">확인</button>
-    </div>
-  </div>
-</div>
-
-<!-- Step 2-No-No: 협의 후 진행완료 안내 -->
-<div class="rss-modal-backdrop" id="modalCompleteNoPenaltyNoMsg">
-  <div class="rss-modal">
-    <p class="rss-modal__title">협의 후 처리</p>
-    <p class="rss-modal__body">
-      다음 공사 일정을 협의한 후 '진행완료' 해주십시오.
-    </p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="closeModal('modalCompleteNoPenaltyNoMsg')">확인</button>
-    </div>
-  </div>
-</div>
-
-<!-- 마지막 날: 모든 공사 종료 안내 -->
-<div class="rss-modal-backdrop" id="modalCompleteLastDay">
-  <div class="rss-modal">
-    <p class="rss-modal__title">공사 종료</p>
-    <p class="rss-modal__body">
-      금일로 모든 공사가 종료됩니다.
-    </p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="completeLastDayConfirm()">확인</button>
-    </div>
-  </div>
-</div>
-
-<!-- 최종 완료 -->
-<div class="rss-modal-backdrop" id="modalCompleteFinal">
-  <div class="rss-modal">
-    <p class="rss-modal__title">진행 완료</p>
-    <p class="rss-modal__body">진행 완료되었습니다.</p>
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="location.reload()">확인</button>
-    </div>
-  </div>
-</div>
+<!-- 위 모달들은 rss-common.js의 RSS.action이 #rss-action-modals에 자동 주입합니다 -->
 
 
 <script src="rss-common.js"></script>
@@ -624,67 +466,7 @@
     alert('검색: ' + type + ' = ' + kw);
   }
 
-  /* ── 모달 공통 ── */
-  function openModal(id)  { document.getElementById(id).classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-  /* ── 차단신청 취소 ── */
-  function openCancelModal(btn) {
-    document.getElementById('cancelReason').value = '';
-    openModal('modalCancel');
-  }
-  function submitCancel() {
-    var reason = document.getElementById('cancelReason').value.trim();
-    if (!reason) { alert('취소 사유를 입력해 주세요.'); return; }
-    closeModal('modalCancel');
-    /* [Java] POST /construction/cancel { constructionSeq, reason } */
-    openModal('modalCancelDone');
-  }
-
-  /* ── 오늘 완료 플로우 ── */
-  var _completingNm = '';
-  function openCompleteModal(btn) {
-    _completingNm = btn ? btn.dataset.nm : '';
-    openModal('modalComplete1');
-  }
-  function completeStep1Yes() {
-    closeModal('modalComplete1');
-    openModal('modalCompleteCallCenter');
-  }
-  function completeStep1No() {
-    closeModal('modalComplete1');
-    /* 더미: 남은 일정 있음 → Step2 / 마지막 날 → LastDay (Java에서 분기) */
-    var hasNextSchedule = true; /* [Java] ${item.hasNextSchedule} */
-    if (hasNextSchedule) {
-      openModal('modalComplete2');
-    } else {
-      openModal('modalCompleteLastDay');
-    }
-  }
-  function completeStep2Yes() {
-    closeModal('modalComplete2');
-    /* [Java] POST /construction/complete-today { constructionSeq } */
-    openModal('modalComplete2YesDone');
-  }
-  function completeStep2No() {
-    closeModal('modalComplete2');
-    openModal('modalComplete2NoPenalty');
-  }
-  function completeNoPenaltyYes() {
-    closeModal('modalComplete2NoPenalty');
-    /* [Java] 운영자 알림 발송 */
-    openModal('modalCompleteNoPenaltyDone');
-  }
-  function completeNoPenaltyNo() {
-    closeModal('modalComplete2NoPenalty');
-    openModal('modalCompleteNoPenaltyNoMsg');
-  }
-  function completeLastDayConfirm() {
-    closeModal('modalCompleteLastDay');
-    /* [Java] POST /construction/complete-final { constructionSeq } */
-    openModal('modalCompleteFinal');
-  }
-
+  /* 차단취소 · 오늘완료 모달은 RSS.action (공통)으로 처리됩니다 */
   /* ── 기업/직원 로그인 분기 (더미: 기업 기준) ── */
   /* [Java] 실제 환경: loginType = '${loginType}' */
   var loginType = 'company'; /* 'company' | 'employee' */
