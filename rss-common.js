@@ -824,8 +824,14 @@ RSS.action = (function() {
     reloadToProgressTab: function() {
       var isDetailPage = location.pathname.indexOf('construction-detail') !== -1;
       if (isDetailPage) {
-        /* 진행 상황 탭(탭 ID: tab-status)으로 복원하여 새로고침 */
-        location.href = location.pathname + location.search.split('#')[0] + '#tab-status';
+        /*
+         * sessionStorage에 복원할 탭 ID를 저장한 뒤 새로고침.
+         * construction-detail.html의 탭 초기화 로직이 이 값을 읽어
+         * 진행 상황 탭(tab-status)을 자동 활성화합니다.
+         * [Java] 서버사이드 렌더링 시에도 동일하게 동작합니다.
+         */
+        sessionStorage.setItem('rss_restore_tab', 'tab-status');
+        location.reload();
       } else {
         location.reload();
       }
