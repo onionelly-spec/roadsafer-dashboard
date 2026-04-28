@@ -52,7 +52,9 @@
     const scripts = document.querySelectorAll('script[src*="rss-common.js"]');
     if (scripts.length) {
       const src = scripts[scripts.length - 1].getAttribute('src');
-      return src.replace('rss-common.js', '');
+      /* 쿼리스트링(?v=...) 제거 후 파일명 제거 */
+      const cleanSrc = src.split('?')[0];
+      return cleanSrc.replace('rss-common.js', '');
     }
     return '';
   })();
