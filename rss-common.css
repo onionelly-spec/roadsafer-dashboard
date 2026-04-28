@@ -539,7 +539,8 @@ img { max-width: 100%; display: block; }
   background: #fef2f2;
 }
 .rss-btn--sm {
-  padding: 6px 13px;
+  height: 32px;
+  padding: 0 13px;
   font-size: var(--rss-font-sm);   /* 13px */
 }
 .rss-btn--lg {

@@ -245,8 +245,7 @@
                   <!-- 예정 상태: 차단신청 취소 버튼 -->
                   <!-- [Java] th:if="${item.status == 'SCHEDULED'}" -->
                   <button type="button" class="rss-btn rss-action-btn rss-action-btn--cancel"
-                          onclick="RSS.action.openCancelModal(this)"
-                          data-nm="호남선 순청방향 포장공사">
+                          onclick="RSS.action.openCancelSimpleModal()">
                     차단신청 취소
                   </button>
                 </td>
@@ -330,7 +329,7 @@
             <div class="clist-mobile-card__footer">
               <span class="rss-badge rss-badge--scheduled">예정</span>
               <button type="button" class="rss-btn rss-action-btn rss-action-btn--cancel"
-                      onclick="RSS.action.openCancelModal(this)" data-nm="호남선 순청방향 포장공사">차단신청 취소</button>
+                      onclick="RSS.action.openCancelSimpleModal()">차단신청 취소</button>
             </div>
           </div>
 

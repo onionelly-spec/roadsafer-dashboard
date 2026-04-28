@@ -535,6 +535,22 @@ RSS.action = (function() {
   </div>
 </div>
 
+<!-- ══ 차단신청 취소 (간소화: 내 공사현황 목록·차단 정보 탭 전용) ══ -->
+<div class="rss-modal-backdrop" id="rssModalCancelSimple">
+  <div class="rss-modal" role="dialog" aria-modal="true" aria-labelledby="rssCancelSimpleTitle">
+    <p class="rss-modal__title" id="rssCancelSimpleTitle">차단신청 취소</p>
+    <p class="rss-modal__body">
+      차단 취소에 대해 <span class="highlight">발주업체와 협의</span>가 되었습니까?
+    </p>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+              onclick="RSS.action.cancelSimpleNo()">아니오</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+              onclick="RSS.action.cancelSimpleYes()">예</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ 오늘 완료 모달 (Step 1) ══════════════════════════ -->
 <div class="rss-modal-backdrop" id="rssModalComplete1">
   <div class="rss-modal" role="dialog" aria-modal="true">
@@ -709,6 +725,21 @@ RSS.action = (function() {
       var reasonEl = document.getElementById('rssCancelReason');
       if (reasonEl) reasonEl.value = '';
       openModal('rssModalCancel');
+    },
+
+    /* ── 차단신청 취소 (간소화: 내 공사현황 목록·차단 정보 탭 전용) ── */
+    openCancelSimpleModal: function() {
+      openModal('rssModalCancelSimple');
+    },
+
+    cancelSimpleYes: function() {
+      /* [Java] POST /construction/block-cancel { constructionSeq } */
+      this.closeModal('rssModalCancelSimple');
+      location.reload();
+    },
+
+    cancelSimpleNo: function() {
+      this.closeModal('rssModalCancelSimple');
     },
 
     submitCancel: function() {
