@@ -314,6 +314,18 @@
       justify-content: center;
     }
 
+    /* 모바일 반응형 */
+    @media (max-width: 640px) {
+      .reg-card__body { padding: 20px 16px 24px; }
+      .reg-type-grid { grid-template-columns: 1fr; }
+      .reg-type-btn { padding: 18px 16px; flex-direction: row; gap: 14px; text-align: left; }
+      .reg-type-btn__desc { text-align: left; }
+      .reg-step { font-size: var(--rss-font-xs); padding: 8px 0; }
+      .terms-section__header { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .terms-agree-row { justify-content: flex-start; }
+      .terms-all-row { justify-content: flex-start; }
+    }
+
     /* 뒤로가기 링크 */
     .reg-back-link {
       display: inline-flex;
