@@ -49,41 +49,15 @@
     .text-modified { color: #dc2626 !important; font-weight: 700; }
     .modified-notice { font-size: 12px; color: #dc2626; font-weight: 600; float: right; margin-top: 4px; }
 
-    /* ── 진행상황 탭 — 주간 캘린더 ── */
-    .cal-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--rss-font-base);
-    }
-    .cal-table th {
-      padding: 10px 8px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: #6b7280;
-      text-align: center;
-    }
-    .cal-table td {
-      padding: 12px 8px;
-      border: 1px solid #e5e7eb;
-      text-align: center;
-      vertical-align: top;
-      min-width: 80px;
-    }
-    .cal-date { font-size: var(--rss-font-xs); color: #9ca3af; margin-bottom: 4px; }
-    .cal-date.today { font-weight: 700; color: #1f2937; }
-    .cal-status { font-size: var(--rss-font-xs); }
-
-    /* ── 하단 버튼: rss-page-actions 공통 클래스 사용 (rss-common.css) ── */
+    /* ── 진행상황 탭: 탭 패널 자체는 padding 0 (내부 rss-cal-wrap이 처리) ── */
+    #tab-status.tab-panel { padding: 0; }
 
     /* ── 반응형 ── */
     @media (max-width: 640px) {
       .detail-tabs { padding: 12px 16px 0; }
       .detail-tab { padding: 8px 14px; font-size: var(--rss-font-sm); }
       .tab-panel { padding: 16px; }
-      .cal-table { font-size: var(--rss-font-xs); }
-      .cal-table th, .cal-table td { padding: 8px 4px; min-width: 44px; }
+      #tab-status.tab-panel { padding: 0; }
     }
   </style>
 </head>
@@ -352,31 +326,303 @@
 
         </div><!-- /tab-block -->
 
-        <!-- 탭 3: 진행 상황 (기존 구조 유지) -->
+        <!-- ══════════════════════════════════════════════════
+             탭 3: 진행 상황 (daily_prog)
+             [DB] 테이블: rs_daily_prog WHERE construction_seq = #{constructionSeq}
+             [Java] ${dailyProgList} — 일자별 진행 VO 목록
+             [Java] ${construction.startDt}, ${construction.endDt} — 공사 기간
+             [Java] ${construction.rehearsalDt} — 시연회 날짜
+             [Java] ${currentTotal} — 현재 합계 (기업주만 표시)
+             용어사전 §17 참조
+        ══════════════════════════════════════════════════ -->
         <div id="tab-status" class="tab-panel" role="tabpanel">
-          <div style="overflow-x:auto;">
-            <table class="cal-table">
-              <thead>
-                <tr>
-                  <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div class="cal-date">21</div></td>
-                  <td><div class="cal-date">22</div><div class="cal-status text-blue-600 font-bold">시연회</div></td>
-                  <td><div class="cal-date">23</div></td>
-                  <td><div class="cal-date">24</div></td>
-                  <td><div class="cal-date">25</div><div class="cal-status text-amber-600 font-bold">진행중</div></td>
-                  <td><div class="cal-date today">26</div><div class="cal-status text-amber-600 font-bold">진행중</div></td>
-                  <td><div class="cal-date">27</div><div class="cal-status text-amber-600 font-bold">진행중</div></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
 
-      </div>
+          <div class="rss-cal-wrap">
+
+            <!-- ── 상단 헤더: 현재 합계 (기업주만 표시) ── -->
+            <!--
+              [Java] 기업주/직원 분기 가이드 (용어사전 §12, §17-2)
+              기업주(company): th:if="${loginType == 'company'}"  → .rss-cal-total 표시
+              직원(employee): th:if="${loginType == 'employee'}" → .rss-cal-total 숨김(hidden)
+            -->
+            <div class="rss-cal-header">
+              <!-- [Java] th:if="${loginType == 'company'}" -->
+              <div class="rss-cal-total">
+                현재 합계 :
+                <!-- [Java] th:text="${#numbers.formatInteger(currentTotal, 3, 'COMMA')} + '원'" -->
+                <span class="rss-cal-total__amount">7,850,000원</span>
+              </div>
+              <!-- [Java] th:if="${loginType == 'employee'}" — 직원은 합계 숨김 -->
+              <!-- <div class="rss-cal-total" style="display:none;"></div> -->
+            </div>
+
+            <!-- ── 안내 문구 ── -->
+            <p class="rss-cal-notice">
+              투입된 씨인카 수량이 바뀌었다면 콜센터(1566-0000)으로 연락해주세요.<br>
+              금액을 누르면 날짜별 공사 금액을 확인할 수 있습니다.
+            </p>
+
+            <!-- ══════════════════════════════════════════════
+                 PC: 7열 캘린더 (768px 초과에서 표시)
+                 더미 데이터: 공사 기간 2026-06-22 ~ 2026-06-30
+                 시연회: 2026-06-22
+                 오늘 날짜: 2026-06-27 (더미)
+            ══════════════════════════════════════════════ -->
+            <div class="rss-cal-table-wrap">
+              <!--
+                [Java] 캘린더 렌더링 가이드
+                - 공사 시작일(construction.startDt) 이전 주의 일요일부터 시작
+                - 공사 종료일(construction.endDt) 이후 주의 토요일까지 표시
+                - 각 날짜 셀: rs_daily_prog 테이블에서 해당 날짜의 prog_cd, amount 조회
+                - 공사 기간 외 날짜: rss-cal-cell--out 클래스 추가
+                - 오늘 날짜: rss-cal-cell--today 클래스 추가
+              -->
+              <table class="rss-cal-table" aria-label="공사 진행상황 캘린더">
+                <thead>
+                  <tr>
+                    <th scope="col">일</th>
+                    <th scope="col">월</th>
+                    <th scope="col">화</th>
+                    <th scope="col">수</th>
+                    <th scope="col">목</th>
+                    <th scope="col">금</th>
+                    <th scope="col">토</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- ── 1주차: 6/21 ~ 6/27 ── -->
+                  <!-- [Java] th:each="week : ${calWeeks}" / th:each="cell : ${week.cells}" -->
+                  <tr>
+                    <!-- 6/21: 공사 기간 외 -->
+                    <td class="rss-cal-cell--out">
+                      <div class="rss-cal-date">6/21</div>
+                    </td>
+
+                    <!-- 6/22: 시연회 (rehearsal) -->
+                    <!-- [Java] th:if="${cell.progCd == 'REHEARSAL'}" -->
+                    <td>
+                      <div class="rss-cal-date">6/22</div>
+                      <!-- [Java] th:text="${cell.progLabel}" / onclick="openDailyProgModal('2026-06-22','REHEARSAL',2450000)" -->
+                      <button class="rss-cal-badge rss-cal-badge--rehearsal"
+                              onclick="openDailyProgModal('2026-06-22','REHEARSAL',2450000)"
+                              title="금액 상세 보기">시연회</button>
+                      <!-- [Java] th:if="${loginType == 'company'}" — 기업주만 금액 표시 -->
+                      <span class="rss-cal-amount">(2,450,000)</span>
+                    </td>
+
+                    <!-- 6/23: 공사 기간 중 공사없음 -->
+                    <!-- [Java] th:if="${cell.progCd == 'NO_WORK'}" -->
+                    <td>
+                      <div class="rss-cal-date">6/23</div>
+                      <span class="rss-cal-badge rss-cal-badge--none">공사없음</span>
+                    </td>
+
+                    <!-- 6/24: 공사 기간 중 공사없음 -->
+                    <td>
+                      <div class="rss-cal-date">6/24</div>
+                      <span class="rss-cal-badge rss-cal-badge--none">공사없음</span>
+                    </td>
+
+                    <!-- 6/25: 공사완료 (work_complete) -->
+                    <!-- [Java] th:if="${cell.progCd == 'WORK_COMPLETE'}" -->
+                    <td>
+                      <div class="rss-cal-date">6/25</div>
+                      <button class="rss-cal-badge rss-cal-badge--complete"
+                              onclick="openDailyProgModal('2026-06-25','WORK_COMPLETE',4900000)"
+                              title="금액 상세 보기">공사완료</button>
+                      <!-- [Java] th:if="${loginType == 'company'}" -->
+                      <span class="rss-cal-amount">(4,900,000)</span>
+                    </td>
+
+                    <!-- 6/26: 취소 (cancel) -->
+                    <!-- [Java] th:if="${cell.progCd == 'CANCEL'}" -->
+                    <td>
+                      <div class="rss-cal-date">6/26</div>
+                      <button class="rss-cal-badge rss-cal-badge--cancel"
+                              onclick="openDailyProgModal('2026-06-26','CANCEL',500000)"
+                              title="금액 상세 보기">취소</button>
+                      <!-- [Java] th:if="${loginType == 'company'}" -->
+                      <span class="rss-cal-amount">(500,000)</span>
+                    </td>
+
+                    <!-- 6/27: 오늘 날짜 — 예정 + 완료/취소 버튼 -->
+                    <!-- [Java] th:if="${cell.isToday}" / th:classappend="${cell.isToday} ? 'rss-cal-cell--today'" -->
+                    <td class="rss-cal-cell--today">
+                      <div class="rss-cal-date">6/27</div>
+                      <!-- [Java] th:if="${cell.progCd == 'SCHEDULED'}" — 예정 배지 -->
+                      <span class="rss-cal-badge rss-cal-badge--scheduled">예정</span>
+                      <!-- 오늘 날짜 완료/취소 버튼 (용어사전 §17-4) -->
+                      <div class="rss-cal-today-btns">
+                        <!-- 완료 버튼: RSS.action.openTodayDoneModal() (rss-common.js) -->
+                        <button type="button"
+                                class="rss-btn rss-action-btn rss-action-btn--complete"
+                                onclick="RSS.action.openTodayDoneModal()">완료</button>
+                        <!-- 취소 버튼: RSS.action.openCancelSimpleModal() (rss-common.js) -->
+                        <button type="button"
+                                class="rss-btn rss-action-btn rss-action-btn--cancel"
+                                onclick="RSS.action.openCancelSimpleModal()">취소</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ── 2주차: 6/28 ~ 7/4 ── -->
+                  <tr>
+                    <!-- 6/28: 공사없음 -->
+                    <td>
+                      <div class="rss-cal-date">6/28</div>
+                      <span class="rss-cal-badge rss-cal-badge--none">공사없음</span>
+                    </td>
+
+                    <!-- 6/29: 예정 -->
+                    <td>
+                      <div class="rss-cal-date">6/29</div>
+                      <span class="rss-cal-badge rss-cal-badge--scheduled">예정</span>
+                    </td>
+
+                    <!-- 6/30: 예정 (공사 마지막 날) -->
+                    <td>
+                      <div class="rss-cal-date">6/30</div>
+                      <span class="rss-cal-badge rss-cal-badge--scheduled">예정</span>
+                    </td>
+
+                    <!-- 7/1 ~ 7/4: 공사 기간 외 -->
+                    <td class="rss-cal-cell--out"><div class="rss-cal-date">7/1</div></td>
+                    <td class="rss-cal-cell--out"><div class="rss-cal-date">7/2</div></td>
+                    <td class="rss-cal-cell--out"><div class="rss-cal-date">7/3</div></td>
+                    <td class="rss-cal-cell--out"><div class="rss-cal-date">7/4</div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div><!-- /rss-cal-table-wrap -->
+
+            <!-- ══════════════════════════════════════════════
+                 모바일: 세로 리스트 (768px 이하에서 표시)
+                 공사가 있는 날짜만 표시 (공사 기간 외 날짜 제외)
+                 [Java] th:each="prog : ${dailyProgList}" — 공사 기간 내 날짜만 반복
+            ══════════════════════════════════════════════ -->
+            <div class="rss-cal-list" aria-label="공사 진행상황 목록">
+
+              <!-- 헤더 행 -->
+              <div class="rss-cal-list-header" role="row">
+                <span role="columnheader">날짜</span>
+                <span role="columnheader">요일</span>
+                <span role="columnheader">진행상황</span>
+              </div>
+
+              <!-- ── 6/22: 시연회 ── -->
+              <!-- [Java] th:if="${prog.progCd == 'REHEARSAL'}" -->
+              <div class="rss-cal-list-row" role="row">
+                <span class="rss-cal-list-dt">6/22</span>
+                <span class="rss-cal-list-dow">월</span>
+                <div class="rss-cal-list-status">
+                  <button class="rss-cal-badge rss-cal-badge--rehearsal"
+                          onclick="openDailyProgModal('2026-06-22','REHEARSAL',2450000)">시연회</button>
+                  <!-- [Java] th:if="${loginType == 'company'}" -->
+                  <span class="rss-cal-amount">(2,450,000)</span>
+                </div>
+              </div>
+
+              <!-- ── 6/23: 공사없음 ── -->
+              <div class="rss-cal-list-row" role="row">
+                <span class="rss-cal-list-dt">6/23</span>
+                <span class="rss-cal-list-dow">화</span>
+                <div class="rss-cal-list-status">
+                  <span class="rss-cal-badge rss-cal-badge--none">공사없음</span>
+                </div>
+              </div>
+
+              <!-- ── 6/24: 공사없음 ── -->
+              <div class="rss-cal-list-row" role="row">
+                <span class="rss-cal-list-dt">6/24</span>
+                <span class="rss-cal-list-dow">수</span>
+                <div class="rss-cal-list-status">
+                  <span class="rss-cal-badge rss-cal-badge--none">공사없음</span>
+                </div>
+              </div>
+
+              <!-- ── 6/25: 공사완료 ── -->
+              <div class="rss-cal-list-row" role="row">
+                <span class="rss-cal-list-dt">6/25</span>
+                <span class="rss-cal-list-dow">목</span>
+                <div class="rss-cal-list-status">
+                  <button class="rss-cal-badge rss-cal-badge--complete"
+                          onclick="openDailyProgModal('2026-06-25','WORK_COMPLETE',4900000)">공사완료</button>
+                  <!-- [Java] th:if="${loginType == 'company'}" -->
+                  <span class="rss-cal-amount">(4,900,000)</span>
+                </div>
+              </div>
+
+              <!-- ── 6/26: 취소 ── -->
+              <div class="rss-cal-list-row" role="row">
+                <span class="rss-cal-list-dt">6/26</span>
+                <span class="rss-cal-list-dow">금</span>
+                <div class="rss-cal-list-status">
+                  <button class="rss-cal-badge rss-cal-badge--cancel"
+                          onclick="openDailyProgModal('2026-06-26','CANCEL',500000)">취소</button>
+                  <!-- [Java] th:if="${loginType == 'company'}" -->
+                  <span class="rss-cal-amount">(500,000)</span>
+                </div>
+              </div>
+
+              <!-- ── 6/27: 오늘 날짜 (예정 + 완료/취소 버튼) ── -->
+              <!-- [Java] th:classappend="${prog.isToday} ? 'rss-cal-list-row--today'" -->
+              <div class="rss-cal-list-row rss-cal-list-row--today" role="row">
+                <span class="rss-cal-list-dt">6/27</span>
+                <span class="rss-cal-list-dow">토</span>
+                <div class="rss-cal-list-status">
+                  <span class="rss-cal-badge rss-cal-badge--scheduled">예정</span>
+                  <div class="rss-cal-list-btns">
+                    <button type="button"
+                            class="rss-btn rss-action-btn rss-action-btn--complete"
+                            onclick="RSS.action.openTodayDoneModal()">완료</button>
+                    <button type="button"
+                            class="rss-btn rss-action-btn rss-action-btn--cancel"
+                            onclick="RSS.action.openCancelSimpleModal()">취소</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── 6/28: 공사없음 ── -->
+              <div class="rss-cal-list-row" role="row">
+                <span class="rss-cal-list-dt">6/28</span>
+                <span class="rss-cal-list-dow">일</span>
+                <div class="rss-cal-list-status">
+                  <span class="rss-cal-badge rss-cal-badge--none">공사없음</span>
+                </div>
+              </div>
+
+              <!-- ── 6/29: 예정 ── -->
+              <div class="rss-cal-list-row" role="row">
+                <span class="rss-cal-list-dt">6/29</span>
+                <span class="rss-cal-list-dow">월</span>
+                <div class="rss-cal-list-status">
+                  <span class="rss-cal-badge rss-cal-badge--scheduled">예정</span>
+                </div>
+              </div>
+
+              <!-- ── 6/30: 예정 ── -->
+              <div class="rss-cal-list-row" role="row">
+                <span class="rss-cal-list-dt">6/30</span>
+                <span class="rss-cal-list-dow">화</span>
+                <div class="rss-cal-list-status">
+                  <span class="rss-cal-badge rss-cal-badge--scheduled">예정</span>
+                </div>
+              </div>
+
+            </div><!-- /rss-cal-list -->
+
+          </div><!-- /rss-cal-wrap -->
+
+          <!-- 하단 버튼: 목록으로 이동 -->
+          <div class="rss-page-actions">
+            <a href="construction-list.html" class="rss-btn rss-btn--outline px-10">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>목록
+            </a>
+          </div>
+
+        </div><!-- /tab-status -->
+
+      </div><!-- /rss-card -->
 
     </main>
 
@@ -408,6 +654,36 @@
       document.getElementById(target).classList.add('active');
     });
   });
+
+  /* ══════════════════════════════════════════════════════════
+     진행상황 탭: 날짜별 금액 정보 모달 (용어사전 §17-4)
+     openDailyProgModal(dt, progCd, amount)
+     - dt      : 날짜 문자열 (예: '2026-06-25')
+     - progCd  : 구분 코드 (REHEARSAL / WORK_COMPLETE / CANCEL / NO_WORK / SCHEDULED)
+     - amount  : 금액 (숫자)
+     ※ 모달 스토리보드 확정 후 상세 구현 예정
+        현재는 빈 모달 틀만 표시
+     [Java] 실제 연동 시: fetch('/api/construction/daily-prog?dt=' + dt + '&seq=' + constructionSeq)
+  ══════════════════════════════════════════════════════════ */
+  function openDailyProgModal(dt, progCd, amount) {
+    /* TODO: 금액 정보 모달 스토리보드 확정 후 구현 예정 */
+    /* 임시: 콘솔 로그 및 알림 */
+    console.log('[daily_prog modal]', { dt, progCd, amount });
+
+    /* 임시 모달 표시 (스토리보드 확정 전 placeholder) */
+    const progLabels = {
+      'REHEARSAL':     '시연회',
+      'WORK_COMPLETE': '공사완료',
+      'CANCEL':        '취소',
+      'NO_WORK':       '공사없음',
+      'SCHEDULED':     '예정'
+    };
+    const label = progLabels[progCd] || progCd;
+    const amountStr = amount ? amount.toLocaleString() + '원' : '대기중';
+
+    /* 임시 알림 (모달 스토리보드 확정 전) */
+    alert(dt + ' [' + label + ']\n금액: ' + amountStr + '\n\n※ 금액 상세 모달은 스토리보드 확정 후 구현됩니다.');
+  }
 </script>
 </body>
 </html>
