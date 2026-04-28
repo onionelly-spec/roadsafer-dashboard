@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회원가입 — 로드세이프티시스템</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- 공통 커스텀 CSS -->
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* ── 회원가입 공통 레이아웃 ── */
+    .reg-page {
+      min-height: 100vh;
+      background: #f0ede6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 60px;
+    }
+
+    /* 헤더 로고 */
+    .reg-header {
+      width: 100%;
+      max-width: 720px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .reg-header__logo {
+      height: 40px;
+      width: auto;
+    }
+    .reg-header__name {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      letter-spacing: -0.01em;
+    }
+
+    /* 메인 카드 */
+    .reg-card {
+      width: 100%;
+      max-width: 720px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .reg-card__top-line {
+      height: 4px;
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
+    }
+    .reg-card__body {
+      padding: 32px 36px 36px;
+    }
+    @media (max-width: 640px) {
+      .reg-card__body { padding: 24px 20px 28px; }
+    }
+
+    /* 페이지 타이틀 */
+    .reg-title {
+      font-size: var(--rss-font-2xl);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    /* 스텝 인디케이터 */
+    .reg-steps {
+      display: flex;
+      border-bottom: 2px solid var(--rss-border);
+      margin-bottom: 28px;
+    }
+    .reg-step {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: var(--rss-font-base);
+      font-weight: 600;
+      color: #c4c9d4;
+      position: relative;
+    }
+    .reg-step--active {
+      color: var(--rss-text);
+    }
+    .reg-step--active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--rss-amber);
+    }
+    .reg-step--done {
+      color: var(--rss-muted);
+    }
+
+    /* 약관 섹션 */
+    .terms-section {
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .terms-section__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: #fafafa;
+      border-bottom: 1px solid var(--rss-border);
+    }
+    .terms-section__title {
+      font-size: var(--rss-font-base);
+      font-weight: 700;
+      color: var(--rss-text);
+    }
+    .terms-section__required {
+      font-size: var(--rss-font-xs);
+      color: #ef4444;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .terms-section__body {
+      padding: 16px;
+      max-height: 160px;
+      overflow-y: auto;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      line-height: 1.8;
+      background: #fff;
+    }
+    .terms-section__body::-webkit-scrollbar { width: 4px; }
+    .terms-section__body::-webkit-scrollbar-track { background: #f0f0f0; }
+    .terms-section__body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+
+    /* 동의 체크박스 행 */
+    .terms-agree-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #fafafa;
+      border-top: 1px solid var(--rss-border);
+    }
+    .terms-agree-row label {
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .terms-agree-row input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--rss-amber);
+      cursor: pointer;
+    }
+
+    /* 전체 동의 행 */
+    .terms-all-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 12px 0 4px;
+      margin-bottom: 4px;
+    }
+    .terms-all-row label {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .terms-all-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--rss-amber);
+      cursor: pointer;
+    }
+
+    /* 주의사항 박스 */
+    .reg-notice-box {
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.20);
+      border-radius: var(--rss-radius);
+      padding: 14px 16px;
+      margin: 20px 0 24px;
+      font-size: var(--rss-font-sm);
+      color: #6b7280;
+      line-height: 1.8;
+    }
+    .reg-notice-box strong {
+      color: var(--rss-text);
+      font-weight: 700;
+    }
+    .reg-notice-box ul {
+      margin: 6px 0 0 4px;
+      padding-left: 16px;
+      list-style: disc;
+    }
+
+    /* 가입 유형 선택 버튼 */
+    .reg-type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .reg-type-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 24px 16px;
+      border: 2px solid var(--rss-border);
+      border-radius: var(--rss-radius-lg);
+      background: #fff;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+      font-family: inherit;
+    }
+    .reg-type-btn:hover {
+      border-color: var(--rss-amber);
+      background: rgba(245,158,11,0.04);
+      box-shadow: 0 2px 12px rgba(245,158,11,0.12);
+    }
+    .reg-type-btn__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(245,158,11,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .reg-type-btn__icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--rss-amber);
+      stroke: var(--rss-amber);
+    }
+    .reg-type-btn__label {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+    }
+    .reg-type-btn__desc {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* 경고 모달 */
+    .reg-alert-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .reg-alert-modal.open { display: flex; }
+    .reg-alert-modal__box {
+      background: #fff;
+      border-radius: var(--rss-radius-lg);
+      padding: 28px 28px 24px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+    }
+    .reg-alert-modal__title {
+      font-size: var(--rss-font-lg);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .reg-alert-modal__title svg {
+      width: 22px; height: 22px;
+      color: #ef4444; stroke: #ef4444;
+    }
+    .reg-alert-modal__body {
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .reg-alert-modal__footer {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* 뒤로가기 링크 */
+    .reg-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      margin-top: 20px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .reg-back-link:hover { color: var(--rss-text); }
+    .reg-back-link svg { width: 14px; height: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="reg-page">
+
+  <!-- 헤더 로고 -->
+  <header class="reg-header">
+    <a href="login.html">
+      <img src="logo.png" alt="로드세이프티시스템" class="reg-header__logo" />
+    </a>
+    <span class="reg-header__name">로드세이프티시스템</span>
+  </header>
+
+  <!-- 메인 카드 -->
+  <main class="reg-card" role="main">
+    <div class="reg-card__top-line"></div>
+    <div class="reg-card__body">
+
+      <h1 class="reg-title">회원가입</h1>
+
+      <!-- 스텝 인디케이터 -->
+      <nav class="reg-steps" aria-label="가입 단계">
+        <div class="reg-step reg-step--active" aria-current="step">약관동의</div>
+        <div class="reg-step">정보 입력</div>
+        <div class="reg-step">가입 완료</div>
+      </nav>
+
+      <!-- ══════════════════════════════════════════════════
+           약관 섹션 1: 이용약관 (필수)
+           [Java] th:text="${terms.serviceTermsContent}"
+      ══════════════════════════════════════════════════ -->
+      <section class="terms-section" aria-labelledby="terms1Title">
+        <div class="terms-section__header">
+          <div>
+            <span class="terms-section__title" id="terms1Title">이용약관에 동의</span>
+            <span class="terms-section__required">(필수)</span>
+          </div>
+        </div>
+        <div class="terms-section__body" id="terms1Body">
+          <!-- [Java] th:utext="${terms.serviceTermsContent}" -->
+          <p><strong>제1조 (목적)</strong><br>
+          이 약관은 로드세이프티시스템(이하 "회사")이 제공하는 도로공사 차단 매칭 서비스(이하 "서비스")의 이용과 관련하여 회사와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.</p>
+          <br>
+          <p><strong>제2조 (정의)</strong><br>
+          ① "서비스"란 회사가 제공하는 도로공사 차단 매칭 플랫폼 및 관련 부가서비스를 의미합니다.<br>
+          ② "이용자"란 이 약관에 따라 회사가 제공하는 서비스를 받는 회원 및 비회원을 말합니다.<br>
+          ③ "회원"이란 회사에 개인정보를 제공하여 회원 등록을 한 자로서, 회사의 정보를 지속적으로 제공받으며 서비스를 계속적으로 이용할 수 있는 자를 말합니다.</p>
+          <br>
+          <p><strong>제3조 (약관의 효력 및 변경)</strong><br>
+          ① 이 약관은 서비스를 이용하고자 하는 모든 이용자에 대하여 그 효력을 발생합니다.<br>
+          ② 회사는 합리적인 사유가 발생할 경우 이 약관을 변경할 수 있으며, 약관이 변경되는 경우 변경된 약관의 적용일자 7일 전부터 공지합니다.</p>
+          <br>
+          <p><strong>제4조 (서비스의 제공 및 변경)</strong><br>
+          ① 회사는 다음과 같은 업무를 수행합니다.<br>
+          - 도로공사 차단 매칭 서비스<br>
+          - TMA 카드 관리 서비스<br>
+          - 기타 회사가 정하는 업무</p>
+        </div>
+        <div class="terms-agree-row">
+          <label for="chkTerms1">
+            <input type="checkbox" id="chkTerms1" onchange="syncAllCheck()" />
+            동의합니다
+          </label>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════
+           약관 섹션 2: 개인정보 수집·이용 (필수)
+           [Java] th:text="${terms.privacyTermsContent}"
+      ══════════════════════════════════════════════════ -->
+      <section class="terms-section" aria-labelledby="terms2Title">
+        <div class="terms-section__header">
+          <div>
+            <span class="terms-section__title" id="terms2Title">개인정보 수집, 이용에 대한 동의</span>
+            <span class="terms-section__required">(필수)</span>
+          </div>
+        </div>
+        <div class="terms-section__body" id="terms2Body">
+          <!-- [Java] th:utext="${terms.privacyTermsContent}" -->
+          <p><strong>1. 수집하는 개인정보 항목</strong><br>
+          회사는 회원가입, 서비스 이용, 고객상담 등을 위해 아래와 같은 개인정보를 수집합니다.<br>
+          - 필수항목: 아이디, 비밀번호, 상호, 사업자번호, 대표자명, 대표 휴대폰 번호, 이메일 주소, 사업장 주소</p>
+          <br>
+          <p><strong>2. 개인정보의 수집 및 이용목적</strong><br>
+          회사는 수집한 개인정보를 다음의 목적을 위해 활용합니다.<br>
+          - 서비스 제공에 관한 계약 이행 및 서비스 제공에 따른 요금정산<br>
+          - 회원 관리: 회원제 서비스 이용에 따른 본인확인, 개인 식별, 불량회원의 부정 이용 방지</p>
+          <br>
+          <p><strong>3. 개인정보의 보유 및 이용기간</strong><br>
+          원칙적으로 개인정보 수집 및 이용목적이 달성된 후에는 해당 정보를 지체 없이 파기합니다. 단, 관계법령의 규정에 의하여 보존할 필요가 있는 경우 일정 기간 동안 개인정보를 보관합니다.</p>
+        </div>
+        <div class="terms-agree-row">
+          <label for="chkTerms2">
+            <input type="checkbox" id="chkTerms2" onchange="syncAllCheck()" />
+            동의합니다
+          </label>
+        </div>
+      </section>
+
+      <!-- 전체 동의 -->
+      <div class="terms-all-row">
+        <label for="chkAll">
+          <input type="checkbox" id="chkAll" onchange="toggleAllAgree()" />
+          전체 동의
+        </label>
+      </div>
+
+      <!-- 주의사항 박스 -->
+      <div class="reg-notice-box">
+        <strong>주의하세요!</strong>
+        <ul>
+          <li>기업의 부서, 직원이 가입 시에는 반드시 기업이 먼저 등록된 상태여야 가입할 수 있습니다.</li>
+        </ul>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════
+           가입 유형 선택 버튼
+      ══════════════════════════════════════════════════ -->
+      <div class="reg-type-grid">
+        <!-- 기업 회원 선택 (버튼 ③) -->
+        <button type="button" class="reg-type-btn" id="btnCompany"
+                onclick="selectType('company')"
+                aria-label="기업 회원으로 가입">
+          <div class="reg-type-btn__icon">
+            <i data-lucide="building-2"></i>
+          </div>
+          <span class="reg-type-btn__label">기업 회원</span>
+          <span class="reg-type-btn__desc">사업자번호를 보유한<br>기업 대표자</span>
+        </button>
+
+        <!-- 기업 회원의 부서·직원 선택 (버튼 ④) -->
+        <button type="button" class="reg-type-btn" id="btnEmployee"
+                onclick="selectType('employee')"
+                aria-label="기업 회원의 부서·직원으로 가입">
+          <div class="reg-type-btn__icon">
+            <i data-lucide="users"></i>
+          </div>
+          <span class="reg-type-btn__label">기업 회원의 부서, 직원</span>
+          <span class="reg-type-btn__desc">기업에 소속된<br>부서 또는 직원</span>
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 뒤로가기 -->
+  <a href="login.html" class="reg-back-link">
+    <i data-lucide="arrow-left"></i>
+    로그인으로 돌아가기
+  </a>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     경고 모달 — 약관 미동의 시
+══════════════════════════════════════════════════════ -->
+<div class="reg-alert-modal" id="modalTermsAlert" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title">
+      <i data-lucide="alert-circle"></i>
+      약관을 검토하고 동의해 주세요
+    </p>
+    <p class="reg-alert-modal__body" id="modalTermsAlertMsg">
+      필수 약관에 동의하지 않으면 가입을 진행할 수 없습니다.<br>
+      약관을 확인하고 동의해 주세요.
+    </p>
+    <div class="reg-alert-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber px-8"
+              onclick="closeTermsAlert()">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     경고 모달 — 기업 미가입 상태에서 직원 선택 시 (④)
+══════════════════════════════════════════════════════ -->
+<div class="reg-alert-modal" id="modalEmployeeAlert" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title">
+      <i data-lucide="alert-circle"></i>
+      기업 먼저 가입이 필요합니다
+    </p>
+    <p class="reg-alert-modal__body">
+      기업회원의 직원(부서)은 기업회원이 가입된 상태여야 추가 가입이 가능합니다.<br><br>
+      <strong>가입하시겠습니까?</strong>
+    </p>
+    <div class="rss-modal__footer" style="display:flex;justify-content:center;gap:8px;margin-top:4px;">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+              onclick="closeEmployeeAlert()">아니오</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+              onclick="goEmployeeRegister()">예</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     경고 모달 — 기업 회원 선택 시 사업자등록증 첨부 안내 (③)
+══════════════════════════════════════════════════════ -->
+<div class="reg-alert-modal" id="modalCompanyAlert" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title">
+      <i data-lucide="info"></i>
+      사업자등록증 첨부 안내
+    </p>
+    <p class="reg-alert-modal__body">
+      기업회원은 <strong>사업자등록증을 첨부</strong>하여 증빙되어야 가입이 완료됩니다.<br><br>
+      <strong>가입하시겠습니까?</strong>
+    </p>
+    <div class="rss-modal__footer" style="display:flex;justify-content:center;gap:8px;margin-top:4px;">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+              onclick="closeCompanyAlert()">아니오</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+              onclick="goCompanyRegister()">예</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  /* ── 전체 동의 토글 ── */
+  function toggleAllAgree() {
+    var checked = document.getElementById('chkAll').checked;
+    document.getElementById('chkTerms1').checked = checked;
+    document.getElementById('chkTerms2').checked = checked;
+  }
+
+  /* ── 개별 체크 시 전체 동의 체크박스 동기화 ── */
+  function syncAllCheck() {
+    var t1 = document.getElementById('chkTerms1').checked;
+    var t2 = document.getElementById('chkTerms2').checked;
+    document.getElementById('chkAll').checked = (t1 && t2);
+  }
+
+  /* ── 약관 동의 검증 ── */
+  function validateTerms() {
+    var t1 = document.getElementById('chkTerms1').checked;
+    var t2 = document.getElementById('chkTerms2').checked;
+    return t1 && t2;
+  }
+
+  /* ── 가입 유형 선택 ── */
+  function selectType(type) {
+    /* 필수 약관 미동의 시 경고 */
+    if (!validateTerms()) {
+      document.getElementById('modalTermsAlert').classList.add('open');
+      return;
+    }
+
+    if (type === 'company') {
+      /* ③ 기업 회원: 사업자등록증 첨부 안내 모달 */
+      document.getElementById('modalCompanyAlert').classList.add('open');
+    } else {
+      /* ④ 직원: 기업 먼저 가입 안내 모달 */
+      document.getElementById('modalEmployeeAlert').classList.add('open');
+    }
+  }
+
+  /* ── 모달 닫기 ── */
+  function closeTermsAlert()    { document.getElementById('modalTermsAlert').classList.remove('open'); }
+  function closeCompanyAlert()  { document.getElementById('modalCompanyAlert').classList.remove('open'); }
+  function closeEmployeeAlert() { document.getElementById('modalEmployeeAlert').classList.remove('open'); }
+
+  /* ── 기업 회원 정보 입력으로 이동 ── */
+  function goCompanyRegister() {
+    closeCompanyAlert();
+    /* [Java] 경로: /register/company */
+    location.href = 'register-company.html';
+  }
+
+  /* ── 직원 정보 입력으로 이동 (추후 register-employee.html 제작 예정) ── */
+  function goEmployeeRegister() {
+    closeEmployeeAlert();
+    /* [Java] 경로: /register/employee */
+    /* TODO: register-employee.html 제작 후 연결 */
+    alert('직원 가입 페이지는 준비 중입니다.');
+  }
+
+  /* ── 모달 배경 클릭 시 닫기 ── */
+  ['modalTermsAlert','modalCompanyAlert','modalEmployeeAlert'].forEach(function(id) {
+    document.getElementById(id).addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>

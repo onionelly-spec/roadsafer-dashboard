@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>가입 완료 — 로드세이프티시스템</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- 공통 커스텀 CSS -->
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* ── 회원가입 공통 레이아웃 (register-terms.html과 동일) ── */
+    .reg-page {
+      min-height: 100vh;
+      background: #f0ede6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 60px;
+    }
+    .reg-header {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .reg-header__logo { height: 40px; width: auto; }
+    .reg-header__name {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      letter-spacing: -0.01em;
+    }
+    .reg-card {
+      width: 100%;
+      max-width: 800px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .reg-card__top-line {
+      height: 4px;
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
+    }
+    .reg-card__body { padding: 32px 36px 36px; }
+    @media (max-width: 640px) { .reg-card__body { padding: 24px 20px 28px; } }
+    .reg-title {
+      font-size: var(--rss-font-2xl);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    /* 스텝 인디케이터 */
+    .reg-steps {
+      display: flex;
+      border-bottom: 2px solid var(--rss-border);
+      margin-bottom: 48px;
+    }
+    .reg-step {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: var(--rss-font-base);
+      font-weight: 600;
+      color: #c4c9d4;
+      position: relative;
+    }
+    .reg-step--active { color: var(--rss-text); }
+    .reg-step--active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 2px;
+      background: var(--rss-amber);
+    }
+    .reg-step--done { color: var(--rss-muted); }
+
+    /* 완료 아이콘 영역 */
+    .complete-icon-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .complete-icon-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(245,158,11,0.10);
+      border: 2.5px solid var(--rss-amber);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .complete-icon-circle svg {
+      width: 36px;
+      height: 36px;
+      color: var(--rss-amber);
+      stroke: var(--rss-amber);
+    }
+
+    /* 완료 메시지 */
+    .complete-msg-wrap {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .complete-msg-main {
+      font-size: var(--rss-font-lg);
+      font-weight: 600;
+      color: var(--rss-text);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    .complete-msg-sub {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      margin-bottom: 10px;
+    }
+    .complete-msg-desc {
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      line-height: 1.7;
+    }
+
+    /* 정보 박스 */
+    .complete-info-box {
+      background: rgba(245,158,11,0.06);
+      border: 1.5px solid rgba(245,158,11,0.25);
+      border-radius: var(--rss-radius);
+      padding: 16px 20px;
+      margin-bottom: 36px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      line-height: 1.8;
+    }
+    .complete-info-box strong {
+      color: var(--rss-text);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<div class="reg-page">
+
+  <!-- 헤더 로고 -->
+  <header class="reg-header">
+    <a href="login.html">
+      <img src="logo.png" alt="로드세이프티시스템" class="reg-header__logo" />
+    </a>
+    <span class="reg-header__name">로드세이프티시스템</span>
+  </header>
+
+  <!-- 메인 카드 -->
+  <main class="reg-card" role="main">
+    <div class="reg-card__top-line"></div>
+    <div class="reg-card__body">
+
+      <h1 class="reg-title">회원가입</h1>
+
+      <!-- 스텝 인디케이터 -->
+      <nav class="reg-steps" aria-label="가입 단계">
+        <div class="reg-step reg-step--done">약관동의</div>
+        <div class="reg-step reg-step--done">정보 입력</div>
+        <div class="reg-step reg-step--active" aria-current="step">가입 완료</div>
+      </nav>
+
+      <!-- 완료 아이콘 -->
+      <div class="complete-icon-wrap">
+        <div class="complete-icon-circle">
+          <i data-lucide="check"></i>
+        </div>
+      </div>
+
+      <!-- 완료 메시지 -->
+      <!-- [Java] 가입 유형(기업회원 / 기업회원의 직원)에 따라 메시지 분기 -->
+      <div class="complete-msg-wrap">
+        <p class="complete-msg-main">
+          도로공사차단 매칭 서비스에 가입해 주셔서 감사합니다.
+        </p>
+        <p class="complete-msg-sub">
+          운영자의 승인 후 서비스를 이용할 수 있습니다.
+        </p>
+        <p class="complete-msg-desc">
+          운영자의 승인 결과는 '카카오톡 알림'으로 전송됩니다.
+        </p>
+      </div>
+
+      <!-- 안내 정보 박스 -->
+      <!-- [Java] 가입 유형에 따라 안내 내용 분기 표시 -->
+      <div class="complete-info-box">
+        <!-- [Java] th:if="${memberType == 'COMPANY'}" -->
+        <p>
+          <strong>기업회원</strong>으로 가입하셨습니다.<br>
+          운영관리시스템 &gt; 회원관리 &gt; 차단기업관리에 <strong>'대기'</strong> 상태로 등록됩니다.<br>
+          운영자가 승인 처리 후에 가입이 완료됩니다.
+        </p>
+        <!-- [Java] th:if="${memberType == 'EMPLOYEE'}" (직원 가입 시 표시) -->
+        <!--
+        <p>
+          <strong>기업회원의 직원(부서)</strong>으로 가입하셨습니다.<br>
+          해당 기업의 '승인관리'에 <strong>'대기'</strong> 상태로 등록됩니다.<br>
+          운영자가 승인 처리 후에 가입이 완료됩니다.
+        </p>
+        -->
+      </div>
+
+      <!-- ① 확인 버튼 → 로그인 페이지로 이동 -->
+      <!-- [Java] 대기 상태이므로 로그인 페이지로 이동해도 실제 로그인 불가 -->
+      <div class="rss-page-actions">
+        <a href="login.html" class="rss-btn rss-btn--amber px-10">확인</a>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

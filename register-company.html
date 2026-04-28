@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>기업회원 정보 입력 — 로드세이프티시스템</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- 공통 커스텀 CSS -->
+  <link rel="stylesheet" href="rss-common.css" />
+
+  <style>
+    /* ── 회원가입 공통 레이아웃 (register-terms.html과 동일) ── */
+    .reg-page {
+      min-height: 100vh;
+      background: #f0ede6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 60px;
+    }
+    .reg-header {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .reg-header__logo { height: 40px; width: auto; }
+    .reg-header__name {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      letter-spacing: -0.01em;
+    }
+    .reg-card {
+      width: 100%;
+      max-width: 800px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .reg-card__top-line {
+      height: 4px;
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
+    }
+    .reg-card__body { padding: 32px 36px 36px; }
+    @media (max-width: 640px) { .reg-card__body { padding: 24px 20px 28px; } }
+    .reg-title {
+      font-size: var(--rss-font-2xl);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    /* 스텝 인디케이터 */
+    .reg-steps {
+      display: flex;
+      border-bottom: 2px solid var(--rss-border);
+      margin-bottom: 20px;
+    }
+    .reg-step {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: var(--rss-font-base);
+      font-weight: 600;
+      color: #c4c9d4;
+      position: relative;
+    }
+    .reg-step--active { color: var(--rss-text); }
+    .reg-step--active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 2px;
+      background: var(--rss-amber);
+    }
+    .reg-step--done { color: var(--rss-muted); }
+
+    /* 안내 문구 */
+    .reg-guide-text {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      text-align: center;
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+
+    /* 섹션 타이틀 */
+    .reg-section-title {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      padding: 10px 0 10px 10px;
+      border-left: 3px solid var(--rss-amber);
+      margin-bottom: 16px;
+      margin-top: 28px;
+    }
+
+    /* 폼 그리드 */
+    .reg-form-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 4px;
+    }
+    .reg-form-table th,
+    .reg-form-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--rss-border);
+      vertical-align: middle;
+    }
+    .reg-form-table th {
+      background: #fafafa;
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-muted);
+      text-align: right;
+      white-space: nowrap;
+      width: 130px;
+    }
+    .reg-form-table td {
+      background: #fff;
+      font-size: var(--rss-font-base);
+    }
+    @media (max-width: 640px) {
+      .reg-form-table th { width: 90px; font-size: var(--rss-font-xs); padding: 8px; }
+      .reg-form-table td { padding: 8px; }
+    }
+
+    /* 입력 필드 공통 */
+    .reg-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    .reg-input:focus {
+      border-color: var(--rss-amber);
+      background: #fff;
+    }
+    .reg-input::placeholder { color: #c4c9d4; }
+    .reg-input--error { border-color: #ef4444 !important; }
+
+    /* 입력 힌트 텍스트 */
+    .reg-input-hint {
+      font-size: var(--rss-font-xs);
+      color: var(--rss-muted);
+      margin-top: 4px;
+    }
+    .reg-input-hint--error {
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    /* 사업자번호 분할 입력 */
+    .biz-no-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .biz-no-wrap .reg-input { flex: 1; }
+    .biz-no-sep {
+      font-size: var(--rss-font-md);
+      color: var(--rss-muted);
+      flex-shrink: 0;
+    }
+
+    /* 파일 첨부 */
+    .reg-file-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .reg-file-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 14px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-muted);
+      background: #fafafa;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .reg-file-btn:hover { border-color: var(--rss-amber); color: var(--rss-text); }
+    .reg-file-btn svg { width: 14px; height: 14px; }
+    .reg-file-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text);
+    }
+    .reg-file-item__remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #9ca3af;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
+    }
+    .reg-file-item__remove:hover { color: #ef4444; }
+    .reg-file-item__remove svg { width: 13px; height: 13px; }
+
+    /* 대표 휴대폰 번호 */
+    .phone-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .phone-wrap .reg-input { flex: 1; min-width: 60px; }
+    .phone-sep {
+      font-size: var(--rss-font-md);
+      color: var(--rss-muted);
+      flex-shrink: 0;
+    }
+    .sms-radio-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: 8px;
+      flex-shrink: 0;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+    }
+    .sms-radio-wrap label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .sms-radio-wrap input[type="radio"] { accent-color: var(--rss-amber); }
+
+    /* 이메일 주소 */
+    .email-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .email-wrap .reg-input { flex: 1; min-width: 80px; }
+    .email-at { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
+    .email-domain-select {
+      padding: 9px 10px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      min-width: 110px;
+    }
+    .email-domain-select:focus { border-color: var(--rss-amber); }
+    .email-radio-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: 8px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+    }
+    .email-radio-wrap label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .email-radio-wrap input[type="radio"] { accent-color: var(--rss-amber); }
+
+    /* 주소 찾기 */
+    .addr-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .addr-search-row {
+      display: flex;
+      gap: 8px;
+    }
+    .addr-search-row .reg-input { flex: 1; }
+
+    /* 권역 설정 체크박스 */
+    .region-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+    }
+    .region-wrap label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .region-wrap input[type="checkbox"] {
+      accent-color: var(--rss-amber);
+      width: 15px;
+      height: 15px;
+    }
+
+    /* TMA 카드 섹션 */
+    .tma-section-title {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      padding: 10px 0 10px 10px;
+      border-left: 3px solid var(--rss-amber);
+      margin-bottom: 12px;
+      margin-top: 28px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tma-badge {
+      font-size: var(--rss-font-xs);
+      background: rgba(245,158,11,0.12);
+      color: var(--rss-amber-dark);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* TMA 카드 테이블 */
+    .tma-table-wrap {
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .tma-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .tma-table thead th {
+      background: #fafafa;
+      padding: 10px 12px;
+      font-size: var(--rss-font-sm);
+      font-weight: 700;
+      color: var(--rss-muted);
+      border-bottom: 1px solid var(--rss-border);
+      text-align: center;
+    }
+    .tma-table tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--rss-border);
+      font-size: var(--rss-font-base);
+      vertical-align: middle;
+      text-align: center;
+    }
+    .tma-table tbody tr:last-child td { border-bottom: none; }
+
+    /* TMA 종류 라디오 */
+    .tma-type-wrap {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+    .tma-type-wrap label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--rss-font-sm);
+      cursor: pointer;
+    }
+    .tma-type-wrap input[type="radio"] { accent-color: var(--rss-amber); }
+
+    /* 추가 버튼 */
+    .tma-add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 14px;
+      border: 1.5px dashed var(--rss-amber);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-amber-dark);
+      background: rgba(245,158,11,0.04);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .tma-add-btn:hover { background: rgba(245,158,11,0.10); }
+    .tma-add-btn svg { width: 14px; height: 14px; }
+
+    /* 삭제 버튼 */
+    .tma-del-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #9ca3af;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s;
+    }
+    .tma-del-btn:hover { color: #ef4444; }
+    .tma-del-btn svg { width: 16px; height: 16px; }
+
+    /* 경고 모달 (register-terms.html과 동일) */
+    .reg-alert-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .reg-alert-modal.open { display: flex; }
+    .reg-alert-modal__box {
+      background: #fff;
+      border-radius: var(--rss-radius-lg);
+      padding: 28px 28px 24px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+    }
+    .reg-alert-modal__title {
+      font-size: var(--rss-font-lg);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .reg-alert-modal__title svg { width: 22px; height: 22px; }
+    .reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
+    .reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
+    .reg-alert-modal__body {
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .reg-alert-modal__footer {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* 뒤로가기 링크 */
+    .reg-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      margin-top: 20px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .reg-back-link:hover { color: var(--rss-text); }
+    .reg-back-link svg { width: 14px; height: 14px; }
+
+    /* 모바일 테이블 스크롤 */
+    .tma-table-scroll {
+      overflow-x: auto;
+    }
+    @media (max-width: 640px) {
+      .biz-no-wrap { flex-wrap: wrap; }
+      .phone-wrap { flex-wrap: wrap; }
+      .email-wrap { flex-wrap: wrap; }
+      .sms-radio-wrap { margin-left: 0; margin-top: 4px; }
+      .email-radio-wrap { margin-left: 0; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="reg-page">
+
+  <!-- 헤더 로고 -->
+  <header class="reg-header">
+    <a href="login.html">
+      <img src="logo.png" alt="로드세이프티시스템" class="reg-header__logo" />
+    </a>
+    <span class="reg-header__name">로드세이프티시스템</span>
+  </header>
+
+  <!-- 메인 카드 -->
+  <main class="reg-card" role="main">
+    <div class="reg-card__top-line"></div>
+    <div class="reg-card__body">
+
+      <h1 class="reg-title">회원가입</h1>
+
+      <!-- 스텝 인디케이터 -->
+      <nav class="reg-steps" aria-label="가입 단계">
+        <div class="reg-step reg-step--done">약관동의</div>
+        <div class="reg-step reg-step--active" aria-current="step">정보 입력</div>
+        <div class="reg-step">가입 완료</div>
+      </nav>
+
+      <!-- 안내 문구 -->
+      <p class="reg-guide-text">
+        모든 정보를 빠짐없이 입력해주세요.<br>
+        운영자가 정보 확인 후 '승인' 한 경우에만 서비스를 이용할 수 있습니다.
+      </p>
+
+      <!-- ══════════════════════════════════════════════════
+           ① 공통 정보 섹션
+      ══════════════════════════════════════════════════ -->
+      <form id="regCompanyForm" novalidate>
+
+        <h2 class="reg-section-title">공통 정보</h2>
+
+        <table class="reg-form-table">
+          <tbody>
+
+            <!-- 아이디 -->
+            <tr>
+              <th><label for="memberId">아이디</label></th>
+              <td>
+                <input type="text" id="memberId" name="memberId" class="reg-input"
+                       placeholder="영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요."
+                       maxlength="12"
+                       pattern="[a-zA-Z0-9]{8,12}"
+                       required
+                       autocomplete="username"
+                       oninput="validateId(this)" />
+                <!-- [Java] 아이디 중복 체크: POST /register/check-id { memberId } -->
+                <p class="reg-input-hint" id="memberIdHint">* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.</p>
+              </td>
+            </tr>
+
+            <!-- 비밀번호 -->
+            <tr>
+              <th><label for="memberPw">비밀번호</label></th>
+              <td>
+                <input type="password" id="memberPw" name="memberPw" class="reg-input"
+                       placeholder="대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요."
+                       maxlength="12"
+                       required
+                       autocomplete="new-password"
+                       oninput="validatePw(this)" />
+                <p class="reg-input-hint" id="memberPwHint">* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.</p>
+              </td>
+            </tr>
+
+            <!-- 비밀번호 확인 -->
+            <tr>
+              <th><label for="memberPwConfirm">비밀번호 확인</label></th>
+              <td>
+                <input type="password" id="memberPwConfirm" name="memberPwConfirm" class="reg-input"
+                       placeholder="비밀번호를 한 번 더 입력하세요"
+                       maxlength="12"
+                       required
+                       autocomplete="new-password"
+                       oninput="validatePwConfirm(this)" />
+                <p class="reg-input-hint" id="memberPwConfirmHint">* 비밀번호를 한 번 더 입력하세요.</p>
+              </td>
+            </tr>
+
+            <!-- 상호 -->
+            <tr>
+              <th><label for="companyNm">상호</label></th>
+              <td>
+                <input type="text" id="companyNm" name="companyNm" class="reg-input"
+                       placeholder="상호를 입력하세요"
+                       required />
+              </td>
+            </tr>
+
+            <!-- 사업자 번호 -->
+            <tr>
+              <th><label for="bizNo1">사업자 번호</label></th>
+              <td>
+                <div class="biz-no-wrap">
+                  <input type="text" id="bizNo1" name="bizNo1" class="reg-input"
+                         placeholder="000" maxlength="3"
+                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('bizNo2').focus();"
+                         required />
+                  <span class="biz-no-sep">-</span>
+                  <input type="text" id="bizNo2" name="bizNo2" class="reg-input"
+                         placeholder="00" maxlength="2"
+                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=2) document.getElementById('bizNo3').focus();"
+                         required />
+                  <span class="biz-no-sep">-</span>
+                  <input type="text" id="bizNo3" name="bizNo3" class="reg-input"
+                         placeholder="00000" maxlength="5"
+                         oninput="this.value=this.value.replace(/\D/g,'');"
+                         required />
+                </div>
+                <p class="reg-input-hint">* 숫자만 허용. 기타 문자는 입력 못하게 막음.</p>
+              </td>
+            </tr>
+
+            <!-- 사업자 등록증 -->
+            <tr>
+              <th>사업자 등록증</th>
+              <td>
+                <!-- [Java] 파일 업로드: POST /register/upload { file } → 파일명 반환 -->
+                <div class="reg-file-wrap" id="bizRegFileWrap">
+                  <button type="button" class="reg-file-btn" onclick="triggerFileInput('bizRegFile')">
+                    <i data-lucide="paperclip"></i>
+                    파일찾기
+                  </button>
+                  <input type="file" id="bizRegFile" name="bizRegFile" accept=".pdf,.jpg,.jpeg,.png"
+                         style="display:none;" onchange="handleFileSelect(this, 'bizRegFileWrap', 'bizRegFile')" />
+                  <!-- [Java] th:if="${bizRegFileName != null}" → 파일 아이템 표시 -->
+                  <div class="reg-file-item" id="bizRegFileItem" style="display:none;">
+                    <span id="bizRegFileName">이니인등록증.pdf</span>
+                    <button type="button" class="reg-file-item__remove"
+                            onclick="removeFile('bizRegFile', 'bizRegFileItem', 'bizRegFileName')">
+                      <i data-lucide="x"></i>
+                    </button>
+                  </div>
+                </div>
+                <p class="reg-input-hint">* 사업자등록증을 첨부해 주세요.</p>
+              </td>
+            </tr>
+
+            <!-- 대표자명 -->
+            <tr>
+              <th><label for="ceoNm">대표자명</label></th>
+              <td>
+                <input type="text" id="ceoNm" name="ceoNm" class="reg-input"
+                       placeholder="대표자명을 입력하세요"
+                       required />
+              </td>
+            </tr>
+
+            <!-- 대표 휴대폰 번호 -->
+            <tr>
+              <th><label for="ceoPhone1">대표 휴대폰 번호</label></th>
+              <td>
+                <div class="phone-wrap">
+                  <input type="text" id="ceoPhone1" name="ceoPhone1" class="reg-input"
+                         placeholder="010" maxlength="3"
+                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('ceoPhone2').focus();"
+                         required />
+                  <span class="phone-sep">-</span>
+                  <input type="text" id="ceoPhone2" name="ceoPhone2" class="reg-input"
+                         placeholder="0000" maxlength="4"
+                         oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=4) document.getElementById('ceoPhone3').focus();"
+                         required />
+                  <span class="phone-sep">-</span>
+                  <input type="text" id="ceoPhone3" name="ceoPhone3" class="reg-input"
+                         placeholder="0000" maxlength="4"
+                         oninput="this.value=this.value.replace(/\D/g,'');"
+                         required />
+                  <div class="sms-radio-wrap">
+                    <span>* sms 수신 :</span>
+                    <label><input type="radio" name="smsReceiveYn" value="Y" checked /> 수신</label>
+                    <label><input type="radio" name="smsReceiveYn" value="N" /> 거부</label>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 이메일 주소 -->
+            <tr>
+              <th><label for="emailId">이메일 주소</label></th>
+              <td>
+                <div class="email-wrap">
+                  <input type="text" id="emailId" name="emailId" class="reg-input"
+                         placeholder="이메일 아이디"
+                         required />
+                  <span class="email-at">@</span>
+                  <input type="text" id="emailDomain" name="emailDomain" class="reg-input"
+                         placeholder="직접입력"
+                         id="emailDomainInput" />
+                  <select class="email-domain-select" id="emailDomainSelect"
+                          onchange="applyEmailDomain(this.value)">
+                    <option value="">선택</option>
+                    <option value="naver.com">naver.com</option>
+                    <option value="gmail.com">gmail.com</option>
+                    <option value="daum.net">daum.net</option>
+                    <option value="hanmail.net">hanmail.net</option>
+                    <option value="kakao.com">kakao.com</option>
+                    <option value="hanafos.com">hanafos.com</option>
+                    <option value="korea.com">korea.com</option>
+                    <option value="lycos.co.kr">lycos.co.kr</option>
+                    <option value="direct">직접입력</option>
+                  </select>
+                  <div class="email-radio-wrap">
+                    <span>* 이메일 수신 :</span>
+                    <label><input type="radio" name="emailReceiveYn" value="Y" checked /> 수신</label>
+                    <label><input type="radio" name="emailReceiveYn" value="N" /> 거부</label>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 사업장 주소 -->
+            <tr>
+              <th>사업장 주소</th>
+              <td>
+                <div class="addr-wrap">
+                  <div class="addr-search-row">
+                    <input type="text" id="bizAddrZip" name="bizAddrZip" class="reg-input"
+                           placeholder="우편번호" readonly style="max-width:120px;" />
+                    <!-- [Java] 주소 API 연동: 카카오 주소 API 또는 행정안전부 도로명주소 API -->
+                    <button type="button" class="reg-file-btn" onclick="searchAddress()">
+                      <i data-lucide="map-pin"></i>
+                      주소 찾기
+                    </button>
+                  </div>
+                  <input type="text" id="bizAddrMain" name="bizAddrMain" class="reg-input"
+                         placeholder="기본 주소" readonly />
+                  <input type="text" id="bizAddrDetail" name="bizAddrDetail" class="reg-input"
+                         placeholder="상세 주소를 입력하세요" />
+                </div>
+              </td>
+            </tr>
+
+            <!-- 권역 설정 -->
+            <tr>
+              <th>권역 설정</th>
+              <td>
+                <!-- [Java] 최대 3개 선택 제한 (4개 이상 선택 시 경고) -->
+                <div class="region-wrap" id="regionWrap">
+                  <label><input type="checkbox" name="regionCd" value="SEL" onchange="limitRegion(this)" /> 서울, 경기</label>
+                  <label><input type="checkbox" name="regionCd" value="GWN" onchange="limitRegion(this)" /> 강원</label>
+                  <label><input type="checkbox" name="regionCd" value="CCB" onchange="limitRegion(this)" /> 충북</label>
+                  <label><input type="checkbox" name="regionCd" value="CCS" onchange="limitRegion(this)" /> 대전,세종,충남</label>
+                  <label><input type="checkbox" name="regionCd" value="JNB" onchange="limitRegion(this)" /> 전북</label>
+                  <label><input type="checkbox" name="regionCd" value="JNS" onchange="limitRegion(this)" /> 광주,전남</label>
+                  <label><input type="checkbox" name="regionCd" value="GNB" onchange="limitRegion(this)" /> 대구,경북</label>
+                  <label><input type="checkbox" name="regionCd" value="GNS" onchange="limitRegion(this)" /> 부산,울산,경남</label>
+                  <label><input type="checkbox" name="regionCd" value="JEJ" onchange="limitRegion(this)" /> 제주</label>
+                </div>
+                <p class="reg-input-hint">* 다중 체크박스로 최대 3개까지 선택. 4개 이상 선택 시 경고.</p>
+              </td>
+            </tr>
+
+            <!-- 통장사본 -->
+            <tr>
+              <th>통장사본</th>
+              <td>
+                <!-- [Java] 파일 업로드: POST /register/upload { file } → 파일명 반환 -->
+                <div class="reg-file-wrap" id="bankFileWrap">
+                  <button type="button" class="reg-file-btn" onclick="triggerFileInput('bankFile')">
+                    <i data-lucide="paperclip"></i>
+                    파일찾기
+                  </button>
+                  <input type="file" id="bankFile" name="bankFile" accept=".pdf,.jpg,.jpeg,.png"
+                         style="display:none;" onchange="handleFileSelect(this, 'bankFileWrap', 'bankFile')" />
+                  <div class="reg-file-item" id="bankFileItem" style="display:none;">
+                    <span id="bankFileName"></span>
+                    <button type="button" class="reg-file-item__remove"
+                            onclick="removeFile('bankFile', 'bankFileItem', 'bankFileName')">
+                      <i data-lucide="x"></i>
+                    </button>
+                  </div>
+                </div>
+                <p class="reg-input-hint">* 통장사본을 첨부해 주세요. 마이페이지에서 정보를 수정할 수 있습니다.</p>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+
+        <!-- ══════════════════════════════════════════════════
+             ② TMA 카드 섹션
+             [Java] 기본 1개 등록 필수. 추가 버튼으로 행 추가 가능.
+        ══════════════════════════════════════════════════ -->
+        <h2 class="tma-section-title">
+          TMA 카드
+          <span class="tma-badge">기본 1개 등록 필수</span>
+        </h2>
+
+        <div class="tma-table-scroll">
+          <div class="tma-table-wrap">
+            <table class="tma-table" id="tmaTable">
+              <thead>
+                <tr>
+                  <th style="width:160px;">종류</th>
+                  <th>차량 번호</th>
+                  <th>소유주</th>
+                  <th style="width:200px;">파일 첨부</th>
+                  <th style="width:40px;"></th>
+                </tr>
+              </thead>
+              <tbody id="tmaTableBody">
+                <!-- [Java] th:each="tma : ${tmaList}" → 행 반복 -->
+                <!-- 기본 1행 -->
+                <tr id="tmaRow_1">
+                  <td>
+                    <div class="tma-type-wrap">
+                      <label><input type="radio" name="tmaType_1" value="TMA1" checked /> TMA1</label>
+                      <label><input type="radio" name="tmaType_1" value="TMA3" /> TMA3</label>
+                      <label><input type="radio" name="tmaType_1" value="PLCS" /> PLCS</label>
+                    </div>
+                  </td>
+                  <td>
+                    <input type="text" name="tmaCarNo_1" class="reg-input"
+                           placeholder="차량번호" style="text-align:center;" />
+                  </td>
+                  <td>
+                    <!-- [Java] 소유주: 자율 입력 -->
+                    <input type="text" name="tmaOwner_1" class="reg-input"
+                           placeholder="소유주" style="text-align:center;" />
+                  </td>
+                  <td>
+                    <div class="reg-file-wrap" style="justify-content:center;" id="tmaFileWrap_1">
+                      <button type="button" class="reg-file-btn" onclick="triggerFileInput('tmaFile_1')">
+                        <i data-lucide="paperclip"></i>
+                        파일찾기
+                      </button>
+                      <input type="file" id="tmaFile_1" name="tmaFile_1"
+                             accept=".pdf,.jpg,.jpeg,.png"
+                             style="display:none;"
+                             onchange="handleFileSelect(this, 'tmaFileWrap_1', 'tmaFile_1')" />
+                      <div class="reg-file-item" id="tmaFileItem_1" style="display:none;">
+                        <span id="tmaFileName_1"></span>
+                        <button type="button" class="reg-file-item__remove"
+                                onclick="removeFile('tmaFile_1','tmaFileItem_1','tmaFileName_1')">
+                          <i data-lucide="x"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <!-- 첫 행은 삭제 불가 (기본 1개 필수) -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TMA 추가 버튼 -->
+        <button type="button" class="tma-add-btn" onclick="addTmaRow()">
+          <i data-lucide="plus"></i>
+          추가
+        </button>
+        <p class="reg-input-hint" style="margin-top:6px;">
+          * 추가 : 아래에 추가 입력 줄 생성하여 추가 등록 가능.
+        </p>
+
+        <!-- ══════════════════════════════════════════════════
+             ③ 등록 / ④ 취소 버튼
+        ══════════════════════════════════════════════════ -->
+        <div class="rss-page-actions" style="margin-top:32px;">
+          <!-- ③ 등록 버튼 → 입력 규칙 검증 후 가입 완료 페이지(J2)로 이동 -->
+          <button type="button" class="rss-btn rss-btn--amber px-10"
+                  onclick="submitRegister()">등록</button>
+          <!-- ④ 취소 → 로그인 페이지로 이동 -->
+          <a href="login.html" class="rss-btn rss-btn--outline px-10">취소</a>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- 뒤로가기 -->
+  <a href="register-terms.html" class="reg-back-link">
+    <i data-lucide="arrow-left"></i>
+    약관동의로 돌아가기
+  </a>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     경고 모달 — 필수 항목 누락
+══════════════════════════════════════════════════════ -->
+<div class="reg-alert-modal" id="modalValidAlert" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title reg-alert-modal__title--warn">
+      <i data-lucide="alert-circle"></i>
+      모든 항목을 빠짐없이 입력하세요
+    </p>
+    <p class="reg-alert-modal__body" id="modalValidMsg">
+      필수 항목을 모두 입력해 주세요.
+    </p>
+    <div class="reg-alert-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber px-8"
+              onclick="closeModal('modalValidAlert')">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     경고 모달 — 권역 3개 초과 선택
+══════════════════════════════════════════════════════ -->
+<div class="reg-alert-modal" id="modalRegionAlert" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title reg-alert-modal__title--warn">
+      <i data-lucide="alert-circle"></i>
+      권역 선택 초과
+    </p>
+    <p class="reg-alert-modal__body">
+      권역은 최대 <strong>3개</strong>까지만 선택할 수 있습니다.
+    </p>
+    <div class="reg-alert-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber px-8"
+              onclick="closeModal('modalRegionAlert')">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     경고 모달 — 가입 규칙 확인 (등록 전 최종 확인)
+══════════════════════════════════════════════════════ -->
+<div class="reg-alert-modal" id="modalConfirm" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title reg-alert-modal__title--info">
+      <i data-lucide="info"></i>
+      가입 규칙에 맞는지 확인하세요
+    </p>
+    <p class="reg-alert-modal__body">
+      입력하신 정보를 확인했습니다.<br>
+      <strong>가입하시겠습니까?</strong><br>
+      <span style="font-size:var(--rss-font-sm);color:#9ca3af;">
+        가입 대기 처리 후 가입완료(J2)로 이동합니다.
+      </span>
+    </p>
+    <div class="reg-alert-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+              onclick="closeModal('modalConfirm')">아니오</button>
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+              onclick="confirmRegister()">예</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  /* ── TMA 행 카운터 ── */
+  var tmaRowCount = 1;
+
+  /* ── 파일 선택 트리거 ── */
+  function triggerFileInput(inputId) {
+    document.getElementById(inputId).click();
+  }
+
+  /* ── 파일 선택 처리 ── */
+  function handleFileSelect(input, wrapId, inputId) {
+    if (!input.files || !input.files[0]) return;
+    var file = input.files[0];
+    var itemId = inputId.replace('File', 'FileItem').replace('file', 'FileItem');
+    var nameId = inputId.replace('File', 'FileName').replace('file', 'FileName');
+
+    /* TMA 파일 ID 패턴 처리 */
+    var rowMatch = inputId.match(/tmaFile_(\d+)/);
+    if (rowMatch) {
+      var n = rowMatch[1];
+      document.getElementById('tmaFileName_' + n).textContent = file.name;
+      document.getElementById('tmaFileItem_' + n).style.display = 'inline-flex';
+    } else {
+      var fileNameEl = document.getElementById(inputId.replace('File', 'FileName').replace(/([a-z])([A-Z])/g, '$1$2'));
+      if (!fileNameEl) {
+        /* bizRegFile → bizRegFileName, bankFile → bankFileName */
+        var prefix = inputId.replace('File', '');
+        fileNameEl = document.getElementById(prefix + 'FileName');
+      }
+      if (fileNameEl) fileNameEl.textContent = file.name;
+      var itemEl = document.getElementById(inputId.replace('File', 'FileItem').replace(/([a-z])([A-Z])/g, '$1$2'));
+      if (!itemEl) {
+        var prefix2 = inputId.replace('File', '');
+        itemEl = document.getElementById(prefix2 + 'FileItem');
+      }
+      if (itemEl) itemEl.style.display = 'inline-flex';
+    }
+    lucide.createIcons();
+  }
+
+  /* ── 파일 제거 ── */
+  function removeFile(inputId, itemId, nameId) {
+    document.getElementById(inputId).value = '';
+    document.getElementById(itemId).style.display = 'none';
+    document.getElementById(nameId).textContent = '';
+  }
+
+  /* ── 이메일 도메인 선택 적용 ── */
+  function applyEmailDomain(val) {
+    var domainInput = document.getElementById('emailDomain');
+    if (val === 'direct' || val === '') {
+      domainInput.value = '';
+      domainInput.readOnly = false;
+      domainInput.focus();
+    } else {
+      domainInput.value = val;
+      domainInput.readOnly = true;
+    }
+  }
+
+  /* ── 권역 최대 3개 제한 ── */
+  function limitRegion(checkbox) {
+    var checked = document.querySelectorAll('input[name="regionCd"]:checked');
+    if (checked.length > 3) {
+      checkbox.checked = false;
+      document.getElementById('modalRegionAlert').classList.add('open');
+    }
+  }
+
+  /* ── 아이디 유효성 검사 ── */
+  function validateId(input) {
+    var val = input.value;
+    var hint = document.getElementById('memberIdHint');
+    var pattern = /^[a-zA-Z0-9]{8,12}$/;
+    if (val && !pattern.test(val)) {
+      input.classList.add('reg-input--error');
+      hint.className = 'reg-input-hint reg-input-hint--error';
+      hint.textContent = '* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.';
+    } else {
+      input.classList.remove('reg-input--error');
+      hint.className = 'reg-input-hint';
+      hint.textContent = '* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.';
+    }
+  }
+
+  /* ── 비밀번호 유효성 검사 ── */
+  function validatePw(input) {
+    var val = input.value;
+    var hint = document.getElementById('memberPwHint');
+    var pattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,12}$/;
+    if (val && !pattern.test(val)) {
+      input.classList.add('reg-input--error');
+      hint.className = 'reg-input-hint reg-input-hint--error';
+      hint.textContent = '* 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자로 입력하세요.';
+    } else {
+      input.classList.remove('reg-input--error');
+      hint.className = 'reg-input-hint';
+      hint.textContent = '* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.';
+    }
+  }
+
+  /* ── 비밀번호 확인 검사 ── */
+  function validatePwConfirm(input) {
+    var pw = document.getElementById('memberPw').value;
+    var hint = document.getElementById('memberPwConfirmHint');
+    if (input.value && input.value !== pw) {
+      input.classList.add('reg-input--error');
+      hint.className = 'reg-input-hint reg-input-hint--error';
+      hint.textContent = '* 비밀번호가 일치하지 않습니다.';
+    } else {
+      input.classList.remove('reg-input--error');
+      hint.className = 'reg-input-hint';
+      hint.textContent = '* 비밀번호를 한 번 더 입력하세요.';
+    }
+  }
+
+  /* ── 주소 찾기 (더미 — Java 연동 시 카카오 주소 API 사용) ── */
+  function searchAddress() {
+    /* [Java] 카카오 주소 API: new daum.Postcode({ oncomplete: function(data) { ... } }).open(); */
+    alert('주소 찾기 기능은 카카오 주소 API 연동 후 사용 가능합니다.');
+  }
+
+  /* ── TMA 행 추가 ── */
+  function addTmaRow() {
+    tmaRowCount++;
+    var n = tmaRowCount;
+    var tbody = document.getElementById('tmaTableBody');
+    var tr = document.createElement('tr');
+    tr.id = 'tmaRow_' + n;
+    tr.innerHTML =
+      '<td>' +
+        '<div class="tma-type-wrap">' +
+          '<label><input type="radio" name="tmaType_' + n + '" value="TMA1" checked /> TMA1</label>' +
+          '<label><input type="radio" name="tmaType_' + n + '" value="TMA3" /> TMA3</label>' +
+          '<label><input type="radio" name="tmaType_' + n + '" value="PLCS" /> PLCS</label>' +
+        '</div>' +
+      '</td>' +
+      '<td><input type="text" name="tmaCarNo_' + n + '" class="reg-input" placeholder="차량번호" style="text-align:center;" /></td>' +
+      '<td><input type="text" name="tmaOwner_' + n + '" class="reg-input" placeholder="소유주" style="text-align:center;" /></td>' +
+      '<td>' +
+        '<div class="reg-file-wrap" style="justify-content:center;" id="tmaFileWrap_' + n + '">' +
+          '<button type="button" class="reg-file-btn" onclick="triggerFileInput(\'tmaFile_' + n + '\')">' +
+            '<i data-lucide="paperclip"></i>파일찾기' +
+          '</button>' +
+          '<input type="file" id="tmaFile_' + n + '" name="tmaFile_' + n + '" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleFileSelect(this,\'tmaFileWrap_' + n + '\',\'tmaFile_' + n + '\')" />' +
+          '<div class="reg-file-item" id="tmaFileItem_' + n + '" style="display:none;">' +
+            '<span id="tmaFileName_' + n + '"></span>' +
+            '<button type="button" class="reg-file-item__remove" onclick="removeFile(\'tmaFile_' + n + '\',\'tmaFileItem_' + n + '\',\'tmaFileName_' + n + '\')">' +
+              '<i data-lucide="x"></i>' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</td>' +
+      '<td>' +
+        '<button type="button" class="tma-del-btn" onclick="deleteTmaRow(' + n + ')" aria-label="행 삭제">' +
+          '<i data-lucide="trash-2"></i>' +
+        '</button>' +
+      '</td>';
+    tbody.appendChild(tr);
+    lucide.createIcons();
+  }
+
+  /* ── TMA 행 삭제 ── */
+  function deleteTmaRow(n) {
+    var row = document.getElementById('tmaRow_' + n);
+    if (row) row.remove();
+  }
+
+  /* ── 모달 닫기 ── */
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  /* ── 등록 버튼 클릭 — 유효성 검사 ── */
+  function submitRegister() {
+    /* 필수 항목 검사 */
+    var required = [
+      { id: 'memberId',      label: '아이디' },
+      { id: 'memberPw',      label: '비밀번호' },
+      { id: 'memberPwConfirm', label: '비밀번호 확인' },
+      { id: 'companyNm',     label: '상호' },
+      { id: 'bizNo1',        label: '사업자번호' },
+      { id: 'ceoNm',         label: '대표자명' },
+      { id: 'ceoPhone1',     label: '대표 휴대폰 번호' },
+      { id: 'emailId',       label: '이메일 주소' }
+    ];
+    for (var i = 0; i < required.length; i++) {
+      var el = document.getElementById(required[i].id);
+      if (!el || !el.value.trim()) {
+        document.getElementById('modalValidMsg').textContent =
+          required[i].label + ' 항목을 입력해 주세요.';
+        document.getElementById('modalValidAlert').classList.add('open');
+        el && el.focus();
+        return;
+      }
+    }
+
+    /* 비밀번호 일치 검사 */
+    if (document.getElementById('memberPw').value !==
+        document.getElementById('memberPwConfirm').value) {
+      document.getElementById('modalValidMsg').textContent = '비밀번호가 일치하지 않습니다.';
+      document.getElementById('modalValidAlert').classList.add('open');
+      return;
+    }
+
+    /* 사업자등록증 첨부 검사 */
+    var bizFile = document.getElementById('bizRegFile');
+    if (!bizFile || !bizFile.files || !bizFile.files[0]) {
+      document.getElementById('modalValidMsg').textContent = '사업자등록증을 첨부해 주세요.';
+      document.getElementById('modalValidAlert').classList.add('open');
+      return;
+    }
+
+    /* 최종 확인 모달 */
+    document.getElementById('modalConfirm').classList.add('open');
+  }
+
+  /* ── 최종 등록 확인 ── */
+  function confirmRegister() {
+    closeModal('modalConfirm');
+    /* [Java] POST /register/company { formData } → 가입 완료 페이지(J2)로 리다이렉트 */
+    location.href = 'register-complete.html';
+  }
+
+  /* ── 모달 배경 클릭 시 닫기 ── */
+  ['modalValidAlert','modalRegionAlert','modalConfirm'].forEach(function(id) {
+    document.getElementById(id).addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>
