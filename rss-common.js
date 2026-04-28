@@ -530,7 +530,7 @@ RSS.action = (function() {
     </p>
     <div class="rss-modal__footer">
       <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
-              onclick="location.reload()">확인</button>
+              onclick="RSS.action.reloadToProgressTab()">확인</button>
     </div>
   </div>
 </div>
@@ -614,7 +614,7 @@ RSS.action = (function() {
     </p>
     <div class="rss-modal__footer">
       <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
-              onclick="location.reload()">확인</button>
+              onclick="RSS.action.reloadToProgressTab()">확인</button>
     </div>
   </div>
 </div>
@@ -688,7 +688,7 @@ RSS.action = (function() {
     <p class="rss-modal__body">진행 완료되었습니다.</p>
     <div class="rss-modal__footer">
       <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
-              onclick="location.reload()">확인</button>
+              onclick="RSS.action.reloadToProgressTab()">확인</button>
     </div>
   </div>
 </div>
@@ -811,6 +811,24 @@ RSS.action = (function() {
       this.closeModal('rssModalCompleteLastDay');
       /* [Java] POST /construction/complete-final { constructionSeq } */
       openModal('rssModalCompleteFinal');
+    },
+
+    /**
+     * reloadToProgressTab()
+     * 완료/취소 최종 모달 확인 시 호출하는 함수.
+     * - construction-detail.html 페이지에서는 #tab-status 해시를 붙여
+     *   새로고침 후에도 진행 상황 탭으로 복원합니다.
+     * - 다른 페이지에서는 일반 새로고침으로 동작합니다.
+     * [Java] 연동 시도 동일하게 동작합니다.
+     */
+    reloadToProgressTab: function() {
+      var isDetailPage = location.pathname.indexOf('construction-detail') !== -1;
+      if (isDetailPage) {
+        /* 진행 상황 탭(탭 ID: tab-status)으로 복원하여 새로고침 */
+        location.href = location.pathname + location.search.split('#')[0] + '#tab-status';
+      } else {
+        location.reload();
+      }
     }
   };
 
