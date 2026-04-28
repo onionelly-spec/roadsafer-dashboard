@@ -494,7 +494,7 @@ _initUserInfo();
      - POST /construction/cancel   { constructionSeq, reason }
      - POST /construction/complete { constructionSeq }
      - 다음 일정 여부: ${item.hasNextSchedule} (boolean)
-     - 다음 일정 정보: ${nextSchedule.startDt} ${nextSchedule.startTime}
+     - 다음 일정 정보: \${nextSchedule.startDt} \${nextSchedule.startTime}
    ═══════════════════════════════════════════════════════════ */
 
 RSS.action = (function() {
@@ -588,7 +588,7 @@ RSS.action = (function() {
   <div class="rss-modal">
     <p class="rss-modal__title">진행 완료</p>
     <p class="rss-modal__body">
-      <!-- [Java] th:text="'다음 공사는 '+${nextSchedule.startDt}+' '+${nextSchedule.startTime}+'에 차단 시작입니다.'" -->
+      <!-- [Java] th:text="'다음 공사는 '+\${nextSchedule.startDt}+' '+\${nextSchedule.startTime}+'에 차단 시작입니다.'" -->
       다음 공사는 <span class="highlight" id="rssNextScheduleText">**월 **일 **시</span>에 차단 시작입니다.
     </p>
     <div class="rss-modal__footer">
