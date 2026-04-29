@@ -80,6 +80,22 @@
         flex-direction: column !important;
         align-items: stretch !important;
       }
+      /* 필터 탭: 가로 스크롤 한 줄 */
+      .rss-filter-bar {
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;       /* Firefox */
+        padding: 10px 16px !important;
+        gap: 6px !important;
+      }
+      .rss-filter-bar::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+      .cat-tab {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 5px 10px !important;
+        font-size: 12px !important;
+      }
       /* 툴바: 모바일에서도 한 줄 유지 (내글보기+검색+등록하기) */
       .rss-filter-toolbar-wrap .rss-board-toolbar {
         height: auto !important;
