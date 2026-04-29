@@ -2428,6 +2428,7 @@ img.rss-img-error {
   font-weight: 700;
   color: var(--rss-text);
   line-height: 1.5;
+  text-align: center;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
