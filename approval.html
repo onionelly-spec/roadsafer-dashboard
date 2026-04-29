@@ -39,8 +39,6 @@
       text-align: center;
     }
 
-    /* apv-col-* 제거 → rss-common.css .rss-col-* 공통 클래스 사용 */
-
     /* 빈 상태 */
     .apv-empty {
       padding: 32px 24px;
@@ -57,13 +55,47 @@
       border-bottom: 1px solid var(--rss-border);
     }
 
+    /* ── 모바일 카드 (768px 이하에서만 표시) ── */
+    .apv-mobile-list { display: none; }
 
+    @media (max-width: 768px) {
+      /* 테이블 숨김, 카드 표시 */
+      .apv-desktop-table { display: none; }
+      .apv-mobile-list   { display: block; }
 
-    /* 반응형 */
-    @media (max-width: 640px) {
       .apv-section-title { padding: 14px 16px 10px; font-size: var(--rss-font-base); }
-      .rss-col-nm  { width: 80px; }
-      .rss-col-mgmt { width: 120px; }
+    }
+
+    /* 모바일 카드 아이템 */
+    .apv-card-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .apv-card-item:last-child { border-bottom: none; }
+
+    /* 카드 상단: 이름 + 버튼 */
+    .apv-card-item__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .apv-card-item__name {
+      font-size: var(--rss-font-base);
+      font-weight: 600;
+      color: var(--rss-text);
+    }
+    .apv-card-item__actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 카드 하단: 전화번호 */
+    .apv-card-item__tel {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      letter-spacing: 0.02em;
     }
   </style>
 </head>
@@ -96,7 +128,8 @@
         ──────────────────────────────────────────────── -->
         <p class="apv-section-title">승인 요청</p>
 
-        <div class="rss-table-wrap">
+        <!-- PC 테이블 -->
+        <div class="rss-table-wrap apv-desktop-table">
           <table class="rss-table" aria-label="승인 요청 목록">
             <colgroup>
               <col class="rss-col-nm" />
@@ -121,7 +154,6 @@
                 <td class="apv-td-tel">010-2222-7777</td>
                 <td class="apv-td-action">
                   <div style="display:inline-flex;align-items:center;gap:8px;">
-                    <!-- [Java] th:attr="data-mber-seq=${mber.mberSeq}" -->
                     <button class="rss-btn rss-btn--amber rss-btn--sm"
                             onclick="approveConfirm(this, '101', '도시진')"
                             data-mber-seq="101">승인</button>
@@ -158,6 +190,46 @@
           </table>
         </div>
 
+        <!-- 모바일 카드 목록 (승인 요청) -->
+        <div class="apv-mobile-list" id="approveReqListMobile">
+          <!-- [Java] th:each="mber : ${approveReqList}" -->
+
+          <!-- 더미 데이터 1 -->
+          <div class="apv-card-item" data-mber-seq="101">
+            <div class="apv-card-item__top">
+              <!-- [Java] th:text="${mber.usrNm}" -->
+              <span class="apv-card-item__name">도시진</span>
+              <div class="apv-card-item__actions">
+                <button class="rss-btn rss-btn--amber rss-btn--sm"
+                        onclick="approveConfirmCard(this, '101', '도시진')"
+                        data-mber-seq="101">승인</button>
+                <button class="rss-btn rss-btn--outline rss-btn--sm"
+                        onclick="rejectConfirmCard(this, '101', '도시진')"
+                        data-mber-seq="101">반려</button>
+              </div>
+            </div>
+            <!-- [Java] th:text="${mber.tel}" -->
+            <p class="apv-card-item__tel">010-2222-7777</p>
+          </div>
+
+          <!-- 더미 데이터 2 -->
+          <div class="apv-card-item" data-mber-seq="102">
+            <div class="apv-card-item__top">
+              <span class="apv-card-item__name">김소리</span>
+              <div class="apv-card-item__actions">
+                <button class="rss-btn rss-btn--amber rss-btn--sm"
+                        onclick="approveConfirmCard(this, '102', '김소리')"
+                        data-mber-seq="102">승인</button>
+                <button class="rss-btn rss-btn--outline rss-btn--sm"
+                        onclick="rejectConfirmCard(this, '102', '김소리')"
+                        data-mber-seq="102">반려</button>
+              </div>
+            </div>
+            <p class="apv-card-item__tel">010-8888-4111</p>
+          </div>
+
+        </div><!-- /apv-mobile-list 승인 요청 -->
+
         <!-- 섹션 구분 -->
         <div class="apv-section-divider"></div>
 
@@ -170,7 +242,8 @@
         ──────────────────────────────────────────────── -->
         <p class="apv-section-title">승인 직원(부서)</p>
 
-        <div class="rss-table-wrap">
+        <!-- PC 테이블 -->
+        <div class="rss-table-wrap apv-desktop-table">
           <table class="rss-table" aria-label="승인 완료 직원 목록">
             <colgroup>
               <col class="rss-col-nm" />
@@ -221,6 +294,38 @@
             </tbody>
           </table>
         </div>
+
+        <!-- 모바일 카드 목록 (승인 직원) -->
+        <div class="apv-mobile-list" id="approvedMberListMobile">
+          <!-- [Java] th:each="mber : ${approvedMberList}" -->
+
+          <!-- 더미 데이터 1 -->
+          <div class="apv-card-item" data-mber-seq="201">
+            <div class="apv-card-item__top">
+              <span class="apv-card-item__name">민윤기</span>
+              <div class="apv-card-item__actions">
+                <button class="rss-btn rss-btn--outline rss-btn--sm"
+                        onclick="cancelConfirmCard(this, '201', '민윤기')"
+                        data-mber-seq="201">승인 취소</button>
+              </div>
+            </div>
+            <p class="apv-card-item__tel">010-2222-7777</p>
+          </div>
+
+          <!-- 더미 데이터 2 -->
+          <div class="apv-card-item" data-mber-seq="202">
+            <div class="apv-card-item__top">
+              <span class="apv-card-item__name">신성민</span>
+              <div class="apv-card-item__actions">
+                <button class="rss-btn rss-btn--outline rss-btn--sm"
+                        onclick="cancelConfirmCard(this, '202', '신성민')"
+                        data-mber-seq="202">승인 취소</button>
+              </div>
+            </div>
+            <p class="apv-card-item__tel">010-8888-4111</p>
+          </div>
+
+        </div><!-- /apv-mobile-list 승인 직원 -->
 
       </div><!-- /.rss-card -->
 
@@ -284,17 +389,21 @@
 
 var _apvAction   = null;
 var _apvMberSeq  = null;
-var _apvRowEl    = null;
+var _apvRowEl    = null;  /* PC: <tr>, 모바일: <div.apv-card-item> */
 
-/* ── 승인 / 반려 공용 모달 ── */
+/* ── 공용: 가장 가까운 행/카드 요소 찾기 ── */
+function _getRowEl(btn) {
+  return btn.closest('tr') || btn.closest('.apv-card-item');
+}
+
+/* ── 승인 / 반려 공용 모달 (PC 테이블) ── */
 function approveConfirm(btn, mberSeq, usrNm) {
   _apvAction  = 'approve';
   _apvMberSeq = mberSeq;
-  _apvRowEl   = btn.closest('tr');
+  _apvRowEl   = _getRowEl(btn);
   document.getElementById('apvConfirmTitle').textContent = '승인 처리';
   document.getElementById('apvConfirmMsg').innerHTML =
     '<strong>' + usrNm + '</strong> 님을 승인 처리하시겠습니까?<br>승인 후 해당 계정은 정상 사용 가능 상태로 전환됩니다.';
-  /* 모달 확인 버튼: 승인 액션 시 amber 스타일 */
   document.getElementById('apvConfirmOkBtn').className = 'rss-btn rss-btn--amber rss-btn--sm';
   document.getElementById('apvConfirmOkBtn').textContent = '승인';
   openApvModal();
@@ -303,15 +412,18 @@ function approveConfirm(btn, mberSeq, usrNm) {
 function rejectConfirm(btn, mberSeq, usrNm) {
   _apvAction  = 'reject';
   _apvMberSeq = mberSeq;
-  _apvRowEl   = btn.closest('tr');
+  _apvRowEl   = _getRowEl(btn);
   document.getElementById('apvConfirmTitle').textContent = '반려 처리';
   document.getElementById('apvConfirmMsg').innerHTML =
     '<strong>' + usrNm + '</strong> 님을 반려 처리하시겠습니까?<br>반려하면 모든 가입 정보가 삭제됩니다.';
-  /* 모달 확인 버튼: 반려 액션 시 danger 스타일 */
   document.getElementById('apvConfirmOkBtn').className = 'rss-btn rss-btn--outline-danger rss-btn--sm';
   document.getElementById('apvConfirmOkBtn').textContent = '반려';
   openApvModal();
 }
+
+/* ── 승인 / 반려 (모바일 카드) ── */
+function approveConfirmCard(btn, mberSeq, usrNm) { approveConfirm(btn, mberSeq, usrNm); }
+function rejectConfirmCard(btn, mberSeq, usrNm)  { rejectConfirm(btn, mberSeq, usrNm); }
 
 function openApvModal() {
   var modal = document.getElementById('apvConfirmModal');
@@ -324,13 +436,20 @@ function closeApvModal() {
 }
 
 function executeApvAction() {
+  var action = _apvAction;
+  var rowEl  = _apvRowEl;
   closeApvModal();
-  if (!_apvRowEl) return;
-  if (_apvAction === 'approve') {
-    _apvRowEl.remove();
+  if (!rowEl) return;
+
+  /* PC tr 제거 + 모바일 카드 동기 제거 */
+  var seq = rowEl.dataset.mberSeq;
+  document.querySelectorAll('[data-mber-seq="' + seq + '"]').forEach(function(el) {
+    el.remove();
+  });
+
+  if (action === 'approve') {
     RSS.toast('승인 처리되었습니다.', 'success');
-  } else if (_apvAction === 'reject') {
-    _apvRowEl.remove();
+  } else if (action === 'reject') {
     RSS.toast('반려 처리되었습니다.', 'info');
   }
 }
@@ -345,13 +464,16 @@ var _cancelRowEl   = null;
 
 function cancelConfirm(btn, mberSeq, usrNm) {
   _cancelMberSeq = mberSeq;
-  _cancelRowEl   = btn.closest('tr');
+  _cancelRowEl   = _getRowEl(btn);
   document.getElementById('apvCancelMsg').innerHTML =
     '승인 취소하면 로그인이 불가능하고 모든 개인 정보가 삭제됩니다.<br>그래도 <strong>' + usrNm + '</strong> 님의 승인을 취소하시겠습니까?';
   var modal = document.getElementById('apvCancelModal');
   modal.style.display = 'flex';
   if (window.lucide) lucide.createIcons();
 }
+
+/* 모바일 카드용 (동일 로직) */
+function cancelConfirmCard(btn, mberSeq, usrNm) { cancelConfirm(btn, mberSeq, usrNm); }
 
 function closeApvCancelModal() {
   document.getElementById('apvCancelModal').style.display = 'none';
@@ -360,11 +482,14 @@ function closeApvCancelModal() {
 
 function executeApvCancelAction() {
   /* [Java] POST /api/approval/cancel { mberSeq: _cancelMberSeq } */
+  var seq = _cancelMberSeq;
   closeApvCancelModal();
-  if (_cancelRowEl) {
-    _cancelRowEl.remove();
-    RSS.toast('승인이 취소되었습니다.', 'info');
-  }
+
+  /* PC tr + 모바일 카드 동기 제거 */
+  document.querySelectorAll('[data-mber-seq="' + seq + '"]').forEach(function(el) {
+    el.remove();
+  });
+  RSS.toast('승인이 취소되었습니다.', 'info');
 }
 
 document.getElementById('apvCancelModal').addEventListener('click', function(e) {
