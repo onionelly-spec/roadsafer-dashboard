@@ -816,8 +816,8 @@ img { max-width: 100%; display: block; }
 .rss-table--detail tr:hover td { background: #fafafa; }
 .rss-table--detail tr:last-child td { border-bottom: 1px solid var(--rss-border); }
 @media (max-width: 640px) {
-  .rss-table--detail th { width: 90px; padding: 10px 10px; font-size: var(--rss-font-sm); }
-  .rss-table--detail td { padding: 10px 10px; font-size: var(--rss-font-sm); }
+  .rss-table--detail th { width: 80px; min-width: 80px; padding: 10px 8px; font-size: var(--rss-font-sm); white-space: normal; word-break: keep-all; }
+  .rss-table--detail td { padding: 10px 10px; font-size: var(--rss-font-base); }
 }
 
 /* ─── 게시판 목록 ───────────────────────────────────────── */
