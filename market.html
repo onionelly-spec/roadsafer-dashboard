@@ -122,14 +122,8 @@
             <button class="cat-tab"        data-cat="tma"      onclick="switchCatTab(this)">TMA</button>
           </div>
 
-          <!-- 우측: 내 글 보기 + 검색 + 등록하기 -->
+          <!-- 우측: 검색 + 내 글 보기 + 등록하기 -->
           <div class="rss-board-toolbar" style="border-bottom:none; flex-shrink:0; height:62px; padding:0 24px; gap:8px;">
-            <!-- 내 글 보기 (스토리보드 §B5 ②) -->
-            <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
-            <button type="button" class="rss-btn rss-btn--outline" id="myPostBtn"
-                    onclick="toggleMyPost(this)">
-              <i data-lucide="user" style="width:14px;height:14px;"></i><span class="btn-text">내 글 보기</span>
-            </button>
             <!-- 검색 (스토리보드 §B5 ①) -->
             <div class="rss-search-wrap">
               <input type="text" name="searchKeyword" id="marketSearchKeyword" placeholder="상품 검색" />
@@ -137,6 +131,12 @@
                 <i data-lucide="search" style="width:15px;height:15px;"></i>
               </button>
             </div>
+            <!-- 내 글 보기 (스토리보드 §B5 ②) -->
+            <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
+            <button type="button" class="rss-btn rss-btn--outline" id="myPostBtn"
+                    onclick="toggleMyPost(this)">
+              <i data-lucide="user" style="width:14px;height:14px;"></i><span class="btn-text">내 글 보기</span>
+            </button>
             <!-- 등록하기 (스토리보드 §B5 ③) -->
             <a href="market-write.html" class="rss-btn rss-btn--amber">
               <i data-lucide="plus" style="width:14px;height:14px;"></i>등록하기
