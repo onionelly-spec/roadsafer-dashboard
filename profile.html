@@ -507,6 +507,37 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════
+     회원탈퇴 차단 모달 — 진행중/예정 공사 있을 경우
+     [Java] GET /profile/withdraw/check → { hasConstruction: true/false }
+     hasConstruction=true 일 때 이 모달을 표시하고 탈퇴를 차단한다.
+     hasConstruction=false 일 때 withdrawModal(탈퇴 확인)을 표시한다.
+══════════════════════════════════════════════════ -->
+<div class="notice-modal-backdrop" id="withdrawBlockModal"
+     onclick="if(event.target===this)closeWithdrawBlockModal()">
+  <div class="notice-modal" style="max-width:440px;" role="alertdialog" aria-modal="true" aria-labelledby="withdrawBlockTitle">
+    <div class="notice-modal__header">
+      <h2 class="notice-modal__title" id="withdrawBlockTitle" style="color:#dc2626;">탈퇴 불가</h2>
+      <button class="notice-modal__close" onclick="closeWithdrawBlockModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:20px;height:20px;"></i>
+      </button>
+    </div>
+    <div class="notice-modal__body">
+      <div class="rss-notice rss-notice--danger">
+        <strong>예정이거나 진행중인 공사가 있어 탈퇴할 수 없습니다.</strong>
+      </div>
+      <p style="font-size:var(--rss-font-sm);color:var(--rss-muted);margin-top:12px;">
+        공사가 모두 완료된 후 다시 시도해 주세요.
+      </p>
+    </div>
+    <div class="notice-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber" onclick="closeWithdrawBlockModal()">
+        <i data-lucide="check"></i> 확인
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- 경고 모달 — 필수 항목 누락 (register-company.html의 .reg-alert-modal과 동일 구조) -->
 <div class="reg-alert-modal" id="modalValidAlert" role="alertdialog" aria-modal="true">
   <div class="reg-alert-modal__box">
@@ -669,16 +700,66 @@
     closePwModal();
   }
 
-  /* ── 회원탈퇴 모달 ── */
+  /* ── 회원탈퇴 모달 ──
+   *
+   * 탈퇴 버튼 클릭 시 첫 번째로 공사 여부를 확인한다.
+   *
+   * [Java] GET /profile/withdraw/check
+   *   응답: { hasConstruction: true | false }
+   *   - hasConstruction = true  : 진행중 또는 예정인 공사 존재
+   *                               → withdrawBlockModal 표시, 탈퇴 차단
+   *   - hasConstruction = false : 공사 없음
+   *                               → withdrawModal(탈퇴 확인) 표시
+   *
+   * [Java] POST /profile/withdraw
+   *   탈퇴 확인 모달에서 탈퇴 버튼 클릭 시 호출
+   *   응답 성공 시 로그인 페이지(login.html)로 이동
+   */
   function openWithdrawModal() {
+    /* ══════════════════════════════════════════════════
+       [Java] 연동 시 아래 fetch 코드를 활성화하고 더미 코드를 제거한다.
+       fetch('/profile/withdraw/check')
+         .then(r => r.json())
+         .then(data => {
+           if (data.hasConstruction) {
+             openWithdrawBlockModal();
+           } else {
+             showWithdrawConfirm();
+           }
+         });
+    ══════════════════════════════════════════════════ */
+
+    /* 더미: 공사 없음 시나리오 (Java 연동 전 테스트용) */
+    var hasConstruction = false; /* [Java] 실제 연동 시 서버 응답값으로 교체 */
+    if (hasConstruction) {
+      openWithdrawBlockModal();
+    } else {
+      showWithdrawConfirm();
+    }
+  }
+
+  /* 탈퇴 확인 모달 표시 (공사 없음 확인 후 호출) */
+  function showWithdrawConfirm() {
     document.getElementById('withdrawModal').classList.add('show');
     lucide.createIcons();
   }
   function closeWithdrawModal() {
     document.getElementById('withdrawModal').classList.remove('show');
   }
+
+  /* 탈퇴 차단 모달 (hasConstruction=true 일 때) */
+  function openWithdrawBlockModal() {
+    document.getElementById('withdrawBlockModal').classList.add('show');
+    lucide.createIcons();
+  }
+  function closeWithdrawBlockModal() {
+    document.getElementById('withdrawBlockModal').classList.remove('show');
+  }
+
   function submitWithdraw() {
-    /* [Java] POST /profile/withdraw */
+    /* [Java] POST /profile/withdraw
+     *   성공 시: 로그인 페이지(login.html)로 리다이렉트
+     */
     alert('탈퇴 처리되었습니다.');
     closeWithdrawModal();
     location.href = 'login.html';

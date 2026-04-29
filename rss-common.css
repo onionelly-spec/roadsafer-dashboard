@@ -728,6 +728,13 @@ img { max-width: 100%; display: block; }
   color: #854d0e;
 }
 .rss-notice strong, .rss-notice b { color: #dc2626; }
+/* 위험/차단 안내 박스 (빨간 계열) */
+.rss-notice--danger {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+.rss-notice--danger strong, .rss-notice--danger b { color: #dc2626; }
 
 /* 이미지 업로드 드롭존 */
 .rss-img-upload {
