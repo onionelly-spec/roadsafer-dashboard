@@ -9,31 +9,9 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
   <style>
-    /* ── 카테고리 필터 ──
-       .cat-tab 스타일은 rss-common.css 공통 규칙 사용
-       (높이 38px, 폰트 rss-font-base — 검색 드롭다운과 동일)
+    /* ── 장터 그리드
+       스토리보드 §B5 ④: PC 4열, 모바일 2열, 한 페이지 12개
     ── */
-    .cat-tabs {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0;
-      flex-wrap: wrap;
-    }
-    /* ── 도구모 ── */
-    .market-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      padding: 12px 24px;
-      border-bottom: 1px solid #e5e7eb;
-      flex-wrap: wrap;
-    }
-    .market-toolbar__left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .market-toolbar__right { display: flex; align-items: center; gap: 8px; }
-
-    /* ── 장터 그리드 ── */
     .market-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -41,13 +19,13 @@
       padding: 20px 24px;
     }
     @media (max-width: 1100px) { .market-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 768px)  { .market-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px)  { .market-grid { grid-template-columns: repeat(2, 1fr); padding: 14px 16px; gap: 10px; } }
     @media (max-width: 400px)  { .market-grid { grid-template-columns: 1fr; } }
 
     /* ── 장터 상품 카드 ── */
     .market-card {
-      border: 1.5px solid #e5e7eb;
-      border-radius: 10px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius-lg);
       overflow: hidden;
       background: #fff;
       cursor: pointer;
@@ -69,30 +47,27 @@
       display: block;
     }
     .market-card__body { padding: 14px 16px 18px; }
+    /* 카테고리 라벨 */
     .market-card__cat {
       font-size: var(--rss-font-sm);
       font-weight: 600;
       color: var(--rss-amber-dark);
       letter-spacing: 0.02em;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
+    /* 제목: 카테고리 + 판매 (고정 문구, 스토리보드 §B5 ④) */
     .market-card__title {
       font-size: var(--rss-font-md);
       font-weight: 700;
-      color: #1a1c23;
+      color: var(--rss-text);
       line-height: 1.5;
       margin-bottom: 8px;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .market-card__price {
-      font-size: var(--rss-font-md);
-      font-weight: 700;
-      color: #1a1c23;
-      margin-bottom: 8px;
-    }
+    /* 메타: 등록일(좌) + 아이디 마스킹(우) */
     .market-card__meta {
       font-size: var(--rss-font-sm);
       color: #9ca3af;
@@ -100,219 +75,194 @@
       align-items: center;
       justify-content: space-between;
     }
-
-    /* ── 반응형 ── */
-    @media (max-width: 768px) {
-      .cat-tabs { gap: 6px; }
-      /* .cat-tab 모바일 폰트는 rss-common.css에서 제어 */
-      .market-grid { padding: 14px 16px; gap: 10px; }
-    }
   </style>
 </head>
 <body>
 
 <div class="rss-app">
-
   <div id="rss-sidebar-wrap"></div>
-
   <div class="rss-main" id="rssMain">
-
     <div id="rss-header-wrap" data-title="장터" data-icon="shopping-bag"></div>
 
     <main class="rss-content">
-
       <div class="rss-card" style="padding:0;">
 
-        <!-- ── 카테고리 + 검색 영역 (한 줄) ──────────────────────────────────
-             좌측: 카테고리 필터 버튼들
-             우측: 내 글 보기 + 검색 + 등록하기 버튼
-             [Java] 파라미터: category ('all'|'sinca'|'sign'|'safety'|'sinboard'|'tma')
-             [Java] GET 파라미터: category, myYn, searchKeyword
-        ─────────────────────────────────────────────────── -->
-        <!-- PC: 필터(좌) + 검색(우) 한 줄 / 모바일: 필터 1줄 + 검색 2줄 스택 -->
-        <div class="rss-filter-toolbar-wrap" style="display: flex; align-items: center; gap: 0;">
-          <div class="rss-filter-bar" style="flex: 0 0 auto; border-bottom: 1px solid var(--rss-border); padding: 12px 24px;">
-            <div class="cat-tabs" role="tablist">
-              <button class="cat-tab active" data-cat="all"      onclick="switchCatTab(this)">전체</button>
-              <button class="cat-tab"        data-cat="sinca"    onclick="switchCatTab(this)">씨인카</button>
-              <button class="cat-tab"        data-cat="sign"     onclick="switchCatTab(this)">간판시설물</button>
-              <button class="cat-tab"        data-cat="safety"   onclick="switchCatTab(this)">안전시설물</button>
-              <button class="cat-tab"        data-cat="sinboard" onclick="switchCatTab(this)">씨인보드</button>
-              <button class="cat-tab"        data-cat="tma"      onclick="switchCatTab(this)">TMA</button>
-            </div>
-          </div>
-          <div class="market-toolbar" style="flex: 1; border-left: none;">
-          <div class="market-toolbar__left">
-            <!-- 내 글 보기 토글 -->
+        <!-- ── 카테고리 필터 탭 (공통 .rss-filter-bar + .cat-tab)
+             [Java] GET /market?category={cat}
+             스토리보드 §B5 ①: 카테고리 선택 시 해당 카테고리 상품만 제시
+        ── -->
+        <div class="rss-filter-bar">
+          <!-- [Java] th:classappend="${param.category == null || param.category == 'all'} ? 'active'" -->
+          <button class="cat-tab active" data-cat="all"      onclick="switchCatTab(this)">전체</button>
+          <button class="cat-tab"        data-cat="sinca"    onclick="switchCatTab(this)">씨인카</button>
+          <button class="cat-tab"        data-cat="sign"     onclick="switchCatTab(this)">간판시설물</button>
+          <button class="cat-tab"        data-cat="safety"   onclick="switchCatTab(this)">안전시설물</button>
+          <button class="cat-tab"        data-cat="sinboard" onclick="switchCatTab(this)">씨인보드</button>
+          <button class="cat-tab"        data-cat="tma"      onclick="switchCatTab(this)">TMA</button>
+        </div>
+
+        <!-- ── 검색 + 내 글 보기 + 등록하기 툴바 (공통 .market-toolbar)
+             [Java] GET /market?myYn=Y&searchKeyword={keyword}
+             스토리보드 §B5 ①②③
+        ── -->
+        <div class="market-toolbar" style="justify-content: space-between;">
+          <div class="rss-board-toolbar__left">
+            <!-- 내 글 보기 (스토리보드 §B5 ②) -->
             <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
             <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" id="myPostBtn"
                     onclick="toggleMyPost(this)">
               <i data-lucide="user" style="width:13px;height:13px;"></i>내 글 보기
             </button>
-            <!-- 검색 -->
+            <!-- 검색 (스토리보드 §B5 ①) -->
             <div class="rss-search-wrap">
-              <input type="text" name="searchKeyword" id="marketSearchKeyword" placeholder="상품명 검색" />
+              <input type="text" name="searchKeyword" id="marketSearchKeyword" placeholder="상품 검색" />
               <button type="button" aria-label="검색">
                 <i data-lucide="search" style="width:15px;height:15px;"></i>
               </button>
             </div>
           </div>
-          <div class="market-toolbar__right">
-            <!-- 신규 등록 -->
+          <div class="rss-board-toolbar__right">
+            <!-- 등록하기 (스토리보드 §B5 ③) -->
             <a href="market-write.html" class="rss-btn rss-btn--amber">
               <i data-lucide="plus" style="width:14px;height:14px;"></i>등록하기
             </a>
           </div>
         </div>
-        </div>
 
-        <!-- ── 장터 상품 그리드 ──────────────────────────────
-             [DB] 테이블: market ORDER BY reg_dtm DESC
+        <!-- ── 장터 상품 그리드
+             [DB] SELECT * FROM market ORDER BY reg_dtm DESC
              [Java] th:each="item : ${marketList}"
-        ─────────────────────────────────────────────────── -->
+             스토리보드 §B5 ④: 최근 등록순, 한 페이지 12개
+             - 제목: 카테고리 + '판매' 고정 문구
+             - 아이디: 앞 4자리 + *** 마스킹
+             - 대표 이미지: 첫 번째 이미지 (thumbImgUrl)
+        ── -->
         <div class="market-grid">
 
-          <!-- 상품 카드 1 -->
-          <!-- [Java] th:each="item : ${marketList}" -->
+          <!-- 카드 1 -->
           <a href="market-detail.html" class="market-card">
-            <!-- [Java] th:src="${item.thumbImgUrl}" -->
-            <img class="market-card__img" src="https://placehold.co/400x300/f3f4f6/9ca3af?text=TMA-1" alt="TMA-1 차량" loading="lazy" />
+            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA-1" alt="씨인카 판매" loading="lazy" />
             <div class="market-card__body">
-              <!-- [Java] th:text="${item.categoryLabel}" -->
               <p class="market-card__cat">씨인카</p>
-              <!-- [Java] th:text="${item.title}" -->
-              <h3 class="market-card__title">TMA-1 차량 판매합니다 (2022년식, 상태 양호)</h3>
-              <!-- [Java] th:text="${#numbers.formatInteger(item.price, 3, 'COMMA')} + '원'" -->
-              <p class="market-card__price">3,500,000원</p>
+              <!-- [Java] th:text="${item.categoryLabel} + ' 판매'" -->
+              <h3 class="market-card__title">씨인카 판매</h3>
               <div class="market-card__meta">
-                <!-- [Java] th:text="${item.usrNm}" -->
-                <span>나잘난</span>
-                <!-- [Java] th:text="${item.regDt}" -->
-                <span>2026-06-20</span>
+                <span>2026-06-20</span><!-- [Java] th:text="${item.regDt}" -->
+                <span>hope***</span><!-- [Java] th:text="${#strings.substring(item.usrId,0,4)} + '***'" -->
               </div>
             </div>
           </a>
 
-          <!-- 상품 카드 2 -->
+          <!-- 카드 2 -->
           <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x300/f3f4f6/9ca3af?text=간판시설물" alt="간판시설물" loading="lazy" />
-            <div class="market-card__body">
-              <p class="market-card__cat">간판시설물</p>
-              <h3 class="market-card__title">도로 공사 안내 간판 (대형, 야광 반사)</h3>
-              <p class="market-card__price">850,000원</p>
-              <div class="market-card__meta">
-                <span>한국도로차단(주)</span>
-                <span>2026-06-18</span>
-              </div>
-            </div>
-          </a>
-
-          <!-- 상품 카드 3 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x300/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물" loading="lazy" />
+            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물 판매" loading="lazy" />
             <div class="market-card__body">
               <p class="market-card__cat">안전시설물</p>
-              <h3 class="market-card__title">라바콘 세트 (50개, 반사 테이프 포함)</h3>
-              <p class="market-card__price">420,000원</p>
+              <h3 class="market-card__title">안전시설물 판매</h3>
               <div class="market-card__meta">
-                <span>소망건설</span>
-                <span>2026-06-15</span>
+                <span>2026-06-20</span>
+                <span>seho***</span>
               </div>
             </div>
           </a>
 
-          <!-- 상품 카드 4 -->
+          <!-- 카드 3 -->
           <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x300/f3f4f6/9ca3af?text=씨인보드" alt="씨인보드" loading="lazy" />
+            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=간판시설물" alt="간판시설물 판매" loading="lazy" />
+            <div class="market-card__body">
+              <p class="market-card__cat">간판시설물</p>
+              <h3 class="market-card__title">간판시설물 판매</h3>
+              <div class="market-card__meta">
+                <span>2026-06-19</span>
+                <span>seho***</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 카드 4 -->
+          <a href="market-detail.html" class="market-card">
+            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=씨인카" alt="씨인카 판매" loading="lazy" />
+            <div class="market-card__body">
+              <p class="market-card__cat">씨인카</p>
+              <h3 class="market-card__title">씨인카 판매</h3>
+              <div class="market-card__meta">
+                <span>2026-06-18</span>
+                <span>dea0***</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 카드 5 -->
+          <a href="market-detail.html" class="market-card">
+            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=씨인보드" alt="씨인보드 판매" loading="lazy" />
             <div class="market-card__body">
               <p class="market-card__cat">씨인보드</p>
-              <h3 class="market-card__title">전자 씨인보드 LED 대형 (2022년식)</h3>
-              <p class="market-card__price">1,200,000원</p>
+              <h3 class="market-card__title">씨인보드 판매</h3>
               <div class="market-card__meta">
-                <span>오봉토건</span>
-                <span>2026-06-12</span>
+                <span>2026-06-17</span>
+                <span>hope***</span>
               </div>
             </div>
           </a>
 
-          <!-- 상품 카드 5 -->
+          <!-- 카드 6 -->
           <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x300/f3f4f6/9ca3af?text=TMA-3" alt="TMA-3" loading="lazy" />
+            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA" alt="TMA 판매" loading="lazy" />
             <div class="market-card__body">
               <p class="market-card__cat">TMA</p>
-              <h3 class="market-card__title">TMA-3 트럭 임대 (월 단위, 협의 가능)</h3>
-              <p class="market-card__price">협의</p>
+              <h3 class="market-card__title">TMA 판매</h3>
               <div class="market-card__meta">
-                <span>나잘난</span>
-                <span>2026-06-10</span>
+                <span>2026-06-16</span>
+                <span>seho***</span>
               </div>
             </div>
           </a>
 
-          <!-- 상품 카드 6 -->
+          <!-- 카드 7 -->
           <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x300/f3f4f6/9ca3af?text=PLCS" alt="PLCS" loading="lazy" />
+            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=씨인카" alt="씨인카 판매" loading="lazy" />
             <div class="market-card__body">
               <p class="market-card__cat">씨인카</p>
-              <h3 class="market-card__title">PLCS 차량 급매 (2021년식, 주행거리 낮음)</h3>
-              <p class="market-card__price">2,800,000원</p>
+              <h3 class="market-card__title">씨인카 판매</h3>
               <div class="market-card__meta">
-                <span>한국도로차단(주)</span>
-                <span>2026-06-08</span>
+                <span>2026-06-15</span>
+                <span>seho***</span>
               </div>
             </div>
           </a>
 
-          <!-- 상품 카드 7 -->
+          <!-- 카드 8 -->
           <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x300/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물" loading="lazy" />
+            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물 판매" loading="lazy" />
             <div class="market-card__body">
               <p class="market-card__cat">안전시설물</p>
-              <h3 class="market-card__title">방호울타리 (H형, 50m 분량)</h3>
-              <p class="market-card__price">680,000원</p>
+              <h3 class="market-card__title">안전시설물 판매</h3>
               <div class="market-card__meta">
-                <span>소망건설</span>
-                <span>2026-06-05</span>
-              </div>
-            </div>
-          </a>
-
-          <!-- 상품 카드 8 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x300/f3f4f6/9ca3af?text=간판시설물" alt="간판시설물" loading="lazy" />
-            <div class="market-card__body">
-              <p class="market-card__cat">간판시설물</p>
-              <h3 class="market-card__title">공사구간 예고 표지판 (소형, 10개 세트)</h3>
-              <p class="market-card__price">320,000원</p>
-              <div class="market-card__meta">
-                <span>오봉토건</span>
-                <span>2026-06-01</span>
+                <span>2026-06-12</span>
+                <span>dea0***</span>
               </div>
             </div>
           </a>
 
         </div><!-- /market-grid -->
 
-        <!-- ══ 페이지네이션 ═══════════════════════════════════════════════════════════
-             [Java] th:with="totalPages=${marketPage.totalPages}"
-             ■ 갤러리형 규칙: 페이지당 12개
+        <!-- ── 페이지네이션 (공통 .rss-pagination)
+             스토리보드 §B5 ④: 한 페이지 12개
              [Java] Pageable pageable = PageRequest.of(page, 12);
-             ■ 페이지 번호 표시: PC 10개 / 모바일 5개 (6번 이후 hidden)
-        ═══════════════════════════════════════════════════════════════ -->
+             PC 10개 / 모바일 5개 표시
+        ── -->
         <div class="rss-pagination" style="padding: 16px 0 20px;">
-          <button class="rss-pagination__btn" aria-label="첫음">
+          <button class="rss-pagination__btn" aria-label="처음">
             <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
           </button>
           <button class="rss-pagination__btn" aria-label="이전">
             <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
           </button>
-          <!-- [Java] th:each="i : ${#numbers.sequence(1, totalPages)}" -->
           <button class="rss-pagination__btn active">1</button>
           <button class="rss-pagination__btn">2</button>
           <button class="rss-pagination__btn">3</button>
           <button class="rss-pagination__btn">4</button>
           <button class="rss-pagination__btn">5</button>
-          <!-- 모바일에서 숨김 (6번 이후): rss-pagination__btn--page-extra -->
           <button class="rss-pagination__btn rss-pagination__btn--page-extra">6</button>
           <button class="rss-pagination__btn rss-pagination__btn--page-extra">7</button>
           <button class="rss-pagination__btn rss-pagination__btn--page-extra">8</button>
@@ -327,25 +277,24 @@
         </div>
 
       </div><!-- /rss-card -->
+    </main>
 
     <div id="rss-footer-wrap"></div>
-    </main>
   </div><!-- /rss-main -->
-
 </div><!-- /rss-app -->
 
-<script src="rss-common.js?v=85060bf"></script>
+<script src="rss-common.js?v=cache_bust"></script>
 <script>
   lucide.createIcons();
 
-  /* ── 카테고리 탭 전환 ── */
+  /* 카테고리 탭 전환 (스토리보드 §B5 ①) */
   function switchCatTab(tab) {
     document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
     tab.classList.add('active');
     /* [Java] location.href = '/market?category=' + tab.dataset.cat; */
   }
 
-  /* ── 내 글 보기 토글 ── */
+  /* 내 글 보기 토글 (스토리보드 §B5 ②) */
   function toggleMyPost(btn) {
     var isActive = btn.classList.contains('rss-btn--amber');
     btn.classList.toggle('rss-btn--amber', !isActive);

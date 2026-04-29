@@ -3,109 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>장터 등록 — 로드세이프티시스템</title>
+  <title>장터 등록/수정 — 로드세이프티시스템</title>
   <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
-  <!-- 장터 글쓰기 전용 스타일 없음 — 모두 rss-common.css 공통 클래스 사용 -->
+  <style>
+    /* 제목 자동 생성 미리보기 */
+    .market-title-preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: var(--rss-amber-light);
+      border: 1px solid var(--rss-amber-ring);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-sm);
+      color: var(--rss-amber-dark);
+      font-weight: 600;
+    }
+    .market-title-preview--empty {
+      color: var(--rss-muted);
+      background: #f9fafb;
+      border-color: var(--rss-border);
+    }
+  </style>
 </head>
 <body>
 
 <div class="rss-app">
-
   <div id="rss-sidebar-wrap"></div>
-
   <div class="rss-main" id="rssMain">
-
-    <!-- [Java] 수정 시: data-title="장터 수정", 등록 시: data-title="장터" -->
-    <div id="rss-header-wrap" data-title="장터" data-icon="shopping-bag"></div>
+    <!-- [Java] 수정 시: data-title="장터 수정", 등록 시: data-title="장터 등록" -->
+    <div id="rss-header-wrap" data-title="장터 등록" data-icon="shopping-bag"></div>
 
     <main class="rss-content">
-
       <div class="rss-card">
         <div class="rss-card__body">
 
           <!-- ══════════════════════════════════════════════════
-               장터 등록/수정 폼 (B4-2)
+               장터 등록/수정 폼 (스토리보드 §B5-2)
                [Java] POST /market/save (등록)
                [Java] POST /market/update (수정)
                [DB] 테이블: market
+               ① 모든 정보 필수 입력
+               ② 확인 경고창 → 등록 처리 → 목록(B5)으로 이동
+               ③ 취소 → 목록(B5)으로 이동
           ══════════════════════════════════════════════════ -->
-          <!-- [Java] th:action="@{/market/save}" method="post" enctype="multipart/form-data" -->
           <form id="marketWriteForm" novalidate>
             <!-- 수정 시 시퀀스 hidden 전달 -->
-            <!-- [Java] th:if="${market != null}" -->
+            <!-- [Java] th:if="${item != null}" -->
             <input type="hidden" name="marketSeq" id="marketSeq" /><!-- [DB] market.market_seq -->
 
-            <!-- 카테고리 — rss-form-row / rss-form-label (공통) -->
+            <!-- ① 카테고리 — 라디오 버튼 (스토리보드 §B5-2 ①: 좌측 항목 중 택 1) -->
             <div class="rss-form-row">
-              <label class="rss-form-label" for="category">
+              <label class="rss-form-label">
                 카테고리<span class="required">*</span>
               </label>
-              <!-- [DB] 컬럼: market.category ('sinca'|'sign'|'safety'|'sinboard'|'tma') -->
-              <select name="category" id="category" class="rss-select">
-                <option value="">카테고리를 선택하세요</option>
-                <option value="sinca">씨인카</option>
-                <option value="sign">간판시설물</option>
-                <option value="safety">안전시설물</option>
-                <option value="sinboard">씨인보드</option>
-                <option value="tma">TMA</option>
-              </select>
+              <!-- [DB] market.market_category ('sinca'|'sign'|'safety'|'sinboard'|'tma') -->
+              <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; padding-top:4px;">
+                <label class="rss-radio-label">
+                  <input type="radio" name="marketCategory" value="sinca"    onchange="updateTitle(this)" />씨인카
+                </label>
+                <label class="rss-radio-label">
+                  <input type="radio" name="marketCategory" value="sign"     onchange="updateTitle(this)" />간판시설물
+                </label>
+                <label class="rss-radio-label">
+                  <input type="radio" name="marketCategory" value="safety"   onchange="updateTitle(this)" />안전시설물
+                </label>
+                <label class="rss-radio-label">
+                  <input type="radio" name="marketCategory" value="sinboard" onchange="updateTitle(this)" />씨인보드
+                </label>
+                <label class="rss-radio-label">
+                  <input type="radio" name="marketCategory" value="tma"      onchange="updateTitle(this)" />TMA
+                </label>
+              </div>
             </div>
 
-            <!-- 제목 -->
+            <!-- 제목 자동 생성 미리보기 (카테고리 + '판매' 고정, 스토리보드 §B5 ④) -->
             <div class="rss-form-row">
-              <label class="rss-form-label" for="title">
-                제목<span class="required">*</span>
+              <label class="rss-form-label">제목 (자동 생성)</label>
+              <div class="market-title-preview market-title-preview--empty" id="titlePreview">
+                <i data-lucide="tag" style="width:13px;height:13px;"></i>
+                <span id="titlePreviewText">카테고리를 선택하면 자동으로 결정됩니다</span>
+              </div>
+            </div>
+
+            <!-- ② 수량 (스토리보드 §B5-2 ①) -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="marketQty">
+                수량<span class="required">*</span>
               </label>
-              <!-- [DB] 컬럼: market.title -->
-              <input type="text" name="title" id="title" class="rss-input"
-                     placeholder="상품 제목을 입력하세요" maxlength="100" />
+              <!-- [DB] market.market_qty (INT) -->
+              <input type="number" name="marketQty" id="marketQty" class="rss-input"
+                     placeholder="수량을 입력하세요" min="1" style="max-width:200px;" />
             </div>
 
-            <!-- 수량 / 규격 (2열 그리드) -->
-            <div class="rss-form-row" style="display:grid;grid-template-columns:1fr 2fr;gap:12px;">
-              <div>
-                <label class="rss-form-label" for="qty">수량</label>
-                <!-- [DB] 컬럼: market.qty -->
-                <input type="number" name="qty" id="qty" class="rss-input" placeholder="0" min="0" />
-              </div>
-              <div>
-                <label class="rss-form-label" for="spec">규격</label>
-                <!-- [DB] 컬럼: market.spec -->
-                <input type="text" name="spec" id="spec" class="rss-input" placeholder="예) TMA-1 / 2022년식 / 45,000km" />
-              </div>
-            </div>
-
-            <!-- 판매가 -->
+            <!-- ③ 규격 (자율 입력, 50자 제한, 스토리보드 §B5-2 ①) -->
             <div class="rss-form-row">
-              <label class="rss-form-label" for="price">판매가 (원)</label>
-              <!-- [DB] 컬럼: market.price -->
-              <input type="number" name="price" id="price" class="rss-input"
-                     placeholder="숫자만 입력 (협의 가능 시 0 입력)" min="0" />
+              <label class="rss-form-label" for="marketSpec">
+                규격<span class="required">*</span>
+              </label>
+              <!-- [DB] market.market_spec (VARCHAR 50) -->
+              <input type="text" name="marketSpec" id="marketSpec" class="rss-input"
+                     placeholder="규격을 입력하세요 (예: 대형, 2022년식, 45,000km)" maxlength="50" />
             </div>
 
-            <!-- 내용 -->
+            <!-- ④ 판매가 (자율 입력, 50자 제한, 스토리보드 §B5-2 ①) -->
             <div class="rss-form-row">
-              <label class="rss-form-label" for="content">
+              <label class="rss-form-label" for="marketPrice">
+                판매가<span class="required">*</span>
+              </label>
+              <!-- [DB] market.market_price (VARCHAR 50 — '협의' 등 텍스트 허용) -->
+              <input type="text" name="marketPrice" id="marketPrice" class="rss-input"
+                     placeholder="판매가를 입력하세요 (예: 3,500,000원 또는 협의)" maxlength="50" />
+            </div>
+
+            <!-- ⑤ 내용 (textarea, 500자 제한, 스토리보드 §B5-2 ①) -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="marketContent">
                 내용<span class="required">*</span>
               </label>
-              <!-- [DB] 컬럼: market.content -->
-              <textarea name="content" id="content" class="rss-input rss-textarea"
-                        placeholder="상품에 대한 상세 내용을 입력하세요."></textarea>
+              <!-- [DB] market.market_content (TEXT) -->
+              <textarea name="marketContent" id="marketContent" class="rss-input rss-textarea"
+                        placeholder="상품 설명을 입력하세요. (최대 500자)" maxlength="500"></textarea>
             </div>
 
-            <!-- 이미지 첨부 — rss-img-upload / rss-img-preview (공통) -->
+            <!-- ⑥ 이미지 첨부 (최대 10장, 첫 번째 = 대표 이미지, 스토리보드 §B5-2 ①) -->
             <div class="rss-form-row">
-              <label class="rss-form-label">이미지 첨부 (최대 5장)</label>
+              <label class="rss-form-label">
+                이미지 첨부
+                <span style="font-size:var(--rss-font-sm); color:var(--rss-muted); font-weight:400;">
+                  (최대 10장 / 첫 번째 이미지가 대표 이미지)
+                </span>
+              </label>
               <!-- [DB] 테이블: market_image (market_seq, img_url, original_file_nm, sort_order) -->
               <div class="rss-img-upload" onclick="document.getElementById('marketImages').click()">
                 <div class="rss-img-upload__icon">
                   <i data-lucide="image-plus" style="width:32px;height:32px;"></i>
                 </div>
                 <p class="rss-img-upload__text">클릭하여 이미지를 업로드하세요</p>
-                <p class="rss-img-upload__hint">JPG, PNG, GIF 지원 / 파일당 최대 5MB</p>
+                <p class="rss-img-upload__hint">JPG, PNG 지원 / 파일당 최대 5MB / 최대 10장</p>
                 <input type="file" name="marketImages" id="marketImages"
                        accept="image/*" multiple onchange="previewImages(this)" />
               </div>
@@ -124,25 +162,47 @@
 
         </div><!-- /rss-card__body -->
       </div><!-- /rss-card -->
-
     </main>
 
     <div id="rss-footer-wrap"></div>
-
   </div><!-- /rss-main -->
-
 </div><!-- /rss-app -->
 
-<script src="rss-common.js?v=85060bf"></script>
+<script src="rss-common.js?v=cache_bust"></script>
 <script>
   lucide.createIcons();
 
-  /* ── 이미지 미리보기 ── */
+  /* 카테고리 라벨 매핑 (스토리보드 §B5 ④: 카테고리 + '판매' 고정 제목) */
+  var catLabels = {
+    sinca:    '씨인카',
+    sign:     '간판시설물',
+    safety:   '안전시설물',
+    sinboard: '씨인보드',
+    tma:      'TMA'
+  };
+
+  /* 카테고리 선택 시 제목 미리보기 업데이트 */
+  function updateTitle(radio) {
+    var label   = catLabels[radio.value] || '';
+    var preview = document.getElementById('titlePreview');
+    var text    = document.getElementById('titlePreviewText');
+    text.textContent = label + ' 판매';
+    preview.classList.remove('market-title-preview--empty');
+    lucide.createIcons();
+  }
+
+  /* 이미지 미리보기 (최대 10장, 스토리보드 §B5-2 ①) */
   function previewImages(input) {
-    var list = document.getElementById('imgPreviewList');
-    var files = Array.from(input.files);
-    var maxCount = 5;
-    var current = list.querySelectorAll('.rss-img-preview__item').length;
+    var list    = document.getElementById('imgPreviewList');
+    var files   = Array.from(input.files);
+    var maxCount = 10;
+    var current  = list.querySelectorAll('.rss-img-preview__item').length;
+
+    if (current >= maxCount) {
+      alert('이미지는 최대 10장까지 첨부할 수 있습니다.');
+      input.value = '';
+      return;
+    }
 
     files.slice(0, maxCount - current).forEach(function(file) {
       if (!file.type.startsWith('image/')) return;
@@ -150,31 +210,39 @@
       reader.onload = function(e) {
         var item = document.createElement('div');
         item.className = 'rss-img-preview__item';
+        item.style.position = 'relative';
+        var isFirst = list.querySelectorAll('.rss-img-preview__item').length === 0;
         item.innerHTML = '<img src="' + e.target.result + '" alt="미리보기" />'
+          + (isFirst ? '<span style="position:absolute;top:4px;left:4px;background:var(--rss-amber);color:#fff;font-size:10px;padding:1px 6px;border-radius:3px;line-height:1.6;">대표</span>' : '')
           + '<button type="button" class="rss-img-preview__del" onclick="removePreview(this)" aria-label="삭제">✕</button>';
         list.appendChild(item);
       };
       reader.readAsDataURL(file);
     });
+    input.value = '';
   }
 
-  function removePreview(btn) {
-    btn.closest('.rss-img-preview__item').remove();
-  }
+  function removePreview(btn) { btn.closest('.rss-img-preview__item').remove(); }
 
-  /* ── 폼 제출 ──────────────────────────────────────────────
-     [Java] document.getElementById('marketWriteForm').submit();
-  ─────────────────────────────────────────────────────────── */
+  /* 폼 제출 (스토리보드 §B5-2 ②) */
   function submitMarketForm() {
-    var category = document.getElementById('category').value;
-    var title    = document.getElementById('title').value.trim();
-    var content  = document.getElementById('content').value.trim();
-    if (!category) { alert('카테고리를 선택해주세요.'); return; }
-    if (!title)    { alert('제목을 입력해주세요.'); return; }
-    if (!content)  { alert('내용을 입력해주세요.'); return; }
-    /* [Java] document.getElementById('marketWriteForm').submit(); */
-    alert('등록되었습니다. (더미 동작)');
-    location.href = 'market.html';
+    var cat     = document.querySelector('input[name="marketCategory"]:checked');
+    var qty     = document.getElementById('marketQty').value.trim();
+    var spec    = document.getElementById('marketSpec').value.trim();
+    var price   = document.getElementById('marketPrice').value.trim();
+    var content = document.getElementById('marketContent').value.trim();
+
+    if (!cat)     { alert('카테고리를 선택해주세요.'); return; }
+    if (!qty)     { alert('수량을 입력해주세요.'); return; }
+    if (!spec)    { alert('규격을 입력해주세요.'); return; }
+    if (!price)   { alert('판매가를 입력해주세요.'); return; }
+    if (!content) { alert('내용을 입력해주세요.'); return; }
+
+    /* [Java] 모든 정보 빠짐없이 입력 확인 후 경고창 → 등록 처리 → 목록(B5)으로 이동 */
+    if (confirm('등록하시겠습니까?')) {
+      alert('등록되었습니다. (더미 동작)');
+      location.href = 'market.html';
+    }
   }
 </script>
 </body>
