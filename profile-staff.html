@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>정보변경 — 로드세이프티시스템</title>
+  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="rss-common.css?v=profile-staff01" />
+  <style>
+    /* ══════════════════════════════════════════════════════
+       profile-staff.html 전용 스타일
+       ■ register-company.html / profile.html과 동일한 클래스 체계 사용
+       ■ rss-common.css에 이미 정의된 클래스는 중복 정의 금지
+       ■ §19-5 용어사전 참조
+    ══════════════════════════════════════════════════════ */
+
+    /* 폼 입력 — register-company.html의 .reg-input과 동일 계열 */
+    .reg-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .reg-input:focus { border-color: var(--rss-amber); background: #fff; }
+    .reg-input::placeholder { color: #c4c9d4; }
+    .reg-input[readonly] { background: #f9fafb; color: var(--rss-muted); cursor: default; }
+
+    /* 분할 입력 — register-company.html의 .split-wrap과 동일 */
+    .split-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .split-wrap .reg-input { flex: 1; min-width: 50px; }
+    .split-sep { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
+
+    /* 라디오 수신 설정 — register-company.html의 .receive-radio-wrap과 동일 */
+    .receive-radio-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      flex-wrap: wrap;
+    }
+    .receive-radio-wrap label {
+      display: flex; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .receive-radio-wrap input[type="radio"] { accent-color: var(--rss-amber); }
+
+    /* 이메일 입력 — register-company.html의 .email-wrap과 동일 */
+    .email-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .email-wrap .reg-input { flex: 1; min-width: 80px; }
+    .email-at { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
+    .email-domain-select {
+      padding: 9px 10px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      min-width: 110px;
+    }
+    .email-domain-select:focus { border-color: var(--rss-amber); }
+
+    /* 경고 모달 — register-company.html의 .reg-alert-modal과 동일 */
+    .reg-alert-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .reg-alert-modal.open { display: flex; }
+    .reg-alert-modal__box {
+      background: #fff;
+      border-radius: var(--rss-radius-lg);
+      padding: 28px 28px 24px;
+      max-width: 400px; width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+    }
+    .reg-alert-modal__title {
+      font-size: var(--rss-font-lg);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .reg-alert-modal__title svg { width: 22px; height: 22px; }
+    .reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
+    .reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
+    .reg-alert-modal__body {
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .reg-alert-modal__footer {
+      display: flex; justify-content: center; gap: 8px;
+    }
+
+    /* 모바일 반응형 */
+    @media (max-width: 640px) {
+      .split-wrap .reg-input { min-width: 0; }
+      .email-wrap { flex-direction: column; align-items: stretch; }
+      .email-at { display: none; }
+      .email-domain-select { width: 100%; }
+      .receive-radio-wrap { margin-top: 6px; }
+      /* 하단 버튼 모바일 대응 — 세로 스택 */
+      .profile-btn-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .profile-btn-row .profile-btn-spacer {
+        display: none !important;
+      }
+      .profile-btn-row > button {
+        width: 100%;
+        justify-content: center;
+      }
+      .profile-btn-row .profile-btn-right {
+        justify-content: center !important;
+        width: 100%;
+      }
+      .profile-btn-row .profile-btn-right .rss-btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="rss-app">
+  <div id="rss-sidebar-wrap"></div>
+  <div class="rss-main" id="rssMain">
+    <div id="rss-header-wrap" data-title="정보변경" data-icon="user-cog"></div>
+    <main class="rss-content">
+      <div class="rss-card">
+        <div class="rss-card__body">
+          <!-- ══════════════════════════════════════════════════
+               직원용 정보변경 폼 (B9-1)
+               [Java] th:if="${loginUser.mberType == 'EMPLOYEE'}"
+               [Java] th:action="@{/profile/update}" method="post"
+          ══════════════════════════════════════════════════ -->
+          <form id="profileStaffForm" novalidate>
+            <!-- [DB] tbl_mber.mber_seq -->
+            <input type="hidden" name="mberSeq" id="mberSeq" value="2001" />
+
+            <!-- ── 아이디 (읽기전용) ── -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="loginId">아이디</label>
+              <!-- [DB] tbl_mber.login_id -->
+              <input type="text" id="loginId" name="loginId"
+                     class="reg-input" readonly value="sawon114" />
+              <p class="rss-form-hint">아이디는 변경할 수 없습니다.</p>
+            </div>
+
+            <!-- ── 상호 (읽기전용) ── -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="companyNm">상호</label>
+              <!-- [DB] tbl_company.company_nm (소속 기업) -->
+              <input type="text" id="companyNm" name="companyNm"
+                     class="reg-input" readonly value="잘한도로차단" />
+              <p class="rss-form-hint">상호는 변경할 수 없습니다.</p>
+            </div>
+
+            <!-- ── 대표자명 (읽기전용) ── -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="ceoNm">대표자명</label>
+              <!-- [DB] tbl_company.ceo_nm -->
+              <input type="text" id="ceoNm" name="ceoNm"
+                     class="reg-input" readonly value="나잘난" />
+              <p class="rss-form-hint">대표자명은 변경할 수 없습니다.</p>
+            </div>
+
+            <!-- ── 사업자 번호 (읽기전용) ── -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="bizRegNo">사업자 번호</label>
+              <!-- [DB] tbl_company.biz_reg_no -->
+              <input type="text" id="bizRegNo" name="bizRegNo"
+                     class="reg-input" readonly value="000-00-00000" />
+              <p class="rss-form-hint">사업자번호는 변경할 수 없습니다.</p>
+            </div>
+
+            <!-- ── 이름(부서명) (수정 가능) ── -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="staffNm">
+                이름(부서명) <span class="rss-required">*</span>
+              </label>
+              <!-- [DB] tbl_mber.staff_nm / tbl_mber.dept_nm -->
+              <input type="text" id="staffNm" name="staffNm"
+                     class="reg-input" value="도사진"
+                     placeholder="이름 또는 부서명을 입력하세요" />
+            </div>
+
+            <!-- ── 휴대폰 번호 ── -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="staffTel1">
+                휴대폰 번호 <span class="rss-required">*</span>
+              </label>
+              <!-- [DB] tbl_mber.tel → staffTel1 + staffTel2 + staffTel3 -->
+              <div class="split-wrap">
+                <input type="text" id="staffTel1" name="staffTel1"
+                       class="reg-input" value="010"
+                       maxlength="4" inputmode="numeric" aria-label="휴대폰 앞자리" />
+                <span class="split-sep">-</span>
+                <input type="text" id="staffTel2" name="staffTel2"
+                       class="reg-input" value="0000"
+                       maxlength="4" inputmode="numeric" aria-label="휴대폰 가운데" />
+                <span class="split-sep">-</span>
+                <input type="text" id="staffTel3" name="staffTel3"
+                       class="reg-input" value="2222"
+                       maxlength="4" inputmode="numeric" aria-label="휴대폰 끝자리" />
+              </div>
+              <!-- [DB] tbl_mber.sms_receive_yn -->
+              <div class="receive-radio-wrap" style="margin-top:6px;">
+                <span>* SMS 수신 :</span>
+                <label>
+                  <input type="radio" name="smsReceiveYn" value="Y" checked />
+                  수신
+                </label>
+                <label>
+                  <input type="radio" name="smsReceiveYn" value="N" />
+                  거부
+                </label>
+              </div>
+            </div>
+
+            <!-- ── 이메일 주소 ── -->
+            <div class="rss-form-row">
+              <label class="rss-form-label" for="emailId">
+                이메일 주소 <span class="rss-required">*</span>
+              </label>
+              <!-- [DB] tbl_mber.email_id + tbl_mber.email_domain -->
+              <div class="email-wrap">
+                <input type="text" id="emailId" name="emailId"
+                       class="reg-input" value="dosajin"
+                       placeholder="이메일 아이디" aria-label="이메일 아이디" />
+                <span class="email-at">@</span>
+                <input type="text" id="emailDomain" name="emailDomain"
+                       class="reg-input" value="gmail.com"
+                       placeholder="도메인" aria-label="이메일 도메인" />
+                <select id="emailDomainSelect" class="email-domain-select"
+                        onchange="applyEmailDomain(this.value)"
+                        aria-label="이메일 도메인 선택">
+                  <option value="">선택</option>
+                  <option value="naver.com">naver.com</option>
+                  <option value="gmail.com">gmail.com</option>
+                  <option value="daum.net">daum.net</option>
+                  <option value="kakao.com">kakao.com</option>
+                  <option value="hanmail.net">hanmail.net</option>
+                  <option value="nate.com">nate.com</option>
+                  <option value="direct">직접 입력</option>
+                </select>
+              </div>
+              <!-- [DB] tbl_mber.email_receive_yn -->
+              <div class="receive-radio-wrap" style="margin-top:6px;">
+                <span>* 이메일 수신 :</span>
+                <label>
+                  <input type="radio" name="emailReceiveYn" value="Y" checked />
+                  수신
+                </label>
+                <label>
+                  <input type="radio" name="emailReceiveYn" value="N" />
+                  거부
+                </label>
+              </div>
+            </div>
+
+          </form><!-- /profileStaffForm -->
+        </div><!-- /rss-card__body -->
+      </div><!-- /rss-card -->
+
+      <!-- ══════════════════════════════════════════════════
+           하단 버튼 영역
+           - 저장 : 중앙 (rss-page-actions)
+           - 비밀번호 변경 · 회원탈퇴 : 우측 (profile-btn-right)
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-page-actions profile-btn-row"
+           style="display:flex; align-items:center; gap:8px;">
+        <!-- spacer — 저장 버튼을 중앙으로 밀기 위한 flex:1 영역 -->
+        <div class="profile-btn-spacer" style="flex:1;"></div>
+
+        <!-- 저장 버튼 (중앙) -->
+        <button type="button" class="rss-btn rss-btn--amber"
+                onclick="submitStaffProfile()">
+          <i data-lucide="save"></i> 저장
+        </button>
+
+        <!-- 우측 버튼 그룹 -->
+        <div class="profile-btn-right" style="flex:1; display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="rss-btn rss-btn--outline"
+                  onclick="openPwModal()">
+            <i data-lucide="lock"></i> 비밀번호 변경
+          </button>
+          <button type="button" class="rss-btn rss-btn--outline-danger"
+                  onclick="openWithdrawModal()">
+            <i data-lucide="user-x"></i> 회원탈퇴
+          </button>
+        </div>
+      </div>
+
+    </main><!-- /rss-content -->
+
+    <div id="rss-footer-wrap"></div>
+  </div><!-- /rss-main -->
+</div><!-- /rss-app -->
+
+<!-- ══════════════════════════════════════════════════
+     비밀번호 변경 모달 (B9-1)
+     [Java] POST /profile/pw-change
+══════════════════════════════════════════════════ -->
+<div class="notice-modal-backdrop" id="pwModal"
+     onclick="if(event.target===this)closePwModal()">
+  <div class="notice-modal" style="max-width:440px;"
+       role="dialog" aria-modal="true" aria-labelledby="pwModalTitle">
+    <div class="notice-modal__header">
+      <h2 class="notice-modal__title" id="pwModalTitle">비밀번호 변경</h2>
+      <button class="notice-modal__close" onclick="closePwModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:20px;height:20px;"></i>
+      </button>
+    </div>
+    <div class="notice-modal__body">
+      <!-- 현재 비밀번호 -->
+      <div class="rss-form-row" style="margin-bottom:14px;">
+        <label class="rss-form-label" for="currentPw">
+          현재 비밀번호 <span class="rss-required">*</span>
+        </label>
+        <input type="password" id="currentPw" name="currentPw"
+               class="reg-input" placeholder="현재 비밀번호를 입력하세요" />
+      </div>
+      <!-- 새 비밀번호 -->
+      <div class="rss-form-row" style="margin-bottom:14px;">
+        <label class="rss-form-label" for="newPw">
+          새 비밀번호 <span class="rss-required">*</span>
+        </label>
+        <input type="password" id="newPw" name="newPw"
+               class="reg-input" placeholder="8자 이상, 영문+숫자+특수문자 조합"
+               oninput="checkPwMatch()" />
+        <p class="rss-form-hint">영문+숫자+특수문자 조합 8자 이상</p>
+      </div>
+      <!-- 새 비밀번호 확인 -->
+      <div class="rss-form-row">
+        <label class="rss-form-label" for="newPwConfirm">
+          새 비밀번호 확인 <span class="rss-required">*</span>
+        </label>
+        <input type="password" id="newPwConfirm" name="newPwConfirm"
+               class="reg-input" placeholder="새 비밀번호를 다시 입력하세요"
+               oninput="checkPwMatch()" />
+        <!-- [JS] 비밀번호 불일치 시 표시 -->
+        <p id="pwMatchMsg" class="rss-form-hint"
+           style="color:#ef4444; display:none;">비밀번호가 일치하지 않습니다.</p>
+      </div>
+    </div>
+    <div class="notice-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline"
+              onclick="closePwModal()">
+        <i data-lucide="x"></i> 취소
+      </button>
+      <button type="button" class="rss-btn rss-btn--amber"
+              onclick="submitPwChange()">
+        <i data-lucide="check"></i> 변경
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     회원탈퇴 확인 모달
+     [Java] POST /profile/withdraw
+     탈퇴 시 필수 처리:
+       - 개인정보 삭제, 공사 이력은 남겨둠
+       - 동일 아이디로 재가입 불가 처리
+══════════════════════════════════════════════════ -->
+<div class="notice-modal-backdrop" id="withdrawModal"
+     onclick="if(event.target===this)closeWithdrawModal()">
+  <div class="notice-modal" style="max-width:440px;"
+       role="alertdialog" aria-modal="true" aria-labelledby="withdrawModalTitle">
+    <div class="notice-modal__header">
+      <h2 class="notice-modal__title" id="withdrawModalTitle"
+          style="color:#dc2626;">회원탈퇴</h2>
+      <button class="notice-modal__close" onclick="closeWithdrawModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:20px;height:20px;"></i>
+      </button>
+    </div>
+    <div class="notice-modal__body">
+      <div class="rss-notice rss-notice--danger">
+        <strong>탈퇴 전 반드시 확인하세요.</strong><br>
+        탈퇴 후에는 재가입이 불가능하며 모든 기록이 삭제됩니다.
+      </div>
+      <p style="font-size:var(--rss-font-sm); color:var(--rss-muted); margin-top:8px;">
+        정말로 탈퇴하시겠습니까?
+      </p>
+    </div>
+    <div class="notice-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline"
+              onclick="closeWithdrawModal()">
+        <i data-lucide="x"></i> 취소
+      </button>
+      <button type="button" class="rss-btn rss-btn--outline-danger"
+              onclick="submitWithdraw()">
+        <i data-lucide="user-x"></i> 탈퇴
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     회원탈퇴 차단 모달 — 진행중/예정 공사 있을 경우
+     [Java] GET /profile/withdraw/check → { hasConstruction: true/false }
+     hasConstruction=true 일 때 이 모달을 표시하고 탈퇴를 차단한다.
+     hasConstruction=false 일 때 withdrawModal(탈퇴 확인)을 표시한다.
+══════════════════════════════════════════════════ -->
+<div class="notice-modal-backdrop" id="withdrawBlockModal"
+     onclick="if(event.target===this)closeWithdrawBlockModal()">
+  <div class="notice-modal" style="max-width:440px;"
+       role="alertdialog" aria-modal="true" aria-labelledby="withdrawBlockTitle">
+    <div class="notice-modal__header">
+      <h2 class="notice-modal__title" id="withdrawBlockTitle"
+          style="color:#dc2626;">탈퇴 불가</h2>
+      <button class="notice-modal__close" onclick="closeWithdrawBlockModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:20px;height:20px;"></i>
+      </button>
+    </div>
+    <div class="notice-modal__body">
+      <div class="rss-notice rss-notice--danger">
+        <strong>예정이거나 진행중인 공사가 있어 탈퇴할 수 없습니다.</strong>
+      </div>
+      <p style="font-size:var(--rss-font-sm); color:var(--rss-muted); margin-top:12px;">
+        공사가 모두 완료된 후 다시 시도해 주세요.
+      </p>
+    </div>
+    <div class="notice-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber"
+              onclick="closeWithdrawBlockModal()">
+        <i data-lucide="check"></i> 확인
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 경고 모달 — 필수 항목 누락 -->
+<div class="reg-alert-modal" id="modalValidAlert" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title reg-alert-modal__title--warn">
+      <i data-lucide="alert-circle"></i>
+      <span id="modalValidMsg">모든 항목을 빠짐없이 입력하세요.</span>
+    </p>
+    <div class="reg-alert-modal__body" id="modalValidDetail"></div>
+    <div class="reg-alert-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber"
+              onclick="closeValidAlert()">
+        <i data-lucide="check"></i> 확인
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 저장 확인 모달 -->
+<div class="reg-alert-modal" id="modalSaveConfirm" role="alertdialog" aria-modal="true">
+  <div class="reg-alert-modal__box">
+    <p class="reg-alert-modal__title reg-alert-modal__title--info">
+      <i data-lucide="save"></i>
+      <span>저장하시겠습니까?</span>
+    </p>
+    <div class="reg-alert-modal__body">
+      입력하신 정보를 저장합니다.
+    </div>
+    <div class="reg-alert-modal__footer">
+      <button type="button" class="rss-btn rss-btn--outline"
+              onclick="closeSaveConfirm()">
+        <i data-lucide="x"></i> 취소
+      </button>
+      <button type="button" class="rss-btn rss-btn--amber"
+              onclick="doSaveProfile()">
+        <i data-lucide="check"></i> 예
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 공통 컴포넌트 로드 -->
+<script src="rss-common.js"></script>
+<script>
+  /* ══════════════════════════════════════════════════
+     profile-staff.html 전용 JS
+     §19-4 / §19-5 용어사전 참조
+  ══════════════════════════════════════════════════ */
+
+  /* ── 이메일 도메인 선택 ── */
+  function applyEmailDomain(val) {
+    var domainInput = document.getElementById('emailDomain');
+    if (val === 'direct' || val === '') {
+      domainInput.value = '';
+      domainInput.readOnly = false;
+      domainInput.focus();
+    } else {
+      domainInput.value = val;
+      domainInput.readOnly = true;
+    }
+  }
+
+  /* ── 저장 유효성 검사 ── */
+  function submitStaffProfile() {
+    var staffNm  = document.getElementById('staffNm').value.trim();
+    var tel1     = document.getElementById('staffTel1').value.trim();
+    var tel2     = document.getElementById('staffTel2').value.trim();
+    var tel3     = document.getElementById('staffTel3').value.trim();
+    var emailId  = document.getElementById('emailId').value.trim();
+    var emailDom = document.getElementById('emailDomain').value.trim();
+
+    var missing = [];
+    if (!staffNm)  missing.push('이름(부서명)');
+    if (!tel1 || !tel2 || !tel3) missing.push('휴대폰 번호');
+    if (!emailId || !emailDom)   missing.push('이메일 주소');
+
+    if (missing.length > 0) {
+      /* [JS] 빠진 항목 경고 */
+      document.getElementById('modalValidMsg').textContent = '모든 항목을 빠짐없이 입력하세요.';
+      document.getElementById('modalValidDetail').textContent = missing.join(', ') + ' 항목을 확인해 주세요.';
+      document.getElementById('modalValidAlert').classList.add('open');
+      lucide.createIcons();
+      return;
+    }
+
+    /* 저장 확인 모달 표시 */
+    document.getElementById('modalSaveConfirm').classList.add('open');
+    lucide.createIcons();
+  }
+
+  function closeValidAlert() {
+    document.getElementById('modalValidAlert').classList.remove('open');
+  }
+
+  function closeSaveConfirm() {
+    document.getElementById('modalSaveConfirm').classList.remove('open');
+  }
+
+  function doSaveProfile() {
+    /* [Java] POST /profile/update
+     *   파라미터: mberSeq, staffNm, staffTel1~3, smsReceiveYn,
+     *             emailId, emailDomain, emailReceiveYn
+     *   성공 시: 페이지 새로고침
+     */
+    closeSaveConfirm();
+    location.reload();
+  }
+
+  /* ── 비밀번호 변경 모달 ── */
+  function openPwModal() {
+    document.getElementById('pwModal').classList.add('show');
+    lucide.createIcons();
+  }
+  function closePwModal() {
+    document.getElementById('pwModal').classList.remove('show');
+    document.getElementById('currentPw').value = '';
+    document.getElementById('newPw').value = '';
+    document.getElementById('newPwConfirm').value = '';
+    document.getElementById('pwMatchMsg').style.display = 'none';
+  }
+  function checkPwMatch() {
+    var np  = document.getElementById('newPw').value;
+    var npc = document.getElementById('newPwConfirm').value;
+    var msg = document.getElementById('pwMatchMsg');
+    if (npc.length > 0 && np !== npc) {
+      msg.style.display = 'block';
+    } else {
+      msg.style.display = 'none';
+    }
+  }
+  function submitPwChange() {
+    var current = document.getElementById('currentPw').value.trim();
+    var np      = document.getElementById('newPw').value.trim();
+    var npc     = document.getElementById('newPwConfirm').value.trim();
+    if (!current || !np || !npc) {
+      alert('모든 항목을 입력해 주세요.');
+      return;
+    }
+    if (np !== npc) {
+      alert('새 비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    /* [Java] POST /profile/pw-change
+     *   파라미터: mberSeq, currentPw, newPw
+     *   성공 시: 모달 닫기
+     */
+    alert('비밀번호가 변경되었습니다.');
+    closePwModal();
+  }
+
+  /* ── 회원탈퇴 모달 ──
+   *
+   * 탈퇴 버튼 클릭 시 공사 여부를 먼저 확인한다.
+   *
+   * [Java] GET /profile/withdraw/check
+   *   응답: { hasConstruction: true | false }
+   *   - hasConstruction = true  : 진행중 또는 예정인 공사 존재
+   *                               → withdrawBlockModal 표시, 탈퇴 차단
+   *   - hasConstruction = false : 공사 없음
+   *                               → withdrawModal(탈퇴 확인) 표시
+   *
+   * [Java] POST /profile/withdraw
+   *   탈퇴 확인 모달에서 탈퇴 버튼 클릭 시 호출
+   *   응답 성공 시 로그인 페이지(login.html)로 이동
+   */
+  function openWithdrawModal() {
+    /* ══════════════════════════════════════════════════
+       [Java] 연동 시 아래 fetch 코드를 활성화하고 더미 코드를 제거한다.
+       fetch('/profile/withdraw/check')
+         .then(r => r.json())
+         .then(data => {
+           if (data.hasConstruction) {
+             openWithdrawBlockModal();
+           } else {
+             showWithdrawConfirm();
+           }
+         });
+    ══════════════════════════════════════════════════ */
+
+    /* 더미: 공사 없음 시나리오 (Java 연동 전 테스트용) */
+    var hasConstruction = false; /* [Java] 실제 연동 시 서버 응답값으로 교체 */
+    if (hasConstruction) {
+      openWithdrawBlockModal();
+    } else {
+      showWithdrawConfirm();
+    }
+  }
+
+  function showWithdrawConfirm() {
+    document.getElementById('withdrawModal').classList.add('show');
+    lucide.createIcons();
+  }
+  function closeWithdrawModal() {
+    document.getElementById('withdrawModal').classList.remove('show');
+  }
+
+  function openWithdrawBlockModal() {
+    document.getElementById('withdrawBlockModal').classList.add('show');
+    lucide.createIcons();
+  }
+  function closeWithdrawBlockModal() {
+    document.getElementById('withdrawBlockModal').classList.remove('show');
+  }
+
+  function submitWithdraw() {
+    /* [Java] POST /profile/withdraw
+     *   성공 시: 로그인 페이지(login.html)로 리다이렉트
+     */
+    alert('탈퇴 처리되었습니다.');
+    closeWithdrawModal();
+    location.href = 'login.html';
+  }
+</script>
+<script>
+  /* ── 이미지 로드 실패 시 placeholder 자동 대체 (rss-common) ── */
+  (function() {
+    var PLACEHOLDER = 'img-placeholder.png';
+    function applyPlaceholder(img) {
+      if (img.src && img.src.indexOf(PLACEHOLDER) === -1) {
+        img.src = PLACEHOLDER;
+        img.classList.add('rss-img-error');
+      }
+    }
+    document.querySelectorAll('img').forEach(function(img) {
+      img.addEventListener('error', function() { applyPlaceholder(this); });
+      if (img.complete && img.naturalWidth === 0) applyPlaceholder(img);
+    });
+  })();
+</script>
+</body>
+</html>

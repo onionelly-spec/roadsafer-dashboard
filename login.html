@@ -608,14 +608,19 @@
   /* ── 테스트 로그인 함수 ── */
   function testLogin(type) {
     let userName = '';
+    let dest = 'index.html';
     if (type === 'company') {
       userName = '김철수';
+      /* [Java] 기업주 로그인 → 대시보드(index.html) */
+      dest = 'index.html';
     } else if (type === 'employee') {
       userName = '이영희';
+      /* [Java] 직원 로그인 → 직원 정보변경(profile-staff.html) */
+      dest = 'profile-staff.html';
     }
     sessionStorage.setItem('rss_mber_type', type);
     sessionStorage.setItem('rss_mber_name', userName);
-    window.location.href = 'index.html';
+    window.location.href = dest;
   }
 
   /* ── 찾기 링크 이벤트 ── */
