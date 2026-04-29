@@ -9,21 +9,21 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
   <style>
-    /* ── 광고 그리드 ── */
+    /* ── 광고 그리드 (장터 동일 규칙: PC 4열 / 모바일 2열 / 페이지당 12개) ── */
     .ad-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      padding: 20px 24px;
+      gap: 20px;
+      padding: 20px 24px 24px;
     }
     @media (max-width: 1100px) { .ad-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 768px)  { .ad-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px)  { .ad-grid { grid-template-columns: repeat(2, 1fr); padding: 14px 16px 18px; gap: 14px; } }
     @media (max-width: 400px)  { .ad-grid { grid-template-columns: 1fr; } }
 
-    /* ── 광고 카드 ── */
+    /* ── 광고 카드 (장터 market-card 동일 규칙) ── */
     .ad-card {
-      border: 1.5px solid #e5e7eb;
-      border-radius: 10px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius-lg);
       overflow: hidden;
       background: #fff;
       cursor: pointer;
@@ -44,30 +44,31 @@
       background: #f3f4f6;
       display: block;
     }
-    .ad-card__body {
-      padding: 14px 16px 18px;
-    }
+    .ad-card__body { padding: 14px 16px 18px; }
+    /* 업체명: market-card__title 동일 스타일 */
     .ad-card__company {
       font-size: var(--rss-font-md);
       font-weight: 700;
-      color: #1a1c23;
-      margin-bottom: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .ad-card__title {
-      font-size: var(--rss-font-base);
-      color: #6b7280;
-      line-height: 1.6;
+      color: var(--rss-text);
+      line-height: 1.5;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
-    @media (max-width: 640px) {
-      .ad-grid { padding: 14px 16px; gap: 10px; }
+    /* ── 광고문의 인라인 텍스트 (헤더 우측) ── */
+    .ad-inquiry {
+      font-size: var(--rss-font-sm);
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .ad-inquiry strong {
+      color: var(--rss-text);
+      font-weight: 600;
     }
   </style>
 </head>
@@ -79,14 +80,28 @@
 
   <div class="rss-main" id="rssMain">
 
+    <!-- [Java] data-title="광고" — 우측 광고문의 슬롯은 rss-header의 actions 영역에 주입 -->
     <div id="rss-header-wrap" data-title="광고" data-icon="megaphone"></div>
 
     <main class="rss-content">
 
       <div class="rss-card" style="padding:0;">
 
+        <!-- ── 광고문의 툴바 (스토리보드 §B8 ①) ── -->
+        <div style="display:flex; align-items:center; justify-content:flex-end;
+                    padding:12px 24px; border-bottom:1px solid var(--rss-border);">
+          <!-- [Java] th:text="${adInquiryTel}" / th:text="${adInquiryManager}" -->
+          <span class="ad-inquiry">
+            <i data-lucide="phone" style="width:13px;height:13px;"></i>
+            광고문의 : <strong>051-851-7260</strong>
+            &nbsp;|&nbsp;
+            <i data-lucide="user" style="width:13px;height:13px;"></i>
+            담당자 : <strong>오광고</strong>
+          </span>
+        </div>
+
         <!-- ══════════════════════════════════════════════════
-             광고 목록 (B7)
+             광고 목록 (B8)
              [DB] 테이블: ad ORDER BY reg_dtm DESC
              [Java] 페이지네이션: GET /ad/list?page=#{page}&size=12
              [Java] Pageable pageable = PageRequest.of(page, 12);
@@ -100,134 +115,121 @@
           <a href="ad-detail.html" class="ad-card">
             <!-- [Java] th:src="${ad.thumbImgUrl}" -->
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/fef3c7/d97706?text=한국도로차단"
-                 alt="한국도로차단(주) 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/fef3c7/d97706?text=한국도로차단"
+                 alt="한국도로차단(주)" loading="lazy" />
             <div class="ad-card__body">
               <!-- [Java] th:text="${ad.companyNm}" -->
               <p class="ad-card__company">한국도로차단(주)</p>
-              <!-- [Java] th:text="${ad.title}" -->
-              <p class="ad-card__title">도로 차단 전문 기업, 안전한 공사 현장을 만듭니다</p>
             </div>
           </a>
 
           <!-- 광고 카드 2 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/eff6ff/2563eb?text=소망건설"
-                 alt="소망건설 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/eff6ff/2563eb?text=소망건설"
+                 alt="소망건설(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">소망건설(주)</p>
-              <p class="ad-card__title">TMA 장비 전문 임대 및 판매 서비스</p>
             </div>
           </a>
 
           <!-- 광고 카드 3 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/f0fdf4/16a34a?text=오봉토건"
-                 alt="오봉토건 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/f0fdf4/16a34a?text=오봉토건"
+                 alt="오봉토건" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">오봉토건</p>
-              <p class="ad-card__title">고속도로 공사 전문, 싸인카 보유 30대</p>
             </div>
           </a>
 
           <!-- 광고 카드 4 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/fdf4ff/9333ea?text=안전시설물"
-                 alt="안전시설물 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/fdf4ff/9333ea?text=안전시설물"
+                 alt="안전시설물(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">안전시설물(주)</p>
-              <p class="ad-card__title">도로 안전 시설물 전문 제조 및 납품</p>
             </div>
           </a>
 
           <!-- 광고 카드 5 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/fff7ed/ea580c?text=도로안전"
-                 alt="도로안전 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/fff7ed/ea580c?text=도로안전"
+                 alt="도로안전(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">도로안전(주)</p>
-              <p class="ad-card__title">PLCS 차량 전문 임대 서비스</p>
             </div>
           </a>
 
           <!-- 광고 카드 6 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/fef2f2/dc2626?text=싸인카전문"
-                 alt="싸인카전문 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/fef2f2/dc2626?text=싸인카전문"
+                 alt="싸인카전문(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">싸인카전문(주)</p>
-              <p class="ad-card__title">싸인카 정비 및 부품 공급 전문</p>
             </div>
           </a>
 
           <!-- 광고 카드 7 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/ecfdf5/059669?text=공사관리"
-                 alt="공사관리 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/ecfdf5/059669?text=공사관리"
+                 alt="공사관리(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">공사관리(주)</p>
-              <p class="ad-card__title">현장 안전 관리 솔루션 제공</p>
             </div>
           </a>
 
           <!-- 광고 카드 8 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/f0f9ff/0284c7?text=도로표지"
-                 alt="도로표지 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/f0f9ff/0284c7?text=도로표지"
+                 alt="도로표지(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">도로표지(주)</p>
-              <p class="ad-card__title">도로 표지판 제작 및 설치 전문</p>
             </div>
           </a>
 
           <!-- 광고 카드 9 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/fdf2f8/be185d?text=교통안전"
-                 alt="교통안전 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/fdf2f8/be185d?text=교통안전"
+                 alt="교통안전(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">교통안전(주)</p>
-              <p class="ad-card__title">교통 안전 장비 전문 공급 업체</p>
             </div>
           </a>
 
           <!-- 광고 카드 10 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/f0fdf4/15803d?text=현장안전"
-                 alt="현장안전 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/f0fdf4/15803d?text=현장안전"
+                 alt="현장안전(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">현장안전(주)</p>
-              <p class="ad-card__title">공사 현장 안전 컨설팅 및 장비 임대</p>
             </div>
           </a>
 
           <!-- 광고 카드 11 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/fffbeb/b45309?text=도로공사"
-                 alt="도로공사 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/fffbeb/b45309?text=도로공사"
+                 alt="도로공사(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">도로공사(주)</p>
-              <p class="ad-card__title">포장 공사 전문, 빠르고 안전한 시공</p>
             </div>
           </a>
 
           <!-- 광고 카드 12 -->
           <a href="ad-detail.html" class="ad-card">
             <img class="ad-card__img"
-                 src="https://placehold.co/400x225/f8fafc/475569?text=안전장비"
-                 alt="안전장비 광고" loading="lazy" />
+                 src="https://placehold.co/400x250/f8fafc/475569?text=안전장비"
+                 alt="안전장비(주)" loading="lazy" />
             <div class="ad-card__body">
               <p class="ad-card__company">안전장비(주)</p>
-              <p class="ad-card__title">도로 안전 장비 전문 판매 및 렌탈</p>
             </div>
           </a>
 
@@ -274,7 +276,7 @@
 
 </div><!-- /rss-app -->
 
-<script src="rss-common.js?v=d3a8e3a"></script>
+<script src="rss-common.js?v=a3def34"></script>
 <script>
   lucide.createIcons();
 </script>
@@ -288,11 +290,9 @@
         img.classList.add('rss-img-error');
       }
     }
-    // 기존 이미지에 onerror 등록
     document.querySelectorAll('img').forEach(function(img) {
       img.addEventListener('error', function() { applyPlaceholder(this); });
     });
-    // 동적으로 추가되는 이미지 감지
     var observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(m) {
         m.addedNodes.forEach(function(node) {
