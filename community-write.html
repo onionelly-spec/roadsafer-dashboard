@@ -60,7 +60,7 @@
 
             <!-- 이미지 첨부 — rss-img-upload / rss-img-preview (공통) -->
             <div class="rss-form-row">
-              <label class="rss-form-label">이미지 첨부 (최대 3장)</label>
+              <label class="rss-form-label">이미지 첨부 (최대 10장)</label>
               <!-- [DB] 테이블: community_image (community_seq, img_url, original_file_nm, sort_order) -->
               <div class="rss-img-upload" onclick="document.getElementById('communityImages').click()">
                 <div class="rss-img-upload__icon">
@@ -105,7 +105,7 @@
   function previewImages(input) {
     var list = document.getElementById('imgPreviewList');
     var files = Array.from(input.files);
-    var maxCount = 3;
+    var maxCount = 10;
     var current = list.querySelectorAll('.rss-img-preview__item').length;
     files.slice(0, maxCount - current).forEach(function(file) {
       if (!file.type.startsWith('image/')) return;
