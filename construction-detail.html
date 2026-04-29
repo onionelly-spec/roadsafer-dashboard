@@ -769,9 +769,15 @@
       <div id="dailyProgCancelSection" style="display:none;">
         <div class="rss-prog-modal__pay-row">
           <span class="rss-prog-modal__pay-label">지급액</span>
-          <!-- [Java]
-            금액 있으면: th:text="${#numbers.formatInteger(cell.cancelAmt, 3, 'COMMA')}"
-            대기중이면: th:text="'대기중'" + class="rss-prog-modal__pay-amount--pending"
+          <!--
+            [Java] 취소 금액 표시 분기
+            ─ 금액 책정 완료 (cancel_amt IS NOT NULL):
+                th:text="${#numbers.formatInteger(cell.cancelAmt, 3, 'COMMA')}"
+                class="rss-prog-modal__pay-amount"
+            ─ 대기중 (cancel_amt IS NULL) — 운영시스템에서 아직 금액을 책정하지 않은 상태.
+                운영자가 관리자 사이트에서 금액 입력 후 확정되면 금액으로 변경됩니다.
+                th:if="${cell.cancelAmt == null}" → th:text="'대기중'"
+                class="rss-prog-modal__pay-amount--pending" (회색 muted 스타일)
           -->
           <span class="rss-prog-modal__pay-amount" id="dailyProgCancelAmt">500,000</span>
         </div>
@@ -979,10 +985,21 @@
 
       var amtEl = document.getElementById('dailyProgCancelAmt');
       if (data.cancelAmt) {
+        /*
+         * [Java] 운영시스템에서 취소 금액이 이미 책정된 경우
+         * DB: rs_daily_prog.cancel_amt (NOT NULL)
+         * th:text="${#numbers.formatInteger(cell.cancelAmt, 3, 'COMMA')}"
+         */
         amtEl.textContent = data.cancelAmt.toLocaleString();
         amtEl.className = 'rss-prog-modal__pay-amount';
       } else {
-        /* ⑥ 대기중 */
+        /*
+         * ⑥ 대기중 — 운영시스템에서 취소 금액을 아직 책정하지 않은 상태
+         * DB: rs_daily_prog.cancel_amt IS NULL
+         * [Java] th:if="${cell.cancelAmt == null}" → '대기중' 텍스트 출력
+         *        class="rss-prog-modal__pay-amount--pending" (회색 muted 스타일)
+         * 운영자가 관리자 사이트에서 금액 입력 후 확정되면 금액으로 변경됩니다.
+         */
         amtEl.textContent = '대기중';
         amtEl.className = 'rss-prog-modal__pay-amount--pending';
       }
