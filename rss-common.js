@@ -462,11 +462,31 @@ _initUserInfo();
           el.style.display = 'none';
         });
 
-        // ④ 담당자 이름 변경 (대시보드)
+        // ⑤ 담당자 이름 변경 (대시보드)
         const approverEl = document.querySelector('#company-approver');
         if (approverEl) {
           approverEl.innerHTML = `<strong>담당자</strong><span>${userName}</span>`;
         }
+
+        // ⑥ 사이드바 정보변경 링크 → 직원용 페이지로 변경
+        // sidebar.html이 fetch 완료된 후 DOM에 삽입되므로 MutationObserver로 감지
+        // [Java] 서버사이드 전환 시 th:href="@{/profile/staff}" 등으로 처리
+        (function applyStaffProfileLink() {
+          var link = document.getElementById('sidebarProfileLink');
+          if (link) {
+            link.href = 'profile-staff.html';
+            return;
+          }
+          // 사이드바가 아직 로드되지 않은 경우 MutationObserver로 대기
+          var observer = new MutationObserver(function(mutations, obs) {
+            var l = document.getElementById('sidebarProfileLink');
+            if (l) {
+              l.href = 'profile-staff.html';
+              obs.disconnect();
+            }
+          });
+          observer.observe(document.body, { childList: true, subtree: true });
+        })();
       }
     }
   });
