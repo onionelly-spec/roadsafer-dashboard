@@ -54,11 +54,13 @@
     .market-photo-list {
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: 12px;
       margin-bottom: 20px;
     }
     .market-photo-list img {
       width: 100%;
+      max-width: 720px;
       border-radius: var(--rss-radius);
       border: 1.5px solid var(--rss-border);
       display: block;
@@ -104,8 +106,6 @@
 
         <!-- ① 제목 영역 -->
         <div class="market-detail__title-bar">
-          <!-- [Java] th:text="${market.categoryLabel}" -->
-          <p class="market-detail__cat">싸인카</p>
           <!-- [Java] th:text="${market.categoryLabel} + ' 판매'" -->
           <h1 class="market-detail__title">싸인카 판매</h1>
           <div class="market-detail__meta">
@@ -122,6 +122,12 @@
           <!-- 스펙 테이블 (rss-table--detail 공통 클래스) -->
           <table class="rss-table rss-table--detail" style="margin-bottom:20px;">
             <tbody>
+              <tr>
+                <th scope="row">분류</th>
+                <!-- [Java] th:text="${market.categoryLabel}" -->
+                <!-- [DB] market.market_cat -->
+                <td>싸인카</td>
+              </tr>
               <tr>
                 <th scope="row">수량</th>
                 <!-- [Java] th:text="${market.marketQty}" -->
@@ -165,29 +171,30 @@
 
         </div><!-- /market-detail-wrap -->
 
-        <!-- ⑤ 수정/삭제: 왼쪽 정렬 — 내 글일 때만 표시 (스토리보드 §B5-1 ⑤) -->
-        <!-- [Java] th:if="${loginUsr.mberSeq == market.mberSeq}" -->
-        <div class="rss-page-actions rss-page-actions--left" style="border-top:none; padding-bottom:0;">
-          <a href="market-write.html" class="rss-btn rss-btn--outline rss-btn--sm">
-            <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
-          </a>
-          <button type="button" class="rss-btn rss-btn--outline-danger rss-btn--sm"
-                  onclick="deleteMarket()">
-            <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
-          </button>
-        </div>
-
-        <!-- ⑦ 상담신청/목록: 가운데 정렬 -->
-        <div class="rss-page-actions">
-          <!-- 상담 신청: 글 쓴 본인 외 회원에게만 표시 (스토리보드 §B5-1 ⑦) -->
-          <!-- [Java] th:unless="${loginUsr.mberSeq == market.mberSeq}" -->
-          <button type="button" class="rss-btn rss-btn--amber px-10"
-                  onclick="openConsultModal()">
-            <i data-lucide="message-circle" style="width:14px;height:14px;"></i>상담 신청
-          </button>
-          <a href="market.html" class="rss-btn rss-btn--outline px-10">
-            <i data-lucide="list" style="width:14px;height:14px;"></i>목록
-          </a>
+        <!-- ⑤⑦ 수정/삭제(본인만) + 상담신청(타인만) + 목록: 한 줄 배치 -->
+        <div class="rss-page-actions" style="justify-content:space-between;">
+          <!-- 왼쪽: 수정/삭제 — 내 글일 때만 표시 (스토리보드 §B5-1 ⑤) -->
+          <!-- [Java] th:if="${loginUsr.mberSeq == market.mberSeq}" -->
+          <div style="display:flex;gap:8px;">
+            <a href="market-write.html" class="rss-btn rss-btn--outline rss-btn--sm">
+              <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
+            </a>
+            <button type="button" class="rss-btn rss-btn--outline-danger rss-btn--sm"
+                    onclick="deleteMarket()">
+              <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
+            </button>
+          </div>
+          <!-- 오른쪽: 상담신청(타인만) + 목록 -->
+          <div style="display:flex;gap:8px;">
+            <!-- [Java] th:unless="${loginUsr.mberSeq == market.mberSeq}" -->
+            <button type="button" class="rss-btn rss-btn--amber"
+                    onclick="openConsultModal()">
+              <i data-lucide="message-circle" style="width:14px;height:14px;"></i>상담 신청
+            </button>
+            <a href="market.html" class="rss-btn rss-btn--outline">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>목록
+            </a>
+          </div>
         </div>
 
       </div><!-- /rss-card -->
