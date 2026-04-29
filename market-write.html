@@ -8,26 +8,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
-  <style>
-    /* 제목 자동 생성 미리보기 */
-    .market-title-preview {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      background: var(--rss-amber-light);
-      border: 1px solid var(--rss-amber-ring);
-      border-radius: var(--rss-radius);
-      font-size: var(--rss-font-sm);
-      color: var(--rss-amber-dark);
-      font-weight: 600;
-    }
-    .market-title-preview--empty {
-      color: var(--rss-muted);
-      background: #f9fafb;
-      border-color: var(--rss-border);
-    }
-  </style>
 </head>
 <body>
 
@@ -62,30 +42,21 @@
               </label>
               <!-- [DB] market.market_category ('sinca'|'sign'|'safety'|'sinboard'|'tma') -->
               <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; padding-top:4px;">
-                <label class="rss-radio-label">
-                  <input type="radio" name="marketCategory" value="sinca"    onchange="updateTitle(this)" />싸인카
+                <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:var(--rss-font-base); color:var(--rss-text);">
+                  <input type="radio" name="marketCategory" value="sinca" />싸인카
                 </label>
-                <label class="rss-radio-label">
-                  <input type="radio" name="marketCategory" value="sign"     onchange="updateTitle(this)" />간판시설물
+                <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:var(--rss-font-base); color:var(--rss-text);">
+                  <input type="radio" name="marketCategory" value="sign" />간판시설물
                 </label>
-                <label class="rss-radio-label">
-                  <input type="radio" name="marketCategory" value="safety"   onchange="updateTitle(this)" />안전시설물
+                <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:var(--rss-font-base); color:var(--rss-text);">
+                  <input type="radio" name="marketCategory" value="safety" />안전시설물
                 </label>
-                <label class="rss-radio-label">
-                  <input type="radio" name="marketCategory" value="sinboard" onchange="updateTitle(this)" />싸인보드
+                <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:var(--rss-font-base); color:var(--rss-text);">
+                  <input type="radio" name="marketCategory" value="sinboard" />싸인보드
                 </label>
-                <label class="rss-radio-label">
-                  <input type="radio" name="marketCategory" value="tma"      onchange="updateTitle(this)" />TMA
+                <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:var(--rss-font-base); color:var(--rss-text);">
+                  <input type="radio" name="marketCategory" value="tma" />TMA
                 </label>
-              </div>
-            </div>
-
-            <!-- 제목 자동 생성 미리보기 (카테고리 + '판매' 고정, 스토리보드 §B5 ④) -->
-            <div class="rss-form-row">
-              <label class="rss-form-label">제목 (자동 생성)</label>
-              <div class="market-title-preview market-title-preview--empty" id="titlePreview">
-                <i data-lucide="tag" style="width:13px;height:13px;"></i>
-                <span id="titlePreviewText">카테고리를 선택하면 자동으로 결정됩니다</span>
               </div>
             </div>
 
@@ -168,28 +139,9 @@
   </div><!-- /rss-main -->
 </div><!-- /rss-app -->
 
-<script src="rss-common.js?v=840fbe0he_bust"></script>
+<script src="rss-common.js?v=840fbe0"></script>
 <script>
   lucide.createIcons();
-
-  /* 카테고리 라벨 매핑 (스토리보드 §B5 ④: 카테고리 + '판매' 고정 제목) */
-  var catLabels = {
-    sinca:    '싸인카',
-    sign:     '간판시설물',
-    safety:   '안전시설물',
-    sinboard: '싸인보드',
-    tma:      'TMA'
-  };
-
-  /* 카테고리 선택 시 제목 미리보기 업데이트 */
-  function updateTitle(radio) {
-    var label   = catLabels[radio.value] || '';
-    var preview = document.getElementById('titlePreview');
-    var text    = document.getElementById('titlePreviewText');
-    text.textContent = label + ' 판매';
-    preview.classList.remove('market-title-preview--empty');
-    lucide.createIcons();
-  }
 
   /* 이미지 미리보기 (최대 10장, 스토리보드 §B5-2 ①) */
   function previewImages(input) {
