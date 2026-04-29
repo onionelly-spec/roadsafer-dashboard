@@ -120,7 +120,7 @@
                 <td class="apv-td-action">
                   <div style="display:inline-flex;align-items:center;gap:8px;">
                     <!-- [Java] th:attr="data-mber-seq=${mber.mberSeq}" -->
-                    <button class="rss-btn rss-btn--primary rss-btn--sm"
+                    <button class="rss-btn rss-btn--amber rss-btn--sm"
                             onclick="approveConfirm(this, '101', '도시진')"
                             data-mber-seq="101">승인</button>
                     <button class="rss-btn rss-btn--outline rss-btn--sm"
@@ -136,7 +136,7 @@
                 <td class="apv-td-tel">010-8888-4111</td>
                 <td class="apv-td-action">
                   <div style="display:inline-flex;align-items:center;gap:8px;">
-                    <button class="rss-btn rss-btn--primary rss-btn--sm"
+                    <button class="rss-btn rss-btn--amber rss-btn--sm"
                             onclick="approveConfirm(this, '102', '김소리')"
                             data-mber-seq="102">승인</button>
                     <button class="rss-btn rss-btn--outline rss-btn--sm"
@@ -193,7 +193,7 @@
                 <td class="apv-td-tel">010-2222-7777</td>
                 <td class="apv-td-action">
                   <!-- [Java] th:attr="data-mber-seq=${mber.mberSeq}" -->
-                  <button class="rss-btn rss-btn--gray rss-btn--sm"
+                  <button class="rss-btn rss-btn--outline rss-btn--sm"
                           onclick="cancelConfirm(this, '201', '민윤기')"
                           data-mber-seq="201">승인 취소</button>
                 </td>
@@ -204,7 +204,7 @@
                 <td class="apv-td-name">신성민</td>
                 <td class="apv-td-tel">010-8888-4111</td>
                 <td class="apv-td-action">
-                  <button class="rss-btn rss-btn--gray rss-btn--sm"
+                  <button class="rss-btn rss-btn--outline rss-btn--sm"
                           onclick="cancelConfirm(this, '202', '신성민')"
                           data-mber-seq="202">승인 취소</button>
                 </td>
@@ -250,7 +250,7 @@
     <div class="rss-modal__footer" style="gap:8px;">
       <button class="rss-btn rss-btn--outline rss-btn--sm"
               onclick="closeApvModal()">취소</button>
-      <button class="rss-btn rss-btn--primary rss-btn--sm" id="apvConfirmOkBtn"
+      <button class="rss-btn rss-btn--amber rss-btn--sm" id="apvConfirmOkBtn"
               onclick="executeApvAction()">확인</button>
     </div>
   </div>
@@ -279,7 +279,8 @@ function approveConfirm(btn, mberSeq, usrNm) {
   document.getElementById('apvConfirmMsg').innerHTML =
     '<strong>' + usrNm + '</strong> 님을 승인 처리하시겠습니까?<br>' +
     '승인 후 해당 계정은 정상 사용 가능 상태로 전환됩니다.';
-  document.getElementById('apvConfirmOkBtn').style.background = 'var(--rss-amber)';
+  /* 모달 확인 버튼: 승인 액션 시 amber 스타일 유지 (기본값) */
+  document.getElementById('apvConfirmOkBtn').className = 'rss-btn rss-btn--amber rss-btn--sm';
   document.getElementById('apvConfirmOkBtn').textContent = '승인';
   openApvModal();
 }
@@ -292,7 +293,8 @@ function rejectConfirm(btn, mberSeq, usrNm) {
   document.getElementById('apvConfirmMsg').innerHTML =
     '<strong>' + usrNm + '</strong> 님을 반려 처리하시겠습니까?<br>' +
     '반려하면 모든 가입 정보가 삭제됩니다.';
-  document.getElementById('apvConfirmOkBtn').style.background = '#dc2626';
+  /* 모달 확인 버튼: 반려 액션 시 danger 스타일 */
+  document.getElementById('apvConfirmOkBtn').className = 'rss-btn rss-btn--outline-danger rss-btn--sm';
   document.getElementById('apvConfirmOkBtn').textContent = '반려';
   openApvModal();
 }
@@ -305,7 +307,8 @@ function cancelConfirm(btn, mberSeq, usrNm) {
   document.getElementById('apvConfirmMsg').innerHTML =
     '<strong>' + usrNm + '</strong> 님의 승인을 취소하시겠습니까?<br>' +
     '승인 취소 시 로그인이 불가능하고 모든 개인 정보가 삭제됩니다.';
-  document.getElementById('apvConfirmOkBtn').style.background = '#6b7280';
+  /* 모달 확인 버튼: 승인 취소 액션 시 outline 스타일 */
+  document.getElementById('apvConfirmOkBtn').className = 'rss-btn rss-btn--outline rss-btn--sm';
   document.getElementById('apvConfirmOkBtn').textContent = '승인 취소';
   openApvModal();
 }

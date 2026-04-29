@@ -550,17 +550,6 @@ img { max-width: 100%; display: block; }
   border-color: #dc2626;
   color: #dc2626;
 }
-/* 회색 채움 버튼 — 승인 취소 등 중립/비활성 액션에 사용
-   [용어사전 §4] rss-btn--gray */
-.rss-btn--gray {
-  background: #6b7280;
-  border: 1.5px solid #6b7280;
-  color: #fff;
-}
-.rss-btn--gray:hover {
-  background: #4b5563;
-  border-color: #4b5563;
-}
 .rss-btn--sm {
   height: 32px;
   padding: 0 13px;
