@@ -693,6 +693,29 @@ img { max-width: 100%; display: block; }
   }
 }
 
+/* 폼 섹션 타이틀 (공통 정보 / 차단업체 추가 정보 등 섹션 구분) */
+.rss-form-section-title {
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+  padding: 10px 0 10px 10px;
+  border-left: 3px solid var(--rss-amber);
+  margin-bottom: 16px;
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rss-form-section-title:first-child { margin-top: 0; }
+.rss-form-section-badge {
+  font-size: var(--rss-font-xs);
+  background: rgba(245,158,11,0.12);
+  color: var(--rss-amber-dark);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
 /* 노란 안내 박스 */
 .rss-notice {
   padding: 14px 16px;
@@ -2447,4 +2470,47 @@ img.rss-img-error {
   display: inline-flex;
   align-items: center;
   gap: 3px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   ─── 정보변경 페이지 모달 서브 클래스 (.rss-modal__head 등) ──────
+   ■ 용도: profile.html 비밀번호 변경 / 회원탈퇴 모달
+   ■ 기존 .rss-modal-backdrop 방식과 별개로 overlay 방식 사용
+   ■ §19-3 용어사전 참조
+   ═══════════════════════════════════════════════════════════ */
+.rss-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.rss-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--rss-border);
+}
+.rss-modal__close {
+  background: none;
+  border: none;
+  color: var(--rss-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+.rss-modal__close:hover { background: #f3f4f6; }
+.rss-modal__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--rss-border);
 }
