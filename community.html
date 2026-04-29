@@ -10,9 +10,7 @@
   <link rel="stylesheet" href="rss-common.css" />
 
   <style>
-    /* comm-col-* 제거 → rss-common.css .rss-col-* 공통 클래스 사용 */
-
-    /* 댓글 수 뱃지 */
+    /* 댓글 수 뱃지 — comm-cmt-badge */
     .comm-cmt-badge {
       font-size: var(--rss-font-xs);
       color: var(--rss-amber-dark);
@@ -20,9 +18,12 @@
       margin-left: 4px;
     }
 
-    @media (max-width: 640px) {
-      .rss-col-no    { display: none; }
-      .rss-col-date  { width: 90px; }
+    /* ── 반응형: 768px 이하 PC 테이블 숨김 ── */
+    @media (max-width: 768px) {
+      .rss-table-wrap { display: none !important; }
+      .rss-card { overflow: hidden; }
+      .rss-mobile-cards { overflow: hidden; }
+      .rss-mobile-card { box-sizing: border-box; width: 100%; }
     }
   </style>
 </head>
@@ -40,12 +41,19 @@
       <div class="rss-card" style="padding:0;">
 
         <!-- ── 툴바 ──────────────────────────────────────────
-             [Java] 검색 파라미터: keyword → /community?keyword=
+             [Java] 검색 파라미터: searchType, searchKeyword → /community?searchType=&searchKeyword=
+             searchType: 'title'(제목) | 'content'(내용)
         ─────────────────────────────────────────────────── -->
         <div class="rss-board-toolbar">
           <div class="rss-board-toolbar__left">
+            <!-- 검색 드롭다운 + 키워드 입력 -->
+            <!-- [DB] searchType: community.title | community.content -->
+            <select name="searchType" id="communitySearchType" class="rss-select">
+              <option value="title">제목</option>
+              <option value="content">내용</option>
+            </select>
             <div class="rss-search-wrap">
-              <!-- [DB] 컴럼: community.title LIKE '%keyword%' -->
+              <!-- [DB] 컬럼: community.title 또는 community.content LIKE '%keyword%' -->
               <input type="text" name="searchKeyword" id="communitySearchKeyword" placeholder="검색어 입력" />
               <button type="button" aria-label="검색">
                 <i data-lucide="search" style="width:15px;height:15px;"></i>
@@ -54,27 +62,27 @@
           </div>
           <div class="rss-board-toolbar__right">
             <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
-            <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" id="myPostBtn"
+            <button type="button" class="rss-btn rss-btn--outline" id="myPostBtn"
                     onclick="toggleMyPost(this)">
               <i data-lucide="user" style="width:14px;height:14px;"></i>내 글 보기
             </button>
-            <a href="community-write.html" class="rss-btn rss-btn--amber rss-btn--sm">
+            <a href="community-write.html" class="rss-btn rss-btn--amber">
               <i data-lucide="pencil" style="width:14px;height:14px;"></i>글쓰기
             </a>
           </div>
         </div>
 
-        <!-- ── 커뮤니티 목록 테이블 ──────────────────────────
+        <!-- ── 커뮤니티 목록 테이블 (PC) ──────────────────────────
              [DB] 테이블: community ORDER BY reg_dtm DESC
              [Java] th:each="post : ${communityList}"
         ─────────────────────────────────────────────────── -->
         <div class="rss-table-wrap">
           <table class="rss-table" aria-label="커뮤니티 목록">
             <colgroup>
-              <col class="rss-col-no" />
-              <col class="rss-col-nm" />
-              <col class="rss-col-author" />
-              <col class="rss-col-date" />
+              <col class="rss-col-no" />    <!-- 5% -->
+              <col />                        <!-- 나머지 공간 (auto) -->
+              <col class="rss-col-author" /><!-- 10% -->
+              <col class="rss-col-date" />  <!-- 10% -->
             </colgroup>
             <thead>
               <tr>
@@ -91,7 +99,7 @@
               <tr>
                 <!-- [Java] th:text="${post.rowNum}" -->
                 <td>6</td>
-                <td class="comm-td-title">
+                <td>
                   <a href="community-detail.html" class="rss-link">
                     고속도로 TMA 차량 배치 시 주의사항 총정리
                     <!-- [Java] th:if="${post.commentCnt > 0}" -->
@@ -107,7 +115,7 @@
               <!-- 더미 2 -->
               <tr>
                 <td>5</td>
-                <td class="comm-td-title">
+                <td>
                   <a href="community-detail.html" class="rss-link">
                     싸인카 수량 변경 시 발주사 재승인이 꼭 필요한가요?
                     <span class="comm-cmt-badge">[8]</span>
@@ -120,7 +128,7 @@
               <!-- 더미 3 -->
               <tr>
                 <td>4</td>
-                <td class="comm-td-title">
+                <td>
                   <a href="community-detail.html" class="rss-link">
                     올 여름 공사 시즌 준비 어떻게 하고 계신가요?
                     <span class="comm-cmt-badge">[24]</span>
@@ -133,7 +141,7 @@
               <!-- 더미 4 -->
               <tr>
                 <td>3</td>
-                <td class="comm-td-title">
+                <td>
                   <a href="community-detail.html" class="rss-link">
                     야간 공사 시 반사 조끼 착용 의무화 법령 정리
                     <span class="comm-cmt-badge">[5]</span>
@@ -146,7 +154,7 @@
               <!-- 더미 5 -->
               <tr>
                 <td>2</td>
-                <td class="comm-td-title">
+                <td>
                   <a href="community-detail.html" class="rss-link">
                     TMA 카드 만료 후 갱신 절차가 어떻게 되나요?
                     <span class="comm-cmt-badge">[3]</span>
@@ -159,7 +167,7 @@
               <!-- 더미 6 -->
               <tr>
                 <td>1</td>
-                <td class="comm-td-title">
+                <td>
                   <a href="community-detail.html" class="rss-link">
                     로드세이프티시스템 사용 후기 — 6개월 사용 소감
                     <span class="comm-cmt-badge">[31]</span>
@@ -171,7 +179,116 @@
 
             </tbody>
           </table>
-        </div>
+        </div><!-- /rss-table-wrap -->
+
+        <!-- ══ 모바일 카드형 목록 (768px 이하) ═══════════════════════════════
+             표시 항목: 제목, 댓글 수, 작성자, 작성일
+             [Java] th:each="post : ${communityList}"
+        ─────────────────────────────────────────────────────────────── -->
+        <div class="rss-mobile-cards">
+
+          <!-- 더미 1 -->
+          <!-- [Java] th:each="post : ${communityList}" -->
+          <div class="rss-mobile-card" onclick="location.href='community-detail.html'">
+            <!-- [Java] th:text="${post.title}" -->
+            <div class="rss-mobile-card__title">
+              고속도로 TMA 차량 배치 시 주의사항 총정리
+              <!-- [Java] th:if="${post.commentCnt > 0}" -->
+              <span class="comm-cmt-badge">[12]</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성자</span>
+              <!-- [Java] th:text="${post.authorNm}" -->
+              <span class="rss-mobile-card__value">나잘난</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성일</span>
+              <!-- [Java] th:text="${post.regDt}" -->
+              <span class="rss-mobile-card__value">2026-06-10</span>
+            </div>
+          </div>
+
+          <!-- 더미 2 -->
+          <div class="rss-mobile-card" onclick="location.href='community-detail.html'">
+            <div class="rss-mobile-card__title">
+              싸인카 수량 변경 시 발주사 재승인이 꼭 필요한가요?
+              <span class="comm-cmt-badge">[8]</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성자</span>
+              <span class="rss-mobile-card__value">도로맨</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성일</span>
+              <span class="rss-mobile-card__value">2026-06-09</span>
+            </div>
+          </div>
+
+          <!-- 더미 3 -->
+          <div class="rss-mobile-card" onclick="location.href='community-detail.html'">
+            <div class="rss-mobile-card__title">
+              올 여름 공사 시즌 준비 어떻게 하고 계신가요?
+              <span class="comm-cmt-badge">[24]</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성자</span>
+              <span class="rss-mobile-card__value">공사왕</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성일</span>
+              <span class="rss-mobile-card__value">2026-06-08</span>
+            </div>
+          </div>
+
+          <!-- 더미 4 -->
+          <div class="rss-mobile-card" onclick="location.href='community-detail.html'">
+            <div class="rss-mobile-card__title">
+              야간 공사 시 반사 조끼 착용 의무화 법령 정리
+              <span class="comm-cmt-badge">[5]</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성자</span>
+              <span class="rss-mobile-card__value">안전제일</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성일</span>
+              <span class="rss-mobile-card__value">2026-06-07</span>
+            </div>
+          </div>
+
+          <!-- 더미 5 -->
+          <div class="rss-mobile-card" onclick="location.href='community-detail.html'">
+            <div class="rss-mobile-card__title">
+              TMA 카드 만료 후 갱신 절차가 어떻게 되나요?
+              <span class="comm-cmt-badge">[3]</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성자</span>
+              <span class="rss-mobile-card__value">신입차단</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성일</span>
+              <span class="rss-mobile-card__value">2026-06-06</span>
+            </div>
+          </div>
+
+          <!-- 더미 6 -->
+          <div class="rss-mobile-card" onclick="location.href='community-detail.html'">
+            <div class="rss-mobile-card__title">
+              로드세이프티시스템 사용 후기 — 6개월 사용 소감
+              <span class="comm-cmt-badge">[31]</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성자</span>
+              <span class="rss-mobile-card__value">베테랑</span>
+            </div>
+            <div class="rss-mobile-card__row">
+              <span class="rss-mobile-card__label">작성일</span>
+              <span class="rss-mobile-card__value">2026-06-05</span>
+            </div>
+          </div>
+
+        </div><!-- /rss-mobile-cards -->
 
         <!-- ══ 페이지네이션 ═══════════════════════════════════════════════════════════
              [Java] th:with="totalPages=${communityPage.totalPages}"
@@ -236,11 +353,9 @@
         img.classList.add('rss-img-error');
       }
     }
-    // 기존 이미지에 onerror 등록
     document.querySelectorAll('img').forEach(function(img) {
       img.addEventListener('error', function() { applyPlaceholder(this); });
     });
-    // 동적으로 추가되는 이미지 감지
     var observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(m) {
         m.addedNodes.forEach(function(node) {
