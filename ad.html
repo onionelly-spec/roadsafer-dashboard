@@ -7,57 +7,11 @@
   <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="rss-common.css" />
+  <link rel="stylesheet" href="rss-common.css?v=926e063" />
   <style>
-    /* ── 광고 그리드 (장터 동일 규칙: PC 4열 / 모바일 2열 / 페이지당 12개) ── */
-    .ad-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      padding: 20px 24px 24px;
-    }
-    @media (max-width: 1100px) { .ad-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 768px)  { .ad-grid { grid-template-columns: repeat(2, 1fr); padding: 14px 16px 18px; gap: 14px; } }
-    @media (max-width: 400px)  { .ad-grid { grid-template-columns: 1fr; } }
+    /* ── 광고 그리드/카드: rss-common.css .rss-gallery-grid / .rss-gallery-card 공통 클래스 사용 ── */
 
-    /* ── 광고 카드 (장터 market-card 동일 규칙) ── */
-    .ad-card {
-      border: 1.5px solid var(--rss-border);
-      border-radius: var(--rss-radius-lg);
-      overflow: hidden;
-      background: #fff;
-      cursor: pointer;
-      transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-    .ad-card:hover {
-      border-color: var(--rss-amber);
-      box-shadow: 0 4px 16px rgba(245,158,11,0.12);
-      transform: translateY(-2px);
-    }
-    .ad-card__img {
-      width: 100%;
-      aspect-ratio: 16/10;
-      object-fit: cover;
-      background: #f3f4f6;
-      display: block;
-    }
-    .ad-card__body { padding: 14px 16px 18px; }
-    /* 업체명: market-card__title 동일 스타일 */
-    .ad-card__company {
-      font-size: var(--rss-font-md);
-      font-weight: 700;
-      color: var(--rss-text);
-      line-height: 1.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    /* ── 광고문의 인라인 텍스트 (헤더 우측) ── */
+    /* ── 광고문의 인라인 텍스트 ── */
     .ad-inquiry {
       font-size: var(--rss-font-sm);
       color: #6b7280;
@@ -80,7 +34,6 @@
 
   <div class="rss-main" id="rssMain">
 
-    <!-- [Java] data-title="광고" — 우측 광고문의 슬롯은 rss-header의 actions 영역에 주입 -->
     <div id="rss-header-wrap" data-title="광고" data-icon="megaphone"></div>
 
     <main class="rss-content">
@@ -108,132 +61,120 @@
              [Java] th:each="ad : ${adList}"
              ■ 갤러리형 규칙: PC 4열 / 모바일 2열 / 페이지당 12개
         ══════════════════════════════════════════════════ -->
-        <div class="ad-grid" id="adGrid">
+        <div class="rss-gallery-grid" id="adGrid">
 
-          <!-- 광고 카드 1 -->
           <!-- [Java] th:each="ad : ${adList}" -->
-          <a href="ad-detail.html" class="ad-card">
+          <a href="ad-detail.html" class="rss-gallery-card">
             <!-- [Java] th:src="${ad.thumbImgUrl}" -->
-            <img class="ad-card__img"
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/fef3c7/d97706?text=한국도로차단"
                  alt="한국도로차단(주)" loading="lazy" />
-            <div class="ad-card__body">
+            <div class="rss-gallery-card__body">
               <!-- [Java] th:text="${ad.companyNm}" -->
-              <p class="ad-card__company">한국도로차단(주)</p>
+              <p class="rss-gallery-card__title">한국도로차단(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 2 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/eff6ff/2563eb?text=소망건설"
                  alt="소망건설(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">소망건설(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">소망건설(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 3 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/f0fdf4/16a34a?text=오봉토건"
                  alt="오봉토건" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">오봉토건</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">오봉토건</p>
             </div>
           </a>
 
-          <!-- 광고 카드 4 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/fdf4ff/9333ea?text=안전시설물"
                  alt="안전시설물(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">안전시설물(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">안전시설물(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 5 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/fff7ed/ea580c?text=도로안전"
                  alt="도로안전(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">도로안전(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">도로안전(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 6 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/fef2f2/dc2626?text=싸인카전문"
                  alt="싸인카전문(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">싸인카전문(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">싸인카전문(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 7 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/ecfdf5/059669?text=공사관리"
                  alt="공사관리(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">공사관리(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">공사관리(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 8 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/f0f9ff/0284c7?text=도로표지"
                  alt="도로표지(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">도로표지(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">도로표지(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 9 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/fdf2f8/be185d?text=교통안전"
                  alt="교통안전(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">교통안전(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">교통안전(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 10 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/f0fdf4/15803d?text=현장안전"
                  alt="현장안전(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">현장안전(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">현장안전(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 11 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/fffbeb/b45309?text=도로공사"
                  alt="도로공사(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">도로공사(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">도로공사(주)</p>
             </div>
           </a>
 
-          <!-- 광고 카드 12 -->
-          <a href="ad-detail.html" class="ad-card">
-            <img class="ad-card__img"
+          <a href="ad-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img"
                  src="https://placehold.co/400x250/f8fafc/475569?text=안전장비"
                  alt="안전장비(주)" loading="lazy" />
-            <div class="ad-card__body">
-              <p class="ad-card__company">안전장비(주)</p>
+            <div class="rss-gallery-card__body">
+              <p class="rss-gallery-card__title">안전장비(주)</p>
             </div>
           </a>
 
-        </div><!-- /ad-grid -->
+        </div><!-- /rss-gallery-grid -->
 
         <!-- ══ 페이지네이션 ═══════════════════════════════════════════════
              [Java] th:with="totalPages=${adPage.totalPages}"
@@ -248,13 +189,11 @@
           <button class="rss-pagination__btn" aria-label="이전 페이지">
             <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
           </button>
-          <!-- [Java] th:each="i : ${#numbers.sequence(1, totalPages)}" -->
           <button class="rss-pagination__btn active">1</button>
           <button class="rss-pagination__btn">2</button>
           <button class="rss-pagination__btn">3</button>
           <button class="rss-pagination__btn">4</button>
           <button class="rss-pagination__btn">5</button>
-          <!-- 모바일에서 숨김 (6번 이후): rss-pagination__btn--page-extra -->
           <button class="rss-pagination__btn rss-pagination__btn--page-extra">6</button>
           <button class="rss-pagination__btn rss-pagination__btn--page-extra">7</button>
           <button class="rss-pagination__btn rss-pagination__btn--page-extra">8</button>
@@ -280,7 +219,7 @@
 <script>
   lucide.createIcons();
 </script>
-  <script>
+<script>
   /* ── 이미지 로드 실패 시 placeholder 자동 대체 (rss-common) ── */
   (function() {
     var PLACEHOLDER = 'img-placeholder.png';
@@ -309,6 +248,6 @@
     });
     observer.observe(document.body, { childList: true, subtree: true });
   })();
-  </script>
+</script>
 </body>
 </html>

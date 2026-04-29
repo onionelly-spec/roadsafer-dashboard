@@ -9,69 +9,7 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css?v=926e063" />
   <style>
-    /* ── 장터 그리드
-       스토리보드 §B5 ④: PC 4열, 모바일 2열, 한 페이지 12개
-    ── */
-    .market-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      padding: 20px 24px 24px;
-    }
-    @media (max-width: 1100px) { .market-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 768px)  { .market-grid { grid-template-columns: repeat(2, 1fr); padding: 14px 16px 18px; gap: 14px; } }
-    @media (max-width: 400px)  { .market-grid { grid-template-columns: 1fr; } }
-
-    /* ── 장터 상품 카드 ── */
-    .market-card {
-      border: 1.5px solid var(--rss-border);
-      border-radius: var(--rss-radius-lg);
-      overflow: hidden;
-      background: #fff;
-      cursor: pointer;
-      transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-    .market-card:hover {
-      border-color: var(--rss-amber);
-      box-shadow: 0 4px 16px rgba(245,158,11,0.12);
-      transform: translateY(-2px);
-    }
-    .market-card__img {
-      width: 100%;
-      aspect-ratio: 16/10;
-      object-fit: cover;
-      background: #f3f4f6;
-      display: block;
-    }
-    .market-card__body { padding: 14px 16px 18px; }
-    /* 제목: 카테고리 + 판매 (고정 문구, 스토리보드 §B5 ④) */
-    .market-card__title {
-      font-size: var(--rss-font-md);
-      font-weight: 700;
-      color: var(--rss-text);
-      line-height: 1.5;
-      margin-bottom: 8px;
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    /* 메타: 아이디(좌) + 등록일(우) — 커뮤니티 동일 규칙 */
-    .market-card__meta {
-      font-size: var(--rss-font-sm);
-      color: #9ca3af;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .market-card__meta span {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-    }
+     /* ── 장터 그리드/카드: rss-common.css .rss-gallery-grid / .rss-gallery-card 공통 클래스 사용 ── */
 
     /* ── 모바일: 툴바 한 줄 유지 ── */
     @media (max-width: 768px) {
@@ -174,15 +112,15 @@
              - 아이디: 앞 4자리 + *** 마스킹
              - 대표 이미지: 첫 번째 이미지 (thumbImgUrl)
         ── -->
-        <div class="market-grid">
+        <div class="rss-gallery-grid">
 
           <!-- 카드 1 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA-1" alt="싸인카 판매" loading="lazy" />
-            <div class="market-card__body">
+          <a href="market-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA-1" alt="싸인카 판매" loading="lazy" />
+            <div class="rss-gallery-card__body">
               <!-- [Java] th:text="${item.categoryLabel} + ' 판매'" -->
-              <h3 class="market-card__title">싸인카 판매</h3>
-              <div class="market-card__meta">
+              <h3 class="rss-gallery-card__title">싸인카 판매</h3>
+              <div class="rss-gallery-card__meta">
                 <!-- [Java] th:text="${#strings.substring(item.usrId,0,4)} + '***'" -->
                 <span><i data-lucide="user" style="width:11px;height:11px;"></i>hope***</span>
                 <!-- [Java] th:text="${item.regDt}" -->
@@ -192,11 +130,11 @@
           </a>
 
           <!-- 카드 2 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물 판매" loading="lazy" />
-            <div class="market-card__body">
-              <h3 class="market-card__title">안전시설물 판매</h3>
-              <div class="market-card__meta">
+          <a href="market-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물 판매" loading="lazy" />
+            <div class="rss-gallery-card__body">
+              <h3 class="rss-gallery-card__title">안전시설물 판매</h3>
+              <div class="rss-gallery-card__meta">
                 <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
                 <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-20</span>
               </div>
@@ -204,11 +142,11 @@
           </a>
 
           <!-- 카드 3 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=간판시설물" alt="간판시설물 판매" loading="lazy" />
-            <div class="market-card__body">
-              <h3 class="market-card__title">간판시설물 판매</h3>
-              <div class="market-card__meta">
+          <a href="market-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=간판시설물" alt="간판시설물 판매" loading="lazy" />
+            <div class="rss-gallery-card__body">
+              <h3 class="rss-gallery-card__title">간판시설물 판매</h3>
+              <div class="rss-gallery-card__meta">
                 <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
                 <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-19</span>
               </div>
@@ -216,11 +154,11 @@
           </a>
 
           <!-- 카드 4 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인카" alt="싸인카 판매" loading="lazy" />
-            <div class="market-card__body">
-              <h3 class="market-card__title">싸인카 판매</h3>
-              <div class="market-card__meta">
+          <a href="market-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인카" alt="싸인카 판매" loading="lazy" />
+            <div class="rss-gallery-card__body">
+              <h3 class="rss-gallery-card__title">싸인카 판매</h3>
+              <div class="rss-gallery-card__meta">
                 <span><i data-lucide="user" style="width:11px;height:11px;"></i>dea0***</span>
                 <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-18</span>
               </div>
@@ -228,11 +166,11 @@
           </a>
 
           <!-- 카드 5 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인보드" alt="싸인보드 판매" loading="lazy" />
-            <div class="market-card__body">
-              <h3 class="market-card__title">싸인보드 판매</h3>
-              <div class="market-card__meta">
+          <a href="market-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인보드" alt="싸인보드 판매" loading="lazy" />
+            <div class="rss-gallery-card__body">
+              <h3 class="rss-gallery-card__title">싸인보드 판매</h3>
+              <div class="rss-gallery-card__meta">
                 <span><i data-lucide="user" style="width:11px;height:11px;"></i>hope***</span>
                 <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-17</span>
               </div>
@@ -240,11 +178,11 @@
           </a>
 
           <!-- 카드 6 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA" alt="TMA 판매" loading="lazy" />
-            <div class="market-card__body">
-              <h3 class="market-card__title">TMA 판매</h3>
-              <div class="market-card__meta">
+          <a href="market-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA" alt="TMA 판매" loading="lazy" />
+            <div class="rss-gallery-card__body">
+              <h3 class="rss-gallery-card__title">TMA 판매</h3>
+              <div class="rss-gallery-card__meta">
                 <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
                 <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-16</span>
               </div>
@@ -252,11 +190,11 @@
           </a>
 
           <!-- 카드 7 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인카" alt="싸인카 판매" loading="lazy" />
-            <div class="market-card__body">
-              <h3 class="market-card__title">싸인카 판매</h3>
-              <div class="market-card__meta">
+          <a href="market-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인카" alt="싸인카 판매" loading="lazy" />
+            <div class="rss-gallery-card__body">
+              <h3 class="rss-gallery-card__title">싸인카 판매</h3>
+              <div class="rss-gallery-card__meta">
                 <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
                 <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-15</span>
               </div>
@@ -264,11 +202,11 @@
           </a>
 
           <!-- 카드 8 -->
-          <a href="market-detail.html" class="market-card">
-            <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물 판매" loading="lazy" />
-            <div class="market-card__body">
-              <h3 class="market-card__title">안전시설물 판매</h3>
-              <div class="market-card__meta">
+          <a href="market-detail.html" class="rss-gallery-card">
+            <img class="rss-gallery-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물 판매" loading="lazy" />
+            <div class="rss-gallery-card__body">
+              <h3 class="rss-gallery-card__title">안전시설물 판매</h3>
+              <div class="rss-gallery-card__meta">
                 <span><i data-lucide="user" style="width:11px;height:11px;"></i>dea0***</span>
                 <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-12</span>
               </div>
