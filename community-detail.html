@@ -3,68 +3,189 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>커뮤니티 상세 — 로드세이프티시스템</title>
+  <title>커뮤니티 — 로드세이프티시스템</title>
   <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="rss-common.css" />
 
   <style>
-    /* ── 댓글 영역 ── */
-    .comment-item {
-      padding: 14px 0;
+    /* ─── 댓글 블록 ──────────────────────────────────────────────
+       공통 CSS에 댓글 전용 클래스 없음 → 커뮤니티 전용으로 정의
+       [DB] community_comment: comment_seq, community_seq,
+            parent_comment_seq, mber_seq, content, reg_dtm, del_yn
+    ─────────────────────────────────────────────────────────── */
+
+    /* 댓글 헤더 (댓글 수 + 댓글쓰기 버튼) */
+    .comm-cmt-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px 10px;
+      border-bottom: 1px solid var(--rss-border);
+    }
+    .comm-cmt-header__title {
+      font-size: var(--rss-font-base);
+      font-weight: 700;
+      color: var(--rss-text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .comm-cmt-count {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-amber-dark);
+      font-weight: 700;
+    }
+
+    /* 댓글 아이템 */
+    .comm-cmt-item {
+      padding: 14px 20px;
       border-bottom: 1px solid #f3f4f6;
     }
-    .comment-item:last-child { border-bottom: none; }
-    .comment-avatar {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: #e5e7eb; color: #6b7280;
-      font-size: var(--rss-font-xs); font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    /* ── 대댓글 영역 ── */
-    .reply-list {
-      margin-top: 10px;
-      padding-left: 40px;
-      border-left: 2px solid #f3f4f6;
-      margin-left: 40px;
-    }
-    .reply-item {
+    .comm-cmt-item:last-child { border-bottom: none; }
+
+    /* 댓글 상단 행: 닉네임 + 날짜 + 케밥 메뉴 */
+    .comm-cmt-row {
       display: flex;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid #f9fafb;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
     }
-    .reply-item:last-child { border-bottom: none; }
-    .reply-avatar {
-      width: 26px; height: 26px; border-radius: 50%;
-      background: #fef3c7; color: #d97706;
-      font-size: var(--rss-font-xs); font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
+    .comm-cmt-author {
+      font-size: var(--rss-font-sm);
+      font-weight: 700;
+      color: var(--rss-text);
+    }
+    .comm-cmt-author--writer {
+      color: var(--rss-amber-dark);
+    }
+    .comm-cmt-date {
+      font-size: var(--rss-font-xs);
+      color: #9ca3af;
+      white-space: nowrap;
+    }
+    .comm-cmt-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       flex-shrink: 0;
     }
-    /* ── 대댓글 입력 폼 ── */
-    .reply-form-wrap {
-      margin-top: 8px;
-      padding-left: 40px;
-      margin-left: 40px;
-      display: none;
+
+    /* 댓글 본문 */
+    .comm-cmt-content {
+      font-size: var(--rss-font-sm);
+      color: #374151;
+      line-height: 1.7;
+      margin-bottom: 6px;
+      word-break: break-all;
     }
-    .reply-form-wrap.open { display: block; }
-    /* ── 댓글 액션 버튼 ── */
-    .comment-action-btn {
+    /* 삭제된 댓글 */
+    .comm-cmt-content--deleted {
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    /* 댓글쓰기 버튼 (인라인 텍스트 버튼) */
+    .comm-cmt-reply-btn {
       background: none;
       border: none;
       font-size: var(--rss-font-xs);
       color: #9ca3af;
       cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 4px;
-      transition: background 0.12s, color 0.12s;
+      padding: 2px 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: color 0.12s;
     }
-    .comment-action-btn:hover { background: #f3f4f6; color: #374151; }
-    .comment-action-btn.reply-active { color: var(--rss-amber-dark); background: #fef3c7; }
+    .comm-cmt-reply-btn:hover,
+    .comm-cmt-reply-btn.active { color: var(--rss-amber-dark); }
+
+    /* 케밥 메뉴 버튼 */
+    .comm-kebab-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      color: #9ca3af;
+      position: relative;
+      transition: background 0.12s;
+    }
+    .comm-kebab-btn:hover { background: #f3f4f6; color: #374151; }
+
+    /* 케밥 드롭다운 */
+    .comm-kebab-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 28px;
+      background: #fff;
+      border: 1.5px solid var(--rss-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+      z-index: 100;
+      min-width: 90px;
+      overflow: hidden;
+    }
+    .comm-kebab-menu.open { display: block; }
+    .comm-kebab-menu button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      padding: 9px 14px;
+      background: none;
+      border: none;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.1s;
+    }
+    .comm-kebab-menu button:hover { background: #f9fafb; }
+    .comm-kebab-menu button.danger { color: #dc2626; }
+    .comm-kebab-menu button.danger:hover { background: #fef2f2; }
+
+    /* 대댓글 영역 */
+    .comm-reply-list {
+      margin-top: 8px;
+      padding-left: 20px;
+      border-left: 2px solid #f3f4f6;
+    }
+    .comm-reply-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #f9fafb;
+    }
+    .comm-reply-item:last-child { border-bottom: none; }
+
+    /* 대댓글 입력 폼 */
+    .comm-reply-form {
+      margin-top: 8px;
+      padding-left: 20px;
+      display: none;
+    }
+    .comm-reply-form.open { display: block; }
+
+    /* 댓글/대댓글 입력 행 (input + 등록버튼 같은 높이) */
+    .comm-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .comm-input-row .rss-input {
+      flex: 1;
+      height: 38px;
+    }
+
+    /* 모바일 */
+    @media (max-width: 768px) {
+      .comm-cmt-item { padding: 12px 16px; }
+      .comm-reply-list { padding-left: 12px; }
+      .comm-reply-form { padding-left: 12px; }
+    }
   </style>
 </head>
 <body>
@@ -73,26 +194,27 @@
 
 <div id="rss-sidebar-wrap"></div>
 
-  <!-- ── 메인 ── -->
   <div class="rss-main" id="rssMain">
 
 <div id="rss-header-wrap" data-title="커뮤니티" data-icon="users"></div>
 
     <main class="rss-content">
 
-      <!-- 게시글 상세 카드 -->
-      <!-- [DB] 테이블: community WHERE community_id = ? -->
-      <div class="rss-card mb-4">
+      <!-- ══════════════════════════════════════════════════════
+           커뮤니티 상세
+           [DB] 테이블: community WHERE community_seq = #{communitySeq}
+           [Java] Model: post (CommunityDto)
+           ① 제목 + 작성자 + 작성일 + 댓글 수 (분류·조회수 미표시)
+           ② 본문 먼저, 이미지 나중 (장터 규칙 동일)
+           ③ 수정/삭제: 작성자만 표시 (왼쪽 정렬)
+           ④ 목록: 항상 표시 (가운데 정렬)
+      ══════════════════════════════════════════════════════ -->
+      <div class="rss-card mb-4" style="padding:0;">
 
+        <!-- ① 제목 영역 -->
         <div class="rss-post-header">
-          <div class="mb-3">
-            <span class="rss-badge rss-badge--new">정보공유</span>
-            <!-- [Java] ${post.category} -->
-          </div>
-          <h2 class="rss-post-title">
-            고속도로 TMA 차량 배치 시 주의사항 총정리
-            <!-- [Java] ${post.title} -->
-          </h2>
+          <!-- [Java] th:text="${post.title}" -->
+          <h2 class="rss-post-title">고속도로 TMA 차량 배치 시 주의사항 총정리</h2>
           <div class="rss-post-meta">
             <span>
               <i data-lucide="user" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
@@ -103,28 +225,14 @@
               2026-06-10<!-- [Java] ${#temporals.format(post.regDtm, 'yyyy-MM-dd')} -->
             </span>
             <span>
-              <i data-lucide="eye" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              조회 342<!-- [Java] ${post.viewCnt} -->
-            </span>
-            <span>
               <i data-lucide="message-circle" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
               댓글 12<!-- [Java] ${post.commentCnt} -->
             </span>
           </div>
         </div>
 
-        <!-- 썸네일 이미지 (있을 경우) -->
-        <!-- [DB] 컬럼: community.thumb_url -->
-        <!-- [Java] th:if="${post.thumbUrl != null}" -->
-        <div class="px-6 pt-5">
-          <img src="https://placehold.co/800x360/fef3c7/d97706?text=본문+이미지"
-               alt="본문 이미지"
-               class="w-full rounded-xl object-cover"
-               style="max-height:360px;" />
-        </div>
-
-        <!-- 게시글 본문 -->
-        <!-- [DB] 컬럼: community.content (TEXT) -->
+        <!-- ② 본문 먼저 (장터 규칙 동일) -->
+        <!-- [DB] community.content (TEXT) -->
         <div class="rss-post-body">
           <p>안녕하세요, 10년 경력의 차단기업 현장 관리자입니다.</p>
           <br>
@@ -144,21 +252,29 @@
           <p>더 궁금한 점이 있으시면 댓글로 질문해주세요!</p>
         </div>
 
-        <!-- 하단 버튼: 수정/삭제 = 왼쪽 정렬, 목록 = 가운데 정렬 (공통 규칙) -->
+        <!-- ② 이미지 (본문 아래) — 있을 경우만 표시 -->
+        <!-- [DB] community.thumb_url -->
+        <!-- [Java] th:if="${post.thumbUrl != null}" -->
+        <div style="padding: 0 26px 20px;">
+          <img src="https://placehold.co/800x360/fef3c7/d97706?text=본문+이미지"
+               alt="본문 이미지"
+               class="w-full rounded-xl object-cover"
+               style="max-height:360px; border: 1.5px solid var(--rss-border);" />
+        </div>
 
-        <!-- 수정/삭제: 왼쪽 정렬 — 내 글일 때만 표시 -->
+        <!-- ③ 수정/삭제: 작성자만 표시, 왼쪽 정렬 -->
         <!-- [Java] th:if="${loginUsr.mberSeq == post.mberSeq}" -->
-        <div class="rss-page-actions rss-page-actions--left" style="border-top:none; padding-bottom:0;">
+        <div class="rss-page-actions rss-page-actions--left" style="border-top:none;">
           <a href="community-write.html" class="rss-btn rss-btn--outline rss-btn--sm">
             <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
           </a>
           <button type="button" class="rss-btn rss-btn--outline-danger rss-btn--sm"
-                  onclick="if(confirm('삭제하시겠습니까?')) location.href='community.html'">
+                  onclick="deleteCommunity()">
             <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
           </button>
         </div>
 
-        <!-- 목록: 가운데 정렬 — 항상 표시 -->
+        <!-- ④ 목록: 항상 표시, 가운데 정렬 -->
         <div class="rss-page-actions">
           <a href="community.html" class="rss-btn rss-btn--outline px-10">
             <i data-lucide="list" style="width:14px;height:14px;"></i>목록
@@ -168,143 +284,235 @@
       </div><!-- /게시글 카드 -->
 
       <!-- ══════════════════════════════════════════════════════
-           댓글 + 대댓글 영역
-           [DB] 테이블: community_comment
-                컬럼: comment_seq, community_seq, parent_comment_seq, mber_seq,
-                      content, reg_dtm, del_yn
-           [Java] 1depth (parent_comment_seq IS NULL) → commentList
-                  2depth (parent_comment_seq = comment.commentSeq) → replyList
+           댓글 블록 (스토리보드 기준)
+           [DB] community_comment
+                comment_seq, community_seq, parent_comment_seq,
+                mber_seq, content, reg_dtm, del_yn
+           ① 댓글 수 + 댓글쓰기 버튼 헤더
+           ② 댓글 목록: 최근 등록순, 아이디(앞 4자리+***), 내용, 작성일
+              → 페이지네이션 없이 인피니티 스크롤 (개발 규칙)
+           ③ 댓글 바로 아래 대댓글 입력 인풋 생성 (④)
+           ④ 대댓글 입력: @아이디(앞 4자리+***) 기본 제시
+           ⑤ 글 쓴 당사자: 케밥 메뉴(⑥)로 수정·삭제 버튼 제시
+           ⑥ 삭제 시 경고창 → 예 → 삭제 처리 → 페이지 새로고침
+              삭제된 댓글에 대댓글 있을 경우: '삭제된 댓글입니다.' 표시
+           ⑦ 하단 댓글 입력 인풋 + 등록 버튼 (같은 높이)
+              내용 없이 등록 시 경고: '내용을 입력하세요.'
       ══════════════════════════════════════════════════════ -->
-      <div class="rss-card">
-        <div class="rss-card__header">
-          <h3 class="rss-card__title">
-            댓글
-            <span class="rss-badge rss-badge--new ml-2">12</span>
-            <!-- [Java] ${post.commentCnt} -->
-          </h3>
-        </div>
-        <div class="px-5 py-2">
+      <div class="rss-card" style="padding:0;">
 
-          <!-- ── 댓글 1 (대댓글 포함) ──────────────────────────
-               [Java] th:each="comment : ${commentList}"
-          ─────────────────────────────────────────────────── -->
-          <div class="comment-item">
-            <div class="flex gap-3">
-              <!-- [Java] th:text="${#strings.substring(comment.authorNm, 0, 1)}" -->
-              <div class="comment-avatar">도</div>
-              <div class="flex-1">
-                <div class="flex items-center gap-2 mb-1 flex-wrap">
-                  <!-- [Java] th:text="${comment.authorNm}" -->
-                  <span class="text-base font-semibold text-gray-800">도로맨</span>
-                  <!-- [Java] th:text="${#temporals.format(comment.regDtm, 'yyyy-MM-dd HH:mm')}" -->
-                  <span class="text-base text-gray-400">2026-06-10 14:23</span>
-                </div>
-                <!-- [Java] th:text="${comment.content}" -->
-                <p class="text-base text-gray-700 leading-relaxed mb-2">
-                  정말 유용한 정보 감사합니다! 배치 간격 기준이 헷갈렸는데 명확해졌네요.
-                </p>
-                <!-- 대댓글 달기 버튼 -->
-                <button type="button" class="comment-action-btn" id="replyBtn1"
-                        onclick="toggleReplyForm('reply-form-1', 'replyBtn1')">
-                  <i data-lucide="corner-down-right" style="width:12px;height:12px;display:inline;vertical-align:middle;margin-right:2px;"></i>
-                  대댓글
+        <!-- ① 댓글 헤더 -->
+        <div class="comm-cmt-header">
+          <div class="comm-cmt-header__title">
+            댓글
+            <!-- [Java] ${post.commentCnt} -->
+            <span class="comm-cmt-count">4개</span>
+          </div>
+          <!-- 댓글쓰기 버튼 → ⑦ 입력 영역으로 스크롤 이동 -->
+          <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
+                  onclick="focusCommentInput()">
+            <i data-lucide="pencil" style="width:13px;height:13px;"></i>댓글쓰기
+          </button>
+        </div>
+
+        <!-- ② 댓글 목록 -->
+        <!-- [Java] th:each="comment : ${commentList}" ORDER BY reg_dtm ASC -->
+        <div id="commentList">
+
+          <!-- ── 댓글 1 (대댓글 2개 포함) ── -->
+          <!-- [Java] th:if="${comment.delYn == 'N'}" -->
+          <div class="comm-cmt-item" id="cmt-1">
+            <div class="comm-cmt-row">
+              <div>
+                <!-- [Java] th:text="${#strings.substring(comment.usrId,0,4)} + '***'" -->
+                <span class="comm-cmt-author">Paee***</span>
+                <!-- [Java] th:text="${#temporals.format(comment.regDtm,'yyyy-MM-dd')}" -->
+                <span class="comm-cmt-date" style="margin-left:8px;">2026-08-07</span>
+              </div>
+              <!-- ⑥ 글 쓴 당사자만 케밥 메뉴 표시 -->
+              <!-- [Java] th:if="${loginUsr.mberSeq == comment.mberSeq}" -->
+              <div class="comm-meta" style="position:relative;">
+                <button class="comm-kebab-btn" type="button"
+                        onclick="toggleKebab('kebab-cmt-1', event)"
+                        aria-label="더보기">
+                  <i data-lucide="more-vertical" style="width:15px;height:15px;"></i>
                 </button>
+                <div class="comm-kebab-menu" id="kebab-cmt-1">
+                  <!-- 수정: 댓글쓰기(⑦) 또는 대댓글쓰기(⑥) 영역으로 이동하여 글 수정 -->
+                  <button type="button" onclick="editComment(1, 'Paee***', '좋은 제도입니다. 하지만 실효성이 의문이군요.')">
+                    <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
+                  </button>
+                  <!-- 삭제: 경고창 → 예 → 처리 → 새로고침 -->
+                  <button type="button" class="danger" onclick="deleteComment(1)">
+                    <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
+                  </button>
+                </div>
               </div>
             </div>
+            <!-- [Java] th:text="${comment.content}" -->
+            <div class="comm-cmt-content">좋은 제도입니다. 하지만 실효성이 의문이군요.</div>
+            <!-- ③ 댓글쓰기 버튼 (대댓글 달기) -->
+            <button type="button" class="comm-cmt-reply-btn" id="replyBtn-1"
+                    onclick="toggleReplyForm('reply-form-1', 'replyBtn-1', 'Paee***')">
+              <i data-lucide="corner-down-right" style="width:12px;height:12px;"></i>댓글쓰기
+            </button>
 
             <!-- 대댓글 목록 -->
             <!-- [DB] community_comment WHERE parent_comment_seq = #{comment.commentSeq} -->
             <!-- [Java] th:each="reply : ${comment.replyList}" -->
-            <div class="reply-list">
-              <div class="reply-item">
-                <!-- [Java] th:text="${#strings.substring(reply.authorNm, 0, 1)}" -->
-                <div class="reply-avatar">나</div>
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 mb-1 flex-wrap">
-                    <!-- [Java] th:text="${reply.authorNm}" -->
-                    <span class="text-sm font-semibold text-gray-800">나잘난</span>
-                    <span class="text-xs text-amber-600 font-semibold">작성자</span>
-                    <!-- [Java] th:text="${#temporals.format(reply.regDtm, 'yyyy-MM-dd HH:mm')}" -->
-                    <span class="text-sm text-gray-400">2026-06-10 15:10</span>
+            <div class="comm-reply-list">
+
+              <!-- 대댓글 1-1 -->
+              <div class="comm-reply-item" id="cmt-1-1">
+                <div class="comm-cmt-row">
+                  <div>
+                    <!-- [Java] th:text="${#strings.substring(reply.usrId,0,4)} + '***'" -->
+                    <span class="comm-cmt-author">song***</span>
+                    <span class="comm-cmt-date" style="margin-left:8px;">2026-08-11</span>
                   </div>
+                  <!-- [Java] th:if="${loginUsr.mberSeq == reply.mberSeq}" -->
+                  <div style="position:relative;">
+                    <button class="comm-kebab-btn" type="button"
+                            onclick="toggleKebab('kebab-cmt-1-1', event)" aria-label="더보기">
+                      <i data-lucide="more-vertical" style="width:15px;height:15px;"></i>
+                    </button>
+                    <div class="comm-kebab-menu" id="kebab-cmt-1-1">
+                      <button type="button" onclick="editComment('1-1', 'song***', '@Paee*** 제도를 잘 활용한다면 괜찮을 것 같아요.')">
+                        <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
+                      </button>
+                      <button type="button" class="danger" onclick="deleteComment('1-1')">
+                        <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="comm-cmt-content">
                   <!-- [Java] th:text="${reply.content}" -->
-                  <p class="text-sm text-gray-700 leading-relaxed">
-                    감사합니다! 도움이 되셨으면 좋겠네요. 추가로 궁금한 점 있으면 편하게 질문해주세요.
-                  </p>
+                  @Paee*** 제도를 잘 활용한다면 괜찮을 것 같아요. <span style="text-decoration:line-through; color:#9ca3af;">없는것보다 있는게</span> 낫겠죠.
                 </div>
-              </div>
-            </div>
-
-            <!-- 대댓글 입력 폼 -->
-            <!-- [Java] action="/community/{id}/comment/reply" method="POST" -->
-            <div class="reply-form-wrap" id="reply-form-1">
-              <form onsubmit="submitReply(event, this)">
-                <!-- [DB] community_comment.parent_comment_seq -->
-                <input type="hidden" name="parentCommentSeq" value="1" />
-                <div class="flex gap-2 mt-1">
-                  <textarea name="content" class="rss-input flex-1"
-                            style="min-height:52px; resize:none; font-size:13px;"
-                            placeholder="대댓글을 입력하세요..." maxlength="300"></textarea>
-                  <button type="submit" class="rss-btn rss-btn--amber rss-btn--sm" style="align-self:flex-end; white-space:nowrap;">등록</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <!-- ── 댓글 2 (대댓글 없음) ── -->
-          <div class="comment-item">
-            <div class="flex gap-3">
-              <div class="comment-avatar">공</div>
-              <div class="flex-1">
-                <div class="flex items-center gap-2 mb-1 flex-wrap">
-                  <span class="text-base font-semibold text-gray-800">공사왕</span>
-                  <span class="text-base text-gray-400">2026-06-10 16:05</span>
-                </div>
-                <p class="text-base text-gray-700 leading-relaxed mb-2">
-                  야간 100m 기준은 어떤 법령에 근거한 건가요? 참고하고 싶습니다.
-                </p>
-                <button type="button" class="comment-action-btn" id="replyBtn2"
-                        onclick="toggleReplyForm('reply-form-2', 'replyBtn2')">
-                  <i data-lucide="corner-down-right" style="width:12px;height:12px;display:inline;vertical-align:middle;margin-right:2px;"></i>
-                  대댓글
+                <button type="button" class="comm-cmt-reply-btn" id="replyBtn-1-1"
+                        onclick="toggleReplyForm('reply-form-1', 'replyBtn-1', 'song***')">
+                  <i data-lucide="corner-down-right" style="width:12px;height:12px;"></i>댓글쓰기
                 </button>
               </div>
-            </div>
-            <!-- 대댓글 없음 (더미) -->
-            <!-- 대댓글 입력 폼 -->
-            <div class="reply-form-wrap" id="reply-form-2">
-              <form onsubmit="submitReply(event, this)">
-                <input type="hidden" name="parentCommentSeq" value="2" />
-                <div class="flex gap-2 mt-1">
-                  <textarea name="content" class="rss-input flex-1"
-                            style="min-height:52px; resize:none; font-size:13px;"
-                            placeholder="대댓글을 입력하세요..." maxlength="300"></textarea>
-                  <button type="submit" class="rss-btn rss-btn--amber rss-btn--sm" style="align-self:flex-end; white-space:nowrap;">등록</button>
+
+              <!-- 대댓글 1-2 -->
+              <div class="comm-reply-item" id="cmt-1-2">
+                <div class="comm-cmt-row">
+                  <div>
+                    <span class="comm-cmt-author">yang***</span>
+                    <span class="comm-cmt-date" style="margin-left:8px;">2026-08-12</span>
+                  </div>
+                  <!-- [Java] th:if="${loginUsr.mberSeq == reply.mberSeq}" -->
+                  <div style="position:relative;">
+                    <button class="comm-kebab-btn" type="button"
+                            onclick="toggleKebab('kebab-cmt-1-2', event)" aria-label="더보기">
+                      <i data-lucide="more-vertical" style="width:15px;height:15px;"></i>
+                    </button>
+                    <div class="comm-kebab-menu" id="kebab-cmt-1-2">
+                      <button type="button" onclick="editComment('1-2', 'yang***', '@song*** 차라리 없어야 할 제도도 있어요.')">
+                        <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
+                      </button>
+                      <button type="button" class="danger" onclick="deleteComment('1-2')">
+                        <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="comm-cmt-content">
+                  @song*** 차라리 없어야 할 제도도 있어요. 전 그다지 <span style="text-decoration:line-through; color:#9ca3af;">별로입니다.</span> <strong>실효성이 별로예요.</strong>
+                </div>
+                <button type="button" class="comm-cmt-reply-btn" id="replyBtn-1-2"
+                        onclick="toggleReplyForm('reply-form-1', 'replyBtn-1', 'yang***')">
+                  <i data-lucide="corner-down-right" style="width:12px;height:12px;"></i>댓글쓰기
+                </button>
+              </div>
+
+            </div><!-- /대댓글 목록 -->
+
+            <!-- ④ 대댓글 입력 폼 (댓글 바로 아래, @아이디 기본 제시) -->
+            <!-- [Java] action="/community/{communitySeq}/comment/reply" method="POST" -->
+            <div class="comm-reply-form" id="reply-form-1">
+              <form onsubmit="submitReply(event, this, 1)">
+                <!-- [DB] community_comment.parent_comment_seq -->
+                <input type="hidden" name="parentCommentSeq" value="1" />
+                <div class="comm-input-row" style="margin-top:8px;">
+                  <!-- ④ @아이디 기본 제시 (JS로 동적 변경) -->
+                  <input type="text" name="content" id="reply-input-1"
+                         class="rss-input"
+                         placeholder="@yang*** 에게 댓글을 입력하세요..."
+                         maxlength="300" />
+                  <button type="submit" class="rss-btn rss-btn--amber rss-btn--sm"
+                          style="height:38px; white-space:nowrap;">등록</button>
                 </div>
               </form>
             </div>
-          </div>
 
-        </div><!-- /댓글 목록 -->
+          </div><!-- /댓글 1 -->
 
-        <!-- ── 댓글 입력 폼 ──────────────────────────────────
-             [Java] action="/community/{communitySeq}/comment" method="POST"
-             [DB] community_comment.community_seq, content, mber_seq (세션)
-        ─────────────────────────────────────────────────── -->
-        <div class="px-5 pb-5 pt-3" style="border-top:1px solid #f3f4f6;">
+          <!-- ── 댓글 2 ── -->
+          <div class="comm-cmt-item" id="cmt-2">
+            <div class="comm-cmt-row">
+              <div>
+                <span class="comm-cmt-author">Now1***</span>
+                <span class="comm-cmt-date" style="margin-left:8px;">2026-08-01</span>
+              </div>
+              <!-- [Java] th:if="${loginUsr.mberSeq == comment.mberSeq}" -->
+              <div style="position:relative;">
+                <button class="comm-kebab-btn" type="button"
+                        onclick="toggleKebab('kebab-cmt-2', event)" aria-label="더보기">
+                  <i data-lucide="more-vertical" style="width:15px;height:15px;"></i>
+                </button>
+                <div class="comm-kebab-menu" id="kebab-cmt-2">
+                  <button type="button" onclick="editComment(2, 'Now1***', '이런 지원안을 기다려왔어요.')">
+                    <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
+                  </button>
+                  <button type="button" class="danger" onclick="deleteComment(2)">
+                    <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="comm-cmt-content">이런 지원안을 기다려왔어요.</div>
+            <button type="button" class="comm-cmt-reply-btn" id="replyBtn-2"
+                    onclick="toggleReplyForm('reply-form-2', 'replyBtn-2', 'Now1***')">
+              <i data-lucide="corner-down-right" style="width:12px;height:12px;"></i>댓글쓰기
+            </button>
+
+            <!-- 대댓글 없음 -->
+            <!-- 대댓글 입력 폼 -->
+            <div class="comm-reply-form" id="reply-form-2">
+              <form onsubmit="submitReply(event, this, 2)">
+                <input type="hidden" name="parentCommentSeq" value="2" />
+                <div class="comm-input-row" style="margin-top:8px;">
+                  <input type="text" name="content" id="reply-input-2"
+                         class="rss-input"
+                         placeholder="@Now1*** 에게 댓글을 입력하세요..."
+                         maxlength="300" />
+                  <button type="submit" class="rss-btn rss-btn--amber rss-btn--sm"
+                          style="height:38px; white-space:nowrap;">등록</button>
+                </div>
+              </form>
+            </div>
+          </div><!-- /댓글 2 -->
+
+        </div><!-- /commentList -->
+
+        <!-- ⑦ 댓글 입력 (하단 고정 인풋 + 등록 버튼 같은 높이) -->
+        <!-- [Java] action="/community/{communitySeq}/comment" method="POST" -->
+        <div style="padding: 14px 20px 18px; border-top: 1px solid var(--rss-border);">
           <form id="commentForm" name="commentForm">
-            <div class="flex gap-2">
-              <textarea
+            <div class="comm-input-row">
+              <input
+                type="text"
                 id="comment_content"
                 name="content"
-                class="rss-input flex-1"
-                style="min-height:64px; resize:none;"
-                placeholder="댓글을 입력하세요..."
+                class="rss-input"
+                placeholder="여기에 댓글을 쓰세요"
                 maxlength="500"
-              ></textarea>
-              <button type="submit" class="rss-btn rss-btn--amber" style="align-self:flex-end; white-space:nowrap;">
-                등록
-              </button>
+              />
+              <button type="submit" class="rss-btn rss-btn--amber"
+                      style="height:38px; white-space:nowrap;">등록</button>
             </div>
           </form>
         </div>
@@ -321,49 +529,135 @@
 <script>
   lucide.createIcons();
 
-  /* ── 댓글 폼 제출 (데모용) ──────────────────────────────────
-     [Java] 실제 서버 처리 시 form action/method 변경 후 이 JS 제거
+  /* ── 댓글 입력 포커스 (댓글쓰기 버튼 클릭 시) ── */
+  function focusCommentInput() {
+    var el = document.getElementById('comment_content');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.focus();
+  }
+
+  /* ── 댓글 등록 ──────────────────────────────────────────────
+     [Java] POST /community/{communitySeq}/comment
+     [DB] community_comment.content, mber_seq (세션)
+     ⑦ 내용 없으면 경고: '내용을 입력하세요.'
+     등록 후 페이지 새로고침
   ─────────────────────────────────────────────────────────── */
   document.getElementById('commentForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var content = document.getElementById('comment_content').value.trim();
-    if (!content) { RSS.toast('댓글 내용을 입력해주세요.', 'warning'); return; }
+    if (!content) { RSS.toast('내용을 입력하세요.', 'warning'); return; }
     RSS.toast('댓글이 등록되었습니다.', 'success');
     document.getElementById('comment_content').value = '';
+    /* [Java] 실제 서버 처리 후 location.reload(); */
   });
 
-  /* ── 대댓글 폼 토글 ── */
-  function toggleReplyForm(formId, btnId) {
+  /* ── 대댓글 폼 토글 + ④ @아이디 자동 입력 ──────────────────
+     [Java] 실제 서버 처리 시 form action/method 변경
+  ─────────────────────────────────────────────────────────── */
+  function toggleReplyForm(formId, btnId, mentionId) {
     var form = document.getElementById(formId);
     var btn  = document.getElementById(btnId);
     var isOpen = form.classList.contains('open');
-    // 모든 대댓글 폼 닫기
-    document.querySelectorAll('.reply-form-wrap').forEach(function(f) { f.classList.remove('open'); });
-    document.querySelectorAll('.comment-action-btn').forEach(function(b) { b.classList.remove('reply-active'); });
-    // 현재 폼 토글
+
+    /* 모든 대댓글 폼 닫기 */
+    document.querySelectorAll('.comm-reply-form').forEach(function(f) { f.classList.remove('open'); });
+    document.querySelectorAll('.comm-cmt-reply-btn').forEach(function(b) { b.classList.remove('active'); });
+
     if (!isOpen) {
       form.classList.add('open');
-      btn.classList.add('reply-active');
-      form.querySelector('textarea').focus();
+      btn.classList.add('active');
+      /* ④ @아이디 기본 제시 */
+      var input = form.querySelector('input[name="content"]');
+      if (input) {
+        input.placeholder = '@' + mentionId + ' 에게 댓글을 입력하세요...';
+        input.focus();
+      }
       lucide.createIcons();
     }
   }
 
-  /* ── 대댓글 제출 (데모용) ──────────────────────────────────
+  /* ── 대댓글 등록 ──────────────────────────────────────────
      [Java] POST /community/{communitySeq}/comment/reply
      [DB] community_comment.parent_comment_seq = #{parentCommentSeq}
   ─────────────────────────────────────────────────────────── */
-  function submitReply(e, form) {
+  function submitReply(e, form, parentSeq) {
     e.preventDefault();
-    var content = form.querySelector('textarea').value.trim();
-    if (!content) { RSS.toast('대댓글 내용을 입력해주세요.', 'warning'); return; }
-    RSS.toast('대댓글이 등록되었습니다.', 'success');
-    form.querySelector('textarea').value = '';
-    form.closest('.reply-form-wrap').classList.remove('open');
+    var input = form.querySelector('input[name="content"]');
+    var content = input.value.trim();
+    if (!content) { RSS.toast('내용을 입력하세요.', 'warning'); return; }
+    RSS.toast('댓글이 등록되었습니다.', 'success');
+    input.value = '';
+    form.closest('.comm-reply-form').classList.remove('open');
+    /* [Java] 실제 서버 처리 후 location.reload(); */
+  }
+
+  /* ── 케밥 메뉴 토글 ── */
+  function toggleKebab(menuId, e) {
+    e.stopPropagation();
+    var menu = document.getElementById(menuId);
+    var isOpen = menu.classList.contains('open');
+    /* 모든 케밥 메뉴 닫기 */
+    document.querySelectorAll('.comm-kebab-menu').forEach(function(m) { m.classList.remove('open'); });
+    if (!isOpen) { menu.classList.add('open'); }
+  }
+  /* 외부 클릭 시 케밥 메뉴 닫기 */
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.comm-kebab-menu').forEach(function(m) { m.classList.remove('open'); });
+  });
+
+  /* ── 댓글 수정 (댓글쓰기 영역으로 이동하여 내용 채움) ──────
+     [Java] PUT /community/{communitySeq}/comment/{commentSeq}
+  ─────────────────────────────────────────────────────────── */
+  function editComment(commentSeq, authorId, content) {
+    document.querySelectorAll('.comm-kebab-menu').forEach(function(m) { m.classList.remove('open'); });
+    var input = document.getElementById('comment_content');
+    input.value = content;
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    input.focus();
+    /* [Java] 수정 모드 구분을 위해 hidden input에 commentSeq 세팅 */
+    RSS.toast('내용을 수정 후 등록하세요.', 'info');
+  }
+
+  /* ── 댓글 삭제 ──────────────────────────────────────────────
+     ⑥ 경고창 → 예 → 삭제 → 페이지 새로고침
+        대댓글 있으면 '삭제된 댓글입니다.' 표시 (서버 처리)
+     [Java] DELETE /community/{communitySeq}/comment/{commentSeq}
+     [DB] community_comment.del_yn = 'Y'
+  ─────────────────────────────────────────────────────────── */
+  function deleteComment(commentSeq) {
+    document.querySelectorAll('.comm-kebab-menu').forEach(function(m) { m.classList.remove('open'); });
+    if (!confirm('삭제하시겠습니까?')) return;
+    /* 데모: 해당 아이템 '삭제된 댓글입니다.' 처리 */
+    var item = document.getElementById('cmt-' + commentSeq);
+    if (item) {
+      var contentEl = item.querySelector('.comm-cmt-content');
+      if (contentEl) {
+        contentEl.textContent = '삭제된 댓글입니다.';
+        contentEl.classList.add('comm-cmt-content--deleted');
+      }
+      /* 케밥 메뉴 제거 */
+      var kebab = item.querySelector('.comm-kebab-btn');
+      if (kebab) kebab.closest('div').style.display = 'none';
+      /* 댓글쓰기 버튼 제거 */
+      var replyBtn = item.querySelector('.comm-cmt-reply-btn');
+      if (replyBtn) replyBtn.style.display = 'none';
+    }
+    RSS.toast('댓글이 삭제되었습니다.', 'success');
+    /* [Java] 실제 서버 처리 후 location.reload(); */
+  }
+
+  /* ── 게시글 삭제 ──────────────────────────────────────────
+     [Java] DELETE /community/{communitySeq}
+     [DB] community.del_yn = 'Y'
+  ─────────────────────────────────────────────────────────── */
+  function deleteCommunity() {
+    if (!confirm('삭제하시겠습니까?')) return;
+    RSS.toast('게시글이 삭제되었습니다.', 'success');
+    setTimeout(function() { location.href = 'community.html'; }, 800);
   }
 </script>
   <script>
-  /* ── 이미지 로드 실패 시 placeholder 자동 대체 (rss-common) ── */
+  /* ── 이미지 로드 실패 시 placeholder 자동 대체 ── */
   (function() {
     var PLACEHOLDER = 'img-placeholder.png';
     function applyPlaceholder(img) {
@@ -372,11 +666,9 @@
         img.classList.add('rss-img-error');
       }
     }
-    // 기존 이미지에 onerror 등록
     document.querySelectorAll('img').forEach(function(img) {
       img.addEventListener('error', function() { applyPlaceholder(this); });
     });
-    // 동적으로 추가되는 이미지 감지
     var observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(m) {
         m.addedNodes.forEach(function(node) {
