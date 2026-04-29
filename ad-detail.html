@@ -77,20 +77,13 @@
     .ad-detail-body h3 { font-weight: 700; font-size: var(--rss-font-md); margin: 16px 0 8px; }
     .ad-detail-body p { margin-bottom: 8px; }
 
-    /* ④ 목록 버튼: 우측 정렬 (스토리보드 §B8-1 ④) */
-    .ad-detail-actions {
-      display: flex;
-      justify-content: flex-end;
-      padding: 12px 24px 20px;
-      border-top: 1px solid var(--rss-border);
-    }
+    /* ④ 목록 버튼: rss-page-actions 공통 클래스 사용 (가운데 정렬) */
 
     /* 모바일 */
     @media (max-width: 768px) {
       .ad-detail-title { font-size: var(--rss-font-lg); padding: 16px 16px 12px; }
       .ad-detail-meta  { padding: 8px 16px; flex-wrap: wrap; gap: 8px; }
       .ad-detail-body  { padding: 20px 16px 24px; }
-      .ad-detail-actions { padding: 10px 16px 16px; }
     }
   </style>
 </head>
@@ -160,23 +153,12 @@
           <h3>■ 보유 장비</h3>
           <p>TMA-1 : 12대 / TMA-3 : 8대 / PLCS : 15대 / 싸인카 : 55대</p>
 
-          <!-- 에디터 내 유튜브 동영상 예시 (반응형 16:9) -->
-          <div class="ad-video-wrap">
-            <!-- [Java] 에디터에서 유튜브 링크 입력 시 iframe으로 변환하여 저장 -->
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="광고 동영상"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
-          </div>
-
           <p>문의: 02-1234-5678 | 이메일: info@woongjin.co.kr</p>
           <!-- ▲ 에디터 출력 예시 끝 ▲ -->
         </div>
 
-        <!-- ④ 목록 버튼 (스토리보드 §B8-1 ④) — 우측 정렬 -->
-        <div class="ad-detail-actions">
+        <!-- ④ 목록 버튼 (스토리보드 §B8-1 ④) — rss-page-actions 공통 클래스 (가운데 정렬) -->
+        <div class="rss-page-actions">
           <a href="ad.html" class="rss-btn rss-btn--outline px-10">
             <i data-lucide="list" style="width:14px;height:14px;"></i>목록
           </a>
