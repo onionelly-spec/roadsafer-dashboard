@@ -171,9 +171,11 @@
 
         </div><!-- /market-detail-wrap -->
 
-        <!-- ⑤ 수정/삭제: 왼쪽 정렬, 내 글일 때만 표시 (공통 CSS: rss-page-actions--left + rss-btn--sm) -->
-        <!-- [Java] th:if="${loginUsr.mberSeq == market.mberSeq}" -->
-        <div class="rss-page-actions rss-page-actions--left" style="border-top:none; padding-bottom:0;">
+        <!-- ====================================================
+             수정/삭제 버튼: 작성자만 표시
+             [Java] th:if="${loginUsr.mberSeq == market.mberSeq}"
+             ==================================================== -->
+        <div class="rss-page-actions rss-page-actions--left">
           <a href="market-write.html" class="rss-btn rss-btn--outline rss-btn--sm">
             <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
           </a>
