@@ -171,30 +171,28 @@
 
         </div><!-- /market-detail-wrap -->
 
-        <!-- ⑤⑦ 수정/삭제(본인만) + 상담신청(타인만) + 목록: 한 줄 배치 -->
-        <div class="rss-page-actions" style="justify-content:space-between;">
-          <!-- 왼쪽: 수정/삭제 — 내 글일 때만 표시 (스토리보드 §B5-1 ⑤) -->
-          <!-- [Java] th:if="${loginUsr.mberSeq == market.mberSeq}" -->
-          <div style="display:flex;gap:8px;">
-            <a href="market-write.html" class="rss-btn rss-btn--outline">
-              <i data-lucide="pencil" style="width:14px;height:14px;"></i>수정
-            </a>
-            <button type="button" class="rss-btn rss-btn--outline-danger"
-                    onclick="deleteMarket()">
-              <i data-lucide="trash-2" style="width:14px;height:14px;"></i>삭제
-            </button>
-          </div>
-          <!-- 오른쪽: 상담신청(타인만) + 목록 -->
-          <div style="display:flex;gap:8px;">
-            <!-- [Java] th:unless="${loginUsr.mberSeq == market.mberSeq}" -->
-            <button type="button" class="rss-btn rss-btn--amber"
-                    onclick="openConsultModal()">
-              <i data-lucide="message-circle" style="width:14px;height:14px;"></i>상담 신청
-            </button>
-            <a href="market.html" class="rss-btn rss-btn--outline">
-              <i data-lucide="list" style="width:14px;height:14px;"></i>목록
-            </a>
-          </div>
+        <!-- ⑤ 수정/삭제: 왼쪽 정렬, 내 글일 때만 표시 (공통 CSS: rss-page-actions--left + rss-btn--sm) -->
+        <!-- [Java] th:if="${loginUsr.mberSeq == market.mberSeq}" -->
+        <div class="rss-page-actions rss-page-actions--left" style="border-top:none; padding-bottom:0;">
+          <a href="market-write.html" class="rss-btn rss-btn--outline rss-btn--sm">
+            <i data-lucide="pencil" style="width:13px;height:13px;"></i>수정
+          </a>
+          <button type="button" class="rss-btn rss-btn--outline-danger rss-btn--sm"
+                  onclick="deleteMarket()">
+            <i data-lucide="trash-2" style="width:13px;height:13px;"></i>삭제
+          </button>
+        </div>
+
+        <!-- ⑦ 상담신청(타인만) + 목록: 가운데 정렬 (공통 CSS: rss-page-actions) -->
+        <div class="rss-page-actions">
+          <!-- [Java] th:unless="${loginUsr.mberSeq == market.mberSeq}" -->
+          <button type="button" class="rss-btn rss-btn--amber px-10"
+                  onclick="openConsultModal()">
+            <i data-lucide="message-circle" style="width:14px;height:14px;"></i>상담 신청
+          </button>
+          <a href="market.html" class="rss-btn rss-btn--outline px-10">
+            <i data-lucide="list" style="width:14px;height:14px;"></i>목록
+          </a>
         </div>
 
       </div><!-- /rss-card -->
@@ -227,6 +225,23 @@
   </div>
 </div>
 
+<!-- 상담 신청 완료 모달 -->
+<div id="consultDoneModal" class="rss-modal-backdrop" style="display:none;" onclick="if(event.target===this){this.style.display='none';}">
+  <div class="rss-modal" role="dialog" aria-modal="true">
+    <p class="rss-modal__title">상담 신청</p>
+    <div class="rss-modal__body">
+      <p style="font-size:var(--rss-font-base); line-height:1.7; color:var(--rss-text);">
+        상담 신청되었습니다.<br>
+        연락처를 통해 판매자가 상담을 진행할 예정입니다.
+      </p>
+    </div>
+    <div class="rss-modal__footer">
+      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+              onclick="document.getElementById('consultDoneModal').style.display='none';">확인</button>
+    </div>
+  </div>
+</div>
+
 <script src="rss-common.js?v=fb9efb6he_bust"></script>
 <script>
   lucide.createIcons();
@@ -252,7 +267,7 @@
   function submitConsult() {
     document.getElementById('consultModal').style.display = 'none';
     /* [Java] POST /market/consult?marketSeq=#{marketSeq} → 판매자에게 카톡 알림 전송 (P11) */
-    alert('상담 신청되었습니다. 연락처를 통해 판매자가 상담을 진행할 예정입니다.');
+    document.getElementById('consultDoneModal').style.display = 'flex';
   }
 </script>
   <script>
