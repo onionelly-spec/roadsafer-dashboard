@@ -177,21 +177,8 @@
     }
 
     /* 비밀번호 변경 / 회원탈퇴 모달
-       rss-common.css의 .rss-modal-overlay, .rss-modal__head/close/foot 재사용 */
-    .rss-modal {
-      background: var(--rss-card);
-      border-radius: var(--rss-radius-lg);
-      box-shadow: var(--rss-shadow-md);
-      width: 100%; max-width: 420px;
-      overflow: hidden;
-    }
-    .rss-modal__title {
-      font-size: var(--rss-font-md);
-      font-weight: 700;
-      color: var(--rss-text);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .rss-modal__body { padding: 20px 22px; }
+       → rss-common.css의 .rss-modal-overlay / .rss-modal / .rss-modal__head 등 공통 클래스 사용
+       → 공지사항 모달(.notice-modal)과 동일한 스타일 적용 */
 
     /* 모바일 반응형 */
     @media (max-width: 640px) {
@@ -437,7 +424,7 @@
      [Java] POST /profile/pw-change
      [DB] tbl_mber.password (BCrypt 해시)
 ══════════════════════════════════════════════════ -->
-<div class="rss-modal-overlay" id="pwModal" style="display:none;"
+<div class="rss-modal-overlay" id="pwModal"
      onclick="if(event.target===this)closePwModal()">
   <div class="rss-modal">
     <div class="rss-modal__head">
@@ -489,7 +476,7 @@
      - 공사 없을 경우: 개인정보 삭제, 기업회원 아이디·상호 남김
      - 탈퇴 후 로그인(L)으로 이동
 ══════════════════════════════════════════════════ -->
-<div class="rss-modal-overlay" id="withdrawModal" style="display:none;"
+<div class="rss-modal-overlay" id="withdrawModal"
      onclick="if(event.target===this)closeWithdrawModal()">
   <div class="rss-modal">
     <div class="rss-modal__head">
@@ -659,11 +646,11 @@
   function openPwModal() {
     document.getElementById('pwChangeForm').reset();
     document.getElementById('pwMatchMsg').style.display = 'none';
-    document.getElementById('pwModal').style.display = 'flex';
+    document.getElementById('pwModal').classList.add('open');
     lucide.createIcons();
   }
   function closePwModal() {
-    document.getElementById('pwModal').style.display = 'none';
+    document.getElementById('pwModal').classList.remove('open');
   }
   function checkPwMatch() {
     var msg = document.getElementById('pwMatchMsg');
@@ -685,11 +672,11 @@
 
   /* ── 회원탈퇴 모달 ── */
   function openWithdrawModal() {
-    document.getElementById('withdrawModal').style.display = 'flex';
+    document.getElementById('withdrawModal').classList.add('open');
     lucide.createIcons();
   }
   function closeWithdrawModal() {
-    document.getElementById('withdrawModal').style.display = 'none';
+    document.getElementById('withdrawModal').classList.remove('open');
   }
   function submitWithdraw() {
     /* [Java] POST /profile/withdraw */
