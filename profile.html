@@ -135,20 +135,9 @@
       flex-wrap: wrap;
     }
 
-    /* 하단 버튼 영역 — 좌(비밀번호변경·탈퇴) / 우(저장)
-       rss-page-actions는 가운데 정렬이므로 profile 전용 레이아웃 사용 */
-    .profile-btn-area {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 28px;
-      padding-top: 20px;
-      border-top: 1px solid var(--rss-border);
-    }
-    .profile-btn-area__left { display: flex; gap: 8px; flex-wrap: wrap; }
-    .profile-btn-area__right { display: flex; gap: 8px; }
+    /* 하단 버튼 영역 — rss-common.css의 .rss-page-actions 공통 클래스 사용
+       .rss-page-actions        : 저장 버튼 (가운데 정렬)
+       .rss-page-actions--right : 비밀번호변경·회원탈퇴 (우측 정렬) */
 
     /* 경고 모달 (register-company.html의 .reg-alert-modal과 동일) */
     .reg-alert-modal {
@@ -210,11 +199,7 @@
       .email-wrap { flex-direction: column; align-items: stretch; }
       .email-at { display: none; }
       .email-domain-select { width: 100%; }
-      .profile-btn-area { flex-direction: column; align-items: stretch; }
-      .profile-btn-area__left { justify-content: stretch; }
-      .profile-btn-area__left .rss-btn { flex: 1; justify-content: center; }
-      .profile-btn-area__right { justify-content: stretch; }
-      .profile-btn-area__right .rss-btn { width: 100%; justify-content: center; }
+      /* 하단 버튼 모바일 대응 — rss-common.css의 @media(max-width:640px) .rss-page-actions 규칙 적용 */
     }
   </style>
 </head>
@@ -405,18 +390,25 @@
             </div>
 
             <!-- ③④⑤ 하단 버튼 영역
-                 ③ 비밀번호 변경 (모달) / ④ 회원탈퇴 (확인 모달) / ⑤ 저장 -->
-            <div class="profile-btn-area">
-              <div class="profile-btn-area__left">
-                <button type="button" class="rss-btn rss-btn--outline"
-                        onclick="openPwModal()">비밀번호 변경</button>
-                <button type="button" class="rss-btn rss-btn--outline-danger"
-                        onclick="openWithdrawModal()">회원탈퇴</button>
-              </div>
-              <div class="profile-btn-area__right">
-                <button type="button" class="rss-btn rss-btn--amber px-10"
-                        onclick="submitProfile()">저장</button>
-              </div>
+                 ③ 저장 (중앙, rss-page-actions)
+                 ④ 비밀번호 변경 / ⑤ 회원탈퇴 (우측, rss-page-actions--right) -->
+            <!-- ⑤ 저장 — 공통 CSS .rss-page-actions (가운데 정렬) -->
+            <div class="rss-page-actions">
+              <button type="button" class="rss-btn rss-btn--amber px-10"
+                      onclick="submitProfile()">
+                <i data-lucide="save"></i> 저장
+              </button>
+            </div>
+            <!-- ④ 비밀번호 변경 · 회원탈퇴 — 공통 CSS .rss-page-actions--right (우측 정렬) -->
+            <div class="rss-page-actions rss-page-actions--right" style="border-top:none; padding-top:0; margin-top:0;">
+              <button type="button" class="rss-btn rss-btn--outline"
+                      onclick="openPwModal()">
+                <i data-lucide="lock"></i> 비밀번호 변경
+              </button>
+              <button type="button" class="rss-btn rss-btn--outline-danger"
+                      onclick="openWithdrawModal()">
+                <i data-lucide="user-x"></i> 회원탈퇴
+              </button>
             </div>
           </form>
         </div>
@@ -466,8 +458,12 @@
       </form>
     </div>
     <div class="rss-modal__foot">
-      <button type="button" class="rss-btn rss-btn--outline" onclick="closePwModal()">취소</button>
-      <button type="button" class="rss-btn rss-btn--amber" onclick="submitPwChange()">변경</button>
+      <button type="button" class="rss-btn rss-btn--outline" onclick="closePwModal()">
+        <i data-lucide="x"></i> 취소
+      </button>
+      <button type="button" class="rss-btn rss-btn--amber" onclick="submitPwChange()">
+        <i data-lucide="check"></i> 변경
+      </button>
     </div>
   </div>
 </div>
@@ -502,8 +498,12 @@
       </p>
     </div>
     <div class="rss-modal__foot">
-      <button type="button" class="rss-btn rss-btn--outline" onclick="closeWithdrawModal()">취소</button>
-      <button type="button" class="rss-btn rss-btn--outline-danger" onclick="submitWithdraw()">탈퇴</button>
+      <button type="button" class="rss-btn rss-btn--outline" onclick="closeWithdrawModal()">
+        <i data-lucide="x"></i> 취소
+      </button>
+      <button type="button" class="rss-btn rss-btn--outline-danger" onclick="submitWithdraw()">
+        <i data-lucide="user-x"></i> 탈퇴
+      </button>
     </div>
   </div>
 </div>
