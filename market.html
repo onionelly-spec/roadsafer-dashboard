@@ -59,13 +59,18 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    /* 메타: 등록일(좌) + 아이디 마스킹(우) */
+    /* 메타: 아이디(좌) + 등록일(우) — 커뮤니티 동일 규칙 */
     .market-card__meta {
       font-size: var(--rss-font-sm);
       color: #9ca3af;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 10px;
+    }
+    .market-card__meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
     }
 
     /* ── 모바일: 툴바 한 줄 유지 ── */
@@ -162,8 +167,10 @@
               <!-- [Java] th:text="${item.categoryLabel} + ' 판매'" -->
               <h3 class="market-card__title">싸인카 판매</h3>
               <div class="market-card__meta">
-                <span>2026-06-20</span><!-- [Java] th:text="${item.regDt}" -->
-                <span>hope***</span><!-- [Java] th:text="${#strings.substring(item.usrId,0,4)} + '***'" -->
+                <!-- [Java] th:text="${#strings.substring(item.usrId,0,4)} + '***'" -->
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>hope***</span>
+                <!-- [Java] th:text="${item.regDt}" -->
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-20</span>
               </div>
             </div>
           </a>
@@ -174,8 +181,8 @@
             <div class="market-card__body">
               <h3 class="market-card__title">안전시설물 판매</h3>
               <div class="market-card__meta">
-                <span>2026-06-20</span>
-                <span>seho***</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-20</span>
               </div>
             </div>
           </a>
@@ -186,8 +193,8 @@
             <div class="market-card__body">
               <h3 class="market-card__title">간판시설물 판매</h3>
               <div class="market-card__meta">
-                <span>2026-06-19</span>
-                <span>seho***</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-19</span>
               </div>
             </div>
           </a>
@@ -198,8 +205,8 @@
             <div class="market-card__body">
               <h3 class="market-card__title">싸인카 판매</h3>
               <div class="market-card__meta">
-                <span>2026-06-18</span>
-                <span>dea0***</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>dea0***</span>
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-18</span>
               </div>
             </div>
           </a>
@@ -210,8 +217,8 @@
             <div class="market-card__body">
               <h3 class="market-card__title">싸인보드 판매</h3>
               <div class="market-card__meta">
-                <span>2026-06-17</span>
-                <span>hope***</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>hope***</span>
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-17</span>
               </div>
             </div>
           </a>
@@ -222,8 +229,8 @@
             <div class="market-card__body">
               <h3 class="market-card__title">TMA 판매</h3>
               <div class="market-card__meta">
-                <span>2026-06-16</span>
-                <span>seho***</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-16</span>
               </div>
             </div>
           </a>
@@ -234,8 +241,8 @@
             <div class="market-card__body">
               <h3 class="market-card__title">싸인카 판매</h3>
               <div class="market-card__meta">
-                <span>2026-06-15</span>
-                <span>seho***</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-15</span>
               </div>
             </div>
           </a>
@@ -246,8 +253,8 @@
             <div class="market-card__body">
               <h3 class="market-card__title">안전시설물 판매</h3>
               <div class="market-card__meta">
-                <span>2026-06-12</span>
-                <span>dea0***</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>dea0***</span>
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-12</span>
               </div>
             </div>
           </a>
