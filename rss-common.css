@@ -796,7 +796,7 @@ img { max-width: 100%; display: block; }
   padding: 12px 16px;
   background: #f9fafb;
   border: 1px solid var(--rss-border);
-  font-size: var(--rss-font-sm);
+  font-size: var(--rss-font-base);
   font-weight: 600;
   color: var(--rss-muted);
   text-align: center;
@@ -816,7 +816,7 @@ img { max-width: 100%; display: block; }
 .rss-table--detail tr:hover td { background: #fafafa; }
 .rss-table--detail tr:last-child td { border-bottom: 1px solid var(--rss-border); }
 @media (max-width: 640px) {
-  .rss-table--detail th { width: 90px; padding: 10px 10px; font-size: var(--rss-font-xs); }
+  .rss-table--detail th { width: 90px; padding: 10px 10px; font-size: var(--rss-font-sm); }
   .rss-table--detail td { padding: 10px 10px; font-size: var(--rss-font-sm); }
 }
 
