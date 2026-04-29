@@ -2371,3 +2371,11 @@ img { max-width: 100%; display: block; }
   outline-offset: 2px;
   border-radius: 2px;
 }
+
+/* ── 이미지 로드 실패 시 placeholder ── */
+img.rss-img-error {
+  background-color: #f0f0f0;
+  object-fit: contain;
+  padding: 12%;
+  box-sizing: border-box;
+}

@@ -310,5 +310,37 @@
     /* [Java] location.href = '/market?myYn=' + (isActive ? '' : 'Y'); */
   }
 </script>
+  <script>
+  /* ── 이미지 로드 실패 시 placeholder 자동 대체 (rss-common) ── */
+  (function() {
+    var PLACEHOLDER = 'img-placeholder.png';
+    function applyPlaceholder(img) {
+      if (img.src && img.src.indexOf(PLACEHOLDER) === -1) {
+        img.src = PLACEHOLDER;
+        img.classList.add('rss-img-error');
+      }
+    }
+    // 기존 이미지에 onerror 등록
+    document.querySelectorAll('img').forEach(function(img) {
+      img.addEventListener('error', function() { applyPlaceholder(this); });
+    });
+    // 동적으로 추가되는 이미지 감지
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(m) {
+        m.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1) {
+            if (node.tagName === 'IMG') {
+              node.addEventListener('error', function() { applyPlaceholder(this); });
+            }
+            node.querySelectorAll && node.querySelectorAll('img').forEach(function(img) {
+              img.addEventListener('error', function() { applyPlaceholder(this); });
+            });
+          }
+        });
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  })();
+  </script>
 </body>
 </html>
