@@ -424,16 +424,16 @@
      [Java] POST /profile/pw-change
      [DB] tbl_mber.password (BCrypt 해시)
 ══════════════════════════════════════════════════ -->
-<div class="rss-modal-overlay" id="pwModal"
+<div class="notice-modal-backdrop" id="pwModal"
      onclick="if(event.target===this)closePwModal()">
-  <div class="rss-modal">
-    <div class="rss-modal__head">
-      <h3 class="rss-modal__title">비밀번호 변경</h3>
-      <button class="rss-modal__close" onclick="closePwModal()">
-        <i data-lucide="x" style="width:18px;height:18px;"></i>
+  <div class="notice-modal" style="max-width:480px;" role="dialog" aria-modal="true" aria-labelledby="pwModalTitle">
+    <div class="notice-modal__header">
+      <h2 class="notice-modal__title" id="pwModalTitle">비밀번호 변경</h2>
+      <button class="notice-modal__close" onclick="closePwModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:20px;height:20px;"></i>
       </button>
     </div>
-    <div class="rss-modal__body">
+    <div class="notice-modal__body">
       <form id="pwChangeForm" novalidate>
         <div class="rss-form-row">
           <label class="rss-form-label" for="currentPw">현재 비밀번호 <span class="required">*</span></label>
@@ -457,7 +457,7 @@
         </div>
       </form>
     </div>
-    <div class="rss-modal__foot">
+    <div class="notice-modal__footer">
       <button type="button" class="rss-btn rss-btn--outline" onclick="closePwModal()">
         <i data-lucide="x"></i> 취소
       </button>
@@ -476,20 +476,20 @@
      - 공사 없을 경우: 개인정보 삭제, 기업회원 아이디·상호 남김
      - 탈퇴 후 로그인(L)으로 이동
 ══════════════════════════════════════════════════ -->
-<div class="rss-modal-overlay" id="withdrawModal"
+<div class="notice-modal-backdrop" id="withdrawModal"
      onclick="if(event.target===this)closeWithdrawModal()">
-  <div class="rss-modal">
-    <div class="rss-modal__head">
-      <h3 class="rss-modal__title" style="color:#dc2626;">회원탈퇴</h3>
-      <button class="rss-modal__close" onclick="closeWithdrawModal()">
-        <i data-lucide="x" style="width:18px;height:18px;"></i>
+  <div class="notice-modal" style="max-width:480px;" role="dialog" aria-modal="true" aria-labelledby="withdrawModalTitle">
+    <div class="notice-modal__header">
+      <h2 class="notice-modal__title" id="withdrawModalTitle" style="color:#dc2626;">회원탈퇴</h2>
+      <button class="notice-modal__close" onclick="closeWithdrawModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:20px;height:20px;"></i>
       </button>
     </div>
-    <div class="rss-modal__body">
+    <div class="notice-modal__body">
       <div class="rss-notice">
         <strong>탈퇴 전 반드시 확인하세요.</strong><br />
         탈퇴 후에는 재가입이 불가능하며 모든 기록이 삭제됩니다.<br />
-        단, 기업회원 아이디·상호는 남습니다.
+        단, 기업회원 아이디xb7상호는 남습니다.
       </div>
       <!-- [Java] th:if="${hasConstruction}" — 진행중/예정 공사 있을 경우 표시 -->
       <!-- <p style="color:#dc2626;font-size:var(--rss-font-sm);font-weight:600;margin-top:10px;">예정이거나 진행중인 공사가 있어 탈퇴할 수 없습니다.</p> -->
@@ -497,7 +497,7 @@
         정말로 탈퇴하시겠습니까?
       </p>
     </div>
-    <div class="rss-modal__foot">
+    <div class="notice-modal__footer">
       <button type="button" class="rss-btn rss-btn--outline" onclick="closeWithdrawModal()">
         <i data-lucide="x"></i> 취소
       </button>
@@ -646,11 +646,11 @@
   function openPwModal() {
     document.getElementById('pwChangeForm').reset();
     document.getElementById('pwMatchMsg').style.display = 'none';
-    document.getElementById('pwModal').classList.add('open');
+    document.getElementById('pwModal').classList.add('show');
     lucide.createIcons();
   }
   function closePwModal() {
-    document.getElementById('pwModal').classList.remove('open');
+    document.getElementById('pwModal').classList.remove('show');
   }
   function checkPwMatch() {
     var msg = document.getElementById('pwMatchMsg');
@@ -672,11 +672,11 @@
 
   /* ── 회원탈퇴 모달 ── */
   function openWithdrawModal() {
-    document.getElementById('withdrawModal').classList.add('open');
+    document.getElementById('withdrawModal').classList.add('show');
     lucide.createIcons();
   }
   function closeWithdrawModal() {
-    document.getElementById('withdrawModal').classList.remove('open');
+    document.getElementById('withdrawModal').classList.remove('show');
   }
   function submitWithdraw() {
     /* [Java] POST /profile/withdraw */
