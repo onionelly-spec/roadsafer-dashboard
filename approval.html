@@ -57,43 +57,7 @@
       border-bottom: 1px solid var(--rss-border);
     }
 
-    /* ── 모달 헤더 / 닫기 버튼 ──────────────────────────── */
-    /* rss-common.css에 __header/__close 규칙이 없으므로 여기서 정의
-       profile.html / tma-card.html의 __head 패턴과 동일하게 맞춤 */
-    .rss-modal__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 22px;
-      border-bottom: 1px solid #f3f4f6;
-    }
-    .rss-modal__title {
-      font-size: var(--rss-font-md);
-      font-weight: 700;
-      color: var(--rss-text);
-    }
-    .rss-modal__close {
-      background: none;
-      border: none;
-      color: #9ca3af;
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 6px;
-      transition: background 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .rss-modal__close:hover { background: #f3f4f6; color: #374151; }
-    /* 모달 본문/푸터 패딩 조정 (헤더 분리 구조에 맞춤) */
-    #apvConfirmModal .rss-modal__body {
-      padding: 20px 22px 4px;
-      margin-bottom: 0;
-    }
-    #apvConfirmModal .rss-modal__footer {
-      padding: 14px 22px;
-      border-top: 1px solid #f3f4f6;
-    }
+
 
     /* 반응형 */
     @media (max-width: 640px) {
@@ -275,17 +239,10 @@
 ══════════════════════════════════════════════════ -->
 <div class="rss-modal-backdrop" id="apvConfirmModal" role="dialog" aria-modal="true"
      aria-labelledby="apvConfirmTitle" style="display:none;">
-  <div class="rss-modal" style="max-width:400px;padding:0;">
-    <div class="rss-modal__header">
-      <h2 class="rss-modal__title" id="apvConfirmTitle">승인 확인</h2>
-      <button class="rss-modal__close" onclick="closeApvModal()" aria-label="닫기">
-        <i data-lucide="x" style="width:18px;height:18px;"></i>
-      </button>
-    </div>
-    <div class="rss-modal__body">
-      <p id="apvConfirmMsg" style="font-size:var(--rss-font-base);color:var(--rss-text);line-height:1.7;"></p>
-    </div>
-    <div class="rss-modal__footer" style="gap:8px;">
+  <div class="rss-modal">
+    <p class="rss-modal__title" id="apvConfirmTitle">승인 확인</p>
+    <div class="rss-modal__body" id="apvConfirmMsg"></div>
+    <div class="rss-modal__footer">
       <button class="rss-btn rss-btn--outline rss-btn--sm"
               onclick="closeApvModal()">취소</button>
       <button class="rss-btn rss-btn--amber rss-btn--sm" id="apvConfirmOkBtn"
@@ -300,22 +257,15 @@
 ══════════════════════════════════════════════════ -->
 <div class="rss-modal-backdrop" id="apvCancelModal" role="dialog" aria-modal="true"
      aria-labelledby="apvCancelTitle" style="display:none;">
-  <div class="rss-modal" style="max-width:400px;padding:0;">
-    <div class="rss-modal__header">
-      <h2 class="rss-modal__title" id="apvCancelTitle">승인 취소</h2>
-      <button class="rss-modal__close" onclick="closeApvCancelModal()" aria-label="닫기">
-        <i data-lucide="x" style="width:18px;height:18px;"></i>
-      </button>
-    </div>
-    <div class="rss-modal__body">
-      <p id="apvCancelMsg" style="font-size:var(--rss-font-base);color:var(--rss-text);line-height:1.7;"></p>
-    </div>
-    <div class="rss-modal__footer" style="gap:8px;">
+  <div class="rss-modal">
+    <p class="rss-modal__title" id="apvCancelTitle">승인 취소</p>
+    <div class="rss-modal__body" id="apvCancelMsg"></div>
+    <div class="rss-modal__footer">
       <!-- 아니오: 모달 닫기만 -->
       <button class="rss-btn rss-btn--outline rss-btn--sm"
               onclick="closeApvCancelModal()">아니오</button>
       <!-- 예: 승인 취소 처리 실행 -->
-      <button class="rss-btn rss-btn--outline rss-btn--sm" id="apvCancelYesBtn"
+      <button class="rss-btn rss-btn--amber rss-btn--sm" id="apvCancelYesBtn"
               onclick="executeApvCancelAction()">예</button>
     </div>
   </div>
@@ -343,8 +293,7 @@ function approveConfirm(btn, mberSeq, usrNm) {
   _apvRowEl   = btn.closest('tr');
   document.getElementById('apvConfirmTitle').textContent = '승인 처리';
   document.getElementById('apvConfirmMsg').innerHTML =
-    '<strong>' + usrNm + '</strong> 님을 승인 처리하시겠습니까?<br>' +
-    '승인 후 해당 계정은 정상 사용 가능 상태로 전환됩니다.';
+    '<strong>' + usrNm + '</strong> 님을 승인 처리하시겠습니까?<br>승인 후 해당 계정은 정상 사용 가능 상태로 전환됩니다.';
   /* 모달 확인 버튼: 승인 액션 시 amber 스타일 */
   document.getElementById('apvConfirmOkBtn').className = 'rss-btn rss-btn--amber rss-btn--sm';
   document.getElementById('apvConfirmOkBtn').textContent = '승인';
@@ -357,8 +306,7 @@ function rejectConfirm(btn, mberSeq, usrNm) {
   _apvRowEl   = btn.closest('tr');
   document.getElementById('apvConfirmTitle').textContent = '반려 처리';
   document.getElementById('apvConfirmMsg').innerHTML =
-    '<strong>' + usrNm + '</strong> 님을 반려 처리하시겠습니까?<br>' +
-    '반려하면 모든 가입 정보가 삭제됩니다.';
+    '<strong>' + usrNm + '</strong> 님을 반려 처리하시겠습니까?<br>반려하면 모든 가입 정보가 삭제됩니다.';
   /* 모달 확인 버튼: 반려 액션 시 danger 스타일 */
   document.getElementById('apvConfirmOkBtn').className = 'rss-btn rss-btn--outline-danger rss-btn--sm';
   document.getElementById('apvConfirmOkBtn').textContent = '반려';
@@ -399,8 +347,7 @@ function cancelConfirm(btn, mberSeq, usrNm) {
   _cancelMberSeq = mberSeq;
   _cancelRowEl   = btn.closest('tr');
   document.getElementById('apvCancelMsg').innerHTML =
-    '승인 취소하면 로그인이 불가능하고 모든 개인 정보가 삭제됩니다.<br>' +
-    '그래도 <strong>' + usrNm + '</strong> 님의 승인을 취소하시겠습니까?';
+    '승인 취소하면 로그인이 불가능하고 모든 개인 정보가 삭제됩니다.<br>그래도 <strong>' + usrNm + '</strong> 님의 승인을 취소하시겠습니까?';
   var modal = document.getElementById('apvCancelModal');
   modal.style.display = 'flex';
   if (window.lucide) lucide.createIcons();
