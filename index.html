@@ -428,7 +428,7 @@
            [Java] th:each="item : ${constructionList}"
            [Java] 로그인 유형: ${loginType} = 'company'(기업주) | 'employee'(직원)
              - company  → 금액 열 표시
-             - employee → 씨인카 수량 열 표시
+             - employee → 싸인카 수량 열 표시
       ══════════════════════════════════════════════════ -->
       <div class="rss-card">
 
@@ -460,7 +460,7 @@
                 <th>기간</th>
                 <!--
                   [Java] th:if="${loginType == 'company'}"  → <th>금액</th>
-                  [Java] th:if="${loginType == 'employee'}" → <th>씨인카 수량</th>
+                  [Java] th:if="${loginType == 'employee'}" → <th>싸인카 수량</th>
                   더미: 기업주 로그인 기준 → 금액 표시
                 -->
                 <th id="thAmountOrQty" data-th="금액" class="td-amount">금액</th>

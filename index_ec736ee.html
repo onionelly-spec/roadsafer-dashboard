@@ -483,7 +483,7 @@
            [Java] th:each="item : ${constructionList}"
            [Java] 로그인 유형: ${loginType} = 'company'(기업주) | 'employee'(직원)
              - company  → 금액 열 표시
-             - employee → 씨인카 수량 열 표시
+             - employee → 싸인카 수량 열 표시
       ══════════════════════════════════════════════════ -->
       <div class="rss-card">
 
@@ -504,7 +504,7 @@
               <col style="min-width:260px; white-space:nowrap;" />
               <!--
                 [Java] th:if="${loginType == 'company'}"  → 금액 열
-                [Java] th:if="${loginType == 'employee'}" → 씨인카 수량 열
+                [Java] th:if="${loginType == 'employee'}" → 싸인카 수량 열
               -->
               <col style="width:160px;" id="colAmountOrQty" />
               <col style="width:110px;" />
@@ -517,7 +517,7 @@
                 <th>기간</th>
                 <!--
                   [Java] th:if="${loginType == 'company'}"  → <th>금액</th>
-                  [Java] th:if="${loginType == 'employee'}" → <th>씨인카 수량</th>
+                  [Java] th:if="${loginType == 'employee'}" → <th>싸인카 수량</th>
                   더미: 기업주 로그인 기준 → 금액 표시
                 -->
                 <th id="thAmountOrQty">금액</th>
@@ -666,7 +666,7 @@
   <div class="rss-modal">
     <p class="rss-modal__title">오늘 완료</p>
     <p class="rss-modal__body">
-      투입된 씨인카 수량이 바뀌었다면 콜센터
+      투입된 싸인카 수량이 바뀌었다면 콜센터
       <span class="highlight">(1566-0000)</span>으로 연락해주세요.<br><br>
       수량이 바뀌었나요?
     </p>
