@@ -3,22 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>광고 상세 — 로드세이프티시스템</title>
+  <title>광고 — 로드세이프티시스템</title>
   <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="rss-common.css" />
+  <link rel="stylesheet" href="rss-common.css?v=2320a82" />
   <style>
-    /* ── 광고 상세 대표 이미지 ── */
-    .ad-hero-img {
-      width: 100%;
-      max-height: 400px;
-      object-fit: cover;
-      display: block;
-      background: #f3f4f6;
+    /* ── 광고 상세: 스토리보드 §B8-1 ── */
+
+    /* ① 제목: 가운데 정렬 (스토리보드 §B8-1 ①) */
+    .ad-detail-title {
+      font-size: var(--rss-font-xl);
+      font-weight: 700;
+      color: var(--rss-text);
+      text-align: center;
+      padding: 20px 24px 14px;
+      border-bottom: 1px solid var(--rss-border);
+      line-height: 1.5;
     }
 
-    /* 하단 버튼: rss-page-actions 공통 클래스 사용 (rss-common.css) */
+    /* ② 업체명 + 날짜: 우측 정렬 (스토리보드 §B8-1 ②) */
+    .ad-detail-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      padding: 10px 24px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      border-bottom: 1px solid var(--rss-border);
+    }
+    .ad-detail-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ③ 에디터 내용 영역: 이미지·유튜브·텍스트 모두 렌더링 */
+    .ad-detail-body {
+      padding: 28px 32px 32px;
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      line-height: 1.9;
+      min-height: 300px;
+    }
+    /* 에디터 내 이미지 최대 너비 + 가운데 정렬 */
+    .ad-detail-body img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 12px auto;
+      border-radius: var(--rss-radius);
+    }
+    /* 에디터 내 유튜브 iframe 반응형 래퍼 */
+    .ad-detail-body .ad-video-wrap {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      height: 0;
+      overflow: hidden;
+      margin: 16px 0;
+      border-radius: var(--rss-radius);
+    }
+    .ad-detail-body .ad-video-wrap iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+    /* 에디터 내 리스트 스타일 */
+    .ad-detail-body ul { padding-left: 20px; list-style: disc; }
+    .ad-detail-body ol { padding-left: 20px; list-style: decimal; }
+    .ad-detail-body li { margin-bottom: 4px; }
+    .ad-detail-body h3 { font-weight: 700; font-size: var(--rss-font-md); margin: 16px 0 8px; }
+    .ad-detail-body p { margin-bottom: 8px; }
+
+    /* ④ 목록 버튼: 우측 정렬 (스토리보드 §B8-1 ④) */
+    .ad-detail-actions {
+      display: flex;
+      justify-content: flex-end;
+      padding: 12px 24px 20px;
+      border-top: 1px solid var(--rss-border);
+    }
+
+    /* 모바일 */
+    @media (max-width: 768px) {
+      .ad-detail-title { font-size: var(--rss-font-lg); padding: 16px 16px 12px; }
+      .ad-detail-meta  { padding: 8px 16px; flex-wrap: wrap; gap: 8px; }
+      .ad-detail-body  { padding: 20px 16px 24px; }
+      .ad-detail-actions { padding: 10px 16px 16px; }
+    }
   </style>
 </head>
 <body>
@@ -36,61 +109,74 @@
       <div class="rss-card" style="padding:0;">
 
         <!-- ══════════════════════════════════════════════════
-             광고 상세 (B7-1)
+             광고 상세 (B8-1)
              [DB] 테이블: ad WHERE ad_seq = #{adSeq}
              [Java] Model: ad (AdDto)
+             ① 광고 제목
+             ② 업체명, 작성일
+             ③ 광고 내용 (에디터 HTML — 텍스트/이미지/유튜브 포함)
+             ④ 목록(B8)으로 이동
         ══════════════════════════════════════════════════ -->
 
-        <!-- 대표 이미지 -->
-        <!-- [Java] th:src="${ad.thumbImgUrl}" -->
-        <img class="ad-hero-img"
-             src="https://placehold.co/1200x400/fef3c7/d97706?text=한국도로차단(주)+광고"
-             alt="광고 대표 이미지" />
+        <!-- ① 광고 제목 (스토리보드 §B8-1 ①) -->
+        <!-- [Java] th:text="${ad.title}" -->
+        <h2 class="ad-detail-title">이보다 더 좋은 TMA1없다! 완벽한 TMA1</h2>
 
-        <!-- 게시글 헤더 -->
-        <div class="rss-post-header">
-          <!-- [Java] th:text="${ad.title}" -->
-          <h2 class="rss-post-title">
-            도로 차단 전문 기업, 안전한 공사 현장을 만듭니다
-          </h2>
-          <div class="rss-post-meta">
-            <span>
-              <i data-lucide="building-2" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              <!-- [Java] th:text="${ad.companyNm}" -->
-              한국도로차단(주)
-            </span>
-            <span>
-              <i data-lucide="calendar" style="width:13px;height:13px;display:inline-block;margin-right:3px;"></i>
-              <!-- [Java] th:text="${#temporals.format(ad.regDtm, 'yyyy-MM-dd')}" -->
-              2026-06-15
-            </span>
-          </div>
+        <!-- ② 업체명 + 작성일 (스토리보드 §B8-1 ②) — 우측 정렬 -->
+        <div class="ad-detail-meta">
+          <span>
+            <i data-lucide="building-2" style="width:13px;height:13px;"></i>
+            <!-- [Java] th:text="${ad.companyNm}" -->
+            웅진토건
+          </span>
+          <span>
+            <i data-lucide="calendar" style="width:13px;height:13px;"></i>
+            <!-- [Java] th:text="${#temporals.format(ad.regDtm, 'yyyy-MM-dd')}" -->
+            2026-06-24
+          </span>
         </div>
 
-        <!-- 광고 본문 -->
-        <!-- [DB] 컬럼: ad.content (TEXT, 에디터 HTML 포함 가능) -->
-        <!-- [Java] th:utext="${ad.content}" (HTML 렌더링 허용 시 utext 사용) -->
-        <div class="rss-post-body">
-          <p>안녕하세요, 한국도로차단(주)입니다.</p>
-          <br>
+        <!-- ③ 광고 내용 (스토리보드 §B8-1 ③)
+             [DB] 컬럼: ad.content (TEXT, 에디터 HTML 포함)
+             [Java] th:utext="${ad.content}" — HTML 렌더링 허용 (utext 사용)
+             에디터에서 작성된 텍스트 / 이미지 / 유튜브(iframe) 모두 표시됨 -->
+        <div class="ad-detail-body">
+          <!-- ▼ 아래는 에디터 출력 예시 (실제 서비스 시 th:utext로 대체) ▼ -->
+          <p>안녕하세요, 웅진토건입니다.</p>
           <p>저희는 고속도로 및 국도 공사 현장의 안전한 차단 서비스를 전문으로 제공하는 기업입니다.</p>
-          <br>
-          <h3 style="font-weight:700; font-size:15px; margin-bottom:8px;">■ 주요 서비스</h3>
-          <ul style="padding-left:20px; line-height:2.2; list-style:disc;">
+
+          <!-- 에디터 내 이미지 예시 -->
+          <img src="https://placehold.co/800x400/fef3c7/d97706?text=광고+이미지"
+               alt="광고 이미지 예시" />
+
+          <h3>■ 주요 서비스</h3>
+          <ul>
             <li>TMA-1, TMA-3, PLCS 차량 임대 및 운영</li>
             <li>싸인카 보유 50대 이상 (전국 배치 가능)</li>
             <li>24시간 긴급 출동 서비스</li>
             <li>발주사 승인 대행 서비스</li>
           </ul>
-          <br>
-          <h3 style="font-weight:700; font-size:15px; margin-bottom:8px;">■ 보유 장비</h3>
+
+          <h3>■ 보유 장비</h3>
           <p>TMA-1 : 12대 / TMA-3 : 8대 / PLCS : 15대 / 싸인카 : 55대</p>
-          <br>
-          <p>문의: 02-1234-5678 | 이메일: info@koreacutoff.co.kr</p>
+
+          <!-- 에디터 내 유튜브 동영상 예시 (반응형 16:9) -->
+          <div class="ad-video-wrap">
+            <!-- [Java] 에디터에서 유튜브 링크 입력 시 iframe으로 변환하여 저장 -->
+            <iframe
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              title="광고 동영상"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <p>문의: 02-1234-5678 | 이메일: info@woongjin.co.kr</p>
+          <!-- ▲ 에디터 출력 예시 끝 ▲ -->
         </div>
 
-        <!-- 하단 버튼: .rss-page-actions = 가운데 정렬 (공통 규칙) -->
-        <div class="rss-page-actions">
+        <!-- ④ 목록 버튼 (스토리보드 §B8-1 ④) — 우측 정렬 -->
+        <div class="ad-detail-actions">
           <a href="ad.html" class="rss-btn rss-btn--outline px-10">
             <i data-lucide="list" style="width:14px;height:14px;"></i>목록
           </a>
@@ -104,12 +190,12 @@
 
 </div><!-- /rss-app -->
 
-<script src="rss-common.js?v=926e063"></script>
+<script src="rss-common.js?v=2320a82"></script>
 <script>
   lucide.createIcons();
 </script>
-  <script>
-  /* ── 이미지 로드 실패 시 placeholder 자동 대체 (rss-common) ── */
+<script>
+  /* ── 이미지 로드 실패 시 placeholder 자동 대체 ── */
   (function() {
     var PLACEHOLDER = 'img-placeholder.png';
     function applyPlaceholder(img) {
@@ -118,18 +204,14 @@
         img.classList.add('rss-img-error');
       }
     }
-    // 기존 이미지에 onerror 등록
     document.querySelectorAll('img').forEach(function(img) {
       img.addEventListener('error', function() { applyPlaceholder(this); });
     });
-    // 동적으로 추가되는 이미지 감지
     var observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(m) {
         m.addedNodes.forEach(function(node) {
           if (node.nodeType === 1) {
-            if (node.tagName === 'IMG') {
-              node.addEventListener('error', function() { applyPlaceholder(this); });
-            }
+            if (node.tagName === 'IMG') node.addEventListener('error', function() { applyPlaceholder(this); });
             node.querySelectorAll && node.querySelectorAll('img').forEach(function(img) {
               img.addEventListener('error', function() { applyPlaceholder(this); });
             });
@@ -139,6 +221,6 @@
     });
     observer.observe(document.body, { childList: true, subtree: true });
   })();
-  </script>
+</script>
 </body>
 </html>
