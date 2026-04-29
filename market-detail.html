@@ -17,38 +17,7 @@
       .market-detail-wrap { padding: 16px; }
     }
 
-    /* ── 제목 영역 ── */
-    .market-detail__title-bar {
-      padding: 20px 24px 0;
-      border-bottom: 1px solid var(--rss-border);
-      padding-bottom: 16px;
-      margin-bottom: 0;
-    }
-    .market-detail__cat {
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: var(--rss-amber-dark);
-      margin-bottom: 4px;
-    }
-    .market-detail__title {
-      font-size: var(--rss-font-xl);
-      font-weight: 700;
-      color: var(--rss-text);
-      line-height: 1.4;
-      margin-bottom: 8px;
-    }
-    .market-detail__meta {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: var(--rss-font-sm);
-      color: #9ca3af;
-      flex-wrap: wrap;
-    }
-    @media (max-width: 768px) {
-      .market-detail__title-bar { padding: 16px 16px 14px; }
-      .market-detail__title { font-size: var(--rss-font-md); }
-    }
+    /* ── 제목 영역: rss-post-header/title/meta 공통 클래스 사용 ── */
 
     /* ── 사진 영역 (스토리보드 §B5-1 ④: 등록순 순차 표시) ── */
     .market-photo-list {
@@ -101,10 +70,10 @@
         ══════════════════════════════════════════════════ -->
 
         <!-- ① 제목 영역 -->
-        <div class="market-detail__title-bar">
+        <div class="rss-post-header">
           <!-- [Java] th:text="${market.categoryLabel} + ' 판매'" -->
-          <h1 class="market-detail__title">싸인카 판매</h1>
-          <div class="market-detail__meta">
+          <h2 class="rss-post-title">싸인카 판매</h2>
+          <div class="rss-post-meta">
             <!-- [Java] th:text="${market.regDt}" -->
             <span style="display:inline-flex;align-items:center;gap:3px;">
               <i data-lucide="calendar" style="width:13px;height:13px;"></i>

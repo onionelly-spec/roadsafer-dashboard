@@ -7,37 +7,11 @@
   <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="rss-common.css?v=1422f26" />
+  <link rel="stylesheet" href="rss-common.css?v=d3f90ca" />
   <style>
     /* ── 광고 상세: 스토리보드 §B8-1 ── */
 
-    /* ① 제목: 가운데 정렬 (스토리보드 §B8-1 ①) */
-    .ad-detail-title {
-      font-size: var(--rss-font-xl);
-      font-weight: 700;
-      color: var(--rss-text);
-      text-align: center;
-      padding: 20px 24px 14px;
-      border-bottom: 1px solid var(--rss-border);
-      line-height: 1.5;
-    }
-
-    /* ② 업체명 + 날짜: 우측 정렬 (스토리보드 §B8-1 ②) */
-    .ad-detail-meta {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 14px;
-      padding: 10px 24px;
-      font-size: var(--rss-font-sm);
-      color: var(--rss-muted);
-      border-bottom: 1px solid var(--rss-border);
-    }
-    .ad-detail-meta span {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
+    /* ① 제목/② 메타: rss-post-header/title/meta 공통 클래스 사용 */
 
     /* ③ 에디터 내용 영역: 이미지·유튜브·텍스트 모두 렌더링 */
     .ad-detail-body {
@@ -81,8 +55,6 @@
 
     /* 모바일 */
     @media (max-width: 768px) {
-      .ad-detail-title { font-size: var(--rss-font-lg); padding: 16px 16px 12px; }
-      .ad-detail-meta  { padding: 8px 16px; flex-wrap: wrap; gap: 8px; }
       .ad-detail-body  { padding: 20px 16px 24px; }
     }
   </style>
@@ -111,22 +83,22 @@
              ④ 목록(B8)으로 이동
         ══════════════════════════════════════════════════ -->
 
-        <!-- ① 광고 제목 (스토리보드 §B8-1 ①) -->
-        <!-- [Java] th:text="${ad.title}" -->
-        <h2 class="ad-detail-title">이보다 더 좋은 TMA1없다! 완벽한 TMA1</h2>
-
-        <!-- ② 업체명 + 작성일 (스토리보드 §B8-1 ②) — 우측 정렬 -->
-        <div class="ad-detail-meta">
-          <span>
-            <i data-lucide="building-2" style="width:13px;height:13px;"></i>
-            <!-- [Java] th:text="${ad.companyNm}" -->
-            웅진토건
-          </span>
-          <span>
-            <i data-lucide="calendar" style="width:13px;height:13px;"></i>
-            <!-- [Java] th:text="${#temporals.format(ad.regDtm, 'yyyy-MM-dd')}" -->
-            2026-06-24
-          </span>
+        <!-- ① 광고 제목 + ② 업체명/작성일 (스토리보드 §B8-1 ①②) -->
+        <div class="rss-post-header">
+          <!-- [Java] th:text="${ad.title}" -->
+          <h2 class="rss-post-title">이보다 더 좋은 TMA1없다! 완벽한 TMA1</h2>
+          <div class="rss-post-meta">
+            <span style="display:inline-flex;align-items:center;gap:3px;">
+              <i data-lucide="building-2" style="width:13px;height:13px;"></i>
+              <!-- [Java] th:text="${ad.companyNm}" -->
+              웅진토건
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:3px;">
+              <i data-lucide="calendar" style="width:13px;height:13px;"></i>
+              <!-- [Java] th:text="${#temporals.format(ad.regDtm, 'yyyy-MM-dd')}" -->
+              2026-06-24
+            </span>
+          </div>
         </div>
 
         <!-- ③ 광고 내용 (스토리보드 §B8-1 ③)
