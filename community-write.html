@@ -38,20 +38,6 @@
             <!-- [Java] th:if="${post != null}" -->
             <input type="hidden" name="communitySeq" id="communitySeq" /><!-- [DB] community.community_seq -->
 
-            <!-- 카테고리 — rss-form-row / rss-form-label (공통) -->
-            <div class="rss-form-row">
-              <label class="rss-form-label" for="category">
-                카테고리<span class="required">*</span>
-              </label>
-              <!-- [DB] 컬럼: community.category ('info'|'qna'|'free') -->
-              <select name="category" id="category" class="rss-select">
-                <option value="">카테고리를 선택하세요</option>
-                <option value="info">정보공유</option>
-                <option value="qna">질문/답변</option>
-                <option value="free">자유게시판</option>
-              </select>
-            </div>
-
             <!-- 제목 -->
             <div class="rss-form-row">
               <label class="rss-form-label" for="title">
@@ -92,7 +78,9 @@
 
           <!-- 하단 버튼 — rss-page-actions (공통, 취소→등록 순서) -->
           <div class="rss-page-actions">
-            <a href="community.html" class="rss-btn rss-btn--outline px-10">취소</a>
+            <a href="community.html" class="rss-btn rss-btn--outline px-10">
+              <i data-lucide="x" style="width:14px;height:14px;"></i>취소
+            </a>
             <button type="button" class="rss-btn rss-btn--amber px-10" onclick="submitCommunityForm()">
               <i data-lucide="save" style="width:14px;height:14px;"></i>등록하기
             </button>
@@ -139,12 +127,10 @@
      [Java] document.getElementById('communityWriteForm').submit();
   ─────────────────────────────────────────────────────────── */
   function submitCommunityForm() {
-    var category = document.getElementById('category').value;
-    var title    = document.getElementById('title').value.trim();
-    var content  = document.getElementById('content').value.trim();
-    if (!category) { alert('카테고리를 선택해주세요.'); return; }
-    if (!title)    { alert('제목을 입력해주세요.'); return; }
-    if (!content)  { alert('내용을 입력해주세요.'); return; }
+    var title   = document.getElementById('title').value.trim();
+    var content = document.getElementById('content').value.trim();
+    if (!title)   { alert('제목을 입력해주세요.'); return; }
+    if (!content) { alert('내용을 입력해주세요.'); return; }
     /* [Java] document.getElementById('communityWriteForm').submit(); */
     alert('등록되었습니다. (더미 동작)');
     location.href = 'community.html';
