@@ -51,7 +51,7 @@
 
     /* 섹션 구분 */
     .apv-section-divider {
-      height: 8px;
+      height: 28px;
       background: var(--rss-bg);
       border-top: 1px solid var(--rss-border);
       border-bottom: 1px solid var(--rss-border);
@@ -123,8 +123,7 @@
                     <button class="rss-btn rss-btn--primary rss-btn--sm"
                             onclick="approveConfirm(this, '101', '도시진')"
                             data-mber-seq="101">승인</button>
-                    <button class="rss-btn rss-btn--sm"
-                            style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-muted);"
+                    <button class="rss-btn rss-btn--outline rss-btn--sm"
                             onclick="rejectConfirm(this, '101', '도시진')"
                             data-mber-seq="101">반려</button>
                   </div>
@@ -140,8 +139,7 @@
                     <button class="rss-btn rss-btn--primary rss-btn--sm"
                             onclick="approveConfirm(this, '102', '김소리')"
                             data-mber-seq="102">승인</button>
-                    <button class="rss-btn rss-btn--sm"
-                            style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-muted);"
+                    <button class="rss-btn rss-btn--outline rss-btn--sm"
                             onclick="rejectConfirm(this, '102', '김소리')"
                             data-mber-seq="102">반려</button>
                   </div>
@@ -195,8 +193,7 @@
                 <td class="apv-td-tel">010-2222-7777</td>
                 <td class="apv-td-action">
                   <!-- [Java] th:attr="data-mber-seq=${mber.mberSeq}" -->
-                  <button class="rss-btn rss-btn--sm"
-                          style="background:#6b7280;color:#fff;border:none;"
+                  <button class="rss-btn rss-btn--gray rss-btn--sm"
                           onclick="cancelConfirm(this, '201', '민윤기')"
                           data-mber-seq="201">승인 취소</button>
                 </td>
@@ -207,8 +204,7 @@
                 <td class="apv-td-name">신성민</td>
                 <td class="apv-td-tel">010-8888-4111</td>
                 <td class="apv-td-action">
-                  <button class="rss-btn rss-btn--sm"
-                          style="background:#6b7280;color:#fff;border:none;"
+                  <button class="rss-btn rss-btn--gray rss-btn--sm"
                           onclick="cancelConfirm(this, '202', '신성민')"
                           data-mber-seq="202">승인 취소</button>
                 </td>
@@ -252,8 +248,7 @@
       <p id="apvConfirmMsg" style="font-size:var(--rss-font-base);color:var(--rss-text);line-height:1.7;"></p>
     </div>
     <div class="rss-modal__footer" style="gap:8px;">
-      <button class="rss-btn rss-btn--sm"
-              style="background:var(--rss-bg);border:1px solid var(--rss-border);color:var(--rss-muted);"
+      <button class="rss-btn rss-btn--outline rss-btn--sm"
               onclick="closeApvModal()">취소</button>
       <button class="rss-btn rss-btn--primary rss-btn--sm" id="apvConfirmOkBtn"
               onclick="executeApvAction()">확인</button>
