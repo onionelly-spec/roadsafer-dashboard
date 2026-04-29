@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="rss-common.css" />
+  <link rel="stylesheet" href="rss-common.css?v=764cc1c" />
   <style>
     /* ── 장터 그리드
        스토리보드 §B5 ④: PC 4열, 모바일 2열, 한 페이지 12개
@@ -15,11 +15,11 @@
     .market-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      padding: 20px 24px;
+      gap: 20px;
+      padding: 20px 24px 24px;
     }
     @media (max-width: 1100px) { .market-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 768px)  { .market-grid { grid-template-columns: repeat(2, 1fr); padding: 14px 16px; gap: 10px; } }
+    @media (max-width: 768px)  { .market-grid { grid-template-columns: repeat(2, 1fr); padding: 14px 16px 18px; gap: 14px; } }
     @media (max-width: 400px)  { .market-grid { grid-template-columns: 1fr; } }
 
     /* ── 장터 상품 카드 ── */
@@ -47,14 +47,6 @@
       display: block;
     }
     .market-card__body { padding: 14px 16px 18px; }
-    /* 카테고리 라벨 */
-    .market-card__cat {
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: var(--rss-amber-dark);
-      letter-spacing: 0.02em;
-      margin-bottom: 4px;
-    }
     /* 제목: 카테고리 + 판매 (고정 문구, 스토리보드 §B5 ④) */
     .market-card__title {
       font-size: var(--rss-font-md);
@@ -75,6 +67,33 @@
       align-items: center;
       justify-content: space-between;
     }
+
+    /* ── 모바일: 툴바 한 줄 유지 ── */
+    @media (max-width: 768px) {
+      /* 필터+툴바 래퍼: 모바일에서 세로 스택 */
+      .rss-filter-toolbar-wrap {
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+      /* 툴바: 모바일에서도 한 줄 유지 (내글보기+검색+등록하기) */
+      .rss-filter-toolbar-wrap .rss-board-toolbar {
+        height: auto !important;
+        padding: 10px 16px !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-end;
+        gap: 6px;
+        border-top: 1px solid var(--rss-border);
+      }
+      /* 검색창: flex-grow로 남은 공간 채움 */
+      .rss-filter-toolbar-wrap .rss-board-toolbar .rss-search-wrap {
+        flex: 1;
+        min-width: 0;
+      }
+      /* 내글보기 버튼: 텍스트 숨기고 아이콘만 */
+      .rss-filter-toolbar-wrap .rss-board-toolbar #myPostBtn .btn-text {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -87,31 +106,29 @@
     <main class="rss-content">
       <div class="rss-card" style="padding:0;">
 
-        <!-- ── 카테고리 필터 탭 (공통 .rss-filter-bar + .cat-tab)
-             [Java] GET /market?category={cat}
-             스토리보드 §B5 ①: 카테고리 선택 시 해당 카테고리 상품만 제시
+        <!-- ── 필터 + 툴바 한 줄 (공통 CSS 규칙: 좌=필터, 우=검색+버튼)
+             .rss-filter-toolbar-wrap: PC에서 flex-row 한 줄, 모바일에서 flex-column 스택
         ── -->
-        <div class="rss-filter-bar">
-          <!-- [Java] th:classappend="${param.category == null || param.category == 'all'} ? 'active'" -->
-          <button class="cat-tab active" data-cat="all"      onclick="switchCatTab(this)">전체</button>
-          <button class="cat-tab"        data-cat="sinca"    onclick="switchCatTab(this)">씨인카</button>
-          <button class="cat-tab"        data-cat="sign"     onclick="switchCatTab(this)">간판시설물</button>
-          <button class="cat-tab"        data-cat="safety"   onclick="switchCatTab(this)">안전시설물</button>
-          <button class="cat-tab"        data-cat="sinboard" onclick="switchCatTab(this)">씨인보드</button>
-          <button class="cat-tab"        data-cat="tma"      onclick="switchCatTab(this)">TMA</button>
-        </div>
+        <div class="rss-filter-toolbar-wrap" style="display:flex; align-items:center; border-bottom:1px solid var(--rss-border);">
 
-        <!-- ── 검색 + 내 글 보기 + 등록하기 툴바 (공통 .market-toolbar)
-             [Java] GET /market?myYn=Y&searchKeyword={keyword}
-             스토리보드 §B5 ①②③
-        ── -->
-        <div class="market-toolbar" style="justify-content: space-between;">
-          <div class="rss-board-toolbar__left">
+          <!-- 좌측: 카테고리 필터 탭 -->
+          <div class="rss-filter-bar" style="border-bottom:none; flex:1; min-width:0;">
+            <!-- [Java] th:classappend="${param.category == null || param.category == 'all'} ? 'active'" -->
+            <button class="cat-tab active" data-cat="all"      onclick="switchCatTab(this)">전체</button>
+            <button class="cat-tab"        data-cat="sinca"    onclick="switchCatTab(this)">씨인카</button>
+            <button class="cat-tab"        data-cat="sign"     onclick="switchCatTab(this)">간판시설물</button>
+            <button class="cat-tab"        data-cat="safety"   onclick="switchCatTab(this)">안전시설물</button>
+            <button class="cat-tab"        data-cat="sinboard" onclick="switchCatTab(this)">씨인보드</button>
+            <button class="cat-tab"        data-cat="tma"      onclick="switchCatTab(this)">TMA</button>
+          </div>
+
+          <!-- 우측: 내 글 보기 + 검색 + 등록하기 -->
+          <div class="rss-board-toolbar" style="border-bottom:none; flex-shrink:0; height:62px; padding:0 24px; gap:8px;">
             <!-- 내 글 보기 (스토리보드 §B5 ②) -->
             <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
-            <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" id="myPostBtn"
+            <button type="button" class="rss-btn rss-btn--outline" id="myPostBtn"
                     onclick="toggleMyPost(this)">
-              <i data-lucide="user" style="width:13px;height:13px;"></i>내 글 보기
+              <i data-lucide="user" style="width:14px;height:14px;"></i><span class="btn-text">내 글 보기</span>
             </button>
             <!-- 검색 (스토리보드 §B5 ①) -->
             <div class="rss-search-wrap">
@@ -120,14 +137,13 @@
                 <i data-lucide="search" style="width:15px;height:15px;"></i>
               </button>
             </div>
-          </div>
-          <div class="rss-board-toolbar__right">
             <!-- 등록하기 (스토리보드 §B5 ③) -->
             <a href="market-write.html" class="rss-btn rss-btn--amber">
               <i data-lucide="plus" style="width:14px;height:14px;"></i>등록하기
             </a>
           </div>
-        </div>
+
+        </div><!-- /rss-filter-toolbar-wrap -->
 
         <!-- ── 장터 상품 그리드
              [DB] SELECT * FROM market ORDER BY reg_dtm DESC
@@ -143,7 +159,6 @@
           <a href="market-detail.html" class="market-card">
             <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA-1" alt="씨인카 판매" loading="lazy" />
             <div class="market-card__body">
-              <p class="market-card__cat">씨인카</p>
               <!-- [Java] th:text="${item.categoryLabel} + ' 판매'" -->
               <h3 class="market-card__title">씨인카 판매</h3>
               <div class="market-card__meta">
@@ -157,7 +172,6 @@
           <a href="market-detail.html" class="market-card">
             <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물 판매" loading="lazy" />
             <div class="market-card__body">
-              <p class="market-card__cat">안전시설물</p>
               <h3 class="market-card__title">안전시설물 판매</h3>
               <div class="market-card__meta">
                 <span>2026-06-20</span>
@@ -170,7 +184,6 @@
           <a href="market-detail.html" class="market-card">
             <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=간판시설물" alt="간판시설물 판매" loading="lazy" />
             <div class="market-card__body">
-              <p class="market-card__cat">간판시설물</p>
               <h3 class="market-card__title">간판시설물 판매</h3>
               <div class="market-card__meta">
                 <span>2026-06-19</span>
@@ -183,7 +196,6 @@
           <a href="market-detail.html" class="market-card">
             <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=씨인카" alt="씨인카 판매" loading="lazy" />
             <div class="market-card__body">
-              <p class="market-card__cat">씨인카</p>
               <h3 class="market-card__title">씨인카 판매</h3>
               <div class="market-card__meta">
                 <span>2026-06-18</span>
@@ -196,7 +208,6 @@
           <a href="market-detail.html" class="market-card">
             <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=씨인보드" alt="씨인보드 판매" loading="lazy" />
             <div class="market-card__body">
-              <p class="market-card__cat">씨인보드</p>
               <h3 class="market-card__title">씨인보드 판매</h3>
               <div class="market-card__meta">
                 <span>2026-06-17</span>
@@ -209,7 +220,6 @@
           <a href="market-detail.html" class="market-card">
             <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA" alt="TMA 판매" loading="lazy" />
             <div class="market-card__body">
-              <p class="market-card__cat">TMA</p>
               <h3 class="market-card__title">TMA 판매</h3>
               <div class="market-card__meta">
                 <span>2026-06-16</span>
@@ -222,7 +232,6 @@
           <a href="market-detail.html" class="market-card">
             <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=씨인카" alt="씨인카 판매" loading="lazy" />
             <div class="market-card__body">
-              <p class="market-card__cat">씨인카</p>
               <h3 class="market-card__title">씨인카 판매</h3>
               <div class="market-card__meta">
                 <span>2026-06-15</span>
@@ -235,7 +244,6 @@
           <a href="market-detail.html" class="market-card">
             <img class="market-card__img" src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물" alt="안전시설물 판매" loading="lazy" />
             <div class="market-card__body">
-              <p class="market-card__cat">안전시설물</p>
               <h3 class="market-card__title">안전시설물 판매</h3>
               <div class="market-card__meta">
                 <span>2026-06-12</span>
@@ -283,7 +291,7 @@
   </div><!-- /rss-main -->
 </div><!-- /rss-app -->
 
-<script src="rss-common.js?v=764cc1che_bust"></script>
+<script src="rss-common.js?v=764cc1c"></script>
 <script>
   lucide.createIcons();
 
