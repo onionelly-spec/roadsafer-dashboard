@@ -585,8 +585,13 @@ img { max-width: 100%; display: block; }
   line-height: 1.5;
 }
 
-/* 드롭다운 화살표 여백 개선 */
-.rss-select, select.rss-input {
+/* 드롭다운 화살표 여백 개선 — 모든 select 공통 적용 */
+.rss-select,
+select.rss-input,
+select.rss-form-input,
+.email-domain-select,
+.findid-domain-select,
+.findpw-domain-select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
