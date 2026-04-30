@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 로그인 — 로드세이프티시스템</title>
+  <link rel="icon" href="../../assets/images/favicon.ico" type="image/x-icon">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- 공통 CSS -->
+  <link rel="stylesheet" href="../../rss-common.css" />
+  <!-- 관리자 테마 CSS -->
+  <link rel="stylesheet" href="../adm-common.css" />
+  <style>
+    /* ── 로그인 전체 배경 ── */
+    .adm-login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #bfdbfe; /* blue-200 — 하늘색 배경 */
+      padding: 24px;
+    }
+
+    /* ── 로그인 카드 ── */
+    .adm-login-card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(30, 42, 74, 0.12), 0 2px 8px rgba(30, 42, 74, 0.06);
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* ── 로고 영역 ── */
+    .adm-login-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+    .adm-login-logo img {
+      height: 52px;
+      width: auto;
+      object-fit: contain;
+    }
+    .adm-login-logo__text {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e2a4a;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── 폼 필드 레이블 ── */
+    .adm-login-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    /* ── 입력 필드 ── */
+    .adm-login-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #1a1c23;
+      background: #f9fafb;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .adm-login-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      background: #ffffff;
+    }
+    .adm-login-input.is-error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+    }
+    .adm-login-input::placeholder {
+      color: #9ca3af;
+    }
+
+    /* ── 에러 메시지 ── */
+    .adm-login-error {
+      display: none;
+      font-size: 12px;
+      color: #ef4444;
+      margin-top: 6px;
+    }
+    .adm-login-error.is-visible {
+      display: block;
+    }
+
+    /* ── 아이디 저장 체크박스 행 ── */
+    .adm-login-remember {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 16px 0 24px;
+    }
+    .adm-login-remember input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #3b82f6;
+      cursor: pointer;
+    }
+    .adm-login-remember label {
+      font-size: 14px;
+      color: #374151;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* ── 로그인 버튼 ── */
+    .adm-login-btn {
+      width: 100%;
+      height: 52px;
+      background: #3b82f6;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .adm-login-btn:hover {
+      background: #1d4ed8;
+    }
+    .adm-login-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ── 반응형 ── */
+    @media (max-width: 480px) {
+      .adm-login-card {
+        padding: 36px 24px 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- =====================================================
+     관리자 로그인 페이지
+     URL: /adm/ath/parLoginForm.do
+     경로: 접속 > 관리자 로그인
+     ===================================================== -->
+<div class="adm-login-page">
+  <main role="main" aria-label="관리자 로그인 폼">
+    <div class="adm-login-card">
+
+      <!-- 로고 -->
+      <div class="adm-login-logo">
+        <!-- [Java] 로고 이미지 경로는 서버 컨텍스트 루트 기준으로 변경 -->
+        <img src="../../assets/images/logo.png" alt="로드세이프티시스템 로고" onerror="this.style.display='none';document.getElementById('adm-logo-text-only').style.display='block';" />
+        <span id="adm-logo-text-only" style="display:none;font-size:18px;font-weight:800;color:#1e2a4a;letter-spacing:-0.01em;">로드세이프티시스템</span>
+        <span class="adm-login-logo__text">운영관리시스템</span>
+      </div>
+
+      <!-- 로그인 폼 -->
+      <!-- [Java] action="/adm/ath/parLogin.do" method="POST" th:action="@{/adm/ath/parLogin.do}" -->
+      <form id="admLoginForm" onsubmit="handleAdmLogin(event)" novalidate>
+
+        <!-- ADMIN ID -->
+        <div style="margin-bottom: 20px;">
+          <label class="adm-login-label" for="admUserId">Admin ID</label>
+          <!-- [Java] th:value="${savedId}" (아이디 저장 기능) -->
+          <input
+            type="text"
+            id="admUserId"
+            name="admUserId"
+            class="adm-login-input"
+            placeholder="관리자 아이디"
+            autocomplete="username"
+            required
+          />
+          <span id="admUserIdError" class="adm-login-error">아이디를 입력해 주세요.</span>
+        </div>
+
+        <!-- PASSWORD -->
+        <div>
+          <label class="adm-login-label" for="admUserPw">Password</label>
+          <!-- [Java] 비밀번호는 서버에서 바인딩하지 않음 -->
+          <input
+            type="password"
+            id="admUserPw"
+            name="admUserPw"
+            class="adm-login-input"
+            placeholder="비밀번호"
+            autocomplete="current-password"
+            required
+          />
+          <span id="admUserPwError" class="adm-login-error">비밀번호를 입력해 주세요.</span>
+        </div>
+
+        <!-- 아이디 저장 -->
+        <div class="adm-login-remember">
+          <!-- [Java] th:checked="${savedIdChecked}" -->
+          <input type="checkbox" id="admSaveId" name="admSaveId" />
+          <label for="admSaveId">아이디 저장</label>
+        </div>
+
+        <!-- 로그인 실패 공통 에러 -->
+        <!-- [Java] th:if="${loginError}" -->
+        <div id="admLoginGlobalError" class="adm-login-error" style="margin-bottom: 12px; font-size: 13px; text-align: center;">
+          <!-- [Java] th:text="${loginErrorMsg}" -->
+          아이디 또는 비밀번호가 올바르지 않습니다.
+        </div>
+
+        <!-- 로그인 버튼 -->
+        <button type="submit" class="adm-login-btn">로그인</button>
+
+      </form>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  /* ── 관리자 로그인 처리 ── */
+  function handleAdmLogin(event) {
+    event.preventDefault();
+
+    const userId = document.getElementById('admUserId');
+    const userPw = document.getElementById('admUserPw');
+    const userIdError = document.getElementById('admUserIdError');
+    const userPwError = document.getElementById('admUserPwError');
+    const globalError = document.getElementById('admLoginGlobalError');
+
+    let isValid = true;
+
+    /* 입력값 초기화 */
+    userId.classList.remove('is-error');
+    userPw.classList.remove('is-error');
+    userIdError.classList.remove('is-visible');
+    userPwError.classList.remove('is-visible');
+    globalError.classList.remove('is-visible');
+
+    /* 아이디 유효성 검사 */
+    if (!userId.value.trim()) {
+      userId.classList.add('is-error');
+      userIdError.textContent = '아이디를 입력해 주세요.';
+      userIdError.classList.add('is-visible');
+      isValid = false;
+    }
+
+    /* 비밀번호 유효성 검사 */
+    if (!userPw.value.trim()) {
+      userPw.classList.add('is-error');
+      userPwError.textContent = '비밀번호를 입력해 주세요.';
+      userPwError.classList.add('is-visible');
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    /* [Java] 서버 로그인 요청 — POST /adm/ath/parLogin.do
+       성공: 공사관리 목록(/adm/cns/cnsListForm.do)으로 이동
+       실패: loginError=true, loginErrorMsg 모델 반환 → 에러 메시지 표시
+    */
+
+    /* 퍼블리싱 테스트: 더미 로그인 처리 */
+    const DUMMY_ID = 'admin';
+    const DUMMY_PW = 'admin1234';
+
+    if (userId.value === DUMMY_ID && userPw.value === DUMMY_PW) {
+      /* 아이디 저장 처리 */
+      if (document.getElementById('admSaveId').checked) {
+        localStorage.setItem('adm_saved_id', userId.value);
+      } else {
+        localStorage.removeItem('adm_saved_id');
+      }
+      /* 로그인 성공 → 공사관리 목록으로 이동 */
+      /* [Java] 서버에서 redirect:/adm/cns/cnsListForm.do 처리 */
+      sessionStorage.setItem('adm_user_id', userId.value);
+      sessionStorage.setItem('adm_user_name', '통합관리자');
+      sessionStorage.setItem('adm_user_role', 'master');
+      window.location.href = '../cns/cnsListForm.html';
+    } else {
+      /* 로그인 실패 */
+      userId.classList.add('is-error');
+      userPw.classList.add('is-error');
+      globalError.classList.add('is-visible');
+      userPw.value = '';
+      userPw.focus();
+    }
+  }
+
+  /* ── 아이디 저장 복원 ── */
+  /* [Java] 서버에서 th:value="${savedId}"로 처리하므로 JS는 퍼블리싱 전용 */
+  (function restoreSavedId() {
+    const savedId = localStorage.getItem('adm_saved_id');
+    if (savedId) {
+      document.getElementById('admUserId').value = savedId;
+      document.getElementById('admSaveId').checked = true;
+    }
+  })();
+
+  /* ── Lucide 아이콘 초기화 ── */
+  lucide.createIcons();
+</script>
+
+</body>
+</html>
