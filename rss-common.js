@@ -779,8 +779,8 @@ RSS.action = (function() {
     cancelSimpleYes: function() {
       /* [Java] POST /construction/block-cancel { constructionSeq } */
       this.closeModal('rssModalCancelSimple');
-      /* 취소 완료 후 내 공사현황 목록으로 이동 (해당 행 사라짐) */
-      location.href = 'construction-list.html';
+      /* 취소 완료 후 페이지 새로고침 */
+      location.reload();
     },
 
     cancelSimpleNo: function() {
