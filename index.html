@@ -28,13 +28,16 @@
       font-size: var(--rss-font-base);
       color: var(--rss-muted);
       display: flex;
-      gap: 6px;
+      align-items: baseline;
+      gap: 8px;
     }
     .company-card__meta strong {
       font-size: var(--rss-font-sm);
       font-weight: 600;
       color: #9ca3af;
-      min-width: 44px;
+      min-width: 40px;
+      flex-shrink: 0;
+      display: inline-block;
     }
 
     /* ① 회사정보 + 퀵메뉴 1줄 래퍼 (데스크탑) */
