@@ -19,14 +19,14 @@
     ══════════════════════════════════════════════════ */
 
     /* ── 전체 페이지 ── */
-    .findid-page {
+    .login-page {
       min-height: 100vh;
       display: flex;
       background: #f0ede6;
     }
 
-    /* ── 왼쪽 비주얼 패널 ── */
-    .findid-visual {
+    /* ── 왼쪽 비주얼 패널 (login.html 공통 스타일 재사용) ── */
+    .login-visual {
       display: none;
       flex-direction: column;
       align-items: center;
@@ -37,9 +37,9 @@
       background: #f0ede6;
     }
     @media (min-width: 1024px) {
-      .findid-visual { display: flex; }
+      .login-visual { display: flex; }
     }
-    .findid-visual__content {
+    .login-visual__content {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -47,13 +47,13 @@
       padding: 48px;
       text-align: center;
     }
-    .findid-logo-wrap {
+    .login-logo-wrap {
       position: relative;
       width: 180px;
       height: 180px;
       margin-bottom: 40px;
     }
-    .findid-logo-circle {
+    .login-logo-circle {
       position: absolute;
       inset: 20px;
       border-radius: 50%;
@@ -64,12 +64,12 @@
       justify-content: center;
       overflow: hidden;
     }
-    .findid-logo-circle img {
+    .login-logo-circle img {
       width: 80%;
       height: auto;
       object-fit: contain;
     }
-    .findid-icon-badge {
+    .login-icon-badge {
       position: absolute;
       width: 40px;
       height: 40px;
@@ -80,15 +80,15 @@
       justify-content: center;
       box-shadow: 0 4px 12px rgba(245,158,11,0.35);
     }
-    .findid-icon-badge svg {
+    .login-icon-badge svg {
       width: 18px;
       height: 18px;
       color: #ffffff;
       stroke: #ffffff;
     }
-    .findid-icon-badge--top-right { top: 4px; right: 4px; }
-    .findid-icon-badge--bottom-left { bottom: 4px; left: 4px; }
-    .findid-visual__headline {
+    .login-icon-badge--top-right { top: 4px; right: 4px; }
+    .login-icon-badge--bottom-left { bottom: 4px; left: 4px; }
+    .login-visual__headline {
       font-size: 30px;
       font-weight: 800;
       color: #1a1c23;
@@ -96,12 +96,12 @@
       letter-spacing: -0.02em;
       margin-bottom: 14px;
     }
-    .findid-visual__desc {
+    .login-visual__desc {
       font-size: var(--rss-font-base);
       color: #7c7c7c;
       line-height: 1.9;
     }
-    .findid-visual__footer {
+    .login-visual__footer {
       font-size: var(--rss-font-sm);
       color: #b8b2a8;
       position: absolute;
@@ -109,7 +109,7 @@
     }
 
     /* ── 오른쪽 폼 패널 ── */
-    .findid-form-panel {
+    .login-form-panel {
       flex: 3;
       display: flex;
       flex-direction: column;
@@ -119,7 +119,7 @@
       background: #f5f2eb;
     }
     @media (max-width: 640px) {
-      .findid-form-panel { padding: 24px 20px; }
+      .login-form-panel { padding: 24px 20px; }
     }
 
     /* ── 카드 ── */
@@ -329,33 +329,33 @@
 </head>
 <body>
 
-<div class="findid-page">
+<div class="login-page">
 
-  <!-- ══ 왼쪽 비주얼 패널 ══ -->
-  <div class="findid-visual">
-    <div class="findid-visual__content">
-      <div class="findid-logo-wrap">
-        <div class="findid-logo-circle">
-          <img src="assets/images/logo.png" alt="로드세이프티시스템 로고" onerror="this.src='img-placeholder.png'" />
+  <!-- ══ 왼쪽 비주얼 패널 (login.html과 동일) ══ -->
+  <aside class="login-visual" aria-hidden="true">
+    <div class="login-visual__content">
+      <div class="login-logo-wrap">
+        <div class="login-logo-circle">
+          <img src="assets/images/logo-rss-new.png" alt="RSS 로고">
         </div>
-        <div class="findid-icon-badge findid-icon-badge--top-right">
-          <i data-lucide="shield-check"></i>
+        <div class="login-icon-badge login-icon-badge--top-right">
+          <i data-lucide="shield-check" style="width:20px;height:20px;"></i>
         </div>
-        <div class="findid-icon-badge findid-icon-badge--bottom-left">
-          <i data-lucide="truck"></i>
+        <div class="login-icon-badge login-icon-badge--bottom-left">
+          <i data-lucide="lock" style="width:20px;height:20px;"></i>
         </div>
       </div>
-      <p class="findid-visual__headline">도로 안전을<br>함께 지킵니다</p>
-      <p class="findid-visual__desc">
-        가입 시 등록한 정보로<br>
-        아이디를 확인하세요.
+      <h1 class="login-visual__headline">로드세이프티<br>시스템</h1>
+      <p class="login-visual__desc">
+        안전한 도로 공사 관리<br>
+        효율적인 차단 기업 운영
       </p>
+      <p class="login-visual__footer">COPYRIGHTS © 2026 한국도로차단. ALL RIGHTS RESERVED.</p>
     </div>
-    <p class="findid-visual__footer">© 2025 로드세이프티시스템. All rights reserved.</p>
-  </div>
+  </aside>
 
   <!-- ══ 오른쪽 폼 패널 ══ -->
-  <div class="findid-form-panel">
+  <div class="login-form-panel">
     <div class="findid-card">
       <div class="findid-card__top-line"></div>
       <div class="findid-card__body">
