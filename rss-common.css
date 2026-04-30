@@ -849,7 +849,7 @@ select.rss-form-input,
   text-align: left; /* 상세 키/값 테이블 값 열은 left */
 }
 .rss-table--detail tr:hover td { background: #fafafa; }
-.rss-table--detail tr:last-child td { border-bottom: 1px solid var(--rss-border); }
+.rss-table--detail tr:last-child td { border-bottom: none; }
 @media (max-width: 640px) {
   .rss-table--detail th { width: 80px; min-width: 80px; padding: 10px 8px; font-size: var(--rss-font-sm); white-space: normal; word-break: keep-all; }
   .rss-table--detail td { padding: 10px 10px; font-size: var(--rss-font-base); }
