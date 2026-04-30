@@ -593,7 +593,7 @@ RSS.action = (function() {
   <div class="rss-modal" role="dialog" aria-modal="true">
     <p class="rss-modal__title">오늘 완료</p>
     <p class="rss-modal__body">
-      투입된 씨인카 수량이 바뀌었다면 콜센터
+      우링된 싸인카 수량이 바뀌었다면 콜센터
       <span class="highlight">(1566-0000)</span>으로 연락해주세요.<br><br>
       수량이 바뀌었나요?
     </p>
