@@ -311,6 +311,8 @@
                   <option value="direct">직접입력</option>
                 </select>
               </div>
+              <!-- [Java] POST /profile/check-email { email, mberSeq } → { duplicate: true/false } -->
+              <p id="emailDupMsg" class="rss-form-hint rss-form-hint--error" style="display:none;">이미 등록된 이메일입니다.</p>
               <!-- [DB] tbl_mber.email_receive_yn -->
               <div class="receive-radio-wrap" style="margin-top:6px;">
                 <span>* 이메일 수신 :</span>
@@ -318,8 +320,7 @@
                 <label><input type="radio" name="emailReceiveYn" value="N" /> 거부</label>
               </div>
             </div>
-
-            <!-- 사업장 주소 -->
+            <!-- 사업장 주소 -->>
             <div class="rss-form-row">
               <span class="rss-form-label">사업장 주소 <span class="required">*</span></span>
               <!-- [DB] tbl_company.biz_post_code / biz_addr_main / biz_addr_detail -->
@@ -591,7 +592,57 @@
     if (val === 'direct') { d.value = ''; d.readOnly = false; d.focus(); }
     else if (val) { d.value = val; d.readOnly = true; }
     else { d.readOnly = false; }
+    resetEmailDup();
   }
+
+  /* ── 이메일 중복 체크 ── */
+  var _emailDuplicated = false;
+
+  function resetEmailDup() {
+    _emailDuplicated = false;
+    var msg = document.getElementById('emailDupMsg');
+    if (msg) msg.style.display = 'none';
+    var ei = document.getElementById('emailId');
+    var ed = document.getElementById('emailDomain');
+    if (ei) ei.style.borderColor = '';
+    if (ed) ed.style.borderColor = '';
+  }
+
+  function checkEmailDuplicate() {
+    var emailId  = (document.getElementById('emailId')     || {}).value || '';
+    var emailDom = (document.getElementById('emailDomain') || {}).value || '';
+    if (!emailId.trim() || !emailDom.trim()) { resetEmailDup(); return; }
+    var fullEmail = emailId.trim() + '@' + emailDom.trim();
+    /* [Java] 실제 구현 시 fetch 주석 해제:
+       fetch('/profile/check-email', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ email: fullEmail, mberSeq: CURRENT_MBER_SEQ })
+       }).then(r => r.json()).then(data => {
+         if (data.duplicate) showEmailDupError(); else resetEmailDup();
+       });
+    */
+    var DUMMY_DUPLICATES = ['test@naver.com', 'admin@gmail.com', 'road@daum.net'];
+    if (DUMMY_DUPLICATES.indexOf(fullEmail.toLowerCase()) !== -1) showEmailDupError();
+    else resetEmailDup();
+  }
+
+  function showEmailDupError() {
+    _emailDuplicated = true;
+    var msg = document.getElementById('emailDupMsg');
+    if (msg) msg.style.display = 'block';
+    var ei = document.getElementById('emailId');
+    var ed = document.getElementById('emailDomain');
+    if (ei) ei.style.borderColor = '#ef4444';
+    if (ed) ed.style.borderColor = '#ef4444';
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var ei = document.getElementById('emailId');
+    var ed = document.getElementById('emailDomain');
+    if (ei) { ei.addEventListener('input', resetEmailDup); ei.addEventListener('blur', checkEmailDuplicate); }
+    if (ed) { ed.addEventListener('input', resetEmailDup); ed.addEventListener('blur', checkEmailDuplicate); }
+  });
 
   /* ── 주소 찾기 ── */
   function searchAddress() {
@@ -650,6 +701,14 @@
         if (el) el.focus();
         return;
       }
+    }
+    /* 이메일 중복 체크 */
+    if (_emailDuplicated) {
+      document.getElementById('modalValidMsg').textContent = '이메일 주소를 확인하세요.';
+      document.getElementById('modalValidAlert').classList.add('open');
+      lucide.createIcons();
+      document.getElementById('emailId').focus();
+      return;
     }
     document.getElementById('modalSaveConfirm').classList.add('open');
     lucide.createIcons();
