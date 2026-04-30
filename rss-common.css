@@ -94,7 +94,7 @@ img { max-width: 100%; display: block; }
   flex-direction: column;
   z-index: 100;
   transition: width 0.25s ease, transform 0.25s ease;
-  overflow: hidden;
+  overflow: visible; /* collapse 버튼이 사이드바 밖으로 나오도록 */
 }
 .rss-sidebar.collapsed {
   width: var(--rss-sidebar-w-sm);
