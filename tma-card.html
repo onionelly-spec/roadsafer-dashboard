@@ -414,14 +414,14 @@
 
         <!-- [용어사전 §14-3] tmaOwner: TMA 소유주 -->
         <div class="rss-form-row">
-          <label class="rss-form-label" for="tmaOwner">소유주</label>
+          <label class="rss-form-label" for="tmaOwner">소유주<span class="required">*</span></label>
           <!-- [DB] 컬럼: tma_card.tma_owner -->
           <input type="text" name="tmaOwner" id="tmaOwner" class="rss-form-input" placeholder="소유주 이름 입력" />
         </div>
 
         <!-- [용어사전 §14-3] tmaFile / tmaFileNm: TMA 파일 / 파일명 -->
         <div class="rss-form-row">
-          <label class="rss-form-label" for="tmaFile">파일</label>
+          <label class="rss-form-label" for="tmaFile">파일<span class="required">*</span></label>
           <!-- [DB] 컬럼: tma_card.tma_file_nm, tma_card.tma_file_path -->
           <input type="file" name="tmaFile" id="tmaFile" style="display:none;"
                  accept=".pdf,.jpg,.jpeg,.png"
@@ -503,10 +503,15 @@
      [용어사전 §9] reg = 등록, mod = 수정
   ─────────────────────────────────────────────────────────── */
   function submitTmaForm() {
-    var tmaType  = document.getElementById('tmaType').value;
-    var tmaCarNo = document.getElementById('tmaCarNo').value.trim();
-    if (!tmaType)  { alert('종류를 선택해주세요.'); return; }
-    if (!tmaCarNo) { alert('차량번호를 입력해주세요.'); return; }
+    var tmaType   = document.getElementById('tmaType').value;
+    var tmaCarNo  = document.getElementById('tmaCarNo').value.trim();
+    var tmaOwner  = document.getElementById('tmaOwner').value.trim();
+    var tmaFile   = document.getElementById('tmaFile');
+    var hasFile   = tmaFile.files && tmaFile.files.length > 0;
+    if (!tmaType)   { alert('종류를 선택해주세요.'); return; }
+    if (!tmaCarNo)  { alert('차량번호를 입력해주세요.'); return; }
+    if (!tmaOwner)  { alert('소유주를 입력해주세요.'); return; }
+    if (!hasFile)   { alert('파일을 선택해주세요.'); return; }
     /* [Java] document.getElementById('tmaForm').submit(); */
     alert('저장되었습니다. (더미 동작)');
     closeTmaModal();
