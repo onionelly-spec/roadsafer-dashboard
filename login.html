@@ -543,23 +543,7 @@
 
 </div>
 
-<!-- ══════════════════════════════════════════════════════
-     찾기 모달 (아이디 찾기 / 비밀번호 찾기)
-══════════════════════════════════════════════════════ -->
-<div id="findModal" class="rss-modal-backdrop" style="display:none;">
-  <div class="rss-modal">
-    <p class="rss-modal__title">아이디 찾기</p>
-    <p class="rss-modal__body">
-      가입 시 등록하신 이메일을 입력하면<br>
-      아이디를 알려드립니다.
-    </p>
-    <input type="email" id="findEmail" class="rss-modal-input" placeholder="이메일 주소" />
-    <div class="rss-modal__footer">
-      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="closeFindModal()">취소</button>
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm" onclick="submitFindId()">확인</button>
-    </div>
-  </div>
-</div>
+<!-- [L1] 아이디 찾기: find-id.html 페이지로 이동 (기존 모달 제거) -->
 
 <script>
   /* ── 비밀번호 표시/숨김 토글 ── */
@@ -584,24 +568,6 @@
     window.location.href = 'index.html';
   }
 
-  /* ── 찾기 모달 열기/닫기 ── */
-  function openFindModal() {
-    document.getElementById('findModal').style.display = 'flex';
-  }
-  function closeFindModal() {
-    document.getElementById('findModal').style.display = 'none';
-  }
-  function submitFindId() {
-    const email = document.getElementById('findEmail').value;
-    console.log('아이디 찾기 요청:', email);
-    closeFindModal();
-  }
-
-  /* ── 모달 배경 클릭 시 닫기 ── */
-  document.getElementById('findModal').addEventListener('click', function(e) {
-    if (e.target === this) closeFindModal();
-  });
-
   /* ── Lucide 아이콘 초기화 ── */
   lucide.createIcons();
 
@@ -624,13 +590,16 @@
   }
 
   /* ── 찾기 링크 이벤트 ── */
+  /* [L1] 아이디 찾기 → find-id.html 페이지로 이동 */
   document.getElementById('findIdLink').addEventListener('click', function(e) {
     e.preventDefault();
-    openFindModal();
+    window.location.href = 'find-id.html';
   });
+  /* [L2] 비밀번호 찾기 → 추후 find-pw.html 연결 예정 */
   document.getElementById('findPwLink').addEventListener('click', function(e) {
     e.preventDefault();
-    openFindModal();
+    /* [Java] 비밀번호 찾기 페이지 연결 시 window.location.href = 'find-pw.html'; */
+    alert('비밀번호 찾기 페이지는 준비 중입니다.');
   });
 </script>
 

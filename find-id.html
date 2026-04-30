@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>아이디 찾기 — 로드세이프티시스템</title>
+  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- 공통 커스텀 CSS -->
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ══════════════════════════════════════════════════
+       find-id.html 전용 CSS
+       §20 아이디 찾기 (L1 / L1-1)
+       login.html 스타일 체계 기반
+    ══════════════════════════════════════════════════ */
+
+    /* ── 전체 페이지 ── */
+    .findid-page {
+      min-height: 100vh;
+      display: flex;
+      background: #f0ede6;
+    }
+
+    /* ── 왼쪽 비주얼 패널 ── */
+    .findid-visual {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 2;
+      position: relative;
+      overflow: hidden;
+      background: #f0ede6;
+    }
+    @media (min-width: 1024px) {
+      .findid-visual { display: flex; }
+    }
+    .findid-visual__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      text-align: center;
+    }
+    .findid-logo-wrap {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin-bottom: 40px;
+    }
+    .findid-logo-circle {
+      position: absolute;
+      inset: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .findid-logo-circle img {
+      width: 80%;
+      height: auto;
+      object-fit: contain;
+    }
+    .findid-icon-badge {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #F59E0B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.35);
+    }
+    .findid-icon-badge svg {
+      width: 18px;
+      height: 18px;
+      color: #ffffff;
+      stroke: #ffffff;
+    }
+    .findid-icon-badge--top-right { top: 4px; right: 4px; }
+    .findid-icon-badge--bottom-left { bottom: 4px; left: 4px; }
+    .findid-visual__headline {
+      font-size: 30px;
+      font-weight: 800;
+      color: #1a1c23;
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .findid-visual__desc {
+      font-size: var(--rss-font-base);
+      color: #7c7c7c;
+      line-height: 1.9;
+    }
+    .findid-visual__footer {
+      font-size: var(--rss-font-sm);
+      color: #b8b2a8;
+      position: absolute;
+      bottom: 28px;
+    }
+
+    /* ── 오른쪽 폼 패널 ── */
+    .findid-form-panel {
+      flex: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 48px;
+      background: #f5f2eb;
+    }
+    @media (max-width: 640px) {
+      .findid-form-panel { padding: 24px 20px; }
+    }
+
+    /* ── 카드 ── */
+    .findid-card {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .findid-card__top-line {
+      height: 4px;
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
+    }
+    .findid-card__body {
+      padding: 28px 28px 24px;
+    }
+    .findid-card__title {
+      font-size: var(--rss-font-2xl);
+      font-weight: 800;
+      color: #1a1c23;
+      text-align: center;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+    .findid-card__subtitle {
+      font-size: var(--rss-font-base);
+      color: #9ca3af;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    /* ── 입력 폼 영역 (L1) ── */
+    .findid-form { display: flex; flex-direction: column; gap: 14px; }
+
+    /* 라벨 + 인풋 묶음 */
+    .findid-field { display: flex; flex-direction: column; gap: 5px; }
+    .findid-label {
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: #374151;
+    }
+
+    /* 공통 인풋 (reg-input 체계와 동일) */
+    .findid-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    .findid-input:focus { border-color: var(--rss-amber); background: #fff; }
+    .findid-input::placeholder { color: #c4c9d4; }
+    .findid-input--error { border-color: #ef4444 !important; }
+
+    /* 사업자번호 분리 입력 (split-wrap 체계와 동일) */
+    .findid-split {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .findid-split .findid-input { flex: 1; min-width: 50px; }
+    .findid-sep {
+      font-size: var(--rss-font-md);
+      color: var(--rss-muted);
+      flex-shrink: 0;
+    }
+
+    /* 이메일 입력 (email-wrap 체계와 동일) */
+    .findid-email {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .findid-email .findid-input { flex: 1; min-width: 80px; }
+    .findid-at {
+      font-size: var(--rss-font-md);
+      color: var(--rss-muted);
+      flex-shrink: 0;
+    }
+    .findid-domain-select {
+      padding: 9px 10px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    .findid-domain-select:focus { border-color: var(--rss-amber); background: #fff; }
+
+    /* 오류 힌트 */
+    .findid-hint {
+      font-size: var(--rss-font-xs);
+      color: var(--rss-muted);
+      margin-top: 3px;
+    }
+    .findid-hint--error { color: #ef4444; font-weight: 600; }
+
+    /* 확인 버튼 */
+    .findid-submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: #F59E0B;
+      color: #ffffff;
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s;
+      margin-top: 6px;
+    }
+    .findid-submit-btn:hover { background: #d97706; }
+
+    /* 로그인으로 돌아가기 링크 */
+    .findid-back-link {
+      text-align: center;
+      margin-top: 16px;
+      font-size: var(--rss-font-sm);
+      color: #9ca3af;
+    }
+    .findid-back-link a {
+      color: #F59E0B;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .findid-back-link a:hover { color: #d97706; }
+
+    /* ── 결과 화면 (L1-1) ── */
+    #findid-result { display: none; }
+    .findid-result__label {
+      font-size: var(--rss-font-base);
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .findid-result__id-box {
+      width: 100%;
+      padding: 14px 16px;
+      background: #f9fafb;
+      border: 1.5px solid #e5e7eb;
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-lg);
+      font-weight: 700;
+      color: #1a1c23;
+      text-align: center;
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+    }
+    .findid-login-btn {
+      width: 100%;
+      padding: 13px;
+      background: #F59E0B;
+      color: #ffffff;
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s;
+      text-decoration: none;
+    }
+    .findid-login-btn:hover { background: #d97706; }
+
+    /* ── 불일치 오류 메시지 ── */
+    .findid-no-match {
+      display: none;
+      padding: 10px 14px;
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-sm);
+      color: #ef4444;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* ── 모바일 반응형 ── */
+    @media (max-width: 640px) {
+      .findid-at { display: none; }
+      .findid-email { flex-direction: column; align-items: stretch; }
+      .findid-email .findid-input { min-width: unset; }
+      .findid-domain-select { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="findid-page">
+
+  <!-- ══ 왼쪽 비주얼 패널 ══ -->
+  <div class="findid-visual">
+    <div class="findid-visual__content">
+      <div class="findid-logo-wrap">
+        <div class="findid-logo-circle">
+          <img src="assets/images/logo.png" alt="로드세이프티시스템 로고" onerror="this.src='img-placeholder.png'" />
+        </div>
+        <div class="findid-icon-badge findid-icon-badge--top-right">
+          <i data-lucide="shield-check"></i>
+        </div>
+        <div class="findid-icon-badge findid-icon-badge--bottom-left">
+          <i data-lucide="truck"></i>
+        </div>
+      </div>
+      <p class="findid-visual__headline">도로 안전을<br>함께 지킵니다</p>
+      <p class="findid-visual__desc">
+        가입 시 등록한 정보로<br>
+        아이디를 확인하세요.
+      </p>
+    </div>
+    <p class="findid-visual__footer">© 2025 로드세이프티시스템. All rights reserved.</p>
+  </div>
+
+  <!-- ══ 오른쪽 폼 패널 ══ -->
+  <div class="findid-form-panel">
+    <div class="findid-card">
+      <div class="findid-card__top-line"></div>
+      <div class="findid-card__body">
+
+        <!-- ── L1: 입력 화면 ── -->
+        <div id="findid-input-section">
+          <p class="findid-card__title">아이디 찾기</p>
+          <p class="findid-card__subtitle">가입 시 정보를 입력하고 확인을 누르세요.</p>
+
+          <form class="findid-form" onsubmit="submitFindId(event)">
+
+            <!-- 상호 -->
+            <!-- [DB] tbl_company.company_nm -->
+            <div class="findid-field">
+              <label class="findid-label" for="findCompanyNm">상호</label>
+              <input type="text" id="findCompanyNm" class="findid-input"
+                     placeholder="가입 시 등록한 상호를 입력하세요" autocomplete="organization" />
+            </div>
+
+            <!-- 사업자등록번호 -->
+            <!-- [DB] tbl_company.biz_reg_no -->
+            <div class="findid-field">
+              <label class="findid-label">사업자등록번호</label>
+              <div class="findid-split">
+                <input type="text" id="findBizNo1" class="findid-input"
+                       placeholder="000" maxlength="3" inputmode="numeric"
+                       oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length===3) document.getElementById('findBizNo2').focus();" />
+                <span class="findid-sep">-</span>
+                <input type="text" id="findBizNo2" class="findid-input"
+                       placeholder="00" maxlength="2" inputmode="numeric"
+                       oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length===2) document.getElementById('findBizNo3').focus();" />
+                <span class="findid-sep">-</span>
+                <input type="text" id="findBizNo3" class="findid-input"
+                       placeholder="00000" maxlength="5" inputmode="numeric"
+                       oninput="this.value=this.value.replace(/\D/g,'')" />
+              </div>
+            </div>
+
+            <!-- 이메일 주소 -->
+            <!-- [DB] tbl_mber.email_id + tbl_mber.email_domain -->
+            <div class="findid-field">
+              <label class="findid-label">이메일 주소</label>
+              <div class="findid-email">
+                <input type="text" id="findEmailId" class="findid-input"
+                       placeholder="이메일 아이디" autocomplete="email" />
+                <span class="findid-at">@</span>
+                <input type="text" id="findEmailDomain" class="findid-input"
+                       placeholder="도메인" />
+                <select id="findEmailDomainSelect" class="findid-domain-select"
+                        onchange="applyFindEmailDomain(this.value)">
+                  <option value="">선택</option>
+                  <option value="naver.com">naver.com</option>
+                  <option value="gmail.com">gmail.com</option>
+                  <option value="daum.net">daum.net</option>
+                  <option value="kakao.com">kakao.com</option>
+                  <option value="nate.com">nate.com</option>
+                  <option value="hanmail.net">hanmail.net</option>
+                  <option value="outlook.com">outlook.com</option>
+                  <option value="hotmail.com">hotmail.com</option>
+                  <option value="yahoo.co.kr">yahoo.co.kr</option>
+                  <option value="direct">직접입력</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 불일치 오류 메시지 -->
+            <p id="findid-no-match" class="findid-no-match">일치하는 정보가 없습니다.</p>
+
+            <!-- 확인 버튼 -->
+            <button type="submit" class="findid-submit-btn">
+              <i data-lucide="search"></i>
+              확인
+            </button>
+          </form>
+
+          <p class="findid-back-link">
+            <a href="login.html">← 로그인으로 돌아가기</a>
+          </p>
+        </div><!-- /#findid-input-section -->
+
+        <!-- ── L1-1: 결과 화면 ── -->
+        <div id="findid-result">
+          <p class="findid-card__title">아이디 찾기</p>
+          <p class="findid-card__subtitle" style="margin-bottom:20px;"></p>
+
+          <p class="findid-result__label">가입된 아이디입니다</p>
+          <!-- [DB] tbl_mber.mber_id -->
+          <div id="findid-result-id" class="findid-result__id-box">hoonjs80</div>
+
+          <a href="login.html" class="findid-login-btn">
+            <i data-lucide="log-in"></i>
+            로그인
+          </a>
+
+          <p class="findid-back-link" style="margin-top:14px;">
+            <a href="find-id.html">다시 찾기</a>
+          </p>
+        </div><!-- /#findid-result -->
+
+      </div><!-- /.findid-card__body -->
+    </div><!-- /.findid-card -->
+  </div><!-- /.findid-form-panel -->
+
+</div><!-- /.findid-page -->
+
+<script>
+  lucide.createIcons();
+
+  /* ── 이메일 도메인 선택 ── */
+  function applyFindEmailDomain(val) {
+    var d = document.getElementById('findEmailDomain');
+    if (val === 'direct' || val === '') {
+      d.value = '';
+      d.readOnly = false;
+      if (val === 'direct') d.focus();
+    } else {
+      d.value = val;
+      d.readOnly = true;
+    }
+  }
+
+  /* ── 아이디 찾기 제출 ── */
+  function submitFindId(event) {
+    event.preventDefault();
+
+    var companyNm = document.getElementById('findCompanyNm').value.trim();
+    var bizNo1    = document.getElementById('findBizNo1').value.trim();
+    var bizNo2    = document.getElementById('findBizNo2').value.trim();
+    var bizNo3    = document.getElementById('findBizNo3').value.trim();
+    var emailId   = document.getElementById('findEmailId').value.trim();
+    var emailDom  = document.getElementById('findEmailDomain').value.trim();
+
+    /* 입력 검증 */
+    if (!companyNm || !bizNo1 || !bizNo2 || !bizNo3 || !emailId || !emailDom) {
+      document.getElementById('findid-no-match').style.display = 'none';
+      /* 빈 항목 강조 */
+      highlightEmpty();
+      return;
+    }
+
+    var bizNo    = bizNo1 + '-' + bizNo2 + '-' + bizNo3;
+    var fullEmail = emailId + '@' + emailDom;
+
+    /* [Java] 실제 구현 시 fetch 주석 해제:
+       fetch('/find-id', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ companyNm: companyNm, bizRegNo: bizNo, email: fullEmail })
+       }).then(r => r.json()).then(data => {
+         if (data.memberId) showResult(data.memberId);
+         else showNoMatch();
+       });
+    */
+
+    /* 더미 데이터 — 일치 조건: 상호=잘한도로차단, 사업자=000-00-00000, 이메일=jainan@naver.com */
+    var DUMMY = {
+      companyNm : '잘한도로차단',
+      bizRegNo  : '000-00-00000',
+      email     : 'jainan@naver.com',
+      memberId  : 'roadace'
+    };
+
+    if (
+      companyNm  === DUMMY.companyNm &&
+      bizNo      === DUMMY.bizRegNo  &&
+      fullEmail.toLowerCase() === DUMMY.email
+    ) {
+      showResult(DUMMY.memberId);
+    } else {
+      showNoMatch();
+    }
+  }
+
+  /* ── 빈 항목 강조 ── */
+  function highlightEmpty() {
+    var fields = [
+      { id: 'findCompanyNm',    empty: !document.getElementById('findCompanyNm').value.trim() },
+      { id: 'findBizNo1',       empty: !document.getElementById('findBizNo1').value.trim() },
+      { id: 'findBizNo2',       empty: !document.getElementById('findBizNo2').value.trim() },
+      { id: 'findBizNo3',       empty: !document.getElementById('findBizNo3').value.trim() },
+      { id: 'findEmailId',      empty: !document.getElementById('findEmailId').value.trim() },
+      { id: 'findEmailDomain',  empty: !document.getElementById('findEmailDomain').value.trim() }
+    ];
+    fields.forEach(function(f) {
+      var el = document.getElementById(f.id);
+      if (f.empty) {
+        el.classList.add('findid-input--error');
+        el.addEventListener('input', function() { el.classList.remove('findid-input--error'); }, { once: true });
+      }
+    });
+    /* 첫 번째 빈 항목으로 포커스 */
+    var first = fields.find(function(f) { return f.empty; });
+    if (first) document.getElementById(first.id).focus();
+  }
+
+  /* ── 결과 표시 (L1-1) ── */
+  function showResult(memberId) {
+    document.getElementById('findid-no-match').style.display = 'none';
+    document.getElementById('findid-result-id').textContent = memberId;
+    document.getElementById('findid-input-section').style.display = 'none';
+    document.getElementById('findid-result').style.display = 'block';
+    lucide.createIcons();
+  }
+
+  /* ── 불일치 표시 ── */
+  function showNoMatch() {
+    var msg = document.getElementById('findid-no-match');
+    msg.style.display = 'block';
+    /* 입력 필드 흔들기 효과 */
+    msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+</script>
+</body>
+</html>
