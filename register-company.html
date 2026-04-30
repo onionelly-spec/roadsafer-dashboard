@@ -561,13 +561,14 @@
               <option value="direct">직접입력</option>
             </select>
           </div>
+           <!-- [Java] POST /register/check-email { email } → { duplicate: true/false } -->
+          <p id="emailDupMsg" class="rss-form-hint rss-form-hint--error" style="display:none;">이미 등록된 이메일입니다.</p>
           <div class="receive-radio-wrap" style="margin-top:6px;">
             <span>* 이메일 수신 :</span>
             <label><input type="radio" name="emailReceiveYn" value="Y" checked /> 수신</label>
             <label><input type="radio" name="emailReceiveYn" value="N" /> 거부</label>
           </div>
         </div>
-
         <!-- 사업장 주소 -->
         <div class="rss-form-row">
           <span class="rss-form-label">사업장 주소</span>
@@ -814,7 +815,71 @@
       domainInput.value = val;
       domainInput.readOnly = true;
     }
+    /* 도메인 변경 시 중복 상태 초기화 */
+    resetEmailDup();
   }
+
+  /* 이메일 중복 체크 상태 */
+  var _emailDuplicated = false;
+
+  function resetEmailDup() {
+    _emailDuplicated = false;
+    var msg = document.getElementById('emailDupMsg');
+    if (msg) msg.style.display = 'none';
+    /* 입력상자 테두리 정상화 */
+    var emailIdEl = document.getElementById('emailId');
+    var emailDomainEl = document.getElementById('emailDomain');
+    if (emailIdEl) emailIdEl.style.borderColor = '';
+    if (emailDomainEl) emailDomainEl.style.borderColor = '';
+  }
+
+  function checkEmailDuplicate() {
+    var emailId     = (document.getElementById('emailId')     || {}).value || '';
+    var emailDomain = (document.getElementById('emailDomain') || {}).value || '';
+    if (!emailId.trim() || !emailDomain.trim()) { resetEmailDup(); return; }
+    var fullEmail = emailId.trim() + '@' + emailDomain.trim();
+    var msg = document.getElementById('emailDupMsg');
+    /* [Java] 실제 구현 시 아래 fetch 주석을 해제하세요:
+       fetch('/register/check-email', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ email: fullEmail })
+       }).then(r => r.json()).then(data => {
+         if (data.duplicate) { showEmailDupError(); } else { resetEmailDup(); }
+       });
+    */
+    /* 더미: 중복 이메일 목록 (Java 연동 전 테스트용) */
+    var DUMMY_DUPLICATES = ['test@naver.com', 'admin@gmail.com', 'road@daum.net'];
+    if (DUMMY_DUPLICATES.indexOf(fullEmail.toLowerCase()) !== -1) {
+      showEmailDupError();
+    } else {
+      resetEmailDup();
+    }
+  }
+
+  function showEmailDupError() {
+    _emailDuplicated = true;
+    var msg = document.getElementById('emailDupMsg');
+    if (msg) msg.style.display = 'block';
+    var emailIdEl = document.getElementById('emailId');
+    var emailDomainEl = document.getElementById('emailDomain');
+    if (emailIdEl) emailIdEl.style.borderColor = '#ef4444';
+    if (emailDomainEl) emailDomainEl.style.borderColor = '#ef4444';
+  }
+
+  /* 입력 시 중복 상태 실시간 초기화 */
+  document.addEventListener('DOMContentLoaded', function() {
+    var emailIdEl     = document.getElementById('emailId');
+    var emailDomainEl = document.getElementById('emailDomain');
+    if (emailIdEl) {
+      emailIdEl.addEventListener('input', resetEmailDup);
+      emailIdEl.addEventListener('blur',  checkEmailDuplicate);
+    }
+    if (emailDomainEl) {
+      emailDomainEl.addEventListener('input', resetEmailDup);
+      emailDomainEl.addEventListener('blur',  checkEmailDuplicate);
+    }
+  });
 
   function limitRegion(checkbox) {
     var checked = document.querySelectorAll('input[name="regionCd"]:checked');
@@ -946,9 +1011,16 @@
       document.getElementById('modalValidAlert').classList.add('open');
       return;
     }
+    /* 이메일 중복 체크: 중복이면 제출 차단 */
+    if (_emailDuplicated) {
+      document.getElementById('modalValidMsg').textContent = '이메일 주소를 확인하세요.';
+      document.getElementById('modalValidAlert').classList.add('open');
+      document.getElementById('emailId').focus();
+      return;
+    }
     var bizFile = document.getElementById('bizRegFile');
     if (!bizFile || !bizFile.files || !bizFile.files[0]) {
-      document.getElementById('modalValidMsg').textContent = '사업자등록증을 첨부해 주세요.';
+      document.getElementById('modalValidMsg').textContent = '사업자등록증을 쳊부해 주세요.';
       document.getElementById('modalValidAlert').classList.add('open');
       return;
     }
