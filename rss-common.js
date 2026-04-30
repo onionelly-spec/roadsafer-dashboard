@@ -577,7 +577,7 @@ RSS.action = (function() {
   <div class="rss-modal" role="dialog" aria-modal="true" aria-labelledby="rssCancelSimpleTitle">
     <p class="rss-modal__title" id="rssCancelSimpleTitle">차단신청 취소</p>
     <p class="rss-modal__body">
-      차단 취소에 대해 <span class="highlight">발주업체와 협의</span>가 되었습니까?
+      차단신청 취소에 대해 <span class="highlight">발주업체와 협의</span>가 되었습니까?
     </p>
     <div class="rss-modal__footer">
       <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
