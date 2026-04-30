@@ -74,49 +74,7 @@
       gap: 6px;
     }
 
-    /* ── 등록/수정 모달 ── */
-    .rss-modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-    .rss-modal-overlay.hidden { display: none; }
-    .rss-modal {
-      background: #fff;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-      overflow: hidden;
-    }
-    .rss-modal__head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 22px;
-      border-bottom: 1px solid #f3f4f6;
-    }
-    .rss-modal__title { font-size: var(--rss-font-md); font-weight: 700; color: #1a1c23; }
-    .rss-modal__close {
-      background: none; border: none;
-      color: #9ca3af; cursor: pointer; padding: 4px;
-      border-radius: 6px;
-      transition: background 0.15s;
-    }
-    .rss-modal__close:hover { background: #f3f4f6; color: #374151; }
-    .rss-modal__body { padding: 20px 22px; }
-    .rss-modal__foot {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      padding: 14px 22px;
-      border-top: 1px solid #f3f4f6;
-    }
+    /* ── 등록/수정 모달: 공통 notice-modal 사용 (rss-common.css) ── */
     .rss-form-row { margin-bottom: 14px; }
     .rss-form-label {
       display: block;
@@ -417,15 +375,15 @@
      [Java] PUT  /tma-card/mod/{tmaCardSeq} (수정)
      [용어사전 §9] reg = 등록, mod = 수정
 ══════════════════════════════════════════════════════════ -->
-<div id="tmaModal" class="rss-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="tmaModalTitle">
-  <div class="rss-modal">
-    <div class="rss-modal__head">
-      <h2 class="rss-modal__title" id="tmaModalTitle">TMA 카드 등록</h2>
-      <button class="rss-modal__close" onclick="closeTmaModal()" aria-label="닫기">
+<div id="tmaModal" class="notice-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="tmaModalTitle">
+  <div class="notice-modal">
+    <div class="notice-modal__header">
+      <h2 class="notice-modal__title" id="tmaModalTitle">TMA 카드 등록</h2>
+      <button class="notice-modal__close" onclick="closeTmaModal()" aria-label="닫기">
         <i data-lucide="x" style="width:18px;height:18px;"></i>
       </button>
     </div>
-    <div class="rss-modal__body">
+    <div class="notice-modal__body">
       <form id="tmaForm" enctype="multipart/form-data">
         <!-- [Java] th:action="@{/tma-card/reg}" method="post" -->
         <!-- [DB] tma_card.tma_card_seq -->
@@ -479,7 +437,7 @@
 
       </form>
     </div>
-    <div class="rss-modal__foot">
+    <div class="notice-modal__footer">
       <button type="button" class="rss-btn rss-btn--outline" onclick="closeTmaModal()">취소</button>
       <button type="button" class="rss-btn rss-btn--amber" onclick="submitTmaForm()">
         <i data-lucide="save" style="width:14px;height:14px;"></i>저장
@@ -531,13 +489,13 @@
     } else {
       title.textContent = 'TMA 카드 등록';
     }
-    modal.classList.remove('hidden');
+    modal.classList.add('show');
     lucide.createIcons();
   }
 
   /* ── 모달 닫기 ── */
   function closeTmaModal() {
-    document.getElementById('tmaModal').classList.add('hidden');
+    document.getElementById('tmaModal').classList.remove('show');
   }
 
   /* ── 폼 제출 ──────────────────────────────────────────────
