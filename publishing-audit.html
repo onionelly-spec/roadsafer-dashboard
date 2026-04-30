@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>퍼블리싱 보완 작업 내역 — 로드세이프티시스템</title>
+  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --rss-primary: #f59e0b;
+      --rss-primary-dark: #d97706;
+      --rss-bg: #f8f9fb;
+      --rss-card: #ffffff;
+      --rss-border: #e5e7eb;
+      --rss-text: #111827;
+      --rss-muted: #6b7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+      background: var(--rss-bg);
+      color: var(--rss-text);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* ── 헤더 ── */
+    .pa-header {
+      background: var(--rss-card);
+      border-bottom: 1px solid var(--rss-border);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .pa-header__logo { width: 34px; height: 34px; object-fit: contain; border-radius: 6px; }
+    .pa-header__title { font-size: 15px; font-weight: 700; }
+    .pa-header__sub { font-size: 11px; color: var(--rss-muted); margin-top: 1px; }
+    .pa-header__actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .pa-badge {
+      font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+    }
+    .pa-badge--branch { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+    .pa-badge--pr {
+      background: #f59e0b; color: #fff; border: none;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 14px; border-radius: 6px; font-weight: 700; font-size: 12px;
+      transition: background .15s;
+    }
+    .pa-badge--pr:hover { background: #d97706; }
+
+    /* ── 본문 ── */
+    .pa-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; }
+
+    /* ── 섹션 타이틀 ── */
+    .pa-section-title {
+      font-size: 12px; font-weight: 700; color: var(--rss-muted);
+      text-transform: uppercase; letter-spacing: .06em;
+      margin: 32px 0 10px;
+      padding-left: 10px;
+      border-left: 3px solid var(--rss-primary);
+    }
+
+    /* ── 카드 ── */
+    .pa-card {
+      background: var(--rss-card);
+      border: 1px solid var(--rss-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .pa-card__head {
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .pa-card__icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .pa-card__icon--css { background: #ede9fe; }
+    .pa-card__icon--html { background: #fef3c7; }
+    .pa-card__icon--java { background: #d1fae5; }
+    .pa-card__icon--resp { background: #dbeafe; }
+    .pa-card__htitle { font-size: 13px; font-weight: 700; }
+    .pa-card__hdesc { font-size: 11px; color: var(--rss-muted); margin-top: 1px; }
+    .pa-card__body { padding: 16px 18px; }
+
+    /* ── 테이블 ── */
+    .pa-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .pa-table thead tr { background: #f9fafb; border-bottom: 1px solid var(--rss-border); }
+    .pa-table thead th {
+      padding: 9px 12px; text-align: left;
+      font-size: 11px; font-weight: 700; color: var(--rss-muted); white-space: nowrap;
+    }
+    .pa-table tbody tr { border-bottom: 1px solid #f3f4f6; transition: background .1s; }
+    .pa-table tbody tr:last-child { border-bottom: none; }
+    .pa-table tbody tr:hover { background: #fffbeb; }
+    .pa-table td { padding: 9px 12px; vertical-align: middle; }
+
+    /* ── 코드 태그 ── */
+    code {
+      font-family: 'Consolas', 'Menlo', monospace;
+      font-size: 11px;
+      background: #f3f4f6;
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid #e5e7eb;
+    }
+    code.old { background: #fee2e2; border-color: #fca5a5; color: #991b1b; text-decoration: line-through; }
+    code.new { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+
+    /* ── 화살표 ── */
+    .arrow { color: #9ca3af; margin: 0 4px; font-size: 12px; }
+
+    /* ── 배지 ── */
+    .tag {
+      display: inline-block; font-size: 10px; font-weight: 600;
+      padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+    }
+    .tag--high { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .tag--mid  { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .tag--done { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+
+    /* ── 요약 카드 ── */
+    .pa-summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+    .pa-summary__card {
+      background: var(--rss-card); border: 1px solid var(--rss-border);
+      border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 130px; text-align: center;
+    }
+    .pa-summary__num { font-size: 24px; font-weight: 800; color: var(--rss-primary-dark); line-height: 1.2; }
+    .pa-summary__label { font-size: 11px; color: var(--rss-muted); margin-top: 2px; }
+
+    /* ── 링크 ── */
+    .pa-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      color: #2563eb; font-size: 11px; text-decoration: none;
+      background: #eff6ff; padding: 2px 8px; border-radius: 5px;
+      border: 1px solid #bfdbfe; transition: background .12s; white-space: nowrap;
+    }
+    .pa-link:hover { background: #dbeafe; }
+
+    /* ── diff 블록 ── */
+    .diff-block {
+      background: #1e1e2e; border-radius: 8px; padding: 14px 16px;
+      font-family: 'Consolas', 'Menlo', monospace; font-size: 11px; line-height: 1.8;
+      overflow-x: auto; margin-top: 8px;
+    }
+    .diff-add { color: #a6e3a1; }
+    .diff-del { color: #f38ba8; }
+    .diff-ctx { color: #6c7086; }
+    .diff-file { color: #89b4fa; font-weight: 700; margin-bottom: 4px; display: block; }
+
+    /* ── 비고 ── */
+    .pa-note {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+      padding: 14px 18px; font-size: 12px; color: #78350f; line-height: 1.8;
+    }
+
+    @media (max-width: 768px) {
+      .pa-header { padding: 12px 14px; flex-wrap: wrap; }
+      .pa-header__actions { margin-left: 0; width: 100%; }
+      .pa-wrap { padding: 16px 12px 48px; }
+      .pa-table { font-size: 11px; }
+      .pa-table td, .pa-table th { padding: 7px 8px; }
+      .pa-summary__num { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── 헤더 ── -->
+<header class="pa-header">
+  <img src="assets/images/logo-rss-new.png" alt="로드세이프티시스템 로고" class="pa-header__logo" />
+  <div>
+    <div class="pa-header__title">퍼블리싱 보완 작업 내역</div>
+    <div class="pa-header__sub">Road Safety System · refactor/publishing-audit 브랜치</div>
+  </div>
+  <div class="pa-header__actions">
+    <span class="pa-badge pa-badge--branch">refactor/publishing-audit</span>
+    <a href="https://github.com/onionelly-spec/roadsafer-dashboard/pull/new/refactor/publishing-audit"
+       target="_blank" class="pa-badge pa-badge--pr">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
+      PR 생성하기
+    </a>
+  </div>
+</header>
+
+<main class="pa-wrap">
+
+  <!-- ── 요약 ── -->
+  <div class="pa-summary">
+    <div class="pa-summary__card">
+      <div class="pa-summary__num">14</div>
+      <div class="pa-summary__label">변경된 파일</div>
+    </div>
+    <div class="pa-summary__card">
+      <div class="pa-summary__num">406</div>
+      <div class="pa-summary__label">추가된 라인</div>
+    </div>
+    <div class="pa-summary__card">
+      <div class="pa-summary__num">968</div>
+      <div class="pa-summary__label">제거된 라인</div>
+    </div>
+    <div class="pa-summary__card">
+      <div class="pa-summary__num">4</div>
+      <div class="pa-summary__label">보완 카테고리</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       카테고리 1: 공통 CSS 통합
+  ══════════════════════════════════ -->
+  <div class="pa-section-title">① 공통 CSS 통합 — 디자인 시스템 준수</div>
+  <div class="pa-card">
+    <div class="pa-card__head">
+      <div class="pa-card__icon pa-card__icon--css">🎨</div>
+      <div>
+        <div class="pa-card__htitle">rss-common.css — 수식자 클래스 추가</div>
+        <div class="pa-card__hdesc">페이지별 임의 클래스를 공통 CSS로 흡수하기 위한 수식자 3종 신설</div>
+      </div>
+    </div>
+    <div class="pa-card__body">
+      <table class="pa-table">
+        <thead>
+          <tr><th>추가된 클래스</th><th>용도</th><th>적용 파일</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code class="new">rss-input--readonly</code></td>
+            <td>읽기 전용 입력 필드 스타일</td>
+            <td>register-employee.html</td>
+          </tr>
+          <tr>
+            <td><code class="new">rss-input--error</code></td>
+            <td>유효성 오류 상태 입력 필드</td>
+            <td>register-*.html</td>
+          </tr>
+          <tr>
+            <td><code class="new">rss-form-hint--error</code></td>
+            <td>오류 힌트 텍스트 강조</td>
+            <td>register-*.html</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pa-card">
+    <div class="pa-card__head">
+      <div class="pa-card__icon pa-card__icon--css">🧹</div>
+      <div>
+        <div class="pa-card__htitle">register-company.html / register-employee.html — 로컬 CSS 제거</div>
+        <div class="pa-card__hdesc">페이지 내 중복 정의된 임의 클래스 블록 및 모달 CSS를 공통 클래스로 교체</div>
+      </div>
+    </div>
+    <div class="pa-card__body">
+      <table class="pa-table">
+        <thead>
+          <tr><th>파일</th><th>제거된 임의 클래스</th><th>교체된 공통 클래스</th><th>비고</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>register-company.html</td>
+            <td><code class="old">.reg-input</code></td>
+            <td><code class="new">rss-form-input</code></td>
+            <td>로컬 CSS 블록 전체 제거</td>
+          </tr>
+          <tr>
+            <td>register-company.html</td>
+            <td><code class="old">rss-alert-modal (중복)</code></td>
+            <td>공통 CSS 단일 정의 사용</td>
+            <td>중복 정의 제거</td>
+          </tr>
+          <tr>
+            <td>register-employee.html</td>
+            <td><code class="old">.reg-input</code>, <code class="old">.reg-input--readonly</code></td>
+            <td><code class="new">rss-form-input</code>, <code class="new">rss-input--readonly</code></td>
+            <td>HTML 요소 클래스명도 일괄 교체</td>
+          </tr>
+          <tr>
+            <td>register-employee.html</td>
+            <td><code class="old">rss-alert-modal (중복)</code></td>
+            <td>공통 CSS 단일 정의 사용</td>
+            <td>중복 정의 제거</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       카테고리 2: 시맨틱 태그
+  ══════════════════════════════════ -->
+  <div class="pa-section-title">② HTML5 시맨틱 마크업 보완</div>
+  <div class="pa-card">
+    <div class="pa-card__head">
+      <div class="pa-card__icon pa-card__icon--html">🏷️</div>
+      <div>
+        <div class="pa-card__htitle">login.html / find-id.html / find-password.html — &lt;main&gt; 태그 추가</div>
+        <div class="pa-card__hdesc">로그인·찾기 페이지의 폼 컨테이너 div를 시맨틱 main 태그로 교체</div>
+      </div>
+    </div>
+    <div class="pa-card__body">
+      <table class="pa-table">
+        <thead>
+          <tr><th>파일</th><th>변경 전</th><th>변경 후</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>login.html</td>
+            <td><code class="old">&lt;div class="login-form-panel"&gt;</code></td>
+            <td><code class="new">&lt;main role="main" aria-label="로그인 폼"&gt;</code></td>
+          </tr>
+          <tr>
+            <td>find-id.html</td>
+            <td><code class="old">&lt;div class="login-form-panel"&gt;</code></td>
+            <td><code class="new">&lt;main role="main" aria-label="아이디 찾기 폼"&gt;</code></td>
+          </tr>
+          <tr>
+            <td>find-password.html</td>
+            <td><code class="old">&lt;div class="login-form-panel"&gt;</code></td>
+            <td><code class="new">&lt;main role="main" aria-label="비밀번호 찾기 폼"&gt;</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       카테고리 3: Java 바인딩 주석
+  ══════════════════════════════════ -->
+  <div class="pa-section-title">③ Java 바인딩 주석 추가</div>
+  <div class="pa-card">
+    <div class="pa-card__head">
+      <div class="pa-card__icon pa-card__icon--java">☕</div>
+      <div>
+        <div class="pa-card__htitle">4개 파일 — 데이터 바인딩 위치 주석 보완</div>
+        <div class="pa-card__hdesc">개발팀 인계 시 Java/Thymeleaf 연동 위치를 명확히 표시</div>
+      </div>
+    </div>
+    <div class="pa-card__body">
+      <table class="pa-table">
+        <thead>
+          <tr><th>파일</th><th>추가된 바인딩 주석 내용</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>find-id.html</td>
+            <td>
+              <code>POST /member/find-id</code> 요청 파라미터 주석<br>
+              <code>th:text="${memberId}"</code> 아이디 결과 바인딩 영역 표시
+            </td>
+          </tr>
+          <tr>
+            <td>find-password.html</td>
+            <td>
+              <code>POST /member/find-password</code> 요청 파라미터 주석<br>
+              <code>th:text="${maskedEmail}"</code> 마스킹 이메일 결과 바인딩 표시
+            </td>
+          </tr>
+          <tr>
+            <td>community-write.html</td>
+            <td>
+              수정 모드 진입 시 <code>th:value="${post.title}"</code>, <code>th:text="${post.content}"</code> 바인딩 위치 주석
+            </td>
+          </tr>
+          <tr>
+            <td>market-write.html</td>
+            <td>
+              수정 모드 진입 시 카테고리·수량·규격·판매가·내용 전 항목 <code>th:value</code> / <code>th:field</code> 바인딩 위치 주석
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       카테고리 4: 반응형 미디어쿼리
+  ══════════════════════════════════ -->
+  <div class="pa-section-title">④ 반응형 미디어쿼리 보완</div>
+  <div class="pa-card">
+    <div class="pa-card__head">
+      <div class="pa-card__icon pa-card__icon--resp">📱</div>
+      <div>
+        <div class="pa-card__htitle">3개 파일 — 모바일 대응 @media 쿼리 추가</div>
+        <div class="pa-card__hdesc">페이지 고유 레이아웃 요소에 모바일/태블릿 대응 미디어쿼리 신설</div>
+      </div>
+    </div>
+    <div class="pa-card__body">
+      <table class="pa-table">
+        <thead>
+          <tr><th>파일</th><th>추가된 반응형 처리</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ad.html</td>
+            <td>
+              <code>.ad-inquiry</code> 툴바 모바일 대응 — <code>white-space: normal</code>, <code>flex-wrap: wrap</code>
+            </td>
+          </tr>
+          <tr>
+            <td>construction-info-detail.html</td>
+            <td>
+              공사정보 상세 테이블 모바일 폰트/패딩 축소 (<code>max-width: 768px</code>)
+            </td>
+          </tr>
+          <tr>
+            <td>notice-detail.html</td>
+            <td>
+              공지사항 상세 콘텐츠 영역 모바일 패딩·폰트 대응 (<code>max-width: 768px</code>)
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       변경 파일 전체 목록
+  ══════════════════════════════════ -->
+  <div class="pa-section-title">변경 파일 전체 목록 (git diff --stat)</div>
+  <div class="pa-card">
+    <div class="pa-card__body">
+      <table class="pa-table">
+        <thead>
+          <tr><th>파일</th><th>추가</th><th>제거</th><th>분류</th><th>GitHub 비교</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>rss-common.css</code></td>
+            <td style="color:#065f46">+81</td><td style="color:#991b1b">0</td>
+            <td><span class="tag tag--done">공통 CSS</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit#diff-rss-common.css" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>register-company.html</code></td>
+            <td style="color:#065f46">+~40</td><td style="color:#991b1b">-181</td>
+            <td><span class="tag tag--high">공통 CSS</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>register-employee.html</code></td>
+            <td style="color:#065f46">+~30</td><td style="color:#991b1b">-160</td>
+            <td><span class="tag tag--high">공통 CSS</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>login.html</code></td>
+            <td style="color:#065f46">+2</td><td style="color:#991b1b">-2</td>
+            <td><span class="tag tag--done">시맨틱 태그</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>find-id.html</code></td>
+            <td style="color:#065f46">+4</td><td style="color:#991b1b">-2</td>
+            <td><span class="tag tag--done">시맨틱 태그 + 바인딩</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>find-password.html</code></td>
+            <td style="color:#065f46">+4</td><td style="color:#991b1b">-2</td>
+            <td><span class="tag tag--done">시맨틱 태그 + 바인딩</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>community-write.html</code></td>
+            <td style="color:#065f46">+6</td><td style="color:#991b1b">-1</td>
+            <td><span class="tag tag--mid">바인딩 주석</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>market-write.html</code></td>
+            <td style="color:#065f46">+5</td><td style="color:#991b1b">0</td>
+            <td><span class="tag tag--mid">바인딩 주석</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>ad.html</code></td>
+            <td style="color:#065f46">+9</td><td style="color:#991b1b">0</td>
+            <td><span class="tag tag--mid">반응형</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>construction-info-detail.html</code></td>
+            <td style="color:#065f46">+12</td><td style="color:#991b1b">0</td>
+            <td><span class="tag tag--mid">반응형</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+          <tr>
+            <td><code>notice-detail.html</code></td>
+            <td style="color:#065f46">+8</td><td style="color:#991b1b">0</td>
+            <td><span class="tag tag--mid">반응형</span></td>
+            <td><a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit" target="_blank" class="pa-link">비교 보기</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:14px;">
+        <a href="https://github.com/onionelly-spec/roadsafer-dashboard/compare/main...refactor/publishing-audit"
+           target="_blank" class="pa-link" style="font-size:12px;padding:6px 14px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          GitHub에서 전체 diff 보기 (main ← refactor/publishing-audit)
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       분석 보고서 요약
+  ══════════════════════════════════ -->
+  <div class="pa-section-title">퍼블리싱 규칙 준수 현황 분석 (보완 전 기준)</div>
+  <div class="pa-card">
+    <div class="pa-card__body">
+      <table class="pa-table">
+        <thead>
+          <tr><th>규칙 영역</th><th>보완 전</th><th>보완 후</th><th>비고</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1-1. 디자인 시스템 (Color/Typography/Spacing)</td>
+            <td><span class="tag tag--done">양호</span></td>
+            <td><span class="tag tag--done">양호</span></td>
+            <td>일부 임의 HEX 값 잔존 (낮은 우선순위)</td>
+          </tr>
+          <tr>
+            <td>1-2. 공통 CSS 자산화</td>
+            <td><span class="tag tag--high">보완 필요</span></td>
+            <td><span class="tag tag--done">완료</span></td>
+            <td>register-*.html 임의 클래스 제거 및 공통 수식자 신설</td>
+          </tr>
+          <tr>
+            <td>2-1. ID/Class 명명 규칙</td>
+            <td><span class="tag tag--done">양호</span></td>
+            <td><span class="tag tag--done">양호</span></td>
+            <td>rss- 접두사 체계 유지</td>
+          </tr>
+          <tr>
+            <td>2-2. HTML5 시맨틱 마크업</td>
+            <td><span class="tag tag--high">부분 준수</span></td>
+            <td><span class="tag tag--done">완료</span></td>
+            <td>login / find-id / find-password에 &lt;main&gt; 추가</td>
+          </tr>
+          <tr>
+            <td>2-3. 데이터 바인딩 주석</td>
+            <td><span class="tag tag--mid">일부 미흡</span></td>
+            <td><span class="tag tag--done">완료</span></td>
+            <td>4개 파일 바인딩 주석 보완</td>
+          </tr>
+          <tr>
+            <td>3-1. Tailwind CSS CDN</td>
+            <td><span class="tag tag--done">준수</span></td>
+            <td><span class="tag tag--done">준수</span></td>
+            <td>전체 31개 파일 통일 적용</td>
+          </tr>
+          <tr>
+            <td>3-2. Tailwind 중복 클래스 추상화</td>
+            <td><span class="tag tag--mid">부분 준수</span></td>
+            <td><span class="tag tag--mid">부분 준수</span></td>
+            <td>일부 인라인 Tailwind 잔존 (낮은 우선순위)</td>
+          </tr>
+          <tr>
+            <td>3-3. 반응형 대응</td>
+            <td><span class="tag tag--high">부분 준수</span></td>
+            <td><span class="tag tag--done">완료</span></td>
+            <td>3개 파일 @media 쿼리 추가</td>
+          </tr>
+          <tr>
+            <td>3-4. Vanilla JS</td>
+            <td><span class="tag tag--done">준수</span></td>
+            <td><span class="tag tag--done">준수</span></td>
+            <td>외부 JS 라이브러리 의존성 없음</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── 비고 ── -->
+  <div class="pa-note">
+    <strong>잔여 개선 권고 사항 (낮은 우선순위 — 이번 브랜치 미포함)</strong>
+    <ul style="margin-top:8px;padding-left:18px;">
+      <li>임의 HEX 색상값(<code>#dc2626</code>, <code>#374151</code> 등)을 CSS 변수(<code>--rss-danger</code>, <code>--rss-text-secondary</code>)로 교체 — community.html, construction-detail.html, approval.html</li>
+      <li>용어사전에 페이지 고유 BEM 클래스 등재 — <code>tma-card__*</code>, <code>clist-mobile-card__*</code>, <code>quick-item__*</code></li>
+      <li>Tailwind 인라인 유틸리티 클래스 추상화 — <code>flex items-center</code>(17회), <code>text-gray-500</code>(6회) 등</li>
+    </ul>
+  </div>
+
+</main>
+
+</body>
+</html>
