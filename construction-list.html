@@ -33,7 +33,38 @@
       color: var(--rss-text);
       min-width: 90px;
       text-align: center;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.15s;
     }
+    .month-nav__label:hover { background: rgba(245,158,11,0.08); }
+    
+    /* -- 년/월 드롭다운 -- */
+    .month-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 1000;
+      min-width: 120px;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-top: 4px;
+    }
+    .month-dropdown__item {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: var(--rss-font-sm);
+      transition: background 0.15s;
+    }
+    .month-dropdown__item:hover { background: rgba(245,158,11,0.1); }
+    .month-dropdown__item.active { background: rgba(245,158,11,0.2); color: var(--rss-amber-dark); font-weight: 600; }
+    .month-dropdown.hidden { display: none; }
 
     /* ── 월 매출 안내 (기업 로그인 전용) ── */
     .monthly-sales {
@@ -142,13 +173,27 @@
              [Java] 기본값: 현재년 현재월 (${currentYear}년 ${currentMonth}월)
              [Java] 이전/다음 버튼 → GET ?year=&month= 파라미터로 이동
         ══════════════════════════════════════════════════ -->
-        <div class="month-nav">
+        <div class="month-nav" style="position: relative;">
           <!-- [Java] th:href="@{/construction?year=${prevYear}&month=${prevMonth}}" -->
           <button type="button" class="month-nav__btn" onclick="changeMonth(-1)" aria-label="이전 달">
             <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
           </button>
           <!-- [Java] th:text="${currentYear}+'년 '+${currentMonth}+'월'" -->
-          <span class="month-nav__label" id="monthLabel">2026년 6월</span>
+          <span class="month-nav__label" id="monthLabel" onclick="toggleYearDropdown(event)" style="display: inline-block; position: relative;">
+            <span id="yearDisplay" style="cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.15s;" onclick="toggleYearDropdown(event)">2026년</span>
+            <span id="monthDisplay" style="cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.15s;" onclick="toggleMonthDropdown(event)">6월</span>
+          </span>
+          
+          <!-- 년 드롭다운 -->
+          <div class="month-dropdown hidden" id="yearDropdown">
+            <!-- [Java] th:each="year : ${yearList}" -->
+          </div>
+          
+          <!-- 월 드롭다운 -->
+          <div class="month-dropdown hidden" id="monthDropdown">
+            <!-- [Java] th:each="month : ${#numbers.sequence(1, 12)}" -->
+          </div>
+          
           <!-- [Java] th:href="@{/construction?year=${nextYear}&month=${nextMonth}}" -->
           <button type="button" class="month-nav__btn" onclick="changeMonth(1)" aria-label="다음 달">
             <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
@@ -452,15 +497,82 @@
   var currentMonth = new Date().getMonth() + 1;
 
   function renderMonthLabel() {
-    document.getElementById('monthLabel').textContent = currentYear + '년 ' + currentMonth + '월';
+    document.getElementById('yearDisplay').textContent = currentYear + '년';
+    document.getElementById('monthDisplay').textContent = currentMonth + '월';
   }
   function changeMonth(dir) {
     currentMonth += dir;
     if (currentMonth < 1)  { currentMonth = 12; currentYear--; }
     if (currentMonth > 12) { currentMonth = 1;  currentYear++; }
     renderMonthLabel();
+    closeAllDropdowns();
     /* [Java] 실제 환경: location.href = '/construction?year=' + currentYear + '&month=' + currentMonth; */
   }
+  
+  function toggleYearDropdown(event) {
+    event.stopPropagation();
+    var yearDropdown = document.getElementById('yearDropdown');
+    var monthDropdown = document.getElementById('monthDropdown');
+    monthDropdown.classList.add('hidden');
+    yearDropdown.classList.toggle('hidden');
+    if (!yearDropdown.classList.contains('hidden') && yearDropdown.children.length === 0) {
+      renderYearDropdown();
+    }
+  }
+  
+  function renderYearDropdown() {
+    var yearDropdown = document.getElementById('yearDropdown');
+    yearDropdown.innerHTML = '';
+    for (var y = currentYear - 5; y <= currentYear + 5; y++) {
+      var item = document.createElement('div');
+      item.className = 'month-dropdown__item' + (y === currentYear ? ' active' : '');
+      item.textContent = y + '년';
+      item.onclick = (function(year) {
+        return function() {
+          currentYear = year;
+          renderMonthLabel();
+          closeAllDropdowns();
+        };
+      })(y);
+      yearDropdown.appendChild(item);
+    }
+  }
+  
+  function toggleMonthDropdown(event) {
+    event.stopPropagation();
+    var monthDropdown = document.getElementById('monthDropdown');
+    var yearDropdown = document.getElementById('yearDropdown');
+    yearDropdown.classList.add('hidden');
+    monthDropdown.classList.toggle('hidden');
+    if (!monthDropdown.classList.contains('hidden') && monthDropdown.children.length === 0) {
+      renderMonthDropdown();
+    }
+  }
+  
+  function renderMonthDropdown() {
+    var monthDropdown = document.getElementById('monthDropdown');
+    monthDropdown.innerHTML = '';
+    for (var m = 1; m <= 12; m++) {
+      var item = document.createElement('div');
+      item.className = 'month-dropdown__item' + (m === currentMonth ? ' active' : '');
+      item.textContent = m + '월';
+      item.onclick = (function(month) {
+        return function() {
+          currentMonth = month;
+          renderMonthLabel();
+          closeAllDropdowns();
+        };
+      })(m);
+      monthDropdown.appendChild(item);
+    }
+  }
+  
+  function closeAllDropdowns() {
+    document.getElementById('yearDropdown').classList.add('hidden');
+    document.getElementById('monthDropdown').classList.add('hidden');
+  }
+  
+  document.addEventListener('click', closeAllDropdowns);
 
   /* ── 검색 ── */
   function doSearch() {
