@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>이용약관 — 로드세이프티시스템</title>
+  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- 공통 커스텀 CSS -->
+  <link rel="stylesheet" href="rss-common.css" />
+  <style>
+    /* ══════════════════════════════════════════════════
+       terms.html 전용 CSS
+       §22 이용약관 페이지
+       reg-page / reg-card 레이아웃 기반
+    ══════════════════════════════════════════════════ */
+    .reg-page {
+      min-height: 100vh;
+      background: #f0ede6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 60px;
+    }
+    .reg-header {
+      width: 100%;
+      max-width: 860px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .reg-header__logo { height: 40px; width: auto; }
+    .reg-header__name {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      letter-spacing: -0.01em;
+    }
+    .reg-card {
+      width: 100%;
+      max-width: 860px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .reg-card__top-line {
+      height: 4px;
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
+    }
+    .reg-card__body {
+      padding: 36px 44px 44px;
+    }
+    @media (max-width: 640px) {
+      .reg-card__body { padding: 24px 20px 32px; }
+    }
+
+    /* ── 약관 페이지 전용 스타일 ── */
+    .terms-page-title {
+      font-size: var(--rss-font-2xl);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .terms-page-date {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text-muted);
+      margin-bottom: 32px;
+    }
+    /* 목차 */
+    .terms-toc {
+      background: #f8f7f4;
+      border: 1px solid var(--rss-border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 36px;
+    }
+    .terms-toc__title {
+      font-size: var(--rss-font-sm);
+      font-weight: 700;
+      color: var(--rss-text-muted);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .terms-toc__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .terms-toc__list li a {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-amber);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .terms-toc__list li a:hover { text-decoration: underline; }
+    /* 섹션 */
+    .terms-section {
+      margin-bottom: 36px;
+    }
+    .terms-section__title {
+      font-size: var(--rss-font-lg);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--rss-border);
+    }
+    .terms-section__body {
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      line-height: 1.85;
+    }
+    .terms-section__body p { margin-bottom: 10px; }
+    .terms-section__body ol,
+    .terms-section__body ul {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+    .terms-section__body ol { list-style: decimal; }
+    .terms-section__body ul { list-style: disc; }
+    .terms-section__body li { margin-bottom: 6px; }
+    .terms-section__body strong { font-weight: 700; }
+    /* 강조 박스 */
+    .terms-highlight {
+      background: #fffbeb;
+      border-left: 4px solid #F59E0B;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text);
+      line-height: 1.7;
+    }
+    /* 하단 버튼 */
+    .terms-footer-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 40px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rss-border);
+    }
+    @media (max-width: 480px) {
+      .terms-footer-actions { flex-direction: column; }
+      .terms-footer-actions .rss-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="reg-page">
+  <!-- 헤더 로고 -->
+  <header class="reg-header">
+    <a href="login.html">
+      <img src="assets/images/logo-rss-new.png" alt="로드세이프티시스템 로고" class="reg-header__logo"
+           onerror="this.src='img-placeholder.png'">
+    </a>
+    <span class="reg-header__name">로드세이프티시스템</span>
+  </header>
+
+  <!-- 메인 카드 -->
+  <main class="reg-card" role="main">
+    <div class="reg-card__top-line"></div>
+    <div class="reg-card__body">
+
+      <!-- 타이틀 -->
+      <h1 class="terms-page-title">이용약관</h1>
+      <p class="terms-page-date">시행일 : 2026년 01월 01일 &nbsp;|&nbsp; 최종 개정일 : 2026년 01월 01일</p>
+
+      <!-- 목차 -->
+      <nav class="terms-toc" aria-label="약관 목차">
+        <p class="terms-toc__title">목차</p>
+        <ul class="terms-toc__list">
+          <li><a href="#terms-1">제1조 목적</a></li>
+          <li><a href="#terms-2">제2조 정의</a></li>
+          <li><a href="#terms-3">제3조 약관의 효력 및 변경</a></li>
+          <li><a href="#terms-4">제4조 서비스 이용 신청</a></li>
+          <li><a href="#terms-5">제5조 서비스 이용 자격</a></li>
+          <li><a href="#terms-6">제6조 서비스 제공 및 변경</a></li>
+          <li><a href="#terms-7">제7조 서비스 이용 제한</a></li>
+          <li><a href="#terms-8">제8조 회원의 의무</a></li>
+          <li><a href="#terms-9">제9조 회사의 의무</a></li>
+          <li><a href="#terms-10">제10조 정보의 제공 및 광고</a></li>
+          <li><a href="#terms-11">제11조 게시물의 관리</a></li>
+          <li><a href="#terms-12">제12조 계약 해지 및 이용 제한</a></li>
+          <li><a href="#terms-13">제13조 손해배상</a></li>
+          <li><a href="#terms-14">제14조 면책조항</a></li>
+          <li><a href="#terms-15">제15조 분쟁 해결</a></li>
+        </ul>
+      </nav>
+
+      <!-- 전문 -->
+      <div class="terms-highlight">
+        본 약관은 한국도로차단(이하 "회사")이 운영하는 로드세이프티시스템(이하 "서비스")의 이용과 관련하여 회사와 이용자 간의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.
+      </div>
+
+      <!-- 제1조 -->
+      <section class="terms-section" id="terms-1">
+        <h2 class="terms-section__title">제1조 (목적)</h2>
+        <div class="terms-section__body">
+          <p>이 약관은 한국도로차단(이하 "회사")이 제공하는 도로 차단 공사 매칭 서비스 "로드세이프티시스템"(이하 "서비스")의 이용 조건 및 절차, 회사와 회원 간의 권리·의무·책임사항과 기타 필요한 사항을 규정함을 목적으로 합니다.</p>
+        </div>
+      </section>
+
+      <!-- 제2조 -->
+      <section class="terms-section" id="terms-2">
+        <h2 class="terms-section__title">제2조 (정의)</h2>
+        <div class="terms-section__body">
+          <p>이 약관에서 사용하는 용어의 정의는 다음과 같습니다.</p>
+          <ol>
+            <li><strong>"서비스"</strong>란 회사가 제공하는 도로 차단 공사 신청·관리·매칭 플랫폼 및 관련 부가 서비스 일체를 말합니다.</li>
+            <li><strong>"회원"</strong>이란 회사와 서비스 이용계약을 체결하고 아이디(ID)를 부여받은 자를 말합니다.</li>
+            <li><strong>"기업회원"</strong>이란 사업자등록번호를 보유하고 도로 차단 공사 관련 업무를 수행하는 법인 또는 개인사업자를 말합니다.</li>
+            <li><strong>"직원"</strong>이란 기업회원 소속으로 서비스를 이용하는 임직원을 말합니다.</li>
+            <li><strong>"아이디(ID)"</strong>란 회원 식별과 서비스 이용을 위해 회원이 설정하고 회사가 승인한 문자와 숫자의 조합을 말합니다.</li>
+            <li><strong>"비밀번호"</strong>란 회원이 설정한 아이디와 일치하는 회원임을 확인하고 회원의 정보를 보호하기 위해 회원이 설정한 문자·숫자·특수문자의 조합을 말합니다.</li>
+            <li><strong>"게시물"</strong>이란 회원이 서비스를 이용하면서 게시한 문자, 사진, 동영상, 파일 등의 정보를 말합니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제3조 -->
+      <section class="terms-section" id="terms-3">
+        <h2 class="terms-section__title">제3조 (약관의 효력 및 변경)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>이 약관은 서비스를 이용하고자 하는 모든 회원에게 적용됩니다.</li>
+            <li>회사는 관련 법령을 위반하지 않는 범위 내에서 이 약관을 개정할 수 있습니다.</li>
+            <li>회사가 약관을 개정할 경우에는 적용일자 및 개정 사유를 명시하여 현행 약관과 함께 서비스 초기 화면에 그 적용일자 7일 이전부터 공지합니다. 다만, 회원에게 불리하게 약관 내용을 변경하는 경우에는 최소 30일 이상의 사전 유예기간을 두고 공지합니다.</li>
+            <li>회원이 개정 약관의 적용에 동의하지 않는 경우 회원은 이용계약을 해지할 수 있습니다. 개정 약관의 효력 발생일 이후에도 서비스를 계속 이용하는 경우에는 개정 약관에 동의한 것으로 간주합니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제4조 -->
+      <section class="terms-section" id="terms-4">
+        <h2 class="terms-section__title">제4조 (서비스 이용 신청)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>서비스 이용을 원하는 자는 회사가 정한 가입 양식에 따라 회원 정보를 기입한 후 이 약관에 동의한다는 의사표시를 함으로써 이용 신청을 합니다.</li>
+            <li>기업회원으로 가입하기 위해서는 유효한 사업자등록번호가 필요하며, 회사는 사업자등록번호의 유효성을 확인할 수 있습니다.</li>
+            <li>회사는 다음 각 호에 해당하는 이용 신청에 대해서는 승인을 거부하거나 사후에 이용계약을 해지할 수 있습니다.
+              <ul>
+                <li>타인의 명의를 도용하거나 허위 정보를 기재한 경우</li>
+                <li>사업자등록번호가 유효하지 않거나 이미 등록된 경우</li>
+                <li>관련 법령에 위반되거나 사회의 안녕·질서 또는 미풍양속을 저해할 우려가 있는 경우</li>
+                <li>기타 회사가 정한 이용 신청 요건을 충족하지 않는 경우</li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제5조 -->
+      <section class="terms-section" id="terms-5">
+        <h2 class="terms-section__title">제5조 (서비스 이용 자격)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>서비스는 사업자등록번호를 보유한 <strong>기업회원만 이용</strong>할 수 있습니다.</li>
+            <li>기업회원의 직원은 기업회원의 승인 하에 서비스를 이용할 수 있습니다.</li>
+            <li>회사는 회원 가입 신청 후 운영자 승인 절차를 거쳐 서비스 이용을 허가합니다. 승인 전까지 일부 서비스 이용이 제한될 수 있습니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제6조 -->
+      <section class="terms-section" id="terms-6">
+        <h2 class="terms-section__title">제6조 (서비스 제공 및 변경)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회사는 다음과 같은 서비스를 제공합니다.
+              <ul>
+                <li>도로 차단 공사 신청 및 관리 서비스</li>
+                <li>TMA 카드 관리 서비스</li>
+                <li>차량 등록 및 관리 서비스</li>
+                <li>커뮤니티 및 정보 공유 서비스</li>
+                <li>물물거래 서비스</li>
+                <li>공지사항 및 광고 서비스</li>
+                <li>기타 회사가 추가 개발하거나 제휴를 통해 제공하는 서비스</li>
+              </ul>
+            </li>
+            <li>회사는 서비스의 내용을 변경할 수 있으며, 이 경우 변경된 서비스의 내용 및 제공일자를 명시하여 현재의 서비스 내용을 게시한 곳에 즉시 공지합니다.</li>
+            <li>서비스는 연중무휴, 1일 24시간 제공함을 원칙으로 합니다. 다만, 시스템 점검·증설 및 교체, 설비 장애, 서비스 이용의 폭주 등으로 인해 서비스 이용에 지장이 있는 경우 일시적으로 서비스를 중단할 수 있습니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제7조 -->
+      <section class="terms-section" id="terms-7">
+        <h2 class="terms-section__title">제7조 (서비스 이용 제한)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회사는 회원이 다음 각 호에 해당하는 경우 사전 통보 없이 서비스 이용을 제한할 수 있습니다.
+              <ul>
+                <li>타인의 서비스 이용을 방해하거나 정보를 도용하는 경우</li>
+                <li>서비스를 이용하여 법령 또는 이 약관이 금지하거나 공서양속에 반하는 행위를 하는 경우</li>
+                <li>허위 정보를 등록하거나 회사의 운영을 방해하는 경우</li>
+                <li>사업자등록번호가 말소되거나 유효하지 않게 된 경우</li>
+                <li>기타 정상적인 서비스 운영에 지장을 초래하는 경우</li>
+              </ul>
+            </li>
+            <li>회사는 전항에 의해 서비스 이용을 제한하는 경우 그 사유 및 제한 기간 등을 회원에게 통보합니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제8조 -->
+      <section class="terms-section" id="terms-8">
+        <h2 class="terms-section__title">제8조 (회원의 의무)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회원은 다음 행위를 하여서는 안 됩니다.
+              <ul>
+                <li>신청 또는 변경 시 허위 내용의 등록</li>
+                <li>타인의 정보 도용</li>
+                <li>회사가 게시한 정보의 변경</li>
+                <li>회사가 정한 정보 이외의 정보(컴퓨터 프로그램 등)의 송신 또는 게시</li>
+                <li>회사 및 기타 제3자의 저작권 등 지식재산권에 대한 침해</li>
+                <li>회사 및 기타 제3자의 명예를 손상시키거나 업무를 방해하는 행위</li>
+                <li>외설 또는 폭력적인 메시지, 화상, 음성, 기타 공서양속에 반하는 정보를 서비스에 공개 또는 게시하는 행위</li>
+              </ul>
+            </li>
+            <li>회원은 아이디 및 비밀번호를 타인에게 양도하거나 대여할 수 없으며, 이를 관리할 책임이 있습니다.</li>
+            <li>회원은 아이디 또는 비밀번호가 도용되거나 제3자가 사용하고 있음을 인지한 경우에는 즉시 회사에 통보하고 회사의 안내에 따라야 합니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제9조 -->
+      <section class="terms-section" id="terms-9">
+        <h2 class="terms-section__title">제9조 (회사의 의무)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회사는 관련 법령과 이 약관이 금지하거나 공서양속에 반하는 행위를 하지 않으며, 이 약관이 정하는 바에 따라 지속적이고 안정적으로 서비스를 제공하기 위해 최선을 다합니다.</li>
+            <li>회사는 회원이 안전하게 서비스를 이용할 수 있도록 개인정보 보호를 위한 보안 시스템을 갖추어야 합니다.</li>
+            <li>회사는 서비스 이용과 관련하여 발생하는 회원의 불만 또는 피해구제 요청을 적절하게 처리할 수 있도록 필요한 인력 및 시스템을 구비합니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제10조 -->
+      <section class="terms-section" id="terms-10">
+        <h2 class="terms-section__title">제10조 (정보의 제공 및 광고)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회사는 회원이 서비스 이용 중 필요하다고 인정되는 다양한 정보를 공지사항이나 전자우편 등의 방법으로 회원에게 제공할 수 있습니다.</li>
+            <li>회사는 서비스의 운영과 관련하여 서비스 화면, 홈페이지, 전자우편 등에 광고를 게재할 수 있습니다.</li>
+            <li>회원은 관련 법령에 따른 거래 관련 정보 및 고객문의 등에 대한 답변 등을 제외하고는 언제든지 전자우편에 대해서 수신 거절을 할 수 있습니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제11조 -->
+      <section class="terms-section" id="terms-11">
+        <h2 class="terms-section__title">제11조 (게시물의 관리)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회원의 게시물이 관련 법령에 위반되거나 공서양속에 반하는 경우, 회사는 해당 게시물을 삭제하거나 게시를 거부할 수 있습니다.</li>
+            <li>회원이 서비스에 게시한 게시물의 저작권은 해당 게시물의 저작자에게 귀속됩니다. 단, 회사는 서비스의 운영, 전시, 전송, 배포, 홍보의 목적으로 회원의 별도 허락 없이 무상으로 저작권법에 규정하는 공정한 관행에 합치되게 합리적인 범위 내에서 해당 게시물을 사용할 수 있습니다.</li>
+            <li>회원이 서비스 이용계약을 해지하는 경우, 해당 회원이 작성한 게시물은 삭제되지 않습니다. 게시물의 삭제를 원하는 경우 회원 탈퇴 전 직접 삭제하여야 합니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제12조 -->
+      <section class="terms-section" id="terms-12">
+        <h2 class="terms-section__title">제12조 (계약 해지 및 이용 제한)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회원은 언제든지 서비스 내 정보변경 메뉴를 통해 이용계약 해지 신청을 할 수 있으며, 회사는 관련 법령이 정하는 바에 따라 이를 처리합니다.</li>
+            <li>회원이 계약을 해지하는 경우, 관련 법령 및 개인정보처리방침에 따라 회사가 회원 정보를 보유하는 경우를 제외하고는 해지 즉시 회원의 모든 데이터는 삭제됩니다.</li>
+            <li>회원이 이 약관에서 정한 의무를 위반하거나 서비스의 정상적인 운영을 방해한 경우, 회사는 서비스 이용을 제한하거나 이용계약을 해지할 수 있습니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제13조 -->
+      <section class="terms-section" id="terms-13">
+        <h2 class="terms-section__title">제13조 (손해배상)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회사는 무료로 제공되는 서비스와 관련하여 회원에게 어떠한 손해가 발생하더라도 회사가 고의 또는 중대한 과실로 인한 경우를 제외하고는 이에 대해 책임을 지지 않습니다.</li>
+            <li>회원이 서비스를 이용함에 있어 행한 불법행위나 이 약관 위반행위로 인하여 회사가 해당 회원 이외의 제3자로부터 손해배상 청구 또는 소송을 비롯한 각종 이의제기를 받는 경우 해당 회원은 자신의 책임과 비용으로 회사를 면책시켜야 하며, 회사가 면책되지 못한 경우 해당 회원은 그로 인하여 회사에 발생한 모든 손해를 배상하여야 합니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제14조 -->
+      <section class="terms-section" id="terms-14">
+        <h2 class="terms-section__title">제14조 (면책조항)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회사는 천재지변 또는 이에 준하는 불가항력으로 인하여 서비스를 제공할 수 없는 경우에는 서비스 제공에 관한 책임이 면제됩니다.</li>
+            <li>회사는 회원의 귀책사유로 인한 서비스 이용의 장애에 대하여는 책임을 지지 않습니다.</li>
+            <li>회사는 회원이 서비스를 이용하여 기대하는 수익을 상실한 것에 대하여 책임을 지지 않으며, 그 밖에 서비스를 통하여 얻은 자료로 인한 손해에 관하여 책임을 지지 않습니다.</li>
+            <li>회사는 회원이 게재한 정보, 자료, 사실의 신뢰도, 정확성 등의 내용에 관하여는 책임을 지지 않습니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 제15조 -->
+      <section class="terms-section" id="terms-15">
+        <h2 class="terms-section__title">제15조 (분쟁 해결)</h2>
+        <div class="terms-section__body">
+          <ol>
+            <li>회사는 회원이 제기하는 정당한 의견이나 불만을 반영하고 그 피해를 보상처리하기 위하여 피해보상처리기구를 설치·운영합니다.</li>
+            <li>회사와 회원 간에 발생한 전자상거래 분쟁과 관련하여 회원의 피해구제 신청이 있는 경우에는 공정거래위원회 또는 시·도지사가 의뢰하는 분쟁조정기관의 조정에 따를 수 있습니다.</li>
+            <li>이 약관에 관한 소송은 대한민국 법원에 제기하며, 관할 법원은 민사소송법에 따릅니다.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 부칙 -->
+      <div class="terms-highlight">
+        <strong>부칙</strong><br>
+        이 약관은 2026년 01월 01일부터 시행합니다.
+      </div>
+
+      <!-- 하단 버튼 -->
+      <div class="terms-footer-actions">
+        <button type="button" class="rss-btn rss-btn--outline" onclick="history.back()">
+          <i data-lucide="arrow-left" style="width:15px;height:15px;"></i>
+          이전 페이지로
+        </button>
+        <a href="login.html" class="rss-btn rss-btn--primary">
+          <i data-lucide="log-in" style="width:15px;height:15px;"></i>
+          로그인 페이지로
+        </a>
+      </div>
+
+    </div><!-- /reg-card__body -->
+  </main><!-- /reg-card -->
+</div><!-- /reg-page -->
+
+<script>
+  /* Lucide 아이콘 초기화 */
+  lucide.createIcons();
+</script>
+</body>
+</html>
