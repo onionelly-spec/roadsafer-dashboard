@@ -41,11 +41,14 @@
     .month-nav__label:hover { background: rgba(245,158,11,0.08); }
     
     /* -- 년/월 드롭다운 -- */
+    .month-nav__label {
+      position: relative;
+      display: inline-block;
+    }
     .month-dropdown {
       position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
+      top: calc(100% + 4px);
+      left: 0;
       background: #fff;
       border: 1px solid #e5e7eb;
       border-radius: 6px;
@@ -54,7 +57,6 @@
       min-width: 120px;
       max-height: 240px;
       overflow-y: auto;
-      margin-top: 4px;
     }
     .month-dropdown__item {
       padding: 8px 12px;
@@ -179,20 +181,20 @@
             <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
           </button>
           <!-- [Java] th:text="${currentYear}+'년 '+${currentMonth}+'월'" -->
-          <span class="month-nav__label" id="monthLabel" onclick="toggleYearDropdown(event)" style="display: inline-block; position: relative;">
+          <span class="month-nav__label" id="monthLabel">
             <span id="yearDisplay" style="cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.15s;" onclick="toggleYearDropdown(event)">2026년</span>
             <span id="monthDisplay" style="cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: background 0.15s;" onclick="toggleMonthDropdown(event)">6월</span>
+            
+            <!-- 년 드롭다운 -->
+            <div class="month-dropdown hidden" id="yearDropdown">
+              <!-- [Java] th:each="year : ${yearList}" -->
+            </div>
+            
+            <!-- 월 드롭다운 -->
+            <div class="month-dropdown hidden" id="monthDropdown">
+              <!-- [Java] th:each="month : ${#numbers.sequence(1, 12)}" -->
+            </div>
           </span>
-          
-          <!-- 년 드롭다운 -->
-          <div class="month-dropdown hidden" id="yearDropdown">
-            <!-- [Java] th:each="year : ${yearList}" -->
-          </div>
-          
-          <!-- 월 드롭다운 -->
-          <div class="month-dropdown hidden" id="monthDropdown">
-            <!-- [Java] th:each="month : ${#numbers.sequence(1, 12)}" -->
-          </div>
           
           <!-- [Java] th:href="@{/construction?year=${nextYear}&month=${nextMonth}}" -->
           <button type="button" class="month-nav__btn" onclick="changeMonth(1)" aria-label="다음 달">
