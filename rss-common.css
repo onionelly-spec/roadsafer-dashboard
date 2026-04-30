@@ -1534,7 +1534,6 @@ select.rss-form-input,
   gap: 10px;
   padding: 20px 24px;
   border-top: 1px solid var(--rss-border);
-  background: var(--rss-card);  /* 흰색 배경 고정 — 카드 안팎 어디서 쓰여도 동일 */
   flex-wrap: wrap;
 }
 

@@ -287,36 +287,35 @@
 
           </form><!-- /profileStaffForm -->
         </div><!-- /rss-card__body -->
-      </div><!-- /rss-card -->
+        <!-- ══════════════════════════════════════════════════
+             하단 버튼 영역 (rss-card 안에 포함 — profile.html 기업주용과 동일 구조)
+             - 저장 : 중앙 (rss-page-actions)
+             - 비밀번호 변경 · 회원탈퇴 : 우측 (profile-btn-right)
+        ══════════════════════════════════════════════════ -->
+        <div class="rss-page-actions profile-btn-row"
+             style="justify-content:space-between;">
+          <!-- spacer — 저장 버튼을 중앙으로 밀기 위한 flex:1 영역 -->
+          <div class="profile-btn-spacer" style="flex:1;"></div>
 
-      <!-- ══════════════════════════════════════════════════
-           하단 버튼 영역
-           - 저장 : 중앙 (rss-page-actions)
-           - 비밀번호 변경 · 회원탈퇴 : 우측 (profile-btn-right)
-      ══════════════════════════════════════════════════ -->
-      <div class="rss-page-actions profile-btn-row"
-           style="justify-content:space-between;">
-        <!-- spacer — 저장 버튼을 중앙으로 밀기 위한 flex:1 영역 -->
-        <div class="profile-btn-spacer" style="flex:1;"></div>
-
-        <!-- 저장 버튼 (중앙) -->
-        <button type="button" class="rss-btn rss-btn--amber"
-                onclick="submitStaffProfile()">
-          <i data-lucide="save"></i> 저장
-        </button>
-
-        <!-- 우측 버튼 그룹 -->
-        <div class="profile-btn-right" style="flex:1; display:flex; justify-content:flex-end; gap:8px;">
-          <button type="button" class="rss-btn rss-btn--outline"
-                  onclick="openPwModal()">
-            <i data-lucide="lock"></i> 비밀번호 변경
+          <!-- 저장 버튼 (중앙) -->
+          <button type="button" class="rss-btn rss-btn--amber"
+                  onclick="submitStaffProfile()">
+            <i data-lucide="save"></i> 저장
           </button>
-          <button type="button" class="rss-btn rss-btn--outline-danger"
-                  onclick="openWithdrawModal()">
-            <i data-lucide="user-x"></i> 회원탈퇴
-          </button>
+
+          <!-- 우측 버튼 그룹 -->
+          <div class="profile-btn-right" style="flex:1; display:flex; justify-content:flex-end; gap:8px;">
+            <button type="button" class="rss-btn rss-btn--outline"
+                    onclick="openPwModal()">
+              <i data-lucide="lock"></i> 비밀번호 변경
+            </button>
+            <button type="button" class="rss-btn rss-btn--outline-danger"
+                    onclick="openWithdrawModal()">
+              <i data-lucide="user-x"></i> 회원탈퇴
+            </button>
+          </div>
         </div>
-      </div>
+      </div><!-- /rss-card -->
 
     </main><!-- /rss-content -->
 
