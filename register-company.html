@@ -122,29 +122,9 @@
     }
 
     /* ══════════════════════════════════════════════════════
-       폼 입력 공통 (rss-common.css의 rss-input과 동일 계열)
+       폼 입력 공통 → rss-common.css의 rss-input 클래스 사용
+       (로컬 .reg-input 정의 제거 — rss-common.css로 통합)
     ══════════════════════════════════════════════════════ */
-    .reg-input {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1.5px solid var(--rss-border);
-      border-radius: var(--rss-radius);
-      font-size: var(--rss-font-base);
-      color: var(--rss-text);
-      background: #fafafa;
-      outline: none;
-      transition: border-color 0.15s;
-      font-family: inherit;
-    }
-    .reg-input:focus { border-color: var(--rss-amber); background: #fff; }
-    .reg-input::placeholder { color: #c4c9d4; }
-    .reg-input--error { border-color: #ef4444 !important; }
-    .reg-input-hint {
-      font-size: var(--rss-font-xs);
-      color: var(--rss-muted);
-      margin-top: 4px;
-    }
-    .reg-input-hint--error { color: #ef4444; font-weight: 600; }
 
     /* 파일 첨부 */
     .reg-file-wrap {
@@ -181,7 +161,7 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .split-wrap .reg-input { flex: 1; min-width: 50px; }
+    .split-wrap .rss-input { flex: 1; min-width: 50px; }
     .split-sep { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
 
     /* 라디오 수신 설정 */
@@ -208,7 +188,7 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .email-wrap .reg-input { flex: 1; min-width: 80px; }
+    .email-wrap .rss-input { flex: 1; min-width: 80px; }
     .email-at { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
     .email-domain-select {
       padding: 9px 10px;
@@ -226,7 +206,7 @@
     /* 주소 */
     .addr-wrap { display: flex; flex-direction: column; gap: 6px; }
     .addr-search-row { display: flex; gap: 8px; }
-    .addr-search-row .reg-input { flex: 1; }
+    .addr-search-row .rss-input { flex: 1; }
 
     /* 권역 체크박스 */
     .region-wrap {
@@ -341,42 +321,7 @@
       }
     }
 
-    /* 경고 모달 */
-    .reg-alert-modal {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 9999;
-      align-items: center; justify-content: center;
-      padding: 16px;
-    }
-    .reg-alert-modal.open { display: flex; }
-    .reg-alert-modal__box {
-      background: #fff;
-      border-radius: var(--rss-radius-lg);
-      padding: 28px 28px 24px;
-      max-width: 400px; width: 100%;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
-    }
-    .reg-alert-modal__title {
-      font-size: var(--rss-font-lg);
-      font-weight: 800;
-      color: var(--rss-text);
-      margin-bottom: 10px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .reg-alert-modal__title svg { width: 22px; height: 22px; }
-    .reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
-    .reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
-    .reg-alert-modal__body {
-      font-size: var(--rss-font-base);
-      color: var(--rss-muted);
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-    .reg-alert-modal__footer {
-      display: flex; justify-content: center; gap: 8px;
-    }
+    /* 경고 모달 → rss-common.css의 rss-alert-modal 클래스 사용 (로컬 중복 제거) */
 
     /* 뒤로가기 링크 */
     .reg-back-link {
@@ -427,38 +372,38 @@
         <!-- 아이디 -->
         <div class="rss-form-row">
           <label class="rss-form-label" for="mberId">아이디</label>
-          <input type="text" id="mberId" name="mberId" class="reg-input"
+          <input type="text" id="mberId" name="mberId" class="rss-input"
                  placeholder="영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요."
                  maxlength="12" pattern="[a-zA-Z0-9]{8,12}" required
                  autocomplete="username" oninput="validateId(this)" />
           <!-- [Java] 아이디 중복 체크: POST /register/check-id { mberId } -->
-          <p class="reg-input-hint" id="mberIdHint">* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.</p>
+          <p class="rss-form-hint" id="mberIdHint">* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.</p>
         </div>
 
         <!-- 비밀번호 -->
         <div class="rss-form-row">
           <label class="rss-form-label" for="mberPassword">비밀번호</label>
-          <input type="password" id="mberPassword" name="mberPassword" class="reg-input"
+          <input type="password" id="mberPassword" name="mberPassword" class="rss-input"
                  placeholder="대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요."
                  maxlength="12" required autocomplete="new-password"
                  oninput="validatePw(this)" />
-          <p class="reg-input-hint" id="mberPasswordHint">* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.</p>
+          <p class="rss-form-hint" id="mberPasswordHint">* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.</p>
         </div>
 
         <!-- 비밀번호 확인 -->
         <div class="rss-form-row">
           <label class="rss-form-label" for="mberPasswordConfirm">비밀번호 확인</label>
-          <input type="password" id="mberPasswordConfirm" name="mberPasswordConfirm" class="reg-input"
+          <input type="password" id="mberPasswordConfirm" name="mberPasswordConfirm" class="rss-input"
                  placeholder="비밀번호를 한 번 더 입력하세요"
                  maxlength="12" required autocomplete="new-password"
                  oninput="validatePwConfirm(this)" />
-          <p class="reg-input-hint" id="mberPasswordConfirmHint">* 비밀번호를 한 번 더 입력하세요.</p>
+          <p class="rss-form-hint" id="mberPasswordConfirmHint">* 비밀번호를 한 번 더 입력하세요.</p>
         </div>
 
         <!-- 상호 -->
         <div class="rss-form-row">
           <label class="rss-form-label" for="companyNm">상호</label>
-          <input type="text" id="companyNm" name="companyNm" class="reg-input"
+          <input type="text" id="companyNm" name="companyNm" class="rss-input"
                  placeholder="상호를 입력하세요" required />
         </div>
 
@@ -466,17 +411,17 @@
         <div class="rss-form-row">
           <label class="rss-form-label" for="bizNo1">사업자 번호</label>
           <div class="split-wrap">
-            <input type="text" id="bizNo1" name="bizNo1" class="reg-input"
+            <input type="text" id="bizNo1" name="bizNo1" class="rss-input"
                    placeholder="000" maxlength="3"
                    oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('bizNo2').focus();"
                    required />
             <span class="split-sep">-</span>
-            <input type="text" id="bizNo2" name="bizNo2" class="reg-input"
+            <input type="text" id="bizNo2" name="bizNo2" class="rss-input"
                    placeholder="00" maxlength="2"
                    oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=2) document.getElementById('bizNo3').focus();"
                    required />
             <span class="split-sep">-</span>
-            <input type="text" id="bizNo3" name="bizNo3" class="reg-input"
+            <input type="text" id="bizNo3" name="bizNo3" class="rss-input"
                    placeholder="00000" maxlength="5"
                    oninput="this.value=this.value.replace(/\D/g,'');" required />
           </div>
@@ -488,7 +433,7 @@
           <span class="rss-form-label">사업자 등록증</span>
           <!-- [Java] 파일 업로드: POST /register/upload { file } → 파일명 반환 -->
           <div class="reg-file-wrap" id="bizRegFileWrap">
-            <button type="button" class="reg-file-btn" onclick="triggerFileInput('bizRegFile')">
+            <button type="button" class="rss-btn rss-btn--file" onclick="triggerFileInput('bizRegFile')">
               <i data-lucide="paperclip"></i> 파일찾기
             </button>
             <input type="file" id="bizRegFile" name="bizRegFile" accept=".pdf,.jpg,.jpeg,.png"
@@ -502,13 +447,13 @@
               </button>
             </div>
           </div>
-          <p class="reg-input-hint">* 사업자등록증을 첨부해 주세요.</p>
+          <p class="rss-form-hint">* 사업자등록증을 첨부해 주세요.</p>
         </div>
 
         <!-- 대표자명 -->
         <div class="rss-form-row">
           <label class="rss-form-label" for="ceoNm">대표자명</label>
-          <input type="text" id="ceoNm" name="ceoNm" class="reg-input"
+          <input type="text" id="ceoNm" name="ceoNm" class="rss-input"
                  placeholder="대표자명을 입력하세요" required />
         </div>
 
@@ -516,17 +461,17 @@
         <div class="rss-form-row">
           <label class="rss-form-label" for="ceoTel1">대표 휴대폰 번호</label>
           <div class="split-wrap">
-            <input type="text" id="ceoTel1" name="ceoTel1" class="reg-input"
+            <input type="text" id="ceoTel1" name="ceoTel1" class="rss-input"
                    placeholder="010" maxlength="3"
                    oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=3) document.getElementById('ceoTel2').focus();"
                    required />
             <span class="split-sep">-</span>
-            <input type="text" id="ceoTel2" name="ceoTel2" class="reg-input"
+            <input type="text" id="ceoTel2" name="ceoTel2" class="rss-input"
                    placeholder="0000" maxlength="4"
                    oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length>=4) document.getElementById('ceoTel3').focus();"
                    required />
             <span class="split-sep">-</span>
-            <input type="text" id="ceoTel3" name="ceoTel3" class="reg-input"
+            <input type="text" id="ceoTel3" name="ceoTel3" class="rss-input"
                    placeholder="0000" maxlength="4"
                    oninput="this.value=this.value.replace(/\D/g,'');" required />
           </div>
@@ -541,10 +486,10 @@
         <div class="rss-form-row">
           <label class="rss-form-label" for="emailId">이메일 주소</label>
           <div class="email-wrap">
-            <input type="text" id="emailId" name="emailId" class="reg-input"
+            <input type="text" id="emailId" name="emailId" class="rss-input"
                    placeholder="이메일 아이디" required />
             <span class="email-at">@</span>
-            <input type="text" id="emailDomain" name="emailDomain" class="reg-input"
+            <input type="text" id="emailDomain" name="emailDomain" class="rss-input"
                    placeholder="도메인" required />
             <select class="email-domain-select" id="emailDomainSelect"
                     onchange="applyEmailDomain(this.value)">
@@ -573,16 +518,16 @@
           <span class="rss-form-label">사업장 주소</span>
           <div class="addr-wrap">
             <div class="addr-search-row">
-              <input type="text" id="bizPostCode" name="bizPostCode" class="reg-input"
+              <input type="text" id="bizPostCode" name="bizPostCode" class="rss-input"
                      placeholder="우편번호" readonly style="max-width:120px;" />
               <!-- [Java] 주소 API 연동: 카카오 주소 API 또는 행정안전부 도로명주소 API -->
-              <button type="button" class="reg-file-btn" onclick="searchAddress()">
+              <button type="button" class="rss-btn rss-btn--file" onclick="searchAddress()">
                 <i data-lucide="map-pin"></i> 주소 찾기
               </button>
             </div>
-            <input type="text" id="bizAddrMain" name="bizAddrMain" class="reg-input"
+            <input type="text" id="bizAddrMain" name="bizAddrMain" class="rss-input"
                    placeholder="기본 주소" readonly />
-            <input type="text" id="bizAddrDetail" name="bizAddrDetail" class="reg-input"
+            <input type="text" id="bizAddrDetail" name="bizAddrDetail" class="rss-input"
                    placeholder="상세 주소를 입력하세요" />
           </div>
         </div>
@@ -610,7 +555,7 @@
           <span class="rss-form-label">통장사본</span>
           <!-- [Java] 파일 업로드: POST /register/upload { file } → 파일명 반환 -->
           <div class="reg-file-wrap" id="bankFileWrap">
-            <button type="button" class="reg-file-btn" onclick="triggerFileInput('bankFile')">
+            <button type="button" class="rss-btn rss-btn--file" onclick="triggerFileInput('bankFile')">
               <i data-lucide="paperclip"></i> 파일찾기
             </button>
             <input type="file" id="bankFile" name="bankFile" accept=".pdf,.jpg,.jpeg,.png"
@@ -623,7 +568,7 @@
               </button>
             </div>
           </div>
-          <p class="reg-input-hint">* 통장사본을 첨부해 주세요. 마이페이지에서 정보를 수정할 수 있습니다.</p>
+          <p class="rss-form-hint">* 통장사본을 첨부해 주세요. 마이페이지에서 정보를 수정할 수 있습니다.</p>
         </div>
 
         <!-- ② TMA 카드 섭션 [Java] 기본 1개 등록 필수. 추가 버튼으로 행 추가 가능. -->
@@ -652,17 +597,17 @@
                     </div>
                   </td>
                   <td data-label="차량 번호">
-                    <input type="text" name="tmaCarNo_1" class="reg-input"
+                    <input type="text" name="tmaCarNo_1" class="rss-input"
                            placeholder="차량번호" />
                   </td>
                   <td data-label="소유주">
                     <!-- [Java] 소유주: 자율 입력 -->
-                    <input type="text" name="tmaOwner_1" class="reg-input"
+                    <input type="text" name="tmaOwner_1" class="rss-input"
                            placeholder="소유주" />
                   </td>
                   <td data-label="파일 첨부">
                     <div class="reg-file-wrap" id="tmaFileWrap_1">
-                      <button type="button" class="reg-file-btn" onclick="triggerFileInput('tmaFile_1')">
+                      <button type="button" class="rss-btn rss-btn--file" onclick="triggerFileInput('tmaFile_1')">
                         <i data-lucide="paperclip"></i> 파일찾기
                       </button>
                       <input type="file" id="tmaFile_1" name="tmaFile_1"
@@ -688,7 +633,7 @@
         <button type="button" class="tma-add-btn" onclick="addTmaRow()">
           <i data-lucide="plus"></i> 추가
         </button>
-        <p class="reg-input-hint" style="margin-top:6px;">
+        <p class="rss-form-hint" style="margin-top:6px;">
           * 추가 : 아래에 추가 입력 줄 생성하여 추가 등록 가능.
         </p>
 
@@ -721,14 +666,14 @@
 </div>
 
 <!-- 경고 모달 — 필수 항목 누락 -->
-<div class="reg-alert-modal" id="modalValidAlert" role="alertdialog" aria-modal="true">
-  <div class="reg-alert-modal__box">
-    <p class="reg-alert-modal__title reg-alert-modal__title--warn">
+<div class="rss-alert-modal" id="modalValidAlert" role="alertdialog" aria-modal="true">
+  <div class="rss-alert-modal__box">
+    <p class="rss-alert-modal__title rss-alert-modal__title--warn">
       <i data-lucide="alert-circle"></i>
       모든 항목을 빠짐없이 입력하세요
     </p>
-    <p class="reg-alert-modal__body" id="modalValidMsg">필수 항목을 모두 입력해 주세요.</p>
-    <div class="reg-alert-modal__footer">
+    <p class="rss-alert-modal__body" id="modalValidMsg">필수 항목을 모두 입력해 주세요.</p>
+    <div class="rss-alert-modal__footer">
       <button type="button" class="rss-btn rss-btn--amber px-8"
               onclick="closeModal('modalValidAlert')">확인</button>
     </div>
@@ -736,16 +681,16 @@
 </div>
 
 <!-- 경고 모달 — 권역 3개 초과 선택 -->
-<div class="reg-alert-modal" id="modalRegionAlert" role="alertdialog" aria-modal="true">
-  <div class="reg-alert-modal__box">
-    <p class="reg-alert-modal__title reg-alert-modal__title--warn">
+<div class="rss-alert-modal" id="modalRegionAlert" role="alertdialog" aria-modal="true">
+  <div class="rss-alert-modal__box">
+    <p class="rss-alert-modal__title rss-alert-modal__title--warn">
       <i data-lucide="alert-circle"></i>
       권역 선택 초과
     </p>
-    <p class="reg-alert-modal__body">
+    <p class="rss-alert-modal__body">
       권역은 최대 <strong>3개</strong>까지만 선택할 수 있습니다.
     </p>
-    <div class="reg-alert-modal__footer">
+    <div class="rss-alert-modal__footer">
       <button type="button" class="rss-btn rss-btn--amber px-8"
               onclick="closeModal('modalRegionAlert')">확인</button>
     </div>
@@ -753,16 +698,16 @@
 </div>
 
 <!-- 경고 모달 — 가입 규칙 확인 (등록 전 최종 확인) -->
-<div class="reg-alert-modal" id="modalConfirm" role="alertdialog" aria-modal="true">
-  <div class="reg-alert-modal__box">
+<div class="rss-alert-modal" id="modalConfirm" role="alertdialog" aria-modal="true">
+  <div class="rss-alert-modal__box">
     <!-- [Java] 등록 버튼 클릭 시:
          - 필수 항목 누락 시 경고창: "모든 항목을 빠짐없이 입력하세요."
          - 정상 입력 시 확인 모달 표시 → 예 클릭 시 가입 대기 처리 후 register-complete.html(J2)로 이동
     -->
-    <p class="reg-alert-modal__body">
+    <p class="rss-alert-modal__body">
       가입하시겠습니까?
     </p>
-    <div class="reg-alert-modal__footer">
+    <div class="rss-alert-modal__footer">
       <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
               onclick="closeModal('modalConfirm')">아니오</button>
       <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
@@ -893,12 +838,12 @@
     var hint = document.getElementById('mberIdHint');
     var pattern = /^[a-zA-Z0-9]{8,12}$/;
     if (val && !pattern.test(val)) {
-      input.classList.add('reg-input--error');
-      hint.className = 'reg-input-hint reg-input-hint--error';
+      input.classList.add('rss-input--error');
+      hint.className = 'rss-form-hint rss-form-hint--error';
       hint.textContent = '* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.';
     } else {
-      input.classList.remove('reg-input--error');
-      hint.className = 'reg-input-hint';
+      input.classList.remove('rss-input--error');
+      hint.className = 'rss-form-hint';
       hint.textContent = '* 영문, 숫자만 가능하며 8자 ~ 12자까지 입력하세요.';
     }
   }
@@ -908,12 +853,12 @@
     var hint = document.getElementById('mberPasswordHint');
     var pattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,12}$/;
     if (val && !pattern.test(val)) {
-      input.classList.add('reg-input--error');
-      hint.className = 'reg-input-hint reg-input-hint--error';
+      input.classList.add('rss-input--error');
+      hint.className = 'rss-form-hint rss-form-hint--error';
       hint.textContent = '* 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자로 입력하세요.';
     } else {
-      input.classList.remove('reg-input--error');
-      hint.className = 'reg-input-hint';
+      input.classList.remove('rss-input--error');
+      hint.className = 'rss-form-hint';
       hint.textContent = '* 대/소문자를 구분하며 영문, 숫자, 특수문자를 포함하여 8자 ~ 12자까지 입력하세요.';
     }
   }
@@ -922,12 +867,12 @@
     var pw = document.getElementById('mberPassword').value;
     var hint = document.getElementById('mberPasswordConfirmHint');
     if (input.value && input.value !== pw) {
-      input.classList.add('reg-input--error');
-      hint.className = 'reg-input-hint reg-input-hint--error';
+      input.classList.add('rss-input--error');
+      hint.className = 'rss-form-hint rss-form-hint--error';
       hint.textContent = '* 비밀번호가 일치하지 않습니다.';
     } else {
-      input.classList.remove('reg-input--error');
-      hint.className = 'reg-input-hint';
+      input.classList.remove('rss-input--error');
+      hint.className = 'rss-form-hint';
       hint.textContent = '* 비밀번호를 한 번 더 입력하세요.';
     }
   }
@@ -951,11 +896,11 @@
           '<label><input type="radio" name="tmaType_' + n + '" value="PLCS" /> PLCS</label>' +
         '</div>' +
       '</td>' +
-      '<td data-label="차량 번호"><input type="text" name="tmaCarNo_' + n + '" class="reg-input" placeholder="차량번호" /></td>' +
-      '<td data-label="소유주"><input type="text" name="tmaOwner_' + n + '" class="reg-input" placeholder="소유주" /></td>' +
+      '<td data-label="차량 번호"><input type="text" name="tmaCarNo_' + n + '" class="rss-input" placeholder="차량번호" /></td>' +
+      '<td data-label="소유주"><input type="text" name="tmaOwner_' + n + '" class="rss-input" placeholder="소유주" /></td>' +
       '<td data-label="파일 첨부">' +
         '<div class="reg-file-wrap" id="tmaFileWrap_' + n + '">' +
-          '<button type="button" class="reg-file-btn" onclick="triggerFileInput(\'tmaFile_' + n + '\')">' +
+          '<button type="button" class="rss-btn rss-btn--file" onclick="triggerFileInput(\'tmaFile_' + n + '\')">' +
             '<i data-lucide="paperclip"></i>파일찾기' +
           '</button>' +
           '<input type="file" id="tmaFile_' + n + '" name="tmaFile_' + n + '" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleFileSelect(this,\'tmaFileWrap_' + n + '\',\'tmaFile_' + n + '\')" />' +

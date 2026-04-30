@@ -2673,3 +2673,84 @@ img.rss-img-error {
   .notice-modal__attach,
   .notice-modal__footer { padding-left: 16px; padding-right: 16px; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   알림/확인 모달 공통 클래스 (rss-alert-modal)
+   ■ register-company.html, register-employee.html의
+     reg-alert-modal 대체 공통 클래스
+   ■ .rss-alert-modal.open → display: flex
+   ■ __title--warn : 경고 아이콘 (빨간색)
+   ■ __title--info : 안내 아이콘 (amber)
+═══════════════════════════════════════════════════════════ */
+.rss-alert-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+.rss-alert-modal.open { display: flex; }
+.rss-alert-modal__box {
+  background: #fff;
+  border-radius: var(--rss-radius-lg);
+  padding: 28px 28px 20px;
+  min-width: 280px;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+.rss-alert-modal__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+  margin-bottom: 12px;
+}
+.rss-alert-modal__title svg { width: 22px; height: 22px; }
+.rss-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
+.rss-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
+.rss-alert-modal__body {
+  font-size: var(--rss-font-sm);
+  color: var(--rss-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.rss-alert-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+@media (max-width: 480px) {
+  .rss-alert-modal__box { padding: 20px 16px 16px; }
+}
+
+
+/* ─── rss-input 수식자 ─────────────────────────────────── */
+/* readonly 상태: 배경 회색, 포커스 없음 */
+.rss-input--readonly,
+.rss-input[readonly] {
+  background: #f3f4f6;
+  color: var(--rss-muted);
+  cursor: default;
+}
+.rss-input--readonly:focus,
+.rss-input[readonly]:focus {
+  border-color: var(--rss-border);
+  background: #f3f4f6;
+  outline: none;
+  box-shadow: none;
+}
+/* 에러 상태 */
+.rss-input--error {
+  border-color: #ef4444 !important;
+}
+.rss-form-hint--error {
+  color: #ef4444;
+  font-size: var(--rss-font-xs);
+  margin-top: 4px;
+  display: block;
+}

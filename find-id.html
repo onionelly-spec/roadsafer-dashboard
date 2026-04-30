@@ -367,7 +367,7 @@
   </aside>
 
   <!-- ══ 오른쪽 폼 패널 ══ -->
-  <div class="login-form-panel">
+  <main class="login-form-panel" role="main" aria-label="아이디 찾기 폼">
     <div class="findid-card">
       <div class="findid-card__top-line"></div>
       <div class="findid-card__body">
@@ -381,6 +381,7 @@
 
             <!-- 상호 -->
             <!-- [DB] tbl_company.company_nm -->
+            <!-- [Java] POST /member/find-id | 요청 파라미터: companyNm, bizRegNo, emailId, emailDomain -->
             <div class="findid-field">
               <label class="findid-label" for="findCompanyNm">상호</label>
               <input type="text" id="findCompanyNm" class="findid-input"
@@ -455,6 +456,7 @@
 
           <p class="findid-result__label">가입된 아이디입니다</p>
           <!-- [DB] tbl_mber.mber_id -->
+          <!-- [Java] th:text="${memberId}" 아이디 찾기 결과 바인딩 -->
           <div id="findid-result-id" class="findid-result__id-box">hoonjs80</div>
 
           <a href="login.html" class="findid-login-btn">
@@ -469,7 +471,7 @@
 
       </div><!-- /.findid-card__body -->
     </div><!-- /.findid-card -->
-  </div><!-- /.findid-form-panel -->
+  </main><!-- /.login-form-panel -->
 
 </div><!-- /.findid-page -->
 

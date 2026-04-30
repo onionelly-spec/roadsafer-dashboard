@@ -41,6 +41,7 @@
                 카테고리<span class="required">*</span>
               </label>
               <!-- [DB] market.market_category ('sinca'|'sign'|'safety'|'sinboard'|'tma') -->
+              <!-- [Java] 수정 시 th:field="*{marketCategory}" 라디오 선택 상태 바인딩 -->
               <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; padding-top:4px;">
                 <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:var(--rss-font-base); color:var(--rss-text);">
                   <input type="radio" name="marketCategory" value="sinca" />싸인카
@@ -66,6 +67,7 @@
                 수량<span class="required">*</span>
               </label>
               <!-- [DB] market.market_qty (INT) -->
+              <!-- [Java] 수정 시 th:value="${item.marketQty}" -->
               <input type="number" name="marketQty" id="marketQty" class="rss-input"
                      placeholder="수량을 입력하세요" min="1" style="max-width:200px;" />
             </div>
@@ -76,6 +78,7 @@
                 규격<span class="required">*</span>
               </label>
               <!-- [DB] market.market_spec (VARCHAR 50) -->
+              <!-- [Java] 수정 시 th:value="${item.marketSpec}" -->
               <input type="text" name="marketSpec" id="marketSpec" class="rss-input"
                      placeholder="규격을 입력하세요 (예: 대형, 2022년식, 45,000km)" maxlength="50" />
             </div>
@@ -86,6 +89,7 @@
                 판매가<span class="required">*</span>
               </label>
               <!-- [DB] market.market_price (VARCHAR 50 — '협의' 등 텍스트 허용) -->
+              <!-- [Java] 수정 시 th:value="${item.marketPrice}" -->
               <input type="text" name="marketPrice" id="marketPrice" class="rss-input"
                      placeholder="판매가를 입력하세요 (예: 3,500,000원 또는 협의)" maxlength="50" />
             </div>
@@ -96,6 +100,7 @@
                 내용<span class="required">*</span>
               </label>
               <!-- [DB] market.market_content (TEXT) -->
+              <!-- [Java] 수정 시 th:text="${item.marketContent}" -->
               <textarea name="marketContent" id="marketContent" class="rss-input rss-textarea"
                         placeholder="상품 설명을 입력하세요. (최대 500자)" maxlength="500"></textarea>
             </div>
