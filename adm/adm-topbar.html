@@ -1,0 +1,120 @@
+<!--
+  adm-topbar.html — 관리자 사이트 공통 상단 바 컴포넌트
+  =====================================================
+  [구성]
+    좌: 로고 (로드세이프티시스템)
+    우: 관리자명(권한) + 로그아웃 아이콘 + 비밀번호변경 아이콘 + 홈 아이콘
+
+  [사용법] 각 페이지에서 아래 div를 배치하면 자동 삽입됩니다.
+    <div id="adm-topbar-wrap"></div>
+
+  [Java Thymeleaf 전환 시]
+    이 파일 내용을 /templates/fragments/adm/topbar.html 로 이동하고
+    각 페이지에서 <div th:replace="fragments/adm/topbar :: topbar"></div> 로 교체하세요.
+
+  [활성 상태]
+    adm-common.js 에서 현재 페이지 URL을 감지하여 사이드바 active 클래스를 부여합니다.
+    Java 환경에서는 th:classappend="${currentMenu == 'member'} ? 'active'" 방식으로 처리하세요.
+  =====================================================
+-->
+<header class="adm-topbar" role="banner">
+  <!-- 모바일 햄버거 버튼 (PC에서는 CSS로 숨김) -->
+  <button class="adm-topbar__icon-btn adm-topbar__menu-btn" id="admSidebarToggle"
+          aria-label="전체 메뉴 열기" type="button">
+    <i data-lucide="menu" style="width:20px;height:20px;"></i>
+  </button>
+
+  <!-- 로고 -->
+  <a href="../index.html" class="adm-topbar__logo" aria-label="로드세이프티시스템 관리자 홈">
+    <!-- [이미지 경로] 실제 서버 배포 시 /assets/images/logo-rss-new.png 로 변경 -->
+    <img src="../assets/images/logo-rss-new.png"
+         alt="로드세이프티시스템 로고"
+         class="adm-topbar__logo-img"
+         onerror="this.style.display='none'" />
+    <div class="adm-topbar__logo-text">
+      <span class="adm-topbar__logo-main">(주)로드세이프티시스템</span>
+      <span class="adm-topbar__logo-sub">Road Safety System — 관리자</span>
+    </div>
+  </a>
+
+  <!-- 우측: 관리자 정보 + 아이콘 버튼 -->
+  <div class="adm-topbar__right">
+    <!-- 관리자명 + 권한 -->
+    <!-- [Java] ${session.loginAdm.admNm}, ${session.loginAdm.admRole} -->
+    <div class="adm-topbar__user-info">
+      <span class="adm-topbar__user-name" id="adm_topbar_nm">통합관리자</span>
+      <!-- [Java] th:text="${session.loginAdm.admNm}" -->
+      <span class="adm-topbar__user-role" id="adm_topbar_role">(master)</span>
+      <!-- [Java] th:text="'(' + ${session.loginAdm.admRole} + ')'" -->
+    </div>
+
+    <!-- 로그아웃 -->
+    <!-- [Java] POST /adm/ath/logout -->
+    <button class="adm-topbar__icon-btn" id="admLogoutBtn"
+            aria-label="로그아웃" title="로그아웃" type="button"
+            onclick="admLogout()">
+      <i data-lucide="log-out" style="width:18px;height:18px;"></i>
+    </button>
+
+    <!-- 비밀번호 변경 -->
+    <button class="adm-topbar__icon-btn" id="admPwChangeBtn"
+            aria-label="비밀번호 변경" title="비밀번호 변경" type="button"
+            onclick="openAdmPwModal()">
+      <i data-lucide="key-round" style="width:18px;height:18px;"></i>
+    </button>
+
+    <!-- 홈 (사용자 사이트 홈) -->
+    <a href="../index.html" class="adm-topbar__icon-btn"
+       aria-label="사용자 사이트 홈" title="사용자 사이트 홈">
+      <i data-lucide="home" style="width:18px;height:18px;"></i>
+    </a>
+  </div>
+</header>
+
+<!-- ─── 비밀번호 변경 모달 ─────────────────────────────────
+     [Java] POST /adm/ath/pw-change
+     필드: adm_cur_pw / adm_new_pw / adm_new_pw_confirm
+     ─────────────────────────────────────────────────── -->
+<div class="adm-pw-modal" id="admPwModal" role="dialog" aria-modal="true"
+     aria-labelledby="admPwModalTitle">
+  <div class="adm-pw-modal__box">
+    <h2 class="adm-pw-modal__title" id="admPwModalTitle">비밀번호 변경</h2>
+    <div class="adm-pw-modal__fields">
+      <!-- 현재 비밀번호 -->
+      <div class="adm-pw-modal__field">
+        <label for="adm_cur_pw">현재 비밀번호</label>
+        <!-- [Java] 현재 비밀번호 검증 — POST /adm/ath/pw-change -->
+        <input type="password" id="adm_cur_pw" name="adm_cur_pw"
+               class="rss-input" placeholder="현재 비밀번호를 입력하세요"
+               autocomplete="current-password" />
+      </div>
+      <!-- 변경할 비밀번호 -->
+      <div class="adm-pw-modal__field">
+        <label for="adm_new_pw">변경할 비밀번호</label>
+        <!-- [Java] 새 비밀번호 — 영문+숫자+특수문자 조합 8자 이상 권장 -->
+        <input type="password" id="adm_new_pw" name="adm_new_pw"
+               class="rss-input" placeholder="변경할 비밀번호를 입력하세요"
+               autocomplete="new-password"
+               oninput="checkAdmPwMatch()" />
+      </div>
+      <!-- 변경할 비밀번호 확인 -->
+      <div class="adm-pw-modal__field">
+        <label for="adm_new_pw_confirm">변경할 비밀번호 확인</label>
+        <input type="password" id="adm_new_pw_confirm" name="adm_new_pw_confirm"
+               class="rss-input" placeholder="비밀번호를 다시 입력하세요"
+               autocomplete="new-password"
+               oninput="checkAdmPwMatch()" />
+        <!-- 불일치 메시지 -->
+        <p class="rss-form-hint--error" id="admPwMatchMsg" style="display:none;margin-top:4px;">
+          비밀번호가 일치하지 않습니다.
+        </p>
+      </div>
+    </div>
+    <div class="adm-pw-modal__actions">
+      <button type="button" class="rss-btn rss-btn--outline-cancel"
+              onclick="closeAdmPwModal()">취소</button>
+      <button type="button" class="rss-btn rss-btn--amber"
+              onclick="submitAdmPwChange()">변경</button>
+    </div>
+  </div>
+</div>
