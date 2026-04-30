@@ -779,8 +779,13 @@ RSS.action = (function() {
     cancelSimpleYes: function() {
       /* [Java] POST /construction/block-cancel { constructionSeq } */
       this.closeModal('rssModalCancelSimple');
-      /* 취소 완료 후 페이지 새로고침 */
-      location.reload();
+      /* 취소 완료 후 동작: 차단정보 탭에서는 목록으로 이동, 다른 페이지에서는 새로고침 */
+      var isDetailPage = location.pathname.indexOf('construction-detail') !== -1;
+      if (isDetailPage) {
+        location.href = 'construction-list.html';
+      } else {
+        location.reload();
+      }
     },
 
     cancelSimpleNo: function() {
