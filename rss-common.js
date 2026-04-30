@@ -468,6 +468,23 @@ _initUserInfo();
           approverEl.innerHTML = `<strong>담당자</strong><span>${userName}</span>`;
         }
 
+        // ④ 기업주 전용(data-role-only="owner") 요소 숨기기
+        // 사이드바 포함 전체 페이지에서 기업주 전용 메뉴/요소를 숨김
+        // [Java] th:if="${session.loginUsr.mberType == 'BLOCK'}" 로 대체
+        (function hideOwnerOnlyElements() {
+          function applyHide() {
+            document.querySelectorAll('[data-role-only="owner"]').forEach(function(el) {
+              el.style.display = 'none';
+            });
+          }
+          applyHide();
+          // 사이드바가 fetch로 늦게 삽입될 경우 MutationObserver로 재처리
+          var obs = new MutationObserver(function() { applyHide(); });
+          obs.observe(document.body, { childList: true, subtree: true });
+          // 사이드바 로드 완료 후 observer 해제 (3초 후)
+          setTimeout(function() { obs.disconnect(); }, 3000);
+        })();
+
         // ⑥ 사이드바 정보변경 링크 → 직원용 페이지로 변경
         // sidebar.html이 fetch 완료된 후 DOM에 삽입되므로 MutationObserver로 감지
         // [Java] 서버사이드 전환 시 th:href="@{/profile/staff}" 등으로 처리
