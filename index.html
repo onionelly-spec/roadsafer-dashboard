@@ -430,7 +430,7 @@
            [DB] construction WHERE block_company_id = ? ORDER BY start_dt DESC
            [Java] th:each="item : ${constructionList}"
            [Java] 로그인 유형: ${loginType} = 'company'(기업주) | 'employee'(직원)
-             - company  → 금액 열 표시
+             - company  → 현재 합계 열 표시
              - employee → 싸인카 수량 열 표시
       ══════════════════════════════════════════════════ -->
       <div class="rss-card">
@@ -462,9 +462,9 @@
                 <th>발주업체명</th>
                 <th>기간</th>
                 <!--
-                  [Java] th:if="${loginType == 'company'}"  → <th>금액</th>
+                  [Java] th:if="${loginType == 'company'}"  → <th>현재 합계</th>
                   [Java] th:if="${loginType == 'employee'}" → <th>싸인카 수량</th>
-                  더미: 기업주 로그인 기준 → 금액 표시
+                  더미: 기업주 로그인 기준 → 현재 합계 표시
                 -->
                 <th id="thAmountOrQty" data-th="현재 합계" class="td-amount">현재 합계</th>
                 <th>관리</th>
@@ -486,7 +486,7 @@
                   [Java] th:if="${loginType == 'company'}"  → th:text="${#numbers.formatInteger(item.amount,1,'COMMA')}"
                   [Java] th:if="${loginType == 'employee'}" → th:text="${item.equipmentSummary}"
                 -->
-                <td class="rss-col-amount td-amount" id="tdAmount1"><!-- 예정 상태는 금액 미확정 → 공란 --></td>
+                <td class="rss-col-amount td-amount" id="tdAmount1"><!-- 예정 상태는 현재 합계 미확정 → 공란 --></td>
                 <td>
                   <!-- 예정 상태 → 차단 취소 버튼 -->
                   <button type="button" class="rss-btn rss-action-btn rss-action-btn--cancel"

@@ -170,7 +170,7 @@
           <ul class="monthly-sales__desc">
             <li>월 매출은 종료된 공사를 집계한 내역입니다. 진행 중 공사는 포함되지 않습니다.</li>
             <li>월이 걸쳐진 경우, 종료일 기준으로 집계됩니다. 이전월에 공사가 진행되었더라도, 이전월 집계에 포함되지 않습니다.</li>
-            <li>진행중 공사의 금액은 공사시작일부터 현재까지 누적집계된 금액으로 포함되지 않습니다.</li>
+            <li>진행중 공사의 현재 합계는 공사시작일부터 현재까지 누적집계된 금액으로 포함되지 않습니다.</li>
           </ul>
         </div>
 
@@ -197,7 +197,7 @@
              ④ PC 테이블 뷰 (769px 이상)
              [DB] construction WHERE block_company_id=? AND YEAR(start_dt)=? AND MONTH(start_dt)=?
              [Java] th:each="item : ${constructionList}"
-             금액 열: 기업 로그인 시만 표시 [Java] th:if="${loginType == 'company'}"
+             현재 합계 열: 기업 로그인 시만 표시 [Java] th:if="${loginType == 'company'}"
         ══════════════════════════════════════════════════ -->
         <div class="rss-table-wrap" id="pcTable">
           <table class="rss-table">
@@ -239,7 +239,7 @@
                 </td>
                 <td>한국개발<!-- [Java] ${item.orderCompanyNm} --></td>
                 <td>2026-07-01 ~ 2026-07-03 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(3일)</span></td>
-                <!-- [Java] th:if="${loginType == 'company'}" → 예정은 금액 미확정 공란 -->
+                <!-- [Java] th:if="${loginType == 'company'}" → 예정은 현재 합계 미확정 공란 -->
                 <td class="td-amount"><!-- 예정 미확정 --></td>
                 <td>
                   <!-- 예정 상태: 차단신청 취소 버튼 -->
@@ -306,7 +306,7 @@
 
         <!-- ══════════════════════════════════════════════════
              ⑤ 모바일 카드 뷰 (768px 이하)
-             금액: 기업 로그인 시만 표시
+             현재 합계: 기업 로그인 시만 표시
         ══════════════════════════════════════════════════ -->
         <div class="clist-mobile">
           <!-- [Java] th:each="item : ${constructionList}" -->
@@ -475,7 +475,7 @@
   /* [Java] 실제 환경: loginType = '${loginType}' */
   var loginType = 'company'; /* 'company' | 'employee' */
   if (loginType === 'employee') {
-    /* 직원: 월매출 블록 숨김, 금액 열 숨김 */
+    /* 직원: 월매출 브록 숙김, 현재 합계 열 숙김 */
     var salesBlock = document.getElementById('monthlySalesBlock');
     if (salesBlock) salesBlock.style.display = 'none';
     document.querySelectorAll('.td-amount, #colAmount, #thAmount').forEach(function(el) {
