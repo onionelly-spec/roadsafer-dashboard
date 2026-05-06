@@ -19,14 +19,40 @@
     /* ══════════════════════════════════════════════════════
        회원가입 공통 레이아웃 (register-company.html과 동일)
     ══════════════════════════════════════════════════════ */
-    
-    
-    
-    
-    
+    .reg-page {
+      min-height: 100vh;
+      background: #f0ede6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 60px;
+    }
+    .reg-header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .reg-header__logo { height: 40px; width: auto; }
+    .reg-header__name {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      letter-spacing: -0.01em;
+    }
+    .reg-card {
+      width: 100%;
+      max-width: 900px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
     .reg-card__top-line {
       height: 4px;
-      background: linear-gradient(90deg, var(--rss-amber) 0%, #fbbf24 100%);
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
     }
     .reg-card__body { padding: 32px 36px 36px; }
     @media (max-width: 640px) { .reg-card__body { padding: 20px 16px 24px; } }
@@ -45,7 +71,15 @@
       border-bottom: 2px solid var(--rss-border);
       margin-bottom: 20px;
     }
-    
+    .reg-step {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: var(--rss-font-base);
+      font-weight: 600;
+      color: #c4c9d4;
+      position: relative;
+    }
     .reg-step--active { color: var(--rss-text); }
     .reg-step--active::after {
       content: '';
@@ -68,15 +102,34 @@
     /* ══════════════════════════════════════════════════════
        폼 입력 공통 (rss-common.css의 rss-input과 동일 계열)
     ══════════════════════════════════════════════════════ */
-    
-    
-    
-    
+    .reg-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    .reg-input:focus { border-color: var(--rss-amber); background: #fff; }
+    .reg-input::placeholder { color: #c4c9d4; }
+    .reg-input--error { border-color: #ef4444 !important; }
     /* readonly 입력 (기업 선택 후 자동 입력) */
-    
-    
-    
-    
+    .reg-input--readonly {
+      background: #f3f4f6;
+      color: var(--rss-muted);
+      cursor: not-allowed;
+    }
+    .reg-input--readonly:focus { border-color: var(--rss-border); background: #f3f4f6; }
+    .reg-input-hint {
+      font-size: var(--rss-font-xs);
+      color: var(--rss-muted);
+      margin-top: 4px;
+    }
+    .reg-input-hint--error { color: #ef4444; font-weight: 600; }
 
     /* 분할 입력 (사업자번호, 전화번호) */
     .split-wrap {
@@ -85,70 +138,221 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .split-wrap 
+    .split-wrap .reg-input { flex: 1; min-width: 50px; }
     .split-sep { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
 
     /* 라디오 수신 설정 */
-    
-    
-    
+    .receive-radio-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      flex-wrap: wrap;
+    }
+    .receive-radio-wrap label {
+      display: flex; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .receive-radio-wrap input[type="radio"] { accent-color: var(--rss-amber); }
     @media (max-width: 640px) {
-      
+      .receive-radio-wrap { margin-top: 6px; }
     }
 
     /* 이메일 입력 */
-    
-    .email-wrap 
-    
-    
-    
+    .email-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .email-wrap .reg-input { flex: 1; min-width: 80px; }
+    .email-at { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
+    .email-domain-select {
+      padding: 9px 10px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      min-width: 110px;
+    }
+    .email-domain-select:focus { border-color: var(--rss-amber); }
 
     /* 상호 찾기 행 */
-    
-    .company-search-row 
+    .company-search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .company-search-row .reg-input { flex: 1; }
 
     /* .reg-file-btn → rss-common.css 공통 스타일로 이전 (중복 정의 제거) */
 
     /* 경고 모달 */
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    .reg-alert-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .reg-alert-modal.open { display: flex; }
+    .reg-alert-modal__box {
+      background: #fff;
+      border-radius: var(--rss-radius-lg);
+      padding: 28px 28px 24px;
+      max-width: 400px; width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+    }
+    .reg-alert-modal__title {
+      font-size: var(--rss-font-lg);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .reg-alert-modal__title svg { width: 22px; height: 22px; }
+    .reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
+    .reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
+    .reg-alert-modal__body {
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .reg-alert-modal__footer {
+      display: flex; justify-content: center; gap: 8px;
+    }
 
     /* ══════════════════════════════════════════════════════
        기업 찾기 모달 (J1-1-1)
     ══════════════════════════════════════════════════════ */
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    .company-modal__search-row 
-    
-    
-    
+    .company-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .company-modal.open { display: flex; }
+    .company-modal__box {
+      background: #fff;
+      border-radius: var(--rss-radius-lg);
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+      overflow: hidden;
+    }
+    .company-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--rss-border);
+      background: #f9fafb;
+    }
+    .company-modal__title {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+    }
+    .company-modal__close {
+      background: none; border: none; cursor: pointer;
+      color: var(--rss-muted); padding: 4px;
+      display: flex; align-items: center;
+      transition: color 0.15s;
+    }
+    .company-modal__close:hover { color: var(--rss-text); }
+    .company-modal__close svg { width: 20px; height: 20px; }
+    .company-modal__body { padding: 20px; }
+    .company-modal__guide {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .company-modal__search-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .company-modal__search-row .reg-input { flex: 1; }
+    .company-modal__result {
+      border: 1px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      overflow: hidden;
+      min-height: 80px;
+    }
+    .company-modal__result-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .company-modal__result-table thead th {
+      background: #f9fafb;
+      padding: 9px 12px;
+      font-size: var(--rss-font-sm);
+      font-weight: 700;
+      color: var(--rss-muted);
+      border-bottom: 1px solid var(--rss-border);
+      text-align: center;
+    }
+    .company-modal__result-table tbody td {
+      padding: 10px 12px;
+      font-size: var(--rss-font-sm);
+      border-bottom: 1px solid var(--rss-border);
+      text-align: center;
+      vertical-align: middle;
+    }
+    .company-modal__result-table tbody tr:last-child td { border-bottom: none; }
+    .company-modal__result-table tbody tr:hover { background: rgba(245,158,11,0.04); }
+    .company-modal__empty {
+      padding: 24px;
+      text-align: center;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-muted);
+    }
     /* 페이지네이션 */
-    
-    
-    
-    
+    .company-modal__pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 0 0;
+      flex-wrap: wrap;
+    }
+    .company-modal__page-btn {
+      min-width: 28px; height: 28px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-xs);
+      color: var(--rss-muted);
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0 6px;
+    }
+    .company-modal__page-btn:hover { border-color: var(--rss-amber); color: var(--rss-amber-dark); }
+    .company-modal__page-btn--active {
+      background: var(--rss-amber);
+      border-color: var(--rss-amber);
+      color: #fff;
+      font-weight: 700;
+    }
     .company-modal__page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* 뒤로가기 링크 */
-    
-    
-    
+    .reg-back-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: var(--rss-font-sm); color: var(--rss-muted);
+      margin-top: 20px; cursor: pointer; transition: color 0.15s;
+    }
+    .reg-back-link:hover { color: var(--rss-text); }
+    .reg-back-link svg { width: 14px; height: 14px; }
   </style>
 </head>
 <body>
@@ -400,12 +604,7 @@
       <!-- 검색 결과 영역 -->
       <!-- [Java] 결과 없음: <div class="company-modal__empty">찾는 기업이 없습니다.</div> -->
       <div class="company-modal__result" id="companySearchResult">
-        <table class="rss-table" id="companyResultTable">
-          <colgroup>
-            <col class="rss-col-nm" />      <!-- 상호 -->
-            <col class="rss-col-bizno" />   <!-- 사업자 번호 -->
-            <col class="rss-col-select" />  <!-- 선택 버튼 -->
-          </colgroup>
+        <table class="company-modal__result-table" id="companyResultTable">
           <thead>
             <tr>
               <th>상호</th>

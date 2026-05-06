@@ -19,14 +19,40 @@
     /* ══════════════════════════════════════════════════════
        회원가입 공통 레이아웃 (register-terms.html과 동일)
     ══════════════════════════════════════════════════════ */
-    
-    
-    
-    
-    
+    .reg-page {
+      min-height: 100vh;
+      background: #f0ede6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 60px;
+    }
+    .reg-header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .reg-header__logo { height: 40px; width: auto; }
+    .reg-header__name {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      letter-spacing: -0.01em;
+    }
+    .reg-card {
+      width: 100%;
+      max-width: 900px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
     .reg-card__top-line {
       height: 4px;
-      background: linear-gradient(90deg, var(--rss-amber) 0%, #fbbf24 100%);
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
     }
     .reg-card__body { padding: 32px 36px 36px; }
     @media (max-width: 640px) { .reg-card__body { padding: 20px 16px 24px; } }
@@ -45,7 +71,15 @@
       border-bottom: 2px solid var(--rss-border);
       margin-bottom: 20px;
     }
-    
+    .reg-step {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: var(--rss-font-base);
+      font-weight: 600;
+      color: #c4c9d4;
+      position: relative;
+    }
     .reg-step--active { color: var(--rss-text); }
     .reg-step--active::after {
       content: '';
@@ -66,7 +100,18 @@
     }
 
     /* 섹션 타이틀 */
-    
+    .reg-section-title {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+      padding: 10px 0 10px 10px;
+      border-left: 3px solid var(--rss-amber);
+      margin-bottom: 16px;
+      margin-top: 28px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .reg-section-badge {
       font-size: var(--rss-font-xs);
       background: rgba(245,158,11,0.12);
@@ -79,20 +124,55 @@
     /* ══════════════════════════════════════════════════════
        폼 입력 공통 (rss-common.css의 rss-input과 동일 계열)
     ══════════════════════════════════════════════════════ */
-    
-    
-    
-    
-    
-    
+    .reg-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    .reg-input:focus { border-color: var(--rss-amber); background: #fff; }
+    .reg-input::placeholder { color: #c4c9d4; }
+    .reg-input--error { border-color: #ef4444 !important; }
+    .reg-input-hint {
+      font-size: var(--rss-font-xs);
+      color: var(--rss-muted);
+      margin-top: 4px;
+    }
+    .reg-input-hint--error { color: #ef4444; font-weight: 600; }
 
     /* 파일 첨부 */
-    
+    .reg-file-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     /* .reg-file-btn → rss-common.css 공통 스타일로 이전 (중복 정의 제거) */
-    
-    
-    
-    
+    .reg-file-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text);
+    }
+    .reg-file-item__remove {
+      background: none; border: none; cursor: pointer;
+      color: #9ca3af; padding: 0;
+      display: flex; align-items: center;
+      transition: color 0.15s;
+    }
+    .reg-file-item__remove:hover { color: #ef4444; }
+    .reg-file-item__remove svg { width: 13px; height: 13px; }
 
     /* 분할 입력 (사업자번호, 전화번호) */
     .split-wrap {
@@ -101,28 +181,52 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .split-wrap 
+    .split-wrap .reg-input { flex: 1; min-width: 50px; }
     .split-sep { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
 
     /* 라디오 수신 설정 */
-    
-    
-    
+    .receive-radio-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      flex-wrap: wrap;
+    }
+    .receive-radio-wrap label {
+      display: flex; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .receive-radio-wrap input[type="radio"] { accent-color: var(--rss-amber); }
     @media (max-width: 640px) {
-      
+      .receive-radio-wrap { margin-top: 6px; }
     }
 
     /* 이메일 입력 */
-    
-    .email-wrap 
-    
-    
-    
+    .email-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .email-wrap .reg-input { flex: 1; min-width: 80px; }
+    .email-at { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
+    .email-domain-select {
+      padding: 9px 10px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      min-width: 110px;
+    }
+    .email-domain-select:focus { border-color: var(--rss-amber); }
 
     /* 주소 */
-    
-    
-    .addr-search-row 
+    .addr-wrap { display: flex; flex-direction: column; gap: 6px; }
+    .addr-search-row { display: flex; gap: 8px; }
+    .addr-search-row .reg-input { flex: 1; }
 
     /* 권역 체크박스 */
     .region-wrap {
@@ -191,11 +295,11 @@
     .tma-add-btn svg { width: 14px; height: 14px; }
     .tma-del-btn {
       background: none; border: none; cursor: pointer;
-      color: var(--rss-gray-400); padding: 4px;
+      color: #9ca3af; padding: 4px;
       display: flex; align-items: center; justify-content: center;
       transition: color 0.15s;
     }
-    .tma-del-btn:hover { color: var(--rss-danger-dark); }
+    .tma-del-btn:hover { color: #ef4444; }
     .tma-del-btn svg { width: 16px; height: 16px; }
 
     /* TMA 모바일 카드 UI (640px 이하) */
@@ -205,7 +309,7 @@
       .tma-table thead { display: none; }
       .tma-table tbody tr {
         display: block;
-        background: var(--rss-card);
+        background: #fff;
         border: 1.5px solid var(--rss-border);
         border-radius: var(--rss-radius);
         padding: 14px 16px;
@@ -238,20 +342,50 @@
     }
 
     /* 경고 모달 */
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    .reg-alert-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .reg-alert-modal.open { display: flex; }
+    .reg-alert-modal__box {
+      background: #fff;
+      border-radius: var(--rss-radius-lg);
+      padding: 28px 28px 24px;
+      max-width: 400px; width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+    }
+    .reg-alert-modal__title {
+      font-size: var(--rss-font-lg);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .reg-alert-modal__title svg { width: 22px; height: 22px; }
+    .reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
+    .reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
+    .reg-alert-modal__body {
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .reg-alert-modal__footer {
+      display: flex; justify-content: center; gap: 8px;
+    }
 
     /* 뒤로가기 링크 */
-    
-    
-    
+    .reg-back-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: var(--rss-font-sm); color: var(--rss-muted);
+      margin-top: 20px; cursor: pointer; transition: color 0.15s;
+    }
+    .reg-back-link:hover { color: var(--rss-text); }
+    .reg-back-link svg { width: 14px; height: 14px; }
   </style>
 </head>
 <body>

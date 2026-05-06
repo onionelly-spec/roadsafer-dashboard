@@ -41,7 +41,7 @@
     /* 댓글 아이템 */
     .comm-cmt-item {
       padding: 14px 20px;
-      border-bottom: 1px solid var(--rss-gray-100);
+      border-bottom: 1px solid #f3f4f6;
     }
     .comm-cmt-item:last-child { border-bottom: none; }
 
@@ -63,7 +63,7 @@
     }
     .comm-cmt-date {
       font-size: var(--rss-font-xs);
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       white-space: nowrap;
     }
     .comm-cmt-meta {
@@ -76,14 +76,14 @@
     /* 댓글 본문 */
     .comm-cmt-content {
       font-size: var(--rss-font-sm);
-      color: var(--rss-gray-700);
+      color: #374151;
       line-height: 1.7;
       margin-bottom: 6px;
       word-break: break-all;
     }
     /* 삭제된 댓글 */
     .comm-cmt-content--deleted {
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       font-style: italic;
     }
 
@@ -92,7 +92,7 @@
       background: none;
       border: none;
       font-size: var(--rss-font-xs);
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       cursor: pointer;
       padding: 2px 0;
       display: inline-flex;
@@ -110,11 +110,11 @@
       cursor: pointer;
       padding: 2px 4px;
       border-radius: 4px;
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       position: relative;
       transition: background 0.12s;
     }
-    .comm-kebab-btn:hover { background: var(--rss-gray-100); color: var(--rss-gray-700); }
+    .comm-kebab-btn:hover { background: #f3f4f6; color: #374151; }
 
     /* 케밥 드롭다운 */
     .comm-kebab-menu {
@@ -122,7 +122,7 @@
       position: absolute;
       right: 0;
       top: 28px;
-      background: var(--rss-card);
+      background: #fff;
       border: 1.5px solid var(--rss-border);
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.10);
@@ -146,14 +146,14 @@
       transition: background 0.1s;
     }
     .comm-kebab-menu button:hover { background: #f9fafb; }
-    .comm-kebab-menu button.danger { color: var(--rss-danger); }
-    .comm-kebab-menu button.danger:hover { background: var(--rss-danger-bg); }
+    .comm-kebab-menu button.danger { color: #dc2626; }
+    .comm-kebab-menu button.danger:hover { background: #fef2f2; }
 
     /* 대댓글 영역 */
     .comm-reply-list {
       margin-top: 8px;
       padding-left: 20px;
-      border-left: 2px solid var(--rss-gray-100);
+      border-left: 2px solid #f3f4f6;
     }
     .comm-reply-item {
       padding: 10px 0;

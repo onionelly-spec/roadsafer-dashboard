@@ -22,10 +22,10 @@
 
     /* ── TMA 카드 ── */
     .tma-card {
-      border: 1.5px solid var(--rss-border);
+      border: 1.5px solid #e5e7eb;
       border-radius: 10px;
       overflow: hidden;
-      background: var(--rss-card);
+      background: #fff;
       transition: border-color 0.15s, box-shadow 0.15s;
     }
     .tma-card:hover { border-color: var(--rss-amber); box-shadow: 0 4px 14px rgba(245,158,11,0.12); }
@@ -35,13 +35,13 @@
       padding: 14px 16px 10px;
       display: flex;
       align-items: center;
-      border-bottom: 1px solid var(--rss-gray-100);
+      border-bottom: 1px solid #f3f4f6;
     }
     /* [용어사전 §14-3] tmaCarNo: TMA 차량번호 */
     .tma-card__car-no {
       font-size: var(--rss-font-md);
       font-weight: 700;
-      color: var(--rss-text);
+      color: #1a1c23;
     }
 
     /* 카드 본문 */
@@ -57,17 +57,17 @@
     }
     .tma-card__row:last-child { margin-bottom: 0; }
     .tma-card__label {
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       font-weight: 600;
       min-width: 56px;
       flex-shrink: 0;
     }
-    .tma-card__value { color: var(--rss-gray-700); line-height: 1.5; }
+    .tma-card__value { color: #374151; line-height: 1.5; }
 
     /* 카드 하단 — 액션 버튼 */
     .tma-card__foot {
       padding: 10px 16px;
-      border-top: 1px solid var(--rss-gray-100);
+      border-top: 1px solid #f3f4f6;
       display: flex;
       align-items: center;
       justify-content: flex-end;
@@ -80,18 +80,18 @@
       display: block;
       font-size: var(--rss-font-sm);
       font-weight: 600;
-      color: var(--rss-gray-700);
+      color: #374151;
       margin-bottom: 5px;
     }
-    .rss-form-label .required { color: var(--rss-danger); margin-left: 2px; }
+    .rss-form-label .required { color: #dc2626; margin-left: 2px; }
     .rss-form-input {
       width: 100%;
       padding: 9px 12px;
       font-size: var(--rss-font-base);
-      border: 1.5px solid var(--rss-border);
+      border: 1.5px solid #e5e7eb;
       border-radius: 6px;
-      color: var(--rss-gray-700);
-      background: var(--rss-card);
+      color: #374151;
+      background: #fff;
       transition: border-color 0.15s;
     }
     .rss-form-input:focus { outline: none; border-color: var(--rss-amber); }
@@ -110,10 +110,10 @@
       padding: 7px 12px;
       font-size: var(--rss-font-sm);
       font-weight: 600;
-      border: 1.5px solid var(--rss-border);
+      border: 1.5px solid #e5e7eb;
       border-radius: 6px;
       background: #f9fafb;
-      color: var(--rss-gray-700);
+      color: #374151;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
       white-space: nowrap;
@@ -125,16 +125,16 @@
       gap: 4px;
       padding: 4px 8px;
       font-size: var(--rss-font-xs);
-      background: var(--rss-gray-100);
+      background: #f3f4f6;
       border-radius: 4px;
-      color: var(--rss-gray-700);
+      color: #374151;
     }
     .tma-file-item__remove {
       background: none; border: none;
-      color: var(--rss-gray-400); cursor: pointer; padding: 0;
+      color: #9ca3af; cursor: pointer; padding: 0;
       display: flex; align-items: center;
     }
-    .tma-file-item__remove:hover { color: var(--rss-danger); }
+    .tma-file-item__remove:hover { color: #dc2626; }
 
     /* ── 반응형 ── */
     @media (max-width: 640px) {

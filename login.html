@@ -62,7 +62,7 @@
       position: absolute;
       inset: 20px; /* 배지 공간 확보 */
       border-radius: 50%;
-      background: var(--rss-card);
+      background: #ffffff;
       box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
       display: flex;
       align-items: center;
@@ -83,7 +83,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: var(--rss-amber);
+      background: #F59E0B;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -92,8 +92,8 @@
     .login-icon-badge svg {
       width: 18px;
       height: 18px;
-      color: var(--rss-card);
-      stroke: var(--rss-card);
+      color: #ffffff;
+      stroke: #ffffff;
     }
 
     /* 배지 위치 — 오른쪽 상단 */
@@ -111,7 +111,7 @@
     .login-visual__headline {
       font-size: 30px;
       font-weight: 800;
-      color: var(--rss-text);
+      color: #1a1c23;
       line-height: 1.35;
       letter-spacing: -0.02em;
       margin-bottom: 14px;
@@ -129,7 +129,7 @@
       margin-top: 18px;
       font-size: var(--rss-font-md);
       font-weight: 800;
-      color: var(--rss-text);
+      color: #1a1c23;
       letter-spacing: 0.01em;
     }
 
@@ -159,7 +159,7 @@
     .login-card {
       width: 100%;
       max-width: 420px;  /* 오른쪽 패널이 넓어졌으므로 카드도 확장 */
-      background: var(--rss-card);
+      background: #ffffff;
       border-radius: 16px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
       overflow: hidden;
@@ -168,7 +168,7 @@
     /* 카드 상단 앰버 라인 */
     .login-card__top-line {
       height: 4px;
-      background: linear-gradient(90deg, var(--rss-amber) 0%, #fbbf24 100%);
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
     }
 
     /* 카드 내부 패딩 */
@@ -180,14 +180,14 @@
     .login-card__title {
       font-size: var(--rss-font-2xl);
       font-weight: 800;
-      color: var(--rss-text);
+      color: #1a1c23;
       text-align: center;
       margin-bottom: 4px;
       letter-spacing: -0.02em;
     }
     .login-card__subtitle {
       font-size: var(--rss-font-base);
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       text-align: center;
       margin-bottom: 20px;
     }
@@ -209,24 +209,24 @@
       left: 12px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       width: 15px;
       height: 15px;
     }
     .login-input-field {
       width: 100%;
       padding: 11px 13px 11px 36px;
-      border: 1.5px solid var(--rss-border);
+      border: 1.5px solid #e5e7eb;
       border-radius: 8px;
       font-size: var(--rss-font-base);
-      color: var(--rss-text);
+      color: #1a1c23;
       background: #fafafa;
       outline: none;
       transition: border-color 0.15s;
     }
     .login-input-field:focus {
-      border-color: var(--rss-amber);
-      background: var(--rss-card);
+      border-color: #F59E0B;
+      background: #fff;
     }
     .login-input-field::placeholder { color: #c4c9d4; }
 
@@ -239,19 +239,19 @@
       background: none;
       border: none;
       cursor: pointer;
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       padding: 2px;
       display: flex;
       align-items: center;
     }
-    .pw-toggle-btn:hover { color: var(--rss-muted); }
+    .pw-toggle-btn:hover { color: #6b7280; }
 
     /* 로그인 버튼 (앰버) */
     .login-submit-btn {
       width: 100%;
       padding: 13px;
-      background: var(--rss-amber);
-      color: var(--rss-card);
+      background: #F59E0B;
+      color: #ffffff;
       font-size: var(--rss-font-md);
       font-weight: 700;
       border: none;
@@ -264,7 +264,7 @@
       transition: background 0.15s;
       margin-top: 4px;
     }
-    .login-submit-btn:hover { background: var(--rss-amber-dark); }
+    .login-submit-btn:hover { background: #d97706; }
 
     /* 자동로그인 + 찾기 링크 행 */
     .login-meta-row {
@@ -276,7 +276,7 @@
     }
     .login-meta-row label {
       font-size: var(--rss-font-base);
-      color: var(--rss-muted);
+      color: #6b7280;
       display: flex;
       align-items: center;
       gap: 5px;
@@ -288,11 +288,11 @@
     }
     .login-meta-row .find-links a {
       font-size: var(--rss-font-sm);
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       text-decoration: none;
       transition: color 0.15s;
     }
-    .login-meta-row .find-links a:hover { color: var(--rss-muted); }
+    .login-meta-row .find-links a:hover { color: #6b7280; }
 
     /* 구분선 or */
     .login-divider {
@@ -308,19 +308,19 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: var(--rss-border);
+      background: #e5e7eb;
     }
 
     /* 회원가입 버튼 */
     .login-signup-btn {
       width: 100%;
       padding: 12px;
-      background: var(--rss-card);
-      border: 1.5px solid var(--rss-border);
+      background: #ffffff;
+      border: 1.5px solid #e5e7eb;
       border-radius: 8px;
       font-size: var(--rss-font-base);
       font-weight: 600;
-      color: var(--rss-gray-700);
+      color: #374151;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -329,7 +329,7 @@
       transition: border-color 0.15s, color 0.15s;
       text-decoration: none;
     }
-    .login-signup-btn:hover { border-color: var(--rss-amber); color: var(--rss-text); }
+    .login-signup-btn:hover { border-color: #F59E0B; color: #1a1c23; }
 
     /* 안내 박스 */
     .login-notice-box {
@@ -348,7 +348,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .login-notice-box strong { color: var(--rss-gray-700); }
+    .login-notice-box strong { color: #374151; }
 
     /* 테스트 빠른 로그인 */
     .login-test-section {
@@ -370,12 +370,12 @@
     .login-test-btn {
       flex: 1;
       padding: 8px 4px;
-      border: 1.5px solid var(--rss-border);
+      border: 1.5px solid #e5e7eb;
       border-radius: 7px;
       font-size: var(--rss-font-sm);
       font-weight: 600;
-      color: var(--rss-muted);
-      background: var(--rss-card);
+      color: #6b7280;
+      background: #fff;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -383,7 +383,7 @@
       gap: 3px;
       transition: border-color 0.15s, color 0.15s;
     }
-    .login-test-btn:hover { border-color: var(--rss-amber); color: var(--rss-text); }
+    .login-test-btn:hover { border-color: #F59E0B; color: #1a1c23; }
 
     /* 모바일 전용 로고 */
     .login-mobile-logo {

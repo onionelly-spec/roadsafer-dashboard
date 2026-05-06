@@ -8,13 +8,13 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      --rss-primary: var(--rss-amber);
-      --rss-primary-dark: var(--rss-amber-dark);
+      --rss-primary: #f59e0b;
+      --rss-primary-dark: #d97706;
       --rss-bg: #f8f9fb;
-      --rss-card: var(--rss-card);
-      --rss-border: var(--rss-border);
+      --rss-card: #ffffff;
+      --rss-border: #e5e7eb;
       --rss-text: #111827;
-      --rss-muted: var(--rss-muted);
+      --rss-muted: #6b7280;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -47,12 +47,12 @@
     }
     .pa-badge--branch { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
     .pa-badge--pr {
-      background: var(--rss-amber); color: var(--rss-card); border: none;
+      background: #f59e0b; color: #fff; border: none;
       text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
       padding: 5px 14px; border-radius: 6px; font-weight: 700; font-size: 12px;
       transition: background .15s;
     }
-    .pa-badge--pr:hover { background: var(--rss-amber-dark); }
+    .pa-badge--pr:hover { background: #d97706; }
 
     /* ── 본문 ── */
     .pa-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; }
@@ -76,7 +76,7 @@
     }
     .pa-card__head {
       padding: 14px 18px 12px;
-      border-bottom: 1px solid var(--rss-gray-100);
+      border-bottom: 1px solid #f3f4f6;
       display: flex; align-items: center; gap: 10px;
     }
     .pa-card__icon {
@@ -99,7 +99,7 @@
       padding: 9px 12px; text-align: left;
       font-size: 11px; font-weight: 700; color: var(--rss-muted); white-space: nowrap;
     }
-    .pa-table tbody tr { border-bottom: 1px solid var(--rss-gray-100); transition: background .1s; }
+    .pa-table tbody tr { border-bottom: 1px solid #f3f4f6; transition: background .1s; }
     .pa-table tbody tr:last-child { border-bottom: none; }
     .pa-table tbody tr:hover { background: #fffbeb; }
     .pa-table td { padding: 9px 12px; vertical-align: middle; }
@@ -108,16 +108,16 @@
     code {
       font-family: 'Consolas', 'Menlo', monospace;
       font-size: 11px;
-      background: var(--rss-gray-100);
+      background: #f3f4f6;
       padding: 1px 6px;
       border-radius: 4px;
-      border: 1px solid var(--rss-border);
+      border: 1px solid #e5e7eb;
     }
     code.old { background: #fee2e2; border-color: #fca5a5; color: #991b1b; text-decoration: line-through; }
     code.new { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
 
     /* ── 화살표 ── */
-    .arrow { color: var(--rss-gray-400); margin: 0 4px; font-size: 12px; }
+    .arrow { color: #9ca3af; margin: 0 4px; font-size: 12px; }
 
     /* ── 배지 ── */
     .tag {
@@ -140,8 +140,8 @@
     /* ── 링크 ── */
     .pa-link {
       display: inline-flex; align-items: center; gap: 4px;
-      color: var(--rss-info); font-size: 11px; text-decoration: none;
-      background: var(--rss-info-bg); padding: 2px 8px; border-radius: 5px;
+      color: #2563eb; font-size: 11px; text-decoration: none;
+      background: #eff6ff; padding: 2px 8px; border-radius: 5px;
       border: 1px solid #bfdbfe; transition: background .12s; white-space: nowrap;
     }
     .pa-link:hover { background: #dbeafe; }

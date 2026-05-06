@@ -17,9 +17,21 @@
     ══════════════════════════════════════════════════════ */
 
     /* 폼 입력 — register-company.html의 .reg-input과 동일 계열 */
-    
-    
-    
+    .reg-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .reg-input:focus { border-color: var(--rss-amber); background: #fff; }
+    .reg-input::placeholder { color: #c4c9d4; }
     .reg-input[readonly] { background: #f9fafb; color: var(--rss-muted); cursor: default; }
 
     /* 분할 입력 — register-company.html의 .split-wrap과 동일 */
@@ -29,37 +41,87 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .split-wrap 
+    .split-wrap .reg-input { flex: 1; min-width: 50px; }
     .split-sep { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
 
     /* 라디오 수신 설정 — register-company.html의 .receive-radio-wrap과 동일 */
-    
-    
-    
+    .receive-radio-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      flex-wrap: wrap;
+    }
+    .receive-radio-wrap label {
+      display: flex; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .receive-radio-wrap input[type="radio"] { accent-color: var(--rss-amber); }
 
     /* 이메일 입력 — register-company.html의 .email-wrap과 동일 */
-    
-    .email-wrap 
-    
-    
-    
+    .email-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .email-wrap .reg-input { flex: 1; min-width: 80px; }
+    .email-at { font-size: var(--rss-font-md); color: var(--rss-muted); flex-shrink: 0; }
+    .email-domain-select {
+      padding: 9px 10px;
+      border: 1.5px solid var(--rss-border);
+      border-radius: var(--rss-radius);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      min-width: 110px;
+    }
+    .email-domain-select:focus { border-color: var(--rss-amber); }
 
     /* 경고 모달 — register-company.html의 .reg-alert-modal과 동일 */
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    .reg-alert-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .reg-alert-modal.open { display: flex; }
+    .reg-alert-modal__box {
+      background: #fff;
+      border-radius: var(--rss-radius-lg);
+      padding: 28px 28px 24px;
+      max-width: 400px; width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+    }
+    .reg-alert-modal__title {
+      font-size: var(--rss-font-lg);
+      font-weight: 800;
+      color: var(--rss-text);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .reg-alert-modal__title svg { width: 22px; height: 22px; }
+    .reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
+    .reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
+    .reg-alert-modal__body {
+      font-size: var(--rss-font-base);
+      color: var(--rss-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .reg-alert-modal__footer {
+      display: flex; justify-content: center; gap: 8px;
+    }
 
     /* 모바일 반응형 */
     @media (max-width: 640px) {
-      .split-wrap 
+      .split-wrap .reg-input { min-width: 0; }
       /* 이메일 가로 1줄 유지 — register-company.html 기준 */
-      
+      .receive-radio-wrap { margin-top: 6px; }
       /* 하단 버튼 모바일 대응 — 세로 스택 */
       .profile-btn-row {
         flex-direction: column;
