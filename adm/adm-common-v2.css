@@ -409,6 +409,7 @@
 .adm-form-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;           /* th 너비 고정 → td가 나머지 전체 차지 */
 }
 .adm-form-table th {
   width: 140px;
@@ -424,6 +425,7 @@
   white-space: nowrap;
 }
 .adm-form-table td {
+  width: 100%;                   /* th 제외 나머지 너비 전부 사용 */
   padding: 10px 14px;
   border: 1px solid var(--rss-border);
   font-size: var(--rss-font-base);
