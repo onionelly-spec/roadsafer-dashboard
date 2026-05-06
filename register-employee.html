@@ -243,7 +243,7 @@
       background: #fff;
       border-radius: var(--rss-radius-lg);
       width: 100%;
-      max-width: 480px;
+      max-width: 580px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.16);
       overflow: hidden;
     }
@@ -604,7 +604,12 @@
       <!-- 검색 결과 영역 -->
       <!-- [Java] 결과 없음: <div class="company-modal__empty">찾는 기업이 없습니다.</div> -->
       <div class="company-modal__result" id="companySearchResult">
-        <table class="company-modal__result-table" id="companyResultTable">
+        <table class="rss-table company-modal__result-table" id="companyResultTable">
+          <colgroup>
+            <col class="rss-col-nm" />      <!-- 상호 -->
+            <col class="rss-col-bizno" />   <!-- 사업자 번호 -->
+            <col class="rss-col-select" />  <!-- 선택 버튼 -->
+          </colgroup>
           <thead>
             <tr>
               <th>상호</th>
