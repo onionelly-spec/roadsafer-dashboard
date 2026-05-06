@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- [Java] th:text="${mode == 'edit'} ? '공사 수정' : '공사 등록'" -->
+  <title>공사 등록 — 로드세이프티시스템 관리자</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- 공통 CSS -->
+  <link rel="stylesheet" href="../rss-common.css" />
+  <!-- 관리자 테마 CSS -->
+  <link rel="stylesheet" href="adm-common.css" />
+  <style>
+    /* ── 공사 등록/수정 전용 스타일 ── */
+
+    /* 섹션 카드 */
+    .write-section {
+      background: #fff;
+      border: 1px solid var(--rss-border);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .write-section__head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--rss-border);
+    }
+    .write-section__title {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+    }
+    .write-section__badge {
+      font-size: var(--rss-font-xs);
+      background: var(--rss-amber-light);
+      color: var(--rss-amber-dark);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .write-section__body {
+      padding: 20px;
+    }
+
+    /* 폼 테이블 — th 너비 조정 (관리자는 PC 전용이므로 더 넓게) */
+    .adm-form-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .adm-form-table th {
+      width: 140px;
+      min-width: 140px;
+      padding: 12px 16px;
+      background: #f9fafb;
+      border: 1px solid var(--rss-border);
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-muted);
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .adm-form-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--rss-border);
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      vertical-align: middle;
+    }
+    .adm-form-table .required {
+      color: #dc2626;
+      margin-left: 2px;
+    }
+
+    /* 인라인 그룹 (라벨 + 인풋 가로 배치) */
+    .adm-inline-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .adm-inline-group .rss-input,
+    .adm-inline-group .rss-select {
+      flex: 1;
+      min-width: 80px;
+    }
+    .adm-inline-sep {
+      color: var(--rss-muted);
+      font-size: var(--rss-font-sm);
+      white-space: nowrap;
+    }
+
+    /* 업체찾기 버튼 그룹 */
+    .adm-find-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .adm-find-group .rss-input {
+      flex: 1;
+    }
+    .adm-find-group .adm-find-btn {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* 품목 수량 테이블 */
+    .equip-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
+    .equip-table th {
+      padding: 8px 12px;
+      background: #f9fafb;
+      border: 1px solid var(--rss-border);
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-muted);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .equip-table td {
+      padding: 8px 12px;
+      border: 1px solid var(--rss-border);
+      text-align: center;
+      vertical-align: middle;
+    }
+    .equip-table .rss-input {
+      width: 80px;
+      text-align: center;
+    }
+
+    /* 단가 테이블 */
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
+    .price-table th {
+      padding: 8px 12px;
+      background: #f9fafb;
+      border: 1px solid var(--rss-border);
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-muted);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .price-table td {
+      padding: 8px 12px;
+      border: 1px solid var(--rss-border);
+      text-align: center;
+      vertical-align: middle;
+    }
+    .price-table .rss-input {
+      width: 120px;
+      text-align: right;
+    }
+
+    /* 공사없음일 캘린더 */
+    .no-work-calendar {
+      border: 1px solid var(--rss-border);
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 380px;
+    }
+    .no-work-calendar__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #f9fafb;
+      border-bottom: 1px solid var(--rss-border);
+    }
+    .no-work-calendar__nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .no-work-calendar__nav button {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--rss-border);
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--rss-muted);
+      transition: background 0.15s;
+    }
+    .no-work-calendar__nav button:hover {
+      background: var(--rss-amber-light);
+      color: var(--rss-amber-dark);
+      border-color: var(--rss-amber);
+    }
+    .no-work-calendar__month {
+      font-size: var(--rss-font-sm);
+      font-weight: 700;
+      color: var(--rss-text);
+    }
+    .no-work-calendar__grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      padding: 8px;
+      gap: 2px;
+    }
+    .no-work-calendar__day-label {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--rss-muted);
+      padding: 4px 0;
+    }
+    .no-work-calendar__day-label.sun { color: #dc2626; }
+    .no-work-calendar__day-label.sat { color: #3b82f6; }
+    .no-work-calendar__cell {
+      text-align: center;
+      padding: 5px 2px;
+      font-size: var(--rss-font-sm);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.12s;
+      user-select: none;
+    }
+    .no-work-calendar__cell:hover:not(.empty) {
+      background: var(--rss-amber-light);
+      color: var(--rss-amber-dark);
+    }
+    .no-work-calendar__cell.selected {
+      background: var(--rss-amber);
+      color: #fff;
+      font-weight: 700;
+    }
+    .no-work-calendar__cell.empty { cursor: default; }
+    .no-work-calendar__cell.sun { color: #dc2626; }
+    .no-work-calendar__cell.sat { color: #3b82f6; }
+    .no-work-calendar__cell.selected.sun,
+    .no-work-calendar__cell.selected.sat { color: #fff; }
+
+    /* 선택된 공사없음일 태그 */
+    .no-work-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .no-work-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px 3px 10px;
+      background: var(--rss-amber-light);
+      color: var(--rss-amber-dark);
+      border: 1px solid var(--rss-amber);
+      border-radius: 20px;
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+    }
+    .no-work-tag button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--rss-amber-dark);
+      padding: 0;
+      line-height: 1;
+      margin-left: 2px;
+    }
+
+    /* 라디오/체크박스 그룹 */
+    .adm-radio-group,
+    .adm-check-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .adm-radio-group label,
+    .adm-check-group label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: var(--rss-font-base);
+      color: var(--rss-text);
+      cursor: pointer;
+    }
+
+    /* 시연회 영역 */
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* 안내 텍스트 */
+    .adm-hint {
+      font-size: var(--rss-font-xs);
+      color: var(--rss-muted);
+      margin-top: 4px;
+    }
+
+    /* 발주업체찾기 모달 */
+    .adm-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .adm-modal-overlay.open {
+      display: flex;
+    }
+    .adm-modal-box {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(30,42,74,0.18);
+      width: 560px;
+      max-width: 96vw;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .adm-modal-box__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--rss-border);
+      background: #f8fafc;
+    }
+    .adm-modal-box__title {
+      font-size: var(--rss-font-md);
+      font-weight: 700;
+      color: var(--rss-text);
+    }
+    .adm-modal-box__close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--rss-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .adm-modal-box__close:hover {
+      background: #f3f4f6;
+      color: var(--rss-text);
+    }
+    .adm-modal-box__search {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--rss-border);
+      display: flex;
+      gap: 8px;
+    }
+    .adm-modal-box__body {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .adm-modal-box__foot {
+      padding: 12px 20px;
+      border-top: 1px solid var(--rss-border);
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+<!-- ══════════════════════════════════════════════════
+     관리자 레이아웃 구조
+     adm-topbar (상단 고정 바)
+     adm-layout
+       adm-sidebar (좌측 고정)
+       adm-main (우측 콘텐츠)
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+
+  <!-- ── 메인 콘텐츠 영역 ── -->
+  <div class="adm-main">
+
+    <!-- 브레드크럼 -->
+    <!-- [Java] 수정 모드: 공사 수정 / 등록 모드: 공사 등록 -->
+    <div class="adm-breadcrumb">
+      <!-- 페이지 타이틀 -->
+      <h1 class="adm-breadcrumb__title">
+        <!-- [Java] th:text="${mode == 'edit'} ? '공사 수정' : '공사 등록'" -->
+        공사 등록
+      </h1>
+      <!-- 경로 네비게이션 -->
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="construction-list.html">공사 관리</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <!-- [Java] th:text="${mode == 'edit'} ? '공사 수정' : '공사 등록'" -->
+        <span class="adm-breadcrumb__current">공사 등록</span>
+      </nav>
+    </div>
+
+    <main class="rss-content">
+
+      <!-- ══════════════════════════════════════════════════
+           공사 등록/수정 폼
+           [Java] th:action="${mode == 'edit'} ? @{/adm/construction/mod/{id}(id=${construction.constructionSeq})} : @{/adm/construction/reg}"
+           [Java] th:method="post"
+           [Java] 수정 모드: th:object="${construction}"
+      ══════════════════════════════════════════════════ -->
+      <form id="constructionWriteForm" method="post" action="#" novalidate>
+        <!-- [Java] CSRF 토큰: th:hidden th:name="${_csrf.parameterName}" th:value="${_csrf.token}" -->
+        <!-- [Java] 수정 모드: <input type="hidden" name="constructionSeq" th:value="${construction.constructionSeq}"> -->
+        <!-- [Java] mode 구분: <input type="hidden" name="mode" th:value="${mode}"> -->
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             섹션 1. 기본 정보
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section class="write-section" aria-labelledby="section1Title">
+          <div class="write-section__head">
+            <i data-lucide="clipboard-list" style="width:16px;height:16px;color:var(--rss-amber);flex-shrink:0;"></i>
+            <h2 class="write-section__title" id="section1Title">기본 정보</h2>
+            <span class="write-section__badge">필수 입력 항목</span>
+          </div>
+          <div class="write-section__body">
+            <table class="adm-form-table">
+              <tbody>
+
+                <!-- 공사명 -->
+                <tr>
+                  <th scope="row">공사명<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] th:value="${construction.constructionNm}" -->
+                    <input type="text" id="constructionNm" name="constructionNm"
+                           class="rss-input" style="max-width:480px;"
+                           placeholder="공사명을 입력하세요"
+                           value="호남선 순천방향 포장공사" />
+                  </td>
+                </tr>
+
+                <!-- 발주업체 -->
+                <tr>
+                  <th scope="row">발주업체<span class="required">*</span></th>
+                  <td>
+                    <div class="adm-find-group">
+                      <!-- [Java] th:value="${construction.orderCorpNm}" -->
+                      <input type="text" id="orderCorpNm" name="orderCorpNm"
+                             class="rss-input" style="max-width:280px;"
+                             placeholder="업체찾기 버튼으로 선택하세요"
+                             value="한국개발(주)" readonly />
+                      <!-- [Java] th:value="${construction.orderCorpSeq}" -->
+                      <input type="hidden" id="orderCorpSeq" name="orderCorpSeq" value="1001" />
+                      <button type="button" class="rss-btn rss-btn--outline-amber adm-find-btn"
+                              onclick="openOrderCorpModal()">
+                        <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
+                        업체찾기
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 담당자 -->
+                <tr>
+                  <th scope="row">담당자<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] th:value="${construction.orderContactNm}" -->
+                    <input type="text" id="orderContactNm" name="orderContactNm"
+                           class="rss-input" style="max-width:200px;"
+                           placeholder="담당자명 입력"
+                           value="홍길동" />
+                  </td>
+                </tr>
+
+                <!-- 공사 기간 -->
+                <tr>
+                  <th scope="row">공사 기간<span class="required">*</span></th>
+                  <td>
+                    <div class="adm-inline-group">
+                      <!-- [Java] th:value="${construction.startDt}" -->
+                      <input type="date" id="startDt" name="startDt"
+                             class="rss-input" style="width:160px;"
+                             value="2026-07-01" />
+                      <span class="adm-inline-sep">~</span>
+                      <!-- [Java] th:value="${construction.endDt}" -->
+                      <input type="date" id="endDt" name="endDt"
+                             class="rss-input" style="width:160px;"
+                             value="2026-07-10" />
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 작업 시간 -->
+                <tr>
+                  <th scope="row">작업 시간<span class="required">*</span></th>
+                  <td>
+                    <div class="adm-inline-group">
+                      <!-- [Java] th:field="*{workTimeType}" -->
+                      <div class="adm-radio-group">
+                        <label>
+                          <input type="radio" name="workTimeType" value="day" checked />
+                          주간
+                        </label>
+                        <label>
+                          <input type="radio" name="workTimeType" value="night" />
+                          야간
+                        </label>
+                        <label>
+                          <input type="radio" name="workTimeType" value="both" />
+                          주야간
+                        </label>
+                      </div>
+                      <span class="adm-inline-sep" style="margin-left:8px;">차단 시작</span>
+                      <!-- [Java] th:value="${construction.blockStartTm}" -->
+                      <input type="time" id="blockStartTm" name="blockStartTm"
+                             class="rss-input" style="width:130px;"
+                             value="09:00" />
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 권역 -->
+                <tr>
+                  <th scope="row">권역<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] th:field="*{regionCd}" -->
+                    <select id="regionCd" name="regionCd" class="rss-select" style="width:180px;">
+                      <option value="">선택</option>
+                      <option value="seoul" selected>서울·경기·인천</option>
+                      <option value="gangwon">강원</option>
+                      <option value="chungbuk">충북</option>
+                      <option value="chungnam">충남·세종·대전</option>
+                      <option value="jeonbuk">전북</option>
+                      <option value="jeonnam">전남·광주</option>
+                      <option value="gyeongbuk">경북·대구</option>
+                      <option value="gyeongnam">경남·부산·울산</option>
+                      <option value="jeju">제주</option>
+                    </select>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             섹션 2. 도로 정보
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section class="write-section" aria-labelledby="section2Title">
+          <div class="write-section__head">
+            <i data-lucide="map-pin" style="width:16px;height:16px;color:var(--rss-amber);flex-shrink:0;"></i>
+            <h2 class="write-section__title" id="section2Title">도로 정보</h2>
+          </div>
+          <div class="write-section__body">
+            <table class="adm-form-table">
+              <tbody>
+
+                <!-- 도로 구분 -->
+                <tr>
+                  <th scope="row">도로 구분<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] th:field="*{roadClassCd}" -->
+                    <div class="adm-radio-group">
+                      <label><input type="radio" name="roadClassCd" value="highway" checked /> 고속도로</label>
+                      <label><input type="radio" name="roadClassCd" value="national" /> 국도</label>
+                      <label><input type="radio" name="roadClassCd" value="local" /> 지방도</label>
+                      <label><input type="radio" name="roadClassCd" value="city" /> 시도</label>
+                      <label><input type="radio" name="roadClassCd" value="other" /> 기타</label>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 길 구분 -->
+                <tr>
+                  <th scope="row">길 구분<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] th:field="*{roadTypeCd}" -->
+                    <div class="adm-radio-group">
+                      <label><input type="radio" name="roadTypeCd" value="main" checked /> 본선</label>
+                      <label><input type="radio" name="roadTypeCd" value="ic" /> IC</label>
+                      <label><input type="radio" name="roadTypeCd" value="jc" /> JC</label>
+                      <label><input type="radio" name="roadTypeCd" value="ramp" /> 램프</label>
+                      <label><input type="radio" name="roadTypeCd" value="other" /> 기타</label>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- 도로명 -->
+                <tr>
+                  <th scope="row">도로명<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] th:value="${construction.roadNm}" -->
+                    <input type="text" id="roadNm" name="roadNm"
+                           class="rss-input" style="max-width:280px;"
+                           placeholder="도로명 입력 (예: 호남고속도로)"
+                           value="호남고속도로" />
+                  </td>
+                </tr>
+
+                <!-- 방향 -->
+                <tr>
+                  <th scope="row">방향<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] th:value="${construction.direction}" -->
+                    <input type="text" id="direction" name="direction"
+                           class="rss-input" style="max-width:200px;"
+                           placeholder="예: 순천, 서울, 부산"
+                           value="순천" />
+                  </td>
+                </tr>
+
+                <!-- 공사 구간 -->
+                <tr>
+                  <th scope="row">공사 구간<span class="required">*</span></th>
+                  <td>
+                    <div class="adm-inline-group">
+                      <!-- [Java] th:value="${construction.sectionStartKm}" -->
+                      <input type="number" id="sectionStartKm" name="sectionStartKm"
+                             class="rss-input" style="width:100px;"
+                             placeholder="시작 km" value="120" min="0" step="0.1" />
+                      <span class="adm-inline-sep">km ~</span>
+                      <!-- [Java] th:value="${construction.sectionEndKm}" -->
+                      <input type="number" id="sectionEndKm" name="sectionEndKm"
+                             class="rss-input" style="width:100px;"
+                             placeholder="종료 km" value="135" min="0" step="0.1" />
+                      <span class="adm-inline-sep">km</span>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             섹션 3. 품목 수량
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section class="write-section" aria-labelledby="section3Title">
+          <div class="write-section__head">
+            <i data-lucide="truck" style="width:16px;height:16px;color:var(--rss-amber);flex-shrink:0;"></i>
+            <h2 class="write-section__title" id="section3Title">품목 수량</h2>
+            <span class="write-section__badge">필수 입력 항목</span>
+          </div>
+          <div class="write-section__body">
+            <!-- [Java] 품목 수량 — construction.equipList (TMA1/TMA3/PLCS/신호수) -->
+            <table class="equip-table">
+              <colgroup>
+                <col style="width:160px;" />
+                <col />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>품목</th>
+                  <th>수량 (대 / 명)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:600;text-align:left;padding-left:20px;">TMA1</td>
+                  <td>
+                    <!-- [Java] th:value="${construction.tma1Qty}" -->
+                    <input type="number" id="tma1Qty" name="tma1Qty"
+                           class="rss-input" style="width:80px;text-align:center;"
+                           value="1" min="0" placeholder="0" />
+                    <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">대</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;text-align:left;padding-left:20px;">TMA3</td>
+                  <td>
+                    <!-- [Java] th:value="${construction.tma3Qty}" -->
+                    <input type="number" id="tma3Qty" name="tma3Qty"
+                           class="rss-input" style="width:80px;text-align:center;"
+                           value="2" min="0" placeholder="0" />
+                    <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">대</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;text-align:left;padding-left:20px;">PLCS</td>
+                  <td>
+                    <!-- [Java] th:value="${construction.plcsQty}" -->
+                    <input type="number" id="plcsQty" name="plcsQty"
+                           class="rss-input" style="width:80px;text-align:center;"
+                           value="2" min="0" placeholder="0" />
+                    <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">대</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;text-align:left;padding-left:20px;">신호수</td>
+                  <td>
+                    <!-- [Java] th:value="${construction.signalManQty}" -->
+                    <input type="number" id="signalManQty" name="signalManQty"
+                           class="rss-input" style="width:80px;text-align:center;"
+                           value="0" min="0" placeholder="0" />
+                    <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">명</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             섹션 4. 공사 단가
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section class="write-section" aria-labelledby="section4Title">
+          <div class="write-section__head">
+            <i data-lucide="circle-dollar-sign" style="width:16px;height:16px;color:var(--rss-amber);flex-shrink:0;"></i>
+            <h2 class="write-section__title" id="section4Title">공사 단가</h2>
+            <span class="write-section__badge">필수 입력 항목</span>
+          </div>
+          <div class="write-section__body">
+            <!-- [Java] 단가 — construction.priceList (TMA1/TMA3/PLCS/신호수 각각) -->
+            <table class="price-table">
+              <colgroup>
+                <col style="width:160px;" />
+                <col />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>품목</th>
+                  <th>단가 (원/일)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:600;text-align:left;padding-left:20px;">TMA1</td>
+                  <td>
+                    <!-- [Java] th:value="${construction.tma1Price}" -->
+                    <input type="text" id="tma1Price" name="tma1Price"
+                           class="rss-input" style="width:140px;text-align:right;"
+                           value="150,000"
+                           oninput="formatPrice(this)" />
+                    <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">원</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;text-align:left;padding-left:20px;">TMA3</td>
+                  <td>
+                    <!-- [Java] th:value="${construction.tma3Price}" -->
+                    <input type="text" id="tma3Price" name="tma3Price"
+                           class="rss-input" style="width:140px;text-align:right;"
+                           value="200,000"
+                           oninput="formatPrice(this)" />
+                    <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">원</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;text-align:left;padding-left:20px;">PLCS</td>
+                  <td>
+                    <!-- [Java] th:value="${construction.plcsPrice}" -->
+                    <input type="text" id="plcsPrice" name="plcsPrice"
+                           class="rss-input" style="width:140px;text-align:right;"
+                           value="120,000"
+                           oninput="formatPrice(this)" />
+                    <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">원</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;text-align:left;padding-left:20px;">신호수</td>
+                  <td>
+                    <!-- [Java] th:value="${construction.signalManPrice}" -->
+                    <input type="text" id="signalManPrice" name="signalManPrice"
+                           class="rss-input" style="width:140px;text-align:right;"
+                           value="80,000"
+                           oninput="formatPrice(this)" />
+                    <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">원</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             섹션 5. 시연회
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section class="write-section" aria-labelledby="section5Title">
+          <div class="write-section__head">
+            <i data-lucide="calendar-check" style="width:16px;height:16px;color:var(--rss-amber);flex-shrink:0;"></i>
+            <h2 class="write-section__title" id="section5Title">시연회</h2>
+            <span style="font-size:var(--rss-font-xs);color:var(--rss-muted);margin-left:4px;">(선택)</span>
+          </div>
+          <div class="write-section__body">
+            <table class="adm-form-table">
+              <tbody>
+                <!-- 시연회 날짜 -->
+                <tr>
+                  <th scope="row">시연회 날짜</th>
+                  <td>
+                    <!-- [Java] th:value="${construction.demoDt}" -->
+                    <input type="date" id="demoDt" name="demoDt"
+                           class="rss-input" style="width:160px;"
+                           value="" />
+                  </td>
+                </tr>
+                <!-- 시연회 시간대 -->
+                <tr>
+                  <th scope="row">시연회 시간대</th>
+                  <td>
+                    <!-- [Java] th:field="*{demoTimeCd}" -->
+                    <div class="adm-radio-group">
+                      <label><input type="radio" name="demoTimeCd" value="day" /> 주간</label>
+                      <label><input type="radio" name="demoTimeCd" value="night" /> 야간</label>
+                    </div>
+                  </td>
+                </tr>
+                <!-- 반공수 여부 -->
+                <tr>
+                  <th scope="row">반공수 여부</th>
+                  <td>
+                    <!-- [Java] th:field="*{isHalfWork}" -->
+                    <div class="adm-radio-group">
+                      <label><input type="radio" name="isHalfWork" value="Y" /> 해당</label>
+                      <label><input type="radio" name="isHalfWork" value="N" checked /> 해당없음</label>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             섹션 6. 공사없음일 (캘린더 다중선택)
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section class="write-section" aria-labelledby="section6Title">
+          <div class="write-section__head">
+            <i data-lucide="calendar-x" style="width:16px;height:16px;color:var(--rss-amber);flex-shrink:0;"></i>
+            <h2 class="write-section__title" id="section6Title">공사없음일</h2>
+            <span style="font-size:var(--rss-font-xs);color:var(--rss-muted);margin-left:4px;">(선택 — 공사 기간 내 작업이 없는 날짜를 선택하세요)</span>
+          </div>
+          <div class="write-section__body">
+            <!-- [Java] 공사없음일 — construction.noWorkDates (List<String>) -->
+            <!-- [Java] hidden input 배열: <input type="hidden" name="noWorkDates" th:each="d : ${construction.noWorkDates}" th:value="${d}"> -->
+
+            <!-- 캘린더 -->
+            <div class="no-work-calendar" id="noWorkCalendar">
+              <div class="no-work-calendar__head">
+                <div class="no-work-calendar__nav">
+                  <button type="button" onclick="noWorkCalPrev()" aria-label="이전 달">
+                    <i data-lucide="chevron-left" style="width:12px;height:12px;"></i>
+                  </button>
+                </div>
+                <span class="no-work-calendar__month" id="noWorkCalMonth">2026년 7월</span>
+                <div class="no-work-calendar__nav">
+                  <button type="button" onclick="noWorkCalNext()" aria-label="다음 달">
+                    <i data-lucide="chevron-right" style="width:12px;height:12px;"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="no-work-calendar__grid" id="noWorkCalGrid">
+                <!-- JS로 렌더링 -->
+              </div>
+            </div>
+
+            <!-- 선택된 날짜 태그 목록 -->
+            <div class="no-work-tags" id="noWorkTags">
+              <!-- JS로 렌더링 -->
+            </div>
+            <p class="adm-hint" id="noWorkEmptyHint">선택된 공사없음일이 없습니다.</p>
+
+            <!-- 히든 인풋 (서버 전송용) -->
+            <div id="noWorkHiddenInputs"></div>
+          </div>
+        </section>
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             하단 버튼 영역
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <div class="rss-page-actions">
+          <!-- [Java] 수정 모드에서만 표시: th:if="${mode == 'edit'}" -->
+          <div class="rss-page-actions--left">
+            <button type="button" class="rss-btn rss-btn--outline-danger"
+                    onclick="confirmDelete()">
+              <i data-lucide="trash-2" style="width:14px;height:14px;margin-right:4px;"></i>
+              삭제
+            </button>
+          </div>
+          <button type="button" class="rss-btn rss-btn--outline"
+                  onclick="location.href='construction-list.html'">목록</button>
+          <button type="submit" class="rss-btn rss-btn--amber"
+                  onclick="return submitConstructionForm(event)">
+            <i data-lucide="save" style="width:14px;height:14px;margin-right:4px;"></i>
+            <!-- [Java] th:text="${mode == 'edit'} ? '수정 저장' : '등록'" -->
+            등록
+          </button>
+        </div>
+
+      </form><!-- /constructionWriteForm -->
+
+    </main>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- ══════════════════════════════════════════════════
+     M1-4-1 발주업체찾기 모달
+     [Java] GET /adm/construction/order-corp/search?keyword=
+     선택 시 orderCorpSeq, orderCorpNm 필드에 자동 입력
+══════════════════════════════════════════════════ -->
+<div class="adm-modal-overlay" id="orderCorpModal" role="dialog"
+     aria-modal="true" aria-labelledby="orderCorpModalTitle">
+  <div class="adm-modal-box">
+    <!-- 헤더 -->
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title" id="orderCorpModalTitle">
+        <i data-lucide="search" style="width:16px;height:16px;margin-right:6px;vertical-align:middle;color:var(--rss-amber);"></i>
+        발주업체 찾기
+      </h3>
+      <button type="button" class="adm-modal-box__close"
+              onclick="closeOrderCorpModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:16px;height:16px;"></i>
+      </button>
+    </div>
+    <!-- 검색 영역 -->
+    <div class="adm-modal-box__search">
+      <!-- [Java] GET /adm/construction/order-corp/search?keyword= -->
+      <input type="text" id="orderCorpSearchKeyword"
+             class="rss-input" style="flex:1;"
+             placeholder="업체명 또는 사업자번호 입력"
+             onkeydown="if(event.key==='Enter') searchOrderCorp()" />
+      <button type="button" class="rss-btn rss-btn--amber"
+              onclick="searchOrderCorp()">
+        <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
+        검색
+      </button>
+    </div>
+    <!-- 결과 목록 -->
+    <div class="adm-modal-box__body">
+      <div class="rss-table-wrap" style="margin:0;">
+        <table class="rss-table" id="orderCorpResultTable">
+          <colgroup>
+            <col style="width:50px;" />
+            <col />
+            <col style="width:130px;" />
+            <col style="width:120px;" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>업체명</th>
+              <th>대표자명</th>
+              <th>사업자번호</th>
+            </tr>
+          </thead>
+          <tbody id="orderCorpResultBody">
+            <!-- [Java] th:each="corp : ${orderCorpList}" -->
+            <!-- 더미 데이터 -->
+            <tr class="order-corp-row" style="cursor:pointer;"
+                data-seq="1001" data-nm="한국개발(주)"
+                onclick="selectOrderCorp(this)">
+              <td>1</td>
+              <td class="rss-col-nm">
+                <span class="rss-link">한국개발(주)</span>
+              </td>
+              <td>김한국</td>
+              <td>123-45-67890</td>
+            </tr>
+            <tr class="order-corp-row" style="cursor:pointer;"
+                data-seq="1002" data-nm="소망건설(주)"
+                onclick="selectOrderCorp(this)">
+              <td>2</td>
+              <td class="rss-col-nm">
+                <span class="rss-link">소망건설(주)</span>
+              </td>
+              <td>이소망</td>
+              <td>234-56-78901</td>
+            </tr>
+            <tr class="order-corp-row" style="cursor:pointer;"
+                data-seq="1003" data-nm="오봉토건(주)"
+                onclick="selectOrderCorp(this)">
+              <td>3</td>
+              <td class="rss-col-nm">
+                <span class="rss-link">오봉토건(주)</span>
+              </td>
+              <td>박오봉</td>
+              <td>345-67-89012</td>
+            </tr>
+            <tr class="order-corp-row" style="cursor:pointer;"
+                data-seq="1004" data-nm="대한건설(주)"
+                onclick="selectOrderCorp(this)">
+              <td>4</td>
+              <td class="rss-col-nm">
+                <span class="rss-link">대한건설(주)</span>
+              </td>
+              <td>최대한</td>
+              <td>456-78-90123</td>
+            </tr>
+            <tr class="order-corp-row" style="cursor:pointer;"
+                data-seq="1005" data-nm="미래도로(주)"
+                onclick="selectOrderCorp(this)">
+              <td>5</td>
+              <td class="rss-col-nm">
+                <span class="rss-link">미래도로(주)</span>
+              </td>
+              <td>정미래</td>
+              <td>567-89-01234</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- 하단 -->
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn rss-btn--outline"
+              onclick="closeOrderCorpModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 공통 JS ── -->
+<script src="adm-common.js"></script>
+<script>
+  lucide.createIcons();
+
+  /* ══════════════════════════════════════════════════
+     공사없음일 캘린더
+  ══════════════════════════════════════════════════ */
+  var noWorkYear  = 2026;
+  var noWorkMonth = 7; /* 1-based */
+  var noWorkDates = []; /* 선택된 날짜 배열 (YYYY-MM-DD) */
+
+  var DAY_LABELS = ['일','월','화','수','목','금','토'];
+
+  function renderNoWorkCal() {
+    var grid = document.getElementById('noWorkCalGrid');
+    var monthLabel = document.getElementById('noWorkCalMonth');
+    monthLabel.textContent = noWorkYear + '년 ' + noWorkMonth + '월';
+
+    var html = '';
+    /* 요일 헤더 */
+    for (var i = 0; i < 7; i++) {
+      var cls = i === 0 ? 'sun' : (i === 6 ? 'sat' : '');
+      html += '<div class="no-work-calendar__day-label ' + cls + '">' + DAY_LABELS[i] + '</div>';
+    }
+    /* 첫 날 요일 */
+    var firstDay = new Date(noWorkYear, noWorkMonth - 1, 1).getDay();
+    /* 해당 월 마지막 날 */
+    var lastDate = new Date(noWorkYear, noWorkMonth, 0).getDate();
+
+    /* 빈 칸 */
+    for (var e = 0; e < firstDay; e++) {
+      html += '<div class="no-work-calendar__cell empty"></div>';
+    }
+    /* 날짜 */
+    for (var d = 1; d <= lastDate; d++) {
+      var dateStr = noWorkYear + '-' + pad2(noWorkMonth) + '-' + pad2(d);
+      var dow = (firstDay + d - 1) % 7;
+      var cls2 = '';
+      if (dow === 0) cls2 += ' sun';
+      if (dow === 6) cls2 += ' sat';
+      if (noWorkDates.indexOf(dateStr) !== -1) cls2 += ' selected';
+      html += '<div class="no-work-calendar__cell' + cls2 + '" data-date="' + dateStr + '" onclick="toggleNoWorkDate(\'' + dateStr + '\')">' + d + '</div>';
+    }
+    grid.innerHTML = html;
+    lucide.createIcons();
+    renderNoWorkTags();
+  }
+
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function toggleNoWorkDate(dateStr) {
+    var idx = noWorkDates.indexOf(dateStr);
+    if (idx === -1) {
+      noWorkDates.push(dateStr);
+      noWorkDates.sort();
+    } else {
+      noWorkDates.splice(idx, 1);
+    }
+    renderNoWorkCal();
+  }
+
+  function noWorkCalPrev() {
+    noWorkMonth--;
+    if (noWorkMonth < 1) { noWorkMonth = 12; noWorkYear--; }
+    renderNoWorkCal();
+  }
+  function noWorkCalNext() {
+    noWorkMonth++;
+    if (noWorkMonth > 12) { noWorkMonth = 1; noWorkYear++; }
+    renderNoWorkCal();
+  }
+
+  function renderNoWorkTags() {
+    var tagsEl  = document.getElementById('noWorkTags');
+    var hintEl  = document.getElementById('noWorkEmptyHint');
+    var hiddenEl = document.getElementById('noWorkHiddenInputs');
+
+    if (noWorkDates.length === 0) {
+      tagsEl.innerHTML = '';
+      hintEl.style.display = '';
+      hiddenEl.innerHTML = '';
+      return;
+    }
+    hintEl.style.display = 'none';
+    var tagHtml = '';
+    var hiddenHtml = '';
+    noWorkDates.forEach(function(d) {
+      tagHtml += '<span class="no-work-tag">' + d +
+        '<button type="button" onclick="toggleNoWorkDate(\'' + d + '\')" aria-label="' + d + ' 제거">×</button>' +
+        '</span>';
+      /* [Java] 서버 전송용 hidden input */
+      hiddenHtml += '<input type="hidden" name="noWorkDates" value="' + d + '" />';
+    });
+    tagsEl.innerHTML = tagHtml;
+    hiddenEl.innerHTML = hiddenHtml;
+  }
+
+  /* 초기 렌더링 */
+  renderNoWorkCal();
+
+  /* ══════════════════════════════════════════════════
+     발주업체찾기 모달
+  ══════════════════════════════════════════════════ */
+  function openOrderCorpModal() {
+    document.getElementById('orderCorpModal').classList.add('open');
+    document.getElementById('orderCorpSearchKeyword').focus();
+  }
+  function closeOrderCorpModal() {
+    document.getElementById('orderCorpModal').classList.remove('open');
+  }
+  /* 모달 외부 클릭 시 닫기 */
+  document.getElementById('orderCorpModal').addEventListener('click', function(e) {
+    if (e.target === this) closeOrderCorpModal();
+  });
+
+  function searchOrderCorp() {
+    var kw = document.getElementById('orderCorpSearchKeyword').value.trim();
+    /* [Java] 실제 환경: fetch('/adm/construction/order-corp/search?keyword=' + encodeURIComponent(kw))
+       .then(r => r.json()).then(list => renderOrderCorpResult(list)); */
+    /* 퍼블리싱 더미: 키워드 포함 행만 표시 */
+    var rows = document.querySelectorAll('.order-corp-row');
+    rows.forEach(function(row) {
+      var nm = row.dataset.nm || '';
+      row.style.display = (!kw || nm.indexOf(kw) !== -1) ? '' : 'none';
+    });
+  }
+
+  function selectOrderCorp(row) {
+    var seq = row.dataset.seq;
+    var nm  = row.dataset.nm;
+    document.getElementById('orderCorpSeq').value = seq;
+    document.getElementById('orderCorpNm').value  = nm;
+    closeOrderCorpModal();
+  }
+
+  /* ══════════════════════════════════════════════════
+     단가 입력 — 숫자 포맷 (천단위 콤마)
+  ══════════════════════════════════════════════════ */
+  function formatPrice(input) {
+    var raw = input.value.replace(/[^0-9]/g, '');
+    if (raw === '') { input.value = ''; return; }
+    input.value = parseInt(raw, 10).toLocaleString('ko-KR');
+  }
+
+  /* ══════════════════════════════════════════════════
+     폼 유효성 검사 및 제출
+  ══════════════════════════════════════════════════ */
+  function submitConstructionForm(e) {
+    e.preventDefault();
+    var required = [
+      { id: 'constructionNm',  label: '공사명' },
+      { id: 'orderCorpNm',     label: '발주업체' },
+      { id: 'orderContactNm',  label: '담당자' },
+      { id: 'startDt',         label: '공사 시작일' },
+      { id: 'endDt',           label: '공사 종료일' },
+      { id: 'roadNm',          label: '도로명' },
+      { id: 'direction',       label: '방향' },
+      { id: 'sectionStartKm',  label: '공사 구간 시작' },
+      { id: 'sectionEndKm',    label: '공사 구간 종료' },
+    ];
+    for (var i = 0; i < required.length; i++) {
+      var el = document.getElementById(required[i].id);
+      if (!el || !el.value.trim()) {
+        alert(required[i].label + '을(를) 입력하세요.');
+        if (el) el.focus();
+        return false;
+      }
+    }
+    /* 기간 유효성 */
+    var s = document.getElementById('startDt').value;
+    var en = document.getElementById('endDt').value;
+    if (s && en && s > en) {
+      alert('종료일이 시작일보다 앞설 수 없습니다.');
+      document.getElementById('endDt').focus();
+      return false;
+    }
+    /* 저장 확인 */
+    if (!confirm('공사 정보를 등록하시겠습니까?\n저장 후 카카오톡 알림(P04)이 발송됩니다.')) {
+      return false;
+    }
+    /* [Java] 실제 환경: document.getElementById('constructionWriteForm').submit(); */
+    alert('등록이 완료되었습니다.\n[Java] POST /adm/construction/reg 로 전송됩니다.');
+    /* location.href = 'construction-list.html'; */
+    return false;
+  }
+
+  /* ══════════════════════════════════════════════════
+     삭제 확인
+  ══════════════════════════════════════════════════ */
+  function confirmDelete() {
+    if (confirm('해당 공사 정보를 삭제하시겠습니까?\n삭제 후 복구가 불가능합니다.')) {
+      /* [Java] 실제 환경: POST /adm/construction/del/{constructionSeq} */
+      alert('삭제 처리되었습니다.\n[Java] POST /adm/construction/del/{id} 로 전송됩니다.');
+      /* location.href = 'construction-list.html'; */
+    }
+  }
+</script>
+</body>
+</html>
