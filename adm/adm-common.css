@@ -366,3 +366,339 @@
 @media (min-width: 1024px) {
   .adm-overlay { display: none !important; }
 }
+
+/* ─── 공사 등록/수정 공통 컴포넌트 ─────────────────────
+   construction-write.html 및 향후 등록/수정 폼 공통 사용
+   ─────────────────────────────────────────────────────── */
+
+/* 섹션 카드 */
+.write-section {
+  background: var(--rss-card);
+  border: 1px solid var(--rss-border);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.write-section__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--rss-border);
+}
+.write-section__title {
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+}
+.write-section__badge {
+  font-size: var(--rss-font-xs);
+  background: var(--rss-amber-light);
+  color: var(--rss-amber-dark);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+.write-section__body {
+  padding: 20px;
+}
+
+/* 폼 테이블 — PC 전용 등록/수정 폼 키-값 구조 */
+.adm-form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.adm-form-table th {
+  width: 140px;
+  min-width: 140px;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border: 1px solid var(--rss-border);
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+  color: var(--rss-muted);
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.adm-form-table td {
+  padding: 10px 14px;
+  border: 1px solid var(--rss-border);
+  font-size: var(--rss-font-base);
+  color: var(--rss-text);
+  vertical-align: middle;
+}
+.adm-form-table .required {
+  color: #dc2626;
+  margin-left: 2px;
+}
+
+/* 인라인 그룹 (라벨 + 인풋 가로 배치) */
+.adm-inline-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.adm-inline-sep {
+  color: var(--rss-muted);
+  font-size: var(--rss-font-sm);
+  white-space: nowrap;
+}
+
+/* 업체찾기 버튼 그룹 */
+.adm-find-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.adm-find-group .rss-input {
+  flex: 1;
+}
+
+/* 라디오/체크박스 그룹 */
+.adm-radio-group,
+.adm-check-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.adm-radio-group label,
+.adm-check-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--rss-font-base);
+  color: var(--rss-text);
+  cursor: pointer;
+}
+
+/* 안내 텍스트 */
+.adm-hint {
+  font-size: var(--rss-font-xs);
+  color: var(--rss-muted);
+  margin-top: 4px;
+}
+
+/* 품목 수량 테이블 */
+.equip-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+.equip-table th {
+  padding: 8px 12px;
+  background: #f9fafb;
+  border: 1px solid var(--rss-border);
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+  color: var(--rss-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+.equip-table td {
+  padding: 8px 12px;
+  border: 1px solid var(--rss-border);
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* 단가 테이블 */
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+.price-table th {
+  padding: 8px 12px;
+  background: #f9fafb;
+  border: 1px solid var(--rss-border);
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+  color: var(--rss-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+.price-table td {
+  padding: 8px 12px;
+  border: 1px solid var(--rss-border);
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* 공사없음일 캘린더 */
+.no-work-calendar {
+  border: 1px solid var(--rss-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: inline-block;
+  min-width: 280px;
+}
+.no-work-calendar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--rss-border);
+}
+.no-work-calendar__month {
+  font-size: var(--rss-font-sm);
+  font-weight: 700;
+  color: var(--rss-text);
+}
+.no-work-calendar__nav button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--rss-muted);
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s;
+}
+.no-work-calendar__nav button:hover {
+  background: var(--rss-amber-light);
+  color: var(--rss-amber-dark);
+}
+.no-work-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 8px;
+  gap: 2px;
+}
+.no-work-calendar__day-label {
+  text-align: center;
+  font-size: var(--rss-font-xs);
+  font-weight: 700;
+  color: var(--rss-muted);
+  padding: 4px 2px;
+}
+.no-work-calendar__day-label.sun { color: #dc2626; }
+.no-work-calendar__day-label.sat { color: #3b82f6; }
+.no-work-calendar__cell {
+  text-align: center;
+  padding: 5px 2px;
+  font-size: var(--rss-font-sm);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s;
+  user-select: none;
+}
+.no-work-calendar__cell:hover:not(.empty) {
+  background: var(--rss-amber-light);
+  color: var(--rss-amber-dark);
+}
+.no-work-calendar__cell.selected {
+  background: var(--rss-amber);
+  color: #fff;
+  font-weight: 700;
+}
+.no-work-calendar__cell.empty { cursor: default; }
+.no-work-calendar__cell.sun { color: #dc2626; }
+.no-work-calendar__cell.sat { color: #3b82f6; }
+.no-work-calendar__cell.selected.sun,
+.no-work-calendar__cell.selected.sat { color: #fff; }
+
+/* 선택된 공사없음일 태그 */
+.no-work-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.no-work-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: var(--rss-amber-light);
+  color: var(--rss-amber-dark);
+  border: 1px solid var(--rss-amber);
+  border-radius: 20px;
+  font-size: var(--rss-font-sm);
+  font-weight: 600;
+}
+.no-work-tag button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--rss-amber-dark);
+  padding: 0;
+  line-height: 1;
+  margin-left: 2px;
+}
+
+/* 발주업체찾기 / 공통 팝업 모달 */
+.adm-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.adm-modal-overlay.open {
+  display: flex;
+}
+.adm-modal-box {
+  background: var(--rss-card);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(30,42,74,0.18);
+  width: 560px;
+  max-width: 96vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.adm-modal-box__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--rss-border);
+  background: #f8fafc;
+}
+.adm-modal-box__title {
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+}
+.adm-modal-box__close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--rss-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.adm-modal-box__close:hover {
+  background: #f3f4f6;
+  color: var(--rss-text);
+}
+.adm-modal-box__search {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--rss-border);
+  display: flex;
+  gap: 8px;
+}
+.adm-modal-box__body {
+  flex: 1;
+  overflow-y: auto;
+}
+.adm-modal-box__foot {
+  padding: 12px 20px;
+  border-top: 1px solid var(--rss-border);
+  text-align: right;
+}

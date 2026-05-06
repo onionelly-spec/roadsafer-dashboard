@@ -9,376 +9,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide 아이콘 CDN -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <!-- 공통 CSS -->
+  <!-- 공통 CSS (사용자 사이트 기반) -->
   <link rel="stylesheet" href="../rss-common.css" />
-  <!-- 관리자 테마 CSS -->
+  <!-- 관리자 테마 CSS (blue 포인트 컬러 + 공통 컴포넌트) -->
   <link rel="stylesheet" href="adm-common.css" />
-  <style>
-    /* ── 공사 등록/수정 전용 스타일 ── */
-
-    /* 섹션 카드 */
-    .write-section {
-      background: #fff;
-      border: 1px solid var(--rss-border);
-      border-radius: 10px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-    .write-section__head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 20px;
-      background: #f8fafc;
-      border-bottom: 1px solid var(--rss-border);
-    }
-    .write-section__title {
-      font-size: var(--rss-font-md);
-      font-weight: 700;
-      color: var(--rss-text);
-    }
-    .write-section__badge {
-      font-size: var(--rss-font-xs);
-      background: var(--rss-amber-light);
-      color: var(--rss-amber-dark);
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-weight: 600;
-    }
-    .write-section__body {
-      padding: 20px;
-    }
-
-    /* 폼 테이블 — th 너비 조정 (관리자는 PC 전용이므로 더 넓게) */
-    .adm-form-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .adm-form-table th {
-      width: 140px;
-      min-width: 140px;
-      padding: 12px 16px;
-      background: #f9fafb;
-      border: 1px solid var(--rss-border);
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: var(--rss-muted);
-      text-align: center;
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-    .adm-form-table td {
-      padding: 10px 14px;
-      border: 1px solid var(--rss-border);
-      font-size: var(--rss-font-base);
-      color: var(--rss-text);
-      vertical-align: middle;
-    }
-    .adm-form-table .required {
-      color: #dc2626;
-      margin-left: 2px;
-    }
-
-    /* 인라인 그룹 (라벨 + 인풋 가로 배치) */
-    .adm-inline-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .adm-inline-group .rss-input,
-    .adm-inline-group .rss-select {
-      flex: 1;
-      min-width: 80px;
-    }
-    .adm-inline-sep {
-      color: var(--rss-muted);
-      font-size: var(--rss-font-sm);
-      white-space: nowrap;
-    }
-
-    /* 업체찾기 버튼 그룹 */
-    .adm-find-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .adm-find-group .rss-input {
-      flex: 1;
-    }
-    .adm-find-group .adm-find-btn {
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    /* 품목 수량 테이블 */
-    .equip-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 4px;
-    }
-    .equip-table th {
-      padding: 8px 12px;
-      background: #f9fafb;
-      border: 1px solid var(--rss-border);
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: var(--rss-muted);
-      text-align: center;
-      white-space: nowrap;
-    }
-    .equip-table td {
-      padding: 8px 12px;
-      border: 1px solid var(--rss-border);
-      text-align: center;
-      vertical-align: middle;
-    }
-    .equip-table .rss-input {
-      width: 80px;
-      text-align: center;
-    }
-
-    /* 단가 테이블 */
-    .price-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 4px;
-    }
-    .price-table th {
-      padding: 8px 12px;
-      background: #f9fafb;
-      border: 1px solid var(--rss-border);
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-      color: var(--rss-muted);
-      text-align: center;
-      white-space: nowrap;
-    }
-    .price-table td {
-      padding: 8px 12px;
-      border: 1px solid var(--rss-border);
-      text-align: center;
-      vertical-align: middle;
-    }
-    .price-table .rss-input {
-      width: 120px;
-      text-align: right;
-    }
-
-    /* 공사없음일 캘린더 */
-    .no-work-calendar {
-      border: 1px solid var(--rss-border);
-      border-radius: 8px;
-      overflow: hidden;
-      max-width: 380px;
-    }
-    .no-work-calendar__head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      background: #f9fafb;
-      border-bottom: 1px solid var(--rss-border);
-    }
-    .no-work-calendar__nav {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .no-work-calendar__nav button {
-      width: 28px;
-      height: 28px;
-      border: 1px solid var(--rss-border);
-      border-radius: 4px;
-      background: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--rss-muted);
-      transition: background 0.15s;
-    }
-    .no-work-calendar__nav button:hover {
-      background: var(--rss-amber-light);
-      color: var(--rss-amber-dark);
-      border-color: var(--rss-amber);
-    }
-    .no-work-calendar__month {
-      font-size: var(--rss-font-sm);
-      font-weight: 700;
-      color: var(--rss-text);
-    }
-    .no-work-calendar__grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      padding: 8px;
-      gap: 2px;
-    }
-    .no-work-calendar__day-label {
-      text-align: center;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--rss-muted);
-      padding: 4px 0;
-    }
-    .no-work-calendar__day-label.sun { color: #dc2626; }
-    .no-work-calendar__day-label.sat { color: #3b82f6; }
-    .no-work-calendar__cell {
-      text-align: center;
-      padding: 5px 2px;
-      font-size: var(--rss-font-sm);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.12s;
-      user-select: none;
-    }
-    .no-work-calendar__cell:hover:not(.empty) {
-      background: var(--rss-amber-light);
-      color: var(--rss-amber-dark);
-    }
-    .no-work-calendar__cell.selected {
-      background: var(--rss-amber);
-      color: #fff;
-      font-weight: 700;
-    }
-    .no-work-calendar__cell.empty { cursor: default; }
-    .no-work-calendar__cell.sun { color: #dc2626; }
-    .no-work-calendar__cell.sat { color: #3b82f6; }
-    .no-work-calendar__cell.selected.sun,
-    .no-work-calendar__cell.selected.sat { color: #fff; }
-
-    /* 선택된 공사없음일 태그 */
-    .no-work-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 10px;
-    }
-    .no-work-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 10px 3px 10px;
-      background: var(--rss-amber-light);
-      color: var(--rss-amber-dark);
-      border: 1px solid var(--rss-amber);
-      border-radius: 20px;
-      font-size: var(--rss-font-sm);
-      font-weight: 600;
-    }
-    .no-work-tag button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--rss-amber-dark);
-      padding: 0;
-      line-height: 1;
-      margin-left: 2px;
-    }
-
-    /* 라디오/체크박스 그룹 */
-    .adm-radio-group,
-    .adm-check-group {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .adm-radio-group label,
-    .adm-check-group label {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: var(--rss-font-base);
-      color: var(--rss-text);
-      cursor: pointer;
-    }
-
-    /* 시연회 영역 */
-    .demo-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    /* 안내 텍스트 */
-    .adm-hint {
-      font-size: var(--rss-font-xs);
-      color: var(--rss-muted);
-      margin-top: 4px;
-    }
-
-    /* 발주업체찾기 모달 */
-    .adm-modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-    }
-    .adm-modal-overlay.open {
-      display: flex;
-    }
-    .adm-modal-box {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(30,42,74,0.18);
-      width: 560px;
-      max-width: 96vw;
-      max-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .adm-modal-box__head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--rss-border);
-      background: #f8fafc;
-    }
-    .adm-modal-box__title {
-      font-size: var(--rss-font-md);
-      font-weight: 700;
-      color: var(--rss-text);
-    }
-    .adm-modal-box__close {
-      width: 32px;
-      height: 32px;
-      border: none;
-      background: none;
-      cursor: pointer;
-      color: var(--rss-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      transition: background 0.15s;
-    }
-    .adm-modal-box__close:hover {
-      background: #f3f4f6;
-      color: var(--rss-text);
-    }
-    .adm-modal-box__search {
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--rss-border);
-      display: flex;
-      gap: 8px;
-    }
-    .adm-modal-box__body {
-      flex: 1;
-      overflow-y: auto;
-    }
-    .adm-modal-box__foot {
-      padding: 12px 20px;
-      border-top: 1px solid var(--rss-border);
-      text-align: right;
-    }
-  </style>
+  <!-- ※ 페이지 전용 <style> 없음 — 모든 스타일은 adm-common.css 인용 -->
 </head>
 <body>
 <!-- ══════════════════════════════════════════════════
@@ -417,7 +52,9 @@
 
       <!-- ══════════════════════════════════════════════════
            공사 등록/수정 폼
-           [Java] th:action="${mode == 'edit'} ? @{/adm/construction/mod/{id}(id=${construction.constructionSeq})} : @{/adm/construction/reg}"
+           [Java] th:action="${mode == 'edit'}
+                    ? @{/adm/construction/mod/{id}(id=${construction.constructionSeq})}
+                    : @{/adm/construction/reg}"
            [Java] th:method="post"
            [Java] 수정 모드: th:object="${construction}"
       ══════════════════════════════════════════════════ -->
@@ -451,7 +88,7 @@
                   </td>
                 </tr>
 
-                <!-- 발주업체 -->
+                <!-- 발주업체 — M1-4-1 발주업체찾기 팝업 연동 -->
                 <tr>
                   <th scope="row">발주업체<span class="required">*</span></th>
                   <td>
@@ -463,7 +100,7 @@
                              value="한국개발(주)" readonly />
                       <!-- [Java] th:value="${construction.orderCorpSeq}" -->
                       <input type="hidden" id="orderCorpSeq" name="orderCorpSeq" value="1001" />
-                      <button type="button" class="rss-btn rss-btn--outline-amber adm-find-btn"
+                      <button type="button" class="rss-btn rss-btn--outline-amber"
                               onclick="openOrderCorpModal()">
                         <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
                         업체찾기
@@ -472,7 +109,7 @@
                   </td>
                 </tr>
 
-                <!-- 담당자 -->
+                <!-- 담당자 — 용어사전 §10-2 order_contact -->
                 <tr>
                   <th scope="row">담당자<span class="required">*</span></th>
                   <td>
@@ -484,7 +121,7 @@
                   </td>
                 </tr>
 
-                <!-- 공사 기간 -->
+                <!-- 공사 기간 — 용어사전 §1 startDt / endDt -->
                 <tr>
                   <th scope="row">공사 기간<span class="required">*</span></th>
                   <td>
@@ -502,51 +139,53 @@
                   </td>
                 </tr>
 
-                <!-- 작업 시간 -->
+                <!-- 작업 시간 — 용어사전 §10 day_shift/night_shift → workShiftType
+                              차단 시작 시간 → blockStartTime (§10 block_start_time) -->
                 <tr>
                   <th scope="row">작업 시간<span class="required">*</span></th>
                   <td>
                     <div class="adm-inline-group">
-                      <!-- [Java] th:field="*{workTimeType}" -->
+                      <!-- [Java] th:field="*{workShiftType}" -->
                       <div class="adm-radio-group">
                         <label>
-                          <input type="radio" name="workTimeType" value="day" checked />
+                          <input type="radio" name="workShiftType" value="day" checked />
                           주간
                         </label>
                         <label>
-                          <input type="radio" name="workTimeType" value="night" />
+                          <input type="radio" name="workShiftType" value="night" />
                           야간
                         </label>
                         <label>
-                          <input type="radio" name="workTimeType" value="both" />
+                          <input type="radio" name="workShiftType" value="both" />
                           주야간
                         </label>
                       </div>
                       <span class="adm-inline-sep" style="margin-left:8px;">차단 시작</span>
-                      <!-- [Java] th:value="${construction.blockStartTm}" -->
-                      <input type="time" id="blockStartTm" name="blockStartTm"
+                      <!-- [Java] th:value="${construction.blockStartTime}" -->
+                      <input type="time" id="blockStartTime" name="blockStartTime"
                              class="rss-input" style="width:130px;"
                              value="09:00" />
                     </div>
                   </td>
                 </tr>
 
-                <!-- 권역 -->
+                <!-- 권역 — 용어사전 §10 region / §19-2 권역 코드값 -->
                 <tr>
                   <th scope="row">권역<span class="required">*</span></th>
                   <td>
                     <!-- [Java] th:field="*{regionCd}" -->
-                    <select id="regionCd" name="regionCd" class="rss-select" style="width:180px;">
+                    <select id="regionCd" name="regionCd" class="rss-select" style="width:200px;">
                       <option value="">선택</option>
-                      <option value="seoul" selected>서울·경기·인천</option>
-                      <option value="gangwon">강원</option>
-                      <option value="chungbuk">충북</option>
-                      <option value="chungnam">충남·세종·대전</option>
-                      <option value="jeonbuk">전북</option>
-                      <option value="jeonnam">전남·광주</option>
-                      <option value="gyeongbuk">경북·대구</option>
-                      <option value="gyeongnam">경남·부산·울산</option>
-                      <option value="jeju">제주</option>
+                      <!-- [Java] §19-2 권역 코드 기준 -->
+                      <option value="SEL" selected>서울·경기</option>
+                      <option value="GWN">강원</option>
+                      <option value="CCB">충북</option>
+                      <option value="CCS">대전·세종·충남</option>
+                      <option value="JNB">전북</option>
+                      <option value="JNS">광주·전남</option>
+                      <option value="GNB">대구·경북</option>
+                      <option value="GNS">부산·울산·경남</option>
+                      <option value="JEJ">제주</option>
                     </select>
                   </td>
                 </tr>
@@ -568,7 +207,7 @@
             <table class="adm-form-table">
               <tbody>
 
-                <!-- 도로 구분 -->
+                <!-- 도로 구분 — 용어사전 §10-2 road_class → roadClassCd -->
                 <tr>
                   <th scope="row">도로 구분<span class="required">*</span></th>
                   <td>
@@ -583,22 +222,23 @@
                   </td>
                 </tr>
 
-                <!-- 길 구분 -->
+                <!-- 길 구분 — 용어사전 §10-2 lane_class → laneClassCd
+                             (사용자 상세 construction-detail.html: construction.laneClass 동일 도메인) -->
                 <tr>
                   <th scope="row">길 구분<span class="required">*</span></th>
                   <td>
-                    <!-- [Java] th:field="*{roadTypeCd}" -->
+                    <!-- [Java] th:field="*{laneClassCd}" -->
                     <div class="adm-radio-group">
-                      <label><input type="radio" name="roadTypeCd" value="main" checked /> 본선</label>
-                      <label><input type="radio" name="roadTypeCd" value="ic" /> IC</label>
-                      <label><input type="radio" name="roadTypeCd" value="jc" /> JC</label>
-                      <label><input type="radio" name="roadTypeCd" value="ramp" /> 램프</label>
-                      <label><input type="radio" name="roadTypeCd" value="other" /> 기타</label>
+                      <label><input type="radio" name="laneClassCd" value="main" checked /> 본선</label>
+                      <label><input type="radio" name="laneClassCd" value="ic" /> IC</label>
+                      <label><input type="radio" name="laneClassCd" value="jc" /> JC</label>
+                      <label><input type="radio" name="laneClassCd" value="ramp" /> 램프</label>
+                      <label><input type="radio" name="laneClassCd" value="other" /> 기타</label>
                     </div>
                   </td>
                 </tr>
 
-                <!-- 도로명 -->
+                <!-- 도로명 — 용어사전 §10 road + §8-3 nm → roadNm -->
                 <tr>
                   <th scope="row">도로명<span class="required">*</span></th>
                   <td>
@@ -610,7 +250,7 @@
                   </td>
                 </tr>
 
-                <!-- 방향 -->
+                <!-- 방향 — 용어사전 §10 direction -->
                 <tr>
                   <th scope="row">방향<span class="required">*</span></th>
                   <td>
@@ -622,7 +262,7 @@
                   </td>
                 </tr>
 
-                <!-- 공사 구간 -->
+                <!-- 공사 구간 — 용어사전 §20 신규 추가: sectionStartKm / sectionEndKm -->
                 <tr>
                   <th scope="row">공사 구간<span class="required">*</span></th>
                   <td>
@@ -699,11 +339,12 @@
                     <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">대</span>
                   </td>
                 </tr>
+                <!-- 신호수 — 용어사전 §10 signaler → signalerQty (§16-1 signalerCnt 동일 도메인) -->
                 <tr>
                   <td style="font-weight:600;text-align:left;padding-left:20px;">신호수</td>
                   <td>
-                    <!-- [Java] th:value="${construction.signalManQty}" -->
-                    <input type="number" id="signalManQty" name="signalManQty"
+                    <!-- [Java] th:value="${construction.signalerQty}" -->
+                    <input type="number" id="signalerQty" name="signalerQty"
                            class="rss-input" style="width:80px;text-align:center;"
                            value="0" min="0" placeholder="0" />
                     <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">명</span>
@@ -770,11 +411,12 @@
                     <span style="margin-left:6px;color:var(--rss-muted);font-size:var(--rss-font-sm);">원</span>
                   </td>
                 </tr>
+                <!-- 신호수 단가 — 용어사전 §10 signaler + §10 unit_price → signalerPrice -->
                 <tr>
                   <td style="font-weight:600;text-align:left;padding-left:20px;">신호수</td>
                   <td>
-                    <!-- [Java] th:value="${construction.signalManPrice}" -->
-                    <input type="text" id="signalManPrice" name="signalManPrice"
+                    <!-- [Java] th:value="${construction.signalerPrice}" -->
+                    <input type="text" id="signalerPrice" name="signalerPrice"
                            class="rss-input" style="width:140px;text-align:right;"
                            value="80,000"
                            oninput="formatPrice(this)" />
@@ -788,6 +430,7 @@
 
         <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
              섹션 5. 시연회
+             용어사전 §10-2 rehearsal 도메인
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
         <section class="write-section" aria-labelledby="section5Title">
           <div class="write-section__head">
@@ -798,38 +441,43 @@
           <div class="write-section__body">
             <table class="adm-form-table">
               <tbody>
-                <!-- 시연회 날짜 -->
+
+                <!-- 시연회 날짜 — 용어사전 §10-2 rehearsal + §1 dt → rehearsalDt
+                                  (사용자 상세 construction-detail.html: construction.rehearsalDt 동일) -->
                 <tr>
                   <th scope="row">시연회 날짜</th>
                   <td>
-                    <!-- [Java] th:value="${construction.demoDt}" -->
-                    <input type="date" id="demoDt" name="demoDt"
+                    <!-- [Java] th:value="${construction.rehearsalDt}" -->
+                    <input type="date" id="rehearsalDt" name="rehearsalDt"
                            class="rss-input" style="width:160px;"
                            value="" />
                   </td>
                 </tr>
-                <!-- 시연회 시간대 -->
+
+                <!-- 시연회 시간대 — 용어사전 §10-2 rehearsal + §8-4 code → rehearsalTimeCd -->
                 <tr>
                   <th scope="row">시연회 시간대</th>
                   <td>
-                    <!-- [Java] th:field="*{demoTimeCd}" -->
+                    <!-- [Java] th:field="*{rehearsalTimeCd}" -->
                     <div class="adm-radio-group">
-                      <label><input type="radio" name="demoTimeCd" value="day" /> 주간</label>
-                      <label><input type="radio" name="demoTimeCd" value="night" /> 야간</label>
+                      <label><input type="radio" name="rehearsalTimeCd" value="day" /> 주간</label>
+                      <label><input type="radio" name="rehearsalTimeCd" value="night" /> 야간</label>
                     </div>
                   </td>
                 </tr>
-                <!-- 반공수 여부 -->
+
+                <!-- 반공수 여부 — 용어사전 §10-2 rehearsal + §4 yn → rehearsalHalfWorkYn -->
                 <tr>
                   <th scope="row">반공수 여부</th>
                   <td>
-                    <!-- [Java] th:field="*{isHalfWork}" -->
+                    <!-- [Java] th:field="*{rehearsalHalfWorkYn}" -->
                     <div class="adm-radio-group">
-                      <label><input type="radio" name="isHalfWork" value="Y" /> 해당</label>
-                      <label><input type="radio" name="isHalfWork" value="N" checked /> 해당없음</label>
+                      <label><input type="radio" name="rehearsalHalfWorkYn" value="Y" /> 해당</label>
+                      <label><input type="radio" name="rehearsalHalfWorkYn" value="N" checked /> 해당없음</label>
                     </div>
                   </td>
                 </tr>
+
               </tbody>
             </table>
           </div>
@@ -837,6 +485,7 @@
 
         <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
              섹션 6. 공사없음일 (캘린더 다중선택)
+             용어사전 §10-2 no_work / work_day 도메인
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
         <section class="write-section" aria-labelledby="section6Title">
           <div class="write-section__head">
@@ -909,15 +558,16 @@
 
 <!-- ══════════════════════════════════════════════════
      M1-4-1 발주업체찾기 모달
+     용어사전 §15-2 modalCompanySearch 패턴 준용 → modalOrderCorpSearch
      [Java] GET /adm/construction/order-corp/search?keyword=
      선택 시 orderCorpSeq, orderCorpNm 필드에 자동 입력
 ══════════════════════════════════════════════════ -->
-<div class="adm-modal-overlay" id="orderCorpModal" role="dialog"
-     aria-modal="true" aria-labelledby="orderCorpModalTitle">
+<div class="adm-modal-overlay" id="modalOrderCorpSearch" role="dialog"
+     aria-modal="true" aria-labelledby="modalOrderCorpSearchTitle">
   <div class="adm-modal-box">
     <!-- 헤더 -->
     <div class="adm-modal-box__head">
-      <h3 class="adm-modal-box__title" id="orderCorpModalTitle">
+      <h3 class="adm-modal-box__title" id="modalOrderCorpSearchTitle">
         <i data-lucide="search" style="width:16px;height:16px;margin-right:6px;vertical-align:middle;color:var(--rss-amber);"></i>
         발주업체 찾기
       </h3>
@@ -929,6 +579,7 @@
     <!-- 검색 영역 -->
     <div class="adm-modal-box__search">
       <!-- [Java] GET /adm/construction/order-corp/search?keyword= -->
+      <!-- 용어사전 §7 searchKeyword + §10-2 order_corp → orderCorpSearchKeyword -->
       <input type="text" id="orderCorpSearchKeyword"
              class="rss-input" style="flex:1;"
              placeholder="업체명 또는 사업자번호 입력"
@@ -942,6 +593,7 @@
     <!-- 결과 목록 -->
     <div class="adm-modal-box__body">
       <div class="rss-table-wrap" style="margin:0;">
+        <!-- 용어사전 §15-2 companyResultBody 패턴 준용 → orderCorpResultBody -->
         <table class="rss-table" id="orderCorpResultTable">
           <colgroup>
             <col style="width:50px;" />
@@ -1029,37 +681,30 @@
 
   /* ══════════════════════════════════════════════════
      공사없음일 캘린더
+     noWorkDates: 선택된 날짜 배열 (YYYY-MM-DD)
   ══════════════════════════════════════════════════ */
   var noWorkYear  = 2026;
   var noWorkMonth = 7; /* 1-based */
-  var noWorkDates = []; /* 선택된 날짜 배열 (YYYY-MM-DD) */
-
-  var DAY_LABELS = ['일','월','화','수','목','금','토'];
+  var noWorkDates = [];
+  var DAY_LABELS  = ['일','월','화','수','목','금','토'];
 
   function renderNoWorkCal() {
-    var grid = document.getElementById('noWorkCalGrid');
+    var grid       = document.getElementById('noWorkCalGrid');
     var monthLabel = document.getElementById('noWorkCalMonth');
     monthLabel.textContent = noWorkYear + '년 ' + noWorkMonth + '월';
-
     var html = '';
-    /* 요일 헤더 */
     for (var i = 0; i < 7; i++) {
       var cls = i === 0 ? 'sun' : (i === 6 ? 'sat' : '');
       html += '<div class="no-work-calendar__day-label ' + cls + '">' + DAY_LABELS[i] + '</div>';
     }
-    /* 첫 날 요일 */
     var firstDay = new Date(noWorkYear, noWorkMonth - 1, 1).getDay();
-    /* 해당 월 마지막 날 */
     var lastDate = new Date(noWorkYear, noWorkMonth, 0).getDate();
-
-    /* 빈 칸 */
     for (var e = 0; e < firstDay; e++) {
       html += '<div class="no-work-calendar__cell empty"></div>';
     }
-    /* 날짜 */
     for (var d = 1; d <= lastDate; d++) {
       var dateStr = noWorkYear + '-' + pad2(noWorkMonth) + '-' + pad2(d);
-      var dow = (firstDay + d - 1) % 7;
+      var dow  = (firstDay + d - 1) % 7;
       var cls2 = '';
       if (dow === 0) cls2 += ' sun';
       if (dow === 6) cls2 += ' sat';
@@ -1075,12 +720,8 @@
 
   function toggleNoWorkDate(dateStr) {
     var idx = noWorkDates.indexOf(dateStr);
-    if (idx === -1) {
-      noWorkDates.push(dateStr);
-      noWorkDates.sort();
-    } else {
-      noWorkDates.splice(idx, 1);
-    }
+    if (idx === -1) { noWorkDates.push(dateStr); noWorkDates.sort(); }
+    else { noWorkDates.splice(idx, 1); }
     renderNoWorkCal();
   }
 
@@ -1096,10 +737,9 @@
   }
 
   function renderNoWorkTags() {
-    var tagsEl  = document.getElementById('noWorkTags');
-    var hintEl  = document.getElementById('noWorkEmptyHint');
+    var tagsEl   = document.getElementById('noWorkTags');
+    var hintEl   = document.getElementById('noWorkEmptyHint');
     var hiddenEl = document.getElementById('noWorkHiddenInputs');
-
     if (noWorkDates.length === 0) {
       tagsEl.innerHTML = '';
       hintEl.style.display = '';
@@ -1107,8 +747,7 @@
       return;
     }
     hintEl.style.display = 'none';
-    var tagHtml = '';
-    var hiddenHtml = '';
+    var tagHtml = '', hiddenHtml = '';
     noWorkDates.forEach(function(d) {
       tagHtml += '<span class="no-work-tag">' + d +
         '<button type="button" onclick="toggleNoWorkDate(\'' + d + '\')" aria-label="' + d + ' 제거">×</button>' +
@@ -1116,7 +755,7 @@
       /* [Java] 서버 전송용 hidden input */
       hiddenHtml += '<input type="hidden" name="noWorkDates" value="' + d + '" />';
     });
-    tagsEl.innerHTML = tagHtml;
+    tagsEl.innerHTML  = tagHtml;
     hiddenEl.innerHTML = hiddenHtml;
   }
 
@@ -1124,17 +763,18 @@
   renderNoWorkCal();
 
   /* ══════════════════════════════════════════════════
-     발주업체찾기 모달
+     발주업체찾기 모달 (modalOrderCorpSearch)
+     용어사전 §15-2 패턴 준용
   ══════════════════════════════════════════════════ */
   function openOrderCorpModal() {
-    document.getElementById('orderCorpModal').classList.add('open');
+    document.getElementById('modalOrderCorpSearch').classList.add('open');
     document.getElementById('orderCorpSearchKeyword').focus();
   }
   function closeOrderCorpModal() {
-    document.getElementById('orderCorpModal').classList.remove('open');
+    document.getElementById('modalOrderCorpSearch').classList.remove('open');
   }
   /* 모달 외부 클릭 시 닫기 */
-  document.getElementById('orderCorpModal').addEventListener('click', function(e) {
+  document.getElementById('modalOrderCorpSearch').addEventListener('click', function(e) {
     if (e.target === this) closeOrderCorpModal();
   });
 
@@ -1142,7 +782,6 @@
     var kw = document.getElementById('orderCorpSearchKeyword').value.trim();
     /* [Java] 실제 환경: fetch('/adm/construction/order-corp/search?keyword=' + encodeURIComponent(kw))
        .then(r => r.json()).then(list => renderOrderCorpResult(list)); */
-    /* 퍼블리싱 더미: 키워드 포함 행만 표시 */
     var rows = document.querySelectorAll('.order-corp-row');
     rows.forEach(function(row) {
       var nm = row.dataset.nm || '';
@@ -1151,10 +790,8 @@
   }
 
   function selectOrderCorp(row) {
-    var seq = row.dataset.seq;
-    var nm  = row.dataset.nm;
-    document.getElementById('orderCorpSeq').value = seq;
-    document.getElementById('orderCorpNm').value  = nm;
+    document.getElementById('orderCorpSeq').value = row.dataset.seq;
+    document.getElementById('orderCorpNm').value  = row.dataset.nm;
     closeOrderCorpModal();
   }
 
@@ -1191,7 +828,6 @@
         return false;
       }
     }
-    /* 기간 유효성 */
     var s = document.getElementById('startDt').value;
     var en = document.getElementById('endDt').value;
     if (s && en && s > en) {
@@ -1199,13 +835,11 @@
       document.getElementById('endDt').focus();
       return false;
     }
-    /* 저장 확인 */
     if (!confirm('공사 정보를 등록하시겠습니까?\n저장 후 카카오톡 알림(P04)이 발송됩니다.')) {
       return false;
     }
     /* [Java] 실제 환경: document.getElementById('constructionWriteForm').submit(); */
     alert('등록이 완료되었습니다.\n[Java] POST /adm/construction/reg 로 전송됩니다.');
-    /* location.href = 'construction-list.html'; */
     return false;
   }
 
@@ -1214,9 +848,8 @@
   ══════════════════════════════════════════════════ */
   function confirmDelete() {
     if (confirm('해당 공사 정보를 삭제하시겠습니까?\n삭제 후 복구가 불가능합니다.')) {
-      /* [Java] 실제 환경: POST /adm/construction/del/{constructionSeq} */
-      alert('삭제 처리되었습니다.\n[Java] POST /adm/construction/del/{id} 로 전송됩니다.');
-      /* location.href = 'construction-list.html'; */
+      /* [Java] 실제 환경: DELETE /adm/construction/{constructionSeq} */
+      alert('삭제 처리되었습니다.\n[Java] DELETE /adm/construction/{id} 로 전송됩니다.');
     }
   }
 </script>
