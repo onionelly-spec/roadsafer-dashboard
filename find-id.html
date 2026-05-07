@@ -57,7 +57,7 @@
       position: absolute;
       inset: 20px;
       border-radius: 50%;
-      background: var(--rss-card);
+      background: #ffffff;
       box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
       display: flex;
       align-items: center;
@@ -74,7 +74,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: var(--rss-amber);
+      background: #F59E0B;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -83,15 +83,15 @@
     .login-icon-badge svg {
       width: 18px;
       height: 18px;
-      color: var(--rss-card);
-      stroke: var(--rss-card);
+      color: #ffffff;
+      stroke: #ffffff;
     }
     .login-icon-badge--top-right { top: 4px; right: 4px; }
     .login-icon-badge--bottom-left { bottom: 4px; left: 4px; }
     .login-visual__headline {
       font-size: 30px;
       font-weight: 800;
-      color: var(--rss-text);
+      color: #1a1c23;
       line-height: 1.35;
       letter-spacing: -0.02em;
       margin-bottom: 14px;
@@ -107,7 +107,7 @@
       margin-top: 18px;
       font-size: var(--rss-font-md);
       font-weight: 800;
-      color: var(--rss-text);
+      color: #1a1c23;
       letter-spacing: 0.01em;
     }
 
@@ -137,14 +137,14 @@
     .findid-card {
       width: 100%;
       max-width: 420px;
-      background: var(--rss-card);
+      background: #ffffff;
       border-radius: 16px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
       overflow: hidden;
     }
     .findid-card__top-line {
       height: 4px;
-      background: linear-gradient(90deg, var(--rss-amber) 0%, #fbbf24 100%);
+      background: linear-gradient(90deg, #F59E0B 0%, #fbbf24 100%);
     }
     .findid-card__body {
       padding: 28px 28px 24px;
@@ -152,14 +152,14 @@
     .findid-card__title {
       font-size: var(--rss-font-2xl);
       font-weight: 800;
-      color: var(--rss-text);
+      color: #1a1c23;
       text-align: center;
       margin-bottom: 4px;
       letter-spacing: -0.02em;
     }
     .findid-card__subtitle {
       font-size: var(--rss-font-base);
-      color: var(--rss-gray-400);
+      color: #9ca3af;
       text-align: center;
       margin-bottom: 24px;
     }
@@ -172,7 +172,7 @@
     .findid-label {
       font-size: var(--rss-font-sm);
       font-weight: 600;
-      color: var(--rss-gray-700);
+      color: #374151;
     }
 
     /* 공통 인풋 (reg-input 체계와 동일) */
@@ -188,9 +188,9 @@
       transition: border-color 0.15s;
       font-family: inherit;
     }
-    .findid-input:focus { border-color: var(--rss-amber); background: var(--rss-card); }
+    .findid-input:focus { border-color: var(--rss-amber); background: #fff; }
     .findid-input::placeholder { color: #c4c9d4; }
-    .findid-input--error { border-color: var(--rss-danger-dark) !important; }
+    .findid-input--error { border-color: #ef4444 !important; }
 
     /* 사업자번호 분리 입력 (split-wrap 체계와 동일) */
     .findid-split {
@@ -238,14 +238,14 @@
       color: var(--rss-muted);
       margin-top: 3px;
     }
-    .findid-hint--error { color: var(--rss-danger-dark); font-weight: 600; }
+    .findid-hint--error { color: #ef4444; font-weight: 600; }
 
     /* 확인 버튼 */
     .findid-submit-btn {
       width: 100%;
       padding: 13px;
-      background: var(--rss-amber);
-      color: var(--rss-card);
+      background: #F59E0B;
+      color: #ffffff;
       font-size: var(--rss-font-md);
       font-weight: 700;
       border: none;
@@ -258,27 +258,27 @@
       transition: background 0.15s;
       margin-top: 6px;
     }
-    .findid-submit-btn:hover { background: var(--rss-amber-dark); }
+    .findid-submit-btn:hover { background: #d97706; }
 
     /* 로그인으로 돌아가기 링크 */
     .findid-back-link {
       text-align: center;
       margin-top: 16px;
       font-size: var(--rss-font-sm);
-      color: var(--rss-gray-400);
+      color: #9ca3af;
     }
     .findid-back-link a {
-      color: var(--rss-amber);
+      color: #F59E0B;
       text-decoration: none;
       font-weight: 600;
     }
-    .findid-back-link a:hover { color: var(--rss-amber-dark); }
+    .findid-back-link a:hover { color: #d97706; }
 
     /* ── 결과 화면 (L1-1) ── */
     #findid-result { display: none; }
     .findid-result__label {
       font-size: var(--rss-font-base);
-      color: var(--rss-muted);
+      color: #6b7280;
       text-align: center;
       margin-bottom: 12px;
     }
@@ -286,11 +286,11 @@
       width: 100%;
       padding: 14px 16px;
       background: #f9fafb;
-      border: 1.5px solid var(--rss-border);
+      border: 1.5px solid #e5e7eb;
       border-radius: var(--rss-radius);
       font-size: var(--rss-font-lg);
       font-weight: 700;
-      color: var(--rss-text);
+      color: #1a1c23;
       text-align: center;
       letter-spacing: 0.02em;
       margin-bottom: 20px;
@@ -298,8 +298,8 @@
     .findid-login-btn {
       width: 100%;
       padding: 13px;
-      background: var(--rss-amber);
-      color: var(--rss-card);
+      background: #F59E0B;
+      color: #ffffff;
       font-size: var(--rss-font-md);
       font-weight: 700;
       border: none;
@@ -312,7 +312,7 @@
       transition: background 0.15s;
       text-decoration: none;
     }
-    .findid-login-btn:hover { background: var(--rss-amber-dark); }
+    .findid-login-btn:hover { background: #d97706; }
 
     /* ── 불일치 오류 메시지 ── */
     .findid-no-match {
@@ -322,7 +322,7 @@
       border: 1px solid rgba(239,68,68,0.2);
       border-radius: var(--rss-radius);
       font-size: var(--rss-font-sm);
-      color: var(--rss-danger-dark);
+      color: #ef4444;
       font-weight: 600;
       text-align: center;
       margin-top: 4px;
