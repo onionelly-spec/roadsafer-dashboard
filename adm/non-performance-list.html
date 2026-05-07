@@ -450,17 +450,25 @@ function openBlockCorpModal(constructionSeq) {
   _currentNonPerfSeq = constructionSeq;
   const modal = document.getElementById('modalBlockCorpSearch');
   if (modal) {
-    modal.classList.add('is-open');
+    modal.classList.add('open');
     document.getElementById('blockCorpSearchKeyword').value = '';
+    // 검색 결과 전체 표시 초기화
+    document.querySelectorAll('#blockCorpResultBody tr').forEach(function(r) { r.style.display = ''; });
     if (window.lucide) lucide.createIcons();
+    document.getElementById('blockCorpSearchKeyword').focus();
   }
 }
 
 function closeBlockCorpModal() {
   const modal = document.getElementById('modalBlockCorpSearch');
-  if (modal) modal.classList.remove('is-open');
+  if (modal) modal.classList.remove('open');
   _currentNonPerfSeq = null;
 }
+
+/* backdrop 클릭 시 닫기 */
+document.getElementById('modalBlockCorpSearch').addEventListener('click', function(e) {
+  if (e.target === this) closeBlockCorpModal();
+});
 
 /* ─── 4. 차단업체 검색 ───────────────────────────────
    [Java] GET /adm/non-perf/block-corp/search?keyword=
@@ -468,6 +476,24 @@ function closeBlockCorpModal() {
 function searchBlockCorp() {
   const keyword = document.getElementById('blockCorpSearchKeyword').value.trim();
   // [Java] AJAX 호출 후 blockCorpResultBody 갱신
+  // 스토리보드: 검색 결과 없을 경우 '검색 결과가 없습니다.' 안내
+  const rows = document.querySelectorAll('#blockCorpResultBody tr');
+  let found = 0;
+  rows.forEach(function(row) {
+    const nm = row.cells[0] ? row.cells[0].textContent.trim() : '';
+    const show = !keyword || nm.indexOf(keyword) !== -1;
+    row.style.display = show ? '' : 'none';
+    if (show) found++;
+  });
+  // 결과 없음 처리
+  let emptyRow = document.getElementById('blockCorpEmptyRow');
+  if (!emptyRow) {
+    emptyRow = document.createElement('tr');
+    emptyRow.id = 'blockCorpEmptyRow';
+    emptyRow.innerHTML = '<td colspan="4" class="rss-empty" style="padding:24px 0;text-align:center;color:var(--rss-text-muted);">검색 결과가 없습니다.</td>';
+    document.getElementById('blockCorpResultBody').appendChild(emptyRow);
+  }
+  emptyRow.style.display = (found === 0 && keyword) ? '' : 'none';
   console.log('[M2-1] 차단업체 검색:', keyword);
 }
 
