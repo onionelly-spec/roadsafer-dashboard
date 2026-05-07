@@ -2742,3 +2742,44 @@ img.rss-img-error {
   .notice-modal__attach,
   .notice-modal__footer { padding-left: 16px; padding-right: 16px; }
 }
+
+/* ══════════════════════════════════════════════════
+   reg-alert-modal — 소형 알림/확인 다이얼로그
+   profile.html, profile-staff.html, register-company.html,
+   register-employee.html, register-terms.html 공통 사용
+   ══════════════════════════════════════════════════ */
+.reg-alert-modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  align-items: center; justify-content: center;
+  padding: 16px;
+}
+.reg-alert-modal.open { display: flex; }
+.reg-alert-modal__box {
+  background: #fff;
+  border-radius: var(--rss-radius-lg);
+  padding: 28px 28px 24px;
+  max-width: 400px; width: 100%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+}
+.reg-alert-modal__title {
+  font-size: var(--rss-font-lg);
+  font-weight: 800;
+  color: var(--rss-text);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.reg-alert-modal__title svg { width: 22px; height: 22px; }
+.reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
+.reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
+.reg-alert-modal__body {
+  font-size: var(--rss-font-base);
+  color: var(--rss-muted);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.reg-alert-modal__footer {
+  display: flex; justify-content: center; gap: 8px;
+}

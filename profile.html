@@ -136,44 +136,6 @@
 
     /* 하단 버튼 영역 — rss-common.css의 .rss-page-actions 공통 클래스 사용
        .rss-page-actions        : 저장 버튼 (가운데 정렬)
-       .rss-page-actions--right : 비밀번호변경·회원탈퇴 (우측 정렬) */
-
-    /* 경고 모달 (register-company.html의 .reg-alert-modal과 동일) */
-    .reg-alert-modal {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 9999;
-      align-items: center; justify-content: center;
-      padding: 16px;
-    }
-    .reg-alert-modal.open { display: flex; }
-    .reg-alert-modal__box {
-      background: #fff;
-      border-radius: var(--rss-radius-lg);
-      padding: 28px 28px 24px;
-      max-width: 400px; width: 100%;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
-    }
-    .reg-alert-modal__title {
-      font-size: var(--rss-font-lg);
-      font-weight: 800;
-      color: var(--rss-text);
-      margin-bottom: 10px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .reg-alert-modal__title svg { width: 22px; height: 22px; }
-    .reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
-    .reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
-    .reg-alert-modal__body {
-      font-size: var(--rss-font-base);
-      color: var(--rss-muted);
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-    .reg-alert-modal__footer {
-      display: flex; justify-content: center; gap: 8px;
-    }
 
     /* 비밀번호 변경 / 회원탈퇴 모달
        → rss-common.css의 .rss-modal-overlay / .rss-modal / .rss-modal__head 등 공통 클래스 사용
@@ -392,7 +354,7 @@
               <!-- spacer: 저장 버튼 중앙 고정용 -->
               <div class="profile-btn-spacer" style="flex:1;"></div>
               <!-- 중앙: 저장 -->
-              <button type="button" class="rss-btn rss-btn--amber px-10"
+              <button type="button" class="rss-btn rss-btn--amber"
                       onclick="submitProfile()">
                 <i data-lucide="save"></i> 저장
               </button>
@@ -417,124 +379,8 @@
 </div>
 <div id="mobileOverlay" class="rss-sidebar-overlay" onclick="closeSidebar()"></div>
 
-<!-- ══════════════════════════════════════════════════
-     비밀번호 변경 모달 (B9-1)
-     [Java] POST /profile/pw-change
-     [DB] tbl_mber.password (BCrypt 해시)
-══════════════════════════════════════════════════ -->
-<div class="notice-modal-backdrop" id="pwModal"
-     onclick="if(event.target===this)closePwModal()">
-  <div class="notice-modal" style="max-width:480px;" role="dialog" aria-modal="true" aria-labelledby="pwModalTitle">
-    <div class="notice-modal__header">
-      <h2 class="notice-modal__title" id="pwModalTitle">비밀번호 변경</h2>
-      <button class="notice-modal__close" onclick="closePwModal()" aria-label="닫기">
-        <i data-lucide="x" style="width:20px;height:20px;"></i>
-      </button>
-    </div>
-    <div class="notice-modal__body">
-      <form id="pwChangeForm" novalidate>
-        <div class="rss-form-row">
-          <label class="rss-form-label" for="currentPw">현재 비밀번호 <span class="required">*</span></label>
-          <input type="password" id="currentPw" name="currentPw" class="reg-input"
-                 placeholder="현재 비밀번호를 입력하세요" autocomplete="current-password" required />
-        </div>
-        <div class="rss-form-row">
-          <label class="rss-form-label" for="newPw">새 비밀번호 <span class="required">*</span></label>
-          <input type="password" id="newPw" name="newPw" class="reg-input"
-                 placeholder="8자 이상, 영문+숫자+특수문자 조합" autocomplete="new-password" required />
-          <p class="rss-form-hint">영문+숫자+특수문자 조합 8자 이상</p>
-        </div>
-        <div class="rss-form-row" style="margin-bottom:0;">
-          <label class="rss-form-label" for="newPwConfirm">새 비밀번호 확인 <span class="required">*</span></label>
-          <input type="password" id="newPwConfirm" name="newPwConfirm" class="reg-input"
-                 placeholder="새 비밀번호를 다시 입력하세요" autocomplete="new-password" required
-                 oninput="checkPwMatch()" />
-          <p class="rss-form-hint rss-form-hint--error" id="pwMatchMsg" style="display:none;">
-            비밀번호가 일치하지 않습니다.
-          </p>
-        </div>
-      </form>
-    </div>
-    <div class="notice-modal__footer">
-      <button type="button" class="rss-btn rss-btn--outline" onclick="closePwModal()">
-        <i data-lucide="x"></i> 취소
-      </button>
-      <button type="button" class="rss-btn rss-btn--amber" onclick="submitPwChange()">
-        <i data-lucide="check"></i> 변경
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════
-     회원탈퇴 확인 모달 (B9-2)
-     [Java] POST /profile/withdraw
-     탈퇴 처리 규칙:
-     - 진행중/예정 공사 있을 경우 경고 후 차단
-     - 공사 없을 경우: 개인정보 삭제, 기업회원 아이디·상호 남김
-     - 탈퇴 후 로그인(L)으로 이동
-══════════════════════════════════════════════════ -->
-<div class="notice-modal-backdrop" id="withdrawModal"
-     onclick="if(event.target===this)closeWithdrawModal()">
-  <div class="notice-modal" style="max-width:480px;" role="dialog" aria-modal="true" aria-labelledby="withdrawModalTitle">
-    <div class="notice-modal__header">
-      <h2 class="notice-modal__title" id="withdrawModalTitle" style="color:#dc2626;">회원탈퇴</h2>
-      <button class="notice-modal__close" onclick="closeWithdrawModal()" aria-label="닫기">
-        <i data-lucide="x" style="width:20px;height:20px;"></i>
-      </button>
-    </div>
-    <div class="notice-modal__body">
-      <div class="rss-notice">
-        <strong>탈퇴 전 반드시 확인하세요.</strong><br />
-        탈퇴 후에는 재가입이 불가능하며 모든 기록이 삭제됩니다.
-      </div>
-      <!-- [Java] th:if="${hasConstruction}" — 진행중/예정 공사 있을 경우 표시 -->
-      <!-- <p style="color:#dc2626;font-size:var(--rss-font-sm);font-weight:600;margin-top:10px;">예정이거나 진행중인 공사가 있어 탈퇴할 수 없습니다.</p> -->
-      <p style="font-size:var(--rss-font-sm);color:var(--rss-muted);margin-top:10px;">
-        정말로 탈퇴하시겠습니까?
-      </p>
-    </div>
-    <div class="notice-modal__footer">
-      <button type="button" class="rss-btn rss-btn--outline" onclick="closeWithdrawModal()">
-        <i data-lucide="x"></i> 취소
-      </button>
-      <button type="button" class="rss-btn rss-btn--outline-danger" onclick="submitWithdraw()">
-        <i data-lucide="user-x"></i> 탈퇴
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════
-     회원탈퇴 차단 모달 — 진행중/예정 공사 있을 경우
-     [Java] GET /profile/withdraw/check → { hasConstruction: true/false }
-     hasConstruction=true 일 때 이 모달을 표시하고 탈퇴를 차단한다.
-     hasConstruction=false 일 때 withdrawModal(탈퇴 확인)을 표시한다.
-══════════════════════════════════════════════════ -->
-<div class="notice-modal-backdrop" id="withdrawBlockModal"
-     onclick="if(event.target===this)closeWithdrawBlockModal()">
-  <div class="notice-modal" style="max-width:440px;" role="alertdialog" aria-modal="true" aria-labelledby="withdrawBlockTitle">
-    <div class="notice-modal__header">
-      <h2 class="notice-modal__title" id="withdrawBlockTitle" style="color:#dc2626;">탈퇴 불가</h2>
-      <button class="notice-modal__close" onclick="closeWithdrawBlockModal()" aria-label="닫기">
-        <i data-lucide="x" style="width:20px;height:20px;"></i>
-      </button>
-    </div>
-    <div class="notice-modal__body">
-      <div class="rss-notice rss-notice--danger">
-        <strong>예정이거나 진행중인 공사가 있어 탈퇴할 수 없습니다.</strong>
-      </div>
-      <p style="font-size:var(--rss-font-sm);color:var(--rss-muted);margin-top:12px;">
-        공사가 모두 완료된 후 다시 시도해 주세요.
-      </p>
-    </div>
-    <div class="notice-modal__footer">
-      <button type="button" class="rss-btn rss-btn--amber" onclick="closeWithdrawBlockModal()">
-        <i data-lucide="check"></i> 확인
-      </button>
-    </div>
-  </div>
-</div>
+<div id="rss-profile-modals"></div>
+<!-- 위 모달들은 rss-common.js의 injectProfileModals가 #rss-profile-modals에 자동 주입합니다 -->
 
 <!-- 경고 모달 — 필수 항목 누락 (register-company.html의 .reg-alert-modal과 동일 구조) -->
 <div class="reg-alert-modal" id="modalValidAlert" role="alertdialog" aria-modal="true">
@@ -571,12 +417,22 @@
 <!-- 저장 확인 모달 -->
 <div class="reg-alert-modal" id="modalSaveConfirm" role="alertdialog" aria-modal="true">
   <div class="reg-alert-modal__box">
-    <p class="reg-alert-modal__body">저장하시겠습니까?</p>
+    <p class="reg-alert-modal__title reg-alert-modal__title--info">
+      <i data-lucide="save"></i>
+      <span>저장하시겠습니까?</span>
+    </p>
+    <div class="reg-alert-modal__body">
+      입력하신 정보를 저장합니다.
+    </div>
     <div class="reg-alert-modal__footer">
-      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
-              onclick="closeAlertModal('modalSaveConfirm')">아니오</button>
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
-              onclick="confirmSave()">예</button>
+      <button type="button" class="rss-btn rss-btn--outline"
+              onclick="closeAlertModal('modalSaveConfirm')">
+        <i data-lucide="x"></i> 취소
+      </button>
+      <button type="button" class="rss-btn rss-btn--amber"
+              onclick="confirmSave()">
+        <i data-lucide="check"></i> 예
+      </button>
     </div>
   </div>
 </div>
@@ -730,7 +586,11 @@
 
   /* ── 비밀번호 변경 모달 ── */
   function openPwModal() {
-    document.getElementById('pwChangeForm').reset();
+    /* form 태그 없이 개별 input 초기화 */
+    ['currentPw','newPw','newPwConfirm'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.value = '';
+    });
     document.getElementById('pwMatchMsg').style.display = 'none';
     document.getElementById('pwModal').classList.add('show');
     lucide.createIcons();

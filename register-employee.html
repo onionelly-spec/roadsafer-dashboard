@@ -188,45 +188,6 @@
     }
     .company-search-row .reg-input { flex: 1; }
 
-    /* .reg-file-btn → rss-common.css 공통 스타일로 이전 (중복 정의 제거) */
-
-    /* 경고 모달 */
-    .reg-alert-modal {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 9999;
-      align-items: center; justify-content: center;
-      padding: 16px;
-    }
-    .reg-alert-modal.open { display: flex; }
-    .reg-alert-modal__box {
-      background: #fff;
-      border-radius: var(--rss-radius-lg);
-      padding: 28px 28px 24px;
-      max-width: 400px; width: 100%;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
-    }
-    .reg-alert-modal__title {
-      font-size: var(--rss-font-lg);
-      font-weight: 800;
-      color: var(--rss-text);
-      margin-bottom: 10px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .reg-alert-modal__title svg { width: 22px; height: 22px; }
-    .reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
-    .reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
-    .reg-alert-modal__body {
-      font-size: var(--rss-font-base);
-      color: var(--rss-muted);
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-    .reg-alert-modal__footer {
-      display: flex; justify-content: center; gap: 8px;
-    }
-
     /* ══════════════════════════════════════════════════════
        기업 찾기 모달 (J1-1-1)
     ══════════════════════════════════════════════════════ */
@@ -661,38 +622,7 @@
      경고 모달 — 필수 항목 미입력
      [Java] 빠진 항목 있을 경우 경고창: "모든 항목을 빠짐없이 입력하세요."
 ══════════════════════════════════════════════════════ -->
-<div class="reg-alert-modal" id="modalValidAlert" role="alertdialog" aria-modal="true">
-  <div class="reg-alert-modal__box">
-    <p class="reg-alert-modal__title reg-alert-modal__title--warn">
-      <i data-lucide="alert-circle"></i>
-      입력 오류
-    </p>
-    <p class="reg-alert-modal__body" id="modalValidMsg">필수 항목을 모두 입력해 주세요.</p>
-    <div class="reg-alert-modal__footer">
-      <button type="button" class="rss-btn rss-btn--amber px-8"
-              onclick="closeModal('modalValidAlert')">확인</button>
-    </div>
-  </div>
-</div>
 
-<!-- ══════════════════════════════════════════════════════
-     확인 모달 — 등록 최종 확인
-     [Java] 입력 규칙에 맞으면 가입 대기 처리 후 가입완료(J2)로 이동
-══════════════════════════════════════════════════════ -->
-<div class="reg-alert-modal" id="modalConfirm" role="alertdialog" aria-modal="true">
-  <div class="reg-alert-modal__box">
-    <p class="reg-alert-modal__title reg-alert-modal__title--info">
-      <i data-lucide="info"></i>
-    </p>
-    <p class="reg-alert-modal__body">가입하시겠습니까?</p>
-    <div class="reg-alert-modal__footer">
-      <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
-              onclick="closeModal('modalConfirm')">아니오</button>
-      <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
-              onclick="confirmRegister()">예</button>
-    </div>
-  </div>
-</div>
 
 <script>
   lucide.createIcons();
@@ -1010,5 +940,7 @@
     observer.observe(document.body, { childList: true, subtree: true });
   })();
   </script>
+<div id="rss-register-modals"></div>
+<script src="rss-common.js"></script>
 </body>
 </html>
