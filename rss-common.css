@@ -1437,6 +1437,12 @@ select.rss-form-input,
 .rss-col-violation-period { width: 20%; }
 /* 선택 버튼 열 — 모달 내 단일 액션 (버튼 + 좌우 여백 확보) */
 .rss-col-select { width: 90px; }
+/* 차단업체명 열 */
+.rss-col-block-corp { width: 10%; }
+/* 취소사유/불이행사유 등 사유 열 */
+.rss-col-reason { width: 20%; }
+/* 관리 열 wide — 버튼 2개 이상 필요 시 */
+.rss-col-mgmt--wide { width: 18%; }
 
 /* 긴급 행 강조 */
 .rss-table tr.row-urgent td           { background: #fff7f7; }
@@ -2735,4 +2741,45 @@ img.rss-img-error {
   .notice-modal__meta,
   .notice-modal__attach,
   .notice-modal__footer { padding-left: 16px; padding-right: 16px; }
+}
+
+/* ══════════════════════════════════════════════════
+   reg-alert-modal — 소형 알림/확인 다이얼로그
+   profile.html, profile-staff.html, register-company.html,
+   register-employee.html, register-terms.html 공통 사용
+   ══════════════════════════════════════════════════ */
+.reg-alert-modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  align-items: center; justify-content: center;
+  padding: 16px;
+}
+.reg-alert-modal.open { display: flex; }
+.reg-alert-modal__box {
+  background: #fff;
+  border-radius: var(--rss-radius-lg);
+  padding: 28px 28px 24px;
+  max-width: 400px; width: 100%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+}
+.reg-alert-modal__title {
+  font-size: var(--rss-font-lg);
+  font-weight: 800;
+  color: var(--rss-text);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.reg-alert-modal__title svg { width: 22px; height: 22px; }
+.reg-alert-modal__title--warn svg { color: #ef4444; stroke: #ef4444; }
+.reg-alert-modal__title--info svg { color: var(--rss-amber); stroke: var(--rss-amber); }
+.reg-alert-modal__body {
+  font-size: var(--rss-font-base);
+  color: var(--rss-muted);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.reg-alert-modal__footer {
+  display: flex; justify-content: center; gap: 8px;
 }
