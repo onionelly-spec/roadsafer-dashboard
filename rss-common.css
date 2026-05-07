@@ -572,9 +572,11 @@ img { max-width: 100%; display: block; }
   color: var(--rss-muted);
   display: none;  /* 기본 숨김 — JS에서 .is-searched 토글로 제어 */
 }
+/* 사용자 기본: 주황 계열 hover (관리자는 adm-common-v2.css에서 파란 계열로 오버라이드) */
 .rss-btn--view-all:hover {
-  border-color: var(--rss-info);
-  color: var(--rss-info);
+  border-color: var(--rss-amber);
+  color: var(--rss-amber-dark);
+  background: var(--rss-amber-light);
 }
 /* 검색 실행 후 toolbar에 .is-searched 클래스 추가 시 표시 */
 .rss-board-toolbar.is-searched .rss-btn--view-all,
@@ -604,7 +606,7 @@ img { max-width: 100%; display: block; }
 .rss-select,
 .rss-textarea {
   width: 100%;
-  padding: 10px 13px;
+  padding: 8px 13px;          /* 10px → 8px: 전체 높이 38px 기준으로 버튼·드롭다운과 통일 */
   border: 1.5px solid var(--rss-border);
   border-radius: var(--rss-radius);
   font-size: var(--rss-font-base) !important; /* 15px */
@@ -612,7 +614,8 @@ img { max-width: 100%; display: block; }
   background: var(--rss-card);
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
-  line-height: 1.5;
+  line-height: 1.4;
+  box-sizing: border-box;
 }
 
 /* 드롭다운 화살표 여백 개선 — 모든 select 공통 적용 */
@@ -962,10 +965,13 @@ select.rss-form-input,
 .rss-search-wrap input {
   border: none;
   outline: none;
-  padding: 8px 11px;
+  padding: 0 11px;
+  height: 38px;           /* 드롭다운·버튼과 높이 통일 */
+  line-height: 38px;
   font-size: var(--rss-font-base); /* 15px */
   width: 200px;
   background: transparent;
+  box-sizing: border-box;
 }
 .rss-search-wrap button {
   padding: 0 11px;
@@ -992,6 +998,18 @@ select.rss-form-input,
   height: 38px;
   line-height: 1.4;
   font-size: var(--rss-font-base) !important; /* 15px */
+}
+/* 검색 툴바 내 rss-input도 38px로 통일 — 버튼·드롭다운과 높이 일치 */
+.rss-board-toolbar .rss-input,
+.list-toolbar .rss-input,
+.info-toolbar .rss-input,
+.market-toolbar .rss-input,
+.adm-modal-box__search .rss-input {
+  height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 38px;
+  box-sizing: border-box;
 }
 
 /* ═══════════════════════════════════════════════════════════

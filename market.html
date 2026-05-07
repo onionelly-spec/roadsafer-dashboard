@@ -85,11 +85,16 @@
           <div class="rss-board-toolbar" style="border-bottom:none; flex-shrink:0; height:62px; padding:0 24px; gap:8px;">
             <!-- 검색 (스토리보드 §B5 ①) -->
             <div class="rss-search-wrap">
-              <input type="text" name="searchKeyword" id="marketSearchKeyword" placeholder="상품 검색" />
-              <button type="button" aria-label="검색">
+              <input type="text" name="searchKeyword" id="marketSearchKeyword" placeholder="상품 검색"
+                     onkeydown="if(event.key==='Enter') doMarketSearch()" />
+              <button type="button" aria-label="검색" onclick="doMarketSearch()">
                 <i data-lucide="search" style="width:15px;height:15px;"></i>
               </button>
             </div>
+            <!-- 검색 후 전체보기 버튼 -->
+            <button type="button" id="marketViewAllBtn" class="rss-btn rss-btn--view-all" style="display:none;" onclick="resetMarketSearch()">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>전체보기
+            </button>
             <!-- 내 글 보기 (스토리보드 §B5 ②) -->
             <!-- [Java] th:classappend="${param.myYn == 'Y'} ? 'rss-btn--amber' : 'rss-btn--outline'" -->
             <button type="button" class="rss-btn rss-btn--outline" id="myPostBtn"
@@ -263,12 +268,27 @@
     /* [Java] location.href = '/market?category=' + tab.dataset.cat; */
   }
 
-  /* 내 글 보기 토글 (스토리보드 §B5 ②) */
+  /* 내 글 보기 토글 (스토리보드 §B5 ③) */
   function toggleMyPost(btn) {
     var isActive = btn.classList.contains('rss-btn--amber');
     btn.classList.toggle('rss-btn--amber', !isActive);
     btn.classList.toggle('rss-btn--outline', isActive);
     /* [Java] location.href = '/market?myYn=' + (isActive ? '' : 'Y'); */
+  }
+
+  /* 검색 실행 — 전체보기 버튼 표시 */
+  function doMarketSearch() {
+    var keyword = document.getElementById('marketSearchKeyword').value.trim();
+    if (!keyword) return;
+    document.getElementById('marketViewAllBtn').style.display = 'inline-flex';
+    /* [Java] location.href = '/market?searchKeyword=' + encodeURIComponent(keyword); */
+  }
+
+  /* 전체보기 — 검색 초기화 */
+  function resetMarketSearch() {
+    document.getElementById('marketSearchKeyword').value = '';
+    document.getElementById('marketViewAllBtn').style.display = 'none';
+    /* [Java] location.href = '/market'; */
   }
 </script>
   <script>

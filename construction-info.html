@@ -75,11 +75,16 @@
               <option value="roadNm">도로명</option>
             </select>
             <div class="rss-search-wrap">
-              <input type="text" name="searchKeyword" id="infoSearchKeyword" placeholder="검색어 입력" />
-              <button type="button" aria-label="검색">
+              <input type="text" name="searchKeyword" id="infoSearchKeyword" placeholder="검색어 입력"
+                     onkeydown="if(event.key==='Enter') doInfoSearch()" />
+              <button type="button" aria-label="검색" onclick="doInfoSearch()">
                 <i data-lucide="search" style="width:15px;height:15px;"></i>
               </button>
             </div>
+            <!-- 검색 후 전체보기 버튼 -->
+            <button type="button" id="infoViewAllBtn" class="rss-btn rss-btn--view-all" style="display:none;" onclick="resetInfoSearch()">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>전체보기
+            </button>
           </div>
         </div>
 
@@ -298,6 +303,25 @@
   function switchRoadTab(tab) {
     document.querySelectorAll('.road-tab').forEach(function(t) { t.classList.remove('active'); });
     tab.classList.add('active');
+  }
+
+  /* 검색 실행 — 전체보기 버튼 표시 */
+  function doInfoSearch() {
+    var kw = document.getElementById('infoViewAllBtn');
+    var keyword = document.getElementById('infoSearchKeyword').value.trim();
+    if (!keyword) return;
+    kw.style.display = 'inline-flex';
+    /* [Java] location.href = '/construction-info?searchType=' +
+       document.getElementById('infoSearchType').value +
+       '&searchKeyword=' + encodeURIComponent(keyword); */
+  }
+
+  /* 전체보기 — 검색 초기화 */
+  function resetInfoSearch() {
+    document.getElementById('infoSearchKeyword').value = '';
+    document.getElementById('infoSearchType').value = '';
+    document.getElementById('infoViewAllBtn').style.display = 'none';
+    /* [Java] location.href = '/construction-info'; */
   }
 </script>
   <script>
