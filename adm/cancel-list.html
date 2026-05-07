@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>취소 내역 — 로드세이프티시스템 관리자</title>
+  <!-- 공통 CSS — Tailwind보다 먼저 로드 -->
+  <link rel="stylesheet" href="../rss-common.css?v=20260507" />
+  <link rel="stylesheet" href="adm-common-v2.css?v=20260507" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    /* ── 취소 내역 전용 스타일 ── */
+
+    /* 관리 열 — 금액 조정 버튼 또는 완료 금액 텍스트 */
+    .cancel-mgmt-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    /* 완료 금액 텍스트 — 앰버 강조 */
+    .cancel-done-amount {
+      color: var(--rss-amber-dark);
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .cancel-done-amount:hover {
+      color: var(--rss-amber);
+    }
+    /* 취소일·취소사유 셀 줄바꿈 방지 */
+    #cancelListTable td:nth-child(5) { white-space: nowrap; }
+
+    /* ── M3-1 취소 금액 조정 모달 전용 스타일 ── */
+
+    /* 시간대 정보 행 */
+    .cancel-modal-info-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--rss-border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .cancel-modal-info-row__label {
+      background: var(--rss-bg-subtle);
+      padding: 10px 20px;
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-text);
+      border-right: 1px solid var(--rss-border);
+      min-width: 80px;
+      text-align: center;
+    }
+    .cancel-modal-info-row__value {
+      padding: 10px 20px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text);
+      flex: 1;
+    }
+
+    /* 품목 테이블 */
+    .cancel-modal-item-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 0;
+    }
+    .cancel-modal-item-table thead th {
+      background: var(--rss-bg-subtle);
+      padding: 8px 12px;
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-text);
+      border: 1px solid var(--rss-border);
+      text-align: center;
+    }
+    .cancel-modal-item-table tbody td {
+      padding: 8px 12px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text);
+      border: 1px solid var(--rss-border);
+      text-align: center;
+    }
+    .cancel-modal-item-table tbody td:last-child {
+      text-align: right;
+    }
+    /* 합계 행 */
+    .cancel-modal-item-table tfoot td {
+      padding: 8px 12px;
+      font-size: var(--rss-font-sm);
+      font-weight: 700;
+      color: var(--rss-text);
+      border: 1px solid var(--rss-border);
+      background: var(--rss-bg-subtle);
+    }
+    .cancel-modal-item-table tfoot td:last-child {
+      text-align: right;
+      color: var(--rss-amber-dark);
+    }
+
+    /* 취소 금액 입력 행 */
+    .cancel-modal-amount-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: var(--rss-bg-subtle);
+      border: 1px solid var(--rss-border);
+      border-radius: 6px;
+    }
+    .cancel-modal-amount-row__label {
+      font-size: var(--rss-font-sm);
+      font-weight: 600;
+      color: var(--rss-text);
+      white-space: nowrap;
+      min-width: 72px;
+    }
+    .cancel-modal-amount-row__input {
+      flex: 1;
+      height: 36px;
+      border: 1px solid var(--rss-border);
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text);
+      text-align: right;
+      background: #fff;
+    }
+    .cancel-modal-amount-row__input:focus {
+      outline: none;
+      border-color: var(--rss-primary);
+      box-shadow: 0 0 0 2px rgba(59,130,246,.15);
+    }
+    .cancel-modal-amount-row__unit {
+      font-size: var(--rss-font-sm);
+      color: var(--rss-text-muted);
+      white-space: nowrap;
+    }
+
+    /* 경고 문구 */
+    .cancel-modal-warning {
+      margin-top: 10px;
+      font-size: var(--rss-font-sm);
+      color: var(--rss-danger, #ef4444);
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* 모달 테이블 래퍼 */
+    .cancel-modal-table-wrap {
+      border: 1px solid var(--rss-border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+<!-- ══════════════════════════════════════════════════
+     관리자 레이아웃
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+  <div class="adm-main">
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">취소 내역</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="#">로그인</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span class="adm-breadcrumb__current">취소 내역</span>
+      </nav>
+    </div>
+    <main class="rss-content">
+      <!-- ══════════════════════════════════════════════════
+           취소 내역 목록 카드
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-card">
+        <!-- ─── 검색 툴바 ──────────────────────────────────────
+             스토리보드 ①: 드롭다운(공사명/발주업체명/차단업체명) + 키워드 + 찾기
+             검색 후 → 전체보기 버튼 표시
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-board-toolbar">
+          <div class="rss-board-toolbar__right">
+            <!-- [Java] th:value="${searchType}" — 선택된 검색 유형 유지 -->
+            <select id="cancelSearchType" class="rss-select">
+              <option value="">선택</option>
+              <!-- [Java] th:selected="${searchType == 'construction'}" -->
+              <option value="construction">공사명</option>
+              <!-- [Java] th:selected="${searchType == 'orderCorp'}" -->
+              <option value="orderCorp">발주업체명</option>
+              <!-- [Java] th:selected="${searchType == 'blockCorp'}" -->
+              <option value="blockCorp">차단업체명</option>
+            </select>
+            <!-- [Java] th:value="${keyword}" -->
+            <input type="text" id="cancelSearchKeyword" class="rss-input"
+                   placeholder="" style="width:200px;"
+                   onkeydown="if(event.key==='Enter') searchCancel()" />
+            <button type="button" class="rss-btn rss-btn--amber" onclick="searchCancel()">
+              <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
+              찾기
+            </button>
+            <!-- 전체보기 버튼 — 검색 후에만 표시 (is-searched 클래스 토글) -->
+            <button type="button" class="rss-btn rss-btn--view-all" id="cancelViewAllBtn"
+                    onclick="resetCancelSearch()" style="display:none;">
+              <i data-lucide="list" style="width:14px;height:14px;"></i>
+              전체보기
+            </button>
+          </div>
+        </div>
+        <!-- ─── 목록 테이블 ────────────────────────────────────
+             스토리보드 ②: 번호·발주업체명·공사명·차단업체명·취소일·취소사유·관리
+             관리 열:
+               취소 금액 지정 전 → [금액 조정] 버튼
+               취소 금액 지정 후 → 완료 : 금액 텍스트 (클릭 시 M3-1 모달)
+             colgroup: 취소일 10%, 취소사유 20%
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-table-wrap">
+          <!-- [Java] th:if="${#lists.isEmpty(cancelList)}" — 검색 결과 없음 -->
+          <!-- <div class="rss-empty">검색 결과가 없습니다.</div> -->
+          <!-- [Java] th:unless="${#lists.isEmpty(cancelList)}" -->
+          <div style="overflow-x:auto;">
+          <table class="rss-table" id="cancelListTable" style="min-width:1100px;">
+            <colgroup>
+              <col style="width:5%" />     <!-- 번호 -->
+              <col style="width:11%" />    <!-- 발주업체명 -->
+              <col style="width:14%" />    <!-- 공사명 -->
+              <col style="width:10%" />    <!-- 차단업체명 -->
+              <col style="width:10%" />    <!-- 취소일 (지정값) -->
+              <col style="width:20%" />    <!-- 취소사유 (지정값) -->
+              <col style="width:30%" />    <!-- 관리 -->
+            </colgroup>
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>발주업체명</th>
+                <th>공사명</th>
+                <th>차단업체명</th>
+                <th>취소일</th>
+                <th>취소사유</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="cancelListBody">
+              <!-- ══════════════════════════════════════════════
+                   [Java] th:each="item : ${cancelList}"
+                   더미 데이터 — 스토리보드 §M3 기준
+              ══════════════════════════════════════════════ -->
+
+              <!-- 행 1: 취소 금액 미지정 — [금액 조정] 버튼 표시 -->
+              <!-- [Java] th:if="${item.cancelAmt == null}" -->
+              <tr>
+                <!-- [Java] th:text="${cancelList.size() - itemStat.index}" -->
+                <td>1</td>
+                <!-- [Java] th:text="${item.orderCorpNm}" -->
+                <!-- [Java] th:href="@{/adm/company/detail/{seq}(seq=${item.orderCorpSeq})}" -->
+                <td><a href="company-detail.html?seq=2001" class="rss-link">한국개발</a></td>
+                <!-- [Java] th:text="${item.constructionNm}" -->
+                <!-- [Java] th:href="@{/adm/construction/detail/{seq}(seq=${item.constructionSeq})}" -->
+                <td><a href="construction-write.html?seq=1001" class="rss-link">호남선 순천방향 포장공사</a></td>
+                <!-- [Java] th:text="${item.blockCorpNm}" -->
+                <!-- [Java] th:href="@{/adm/company/detail/{seq}(seq=${item.blockCorpSeq})}" -->
+                <td><a href="company-detail.html?seq=3001" class="rss-link">BTS</a></td>
+                <!-- [Java] th:text="${#temporals.format(item.cancelDt, 'yyyy-MM-dd')}" -->
+                <td>2026-07-02</td>
+                <!-- [Java] th:text="${item.cancelReason}" -->
+                <td>우천으로 인한 취소</td>
+                <!-- 관리: 취소 금액 미지정 → 금액 조정 버튼 -->
+                <td>
+                  <div class="cancel-mgmt-cell">
+                    <!-- ③ 금액 조정 — M3-1 모달 팝업 -->
+                    <!-- [Java] th:onclick="'openCancelAmtModal(' + ${item.cancelStlmSeq} + ')'" -->
+                    <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+                            onclick="openCancelAmtModal(1001)">금액 조정</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 행 2: 취소 금액 미지정 -->
+              <tr>
+                <td>2</td>
+                <td><a href="company-detail.html?seq=2002" class="rss-link">소민건설</a></td>
+                <td><a href="construction-write.html?seq=1002" class="rss-link">국도 32번선 횡단보도 보수</a></td>
+                <td><a href="company-detail.html?seq=3002" class="rss-link">한국도로차단</a></td>
+                <td>2026-06-25</td>
+                <td>발주업체 집적</td>
+                <td>
+                  <div class="cancel-mgmt-cell">
+                    <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+                            onclick="openCancelAmtModal(1002)">금액 조정</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 행 3: 취소 금액 미지정 -->
+              <tr>
+                <td>3</td>
+                <td><a href="company-detail.html?seq=2003" class="rss-link">오봉토건</a></td>
+                <td><a href="construction-write.html?seq=1003" class="rss-link">도로바닥 제시공</a></td>
+                <td><a href="company-detail.html?seq=3003" class="rss-link">스마트차단</a></td>
+                <td>2026-06-15</td>
+                <td>한국도로공사 취소 요청</td>
+                <td>
+                  <div class="cancel-mgmt-cell">
+                    <button type="button" class="rss-btn rss-btn--amber rss-btn--sm"
+                            onclick="openCancelAmtModal(1003)">금액 조정</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 행 4: 취소 금액 지정 완료 — 완료 : 금액 표시 -->
+              <!-- [Java] th:unless="${item.cancelAmt == null}" -->
+              <tr>
+                <td>4</td>
+                <td><a href="company-detail.html?seq=2004" class="rss-link">오봉토건</a></td>
+                <td><a href="construction-write.html?seq=1004" class="rss-link">중앙분리대 시공</a></td>
+                <td><a href="company-detail.html?seq=3004" class="rss-link">한길안전</a></td>
+                <td>2026-06-16</td>
+                <td>고속도로 사고 발생</td>
+                <!-- 관리: 취소 금액 지정 완료 → 완료 : 금액 (클릭 시 M3-1 모달) -->
+                <td>
+                  <div class="cancel-mgmt-cell">
+                    <!-- [Java] th:text="'완료 : ' + ${#numbers.formatInteger(item.cancelAmt,1,'COMMA')} + '원'" -->
+                    <!-- [Java] th:onclick="'openCancelAmtModal(' + ${item.cancelStlmSeq} + ')'" -->
+                    <span class="cancel-done-amount" onclick="openCancelAmtModal(1004)">
+                      완료 : 400,000원
+                    </span>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 행 5: 취소 금액 지정 완료 -->
+              <tr>
+                <td>5</td>
+                <td><a href="company-detail.html?seq=2005" class="rss-link">한국개발</a></td>
+                <td><a href="construction-write.html?seq=1005" class="rss-link">호남선 서울방향 포장공사</a></td>
+                <td><a href="company-detail.html?seq=3005" class="rss-link">순희산업</a></td>
+                <td>2026-06-02</td>
+                <td>강풍 취소</td>
+                <td>
+                  <div class="cancel-mgmt-cell">
+                    <span class="cancel-done-amount" onclick="openCancelAmtModal(1005)">
+                      완료 : 2,000,000원
+                    </span>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+          </div><!-- /overflow-x:auto -->
+        </div><!-- /rss-table-wrap -->
+
+        <!-- ─── 페이지네이션 ─────────────────────────────────
+             [Java] th:if="${totalPages > 1}"
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-pagination">
+          <!-- [Java] th:disabled="${currentPage == 0}" -->
+          <button class="rss-pagination__btn" aria-label="첫 페이지" disabled>&lt;&lt;</button>
+          <button class="rss-pagination__btn" aria-label="이전" disabled>&lt;</button>
+          <!-- [Java] th:each="i : ${#numbers.sequence(startPage, endPage)}" -->
+          <button class="rss-pagination__btn active" data-page="1">1</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="2">2</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="3">3</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="4">4</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="5">5</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="6">6</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="7">7</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="8">8</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="9">9</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="10">10</button>
+          <button class="rss-pagination__btn" aria-label="다음">&gt;</button>
+          <button class="rss-pagination__btn" aria-label="마지막">&gt;&gt;</button>
+        </div>
+      </div><!-- /rss-card -->
+    </main>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- ══════════════════════════════════════════════════
+     M3-1. 취소 금액 조정 모달
+     스토리보드 §M3-1:
+       ① 차단 시간대 제시
+       ② 품목별 정상 완료 시 지급액 및 합계 제시
+       ③ 취소 조정액 입력 (숫자만 허용)
+       ④ 저장 → 경고창 → 예 → 모달 닫힘, 목록 갱신
+       ⑤ 취소 → 모달 닫힘
+     용어사전 §13-2 cancel_stlm / §17-2 cancel_amt 준용
+══════════════════════════════════════════════════ -->
+<div class="adm-modal-overlay" id="modalCancelAmt" role="dialog"
+     aria-modal="true" aria-labelledby="modalCancelAmtTitle">
+  <div class="adm-modal-box" style="max-width:480px;">
+    <!-- 모달 헤더 -->
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title" id="modalCancelAmtTitle">취소 금액 조정</h3>
+      <button type="button" class="adm-modal-box__close" onclick="closeCancelAmtModal()" aria-label="닫기">
+        <i data-lucide="x" style="width:16px;height:16px;"></i>
+      </button>
+    </div>
+
+    <!-- 모달 바디 -->
+    <div class="adm-modal-box__body" style="padding:20px 24px;">
+
+      <!-- ① 시간대 정보 -->
+      <!-- [Java] th:text="${cancelItem.timeSlot == 'night' ? '야간' : '주간'}" -->
+      <div class="cancel-modal-info-row">
+        <span class="cancel-modal-info-row__label">시간대</span>
+        <span class="cancel-modal-info-row__value" id="cancelModalTimeSlot">야간</span>
+      </div>
+
+      <!-- ② 품목별 정상 지급액 테이블 -->
+      <!-- [Java] th:each="item : ${cancelItem.equipList}" -->
+      <div class="cancel-modal-table-wrap">
+        <table class="cancel-modal-item-table">
+          <colgroup>
+            <col style="width:auto;" />   <!-- 품목 -->
+            <col style="width:80px;" />   <!-- 수량 -->
+            <col style="width:130px;" />  <!-- 정상 지급액 -->
+          </colgroup>
+          <thead>
+            <tr>
+              <th>품목</th>
+              <th>수량</th>
+              <th>정상 지급액</th>
+            </tr>
+          </thead>
+          <tbody id="cancelModalItemBody">
+            <!-- ══════════════════════════════════════════════
+                 [Java] th:each="equip : ${cancelItem.equipList}"
+                 더미 데이터 — 스토리보드 §M3-1 기준
+            ══════════════════════════════════════════════ -->
+            <!-- [Java] th:text="${equip.equipNm}" / th:text="${equip.qty}대" / th:text="${#numbers.formatInteger(equip.normalAmt,1,'COMMA')}" -->
+            <tr>
+              <td>TMA1</td>
+              <td>1대</td>
+              <td>550,000</td>
+            </tr>
+            <tr>
+              <td>TMA3</td>
+              <td>2대</td>
+              <td>1,800,000</td>
+            </tr>
+            <tr>
+              <td>PLCS</td>
+              <td>2대</td>
+              <td>1,500,000</td>
+            </tr>
+            <tr>
+              <td>신호수</td>
+              <td>1명</td>
+              <td>200,000</td>
+            </tr>
+          </tbody>
+          <!-- 합계 행 -->
+          <tfoot>
+            <tr>
+              <!-- [Java] colspan 고정 -->
+              <td colspan="2" style="text-align:center;">합계</td>
+              <!-- [Java] th:text="${#numbers.formatInteger(cancelItem.totalNormalAmt,1,'COMMA')}" -->
+              <td id="cancelModalTotalAmt">4,050,000</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div><!-- /cancel-modal-table-wrap -->
+
+      <!-- ③ 취소 금액 입력 -->
+      <!-- [Java] th:value="${cancelItem.cancelAmt}" — 기존 금액 있으면 채워서 표시 -->
+      <div class="cancel-modal-amount-row">
+        <span class="cancel-modal-amount-row__label">취소 금액</span>
+        <input type="text" id="cancelAmtInput" class="cancel-modal-amount-row__input"
+               placeholder="숫자만 입력"
+               oninput="formatCancelAmt(this)"
+               inputmode="numeric" />
+        <span class="cancel-modal-amount-row__unit">원</span>
+      </div>
+
+      <!-- 경고 문구 -->
+      <p class="cancel-modal-warning">
+        취소금액은 반드시 발주, 차단업체와 사전에 협의하고 적용하세요.
+      </p>
+
+    </div><!-- /adm-modal-box__body -->
+
+    <!-- 모달 푸터 — ④ 저장 / ⑤ 취소 -->
+    <div class="adm-modal-box__foot">
+      <!-- ④ 저장 — 금액 입력 후 경고창 → 예 → 저장 처리 -->
+      <button type="button" class="rss-btn rss-btn--primary" onclick="saveCancelAmt()">저장</button>
+      <!-- ⑤ 취소 — 모달 닫기 -->
+      <button type="button" class="rss-btn rss-btn--outline-cancel" onclick="closeCancelAmtModal()">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     공통 JS
+══════════════════════════════════════════════════ -->
+<script src="adm-common.js"></script>
+<script>
+/* ─── 페이지 초기화 ─────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function () {
+  loadAdmTopbar();
+  loadAdmSidebar();
+  if (window.lucide) lucide.createIcons();
+});
+
+/* ─── 1. 검색 ───────────────────────────────────────
+   [Java] GET /adm/cancel/list?searchType=&keyword=&page=
+──────────────────────────────────────────────────── */
+function searchCancel() {
+  const type    = document.getElementById('cancelSearchType').value;
+  const keyword = document.getElementById('cancelSearchKeyword').value.trim();
+  if (!keyword) return;
+  // 검색 후 전체보기 버튼 표시
+  document.getElementById('cancelViewAllBtn').style.display = '';
+  if (window.lucide) lucide.createIcons();
+  // [Java] 서버 요청으로 교체: location.href = '/adm/cancel/list?searchType=' + type + '&keyword=' + encodeURIComponent(keyword);
+  console.log('[M3] 검색:', type, keyword);
+}
+
+/* 전체보기 — 검색 초기화 */
+function resetCancelSearch() {
+  document.getElementById('cancelSearchType').value = '';
+  document.getElementById('cancelSearchKeyword').value = '';
+  document.getElementById('cancelViewAllBtn').style.display = 'none';
+  // [Java] 서버 요청으로 교체: location.href = '/adm/cancel/list';
+  console.log('[M3] 전체보기 — 검색 초기화');
+}
+
+/* ─── 2. 취소 금액 조정 모달 (M3-1) ──────────────────
+   ③ 금액 조정 버튼 / 완료 금액 클릭: 모달 열기
+   [Java] GET /adm/cancel/detail/{cancelStlmSeq} → 시간대·품목·기존 금액 로드
+──────────────────────────────────────────────────── */
+let _currentCancelStlmSeq = null; /* 현재 금액 조정 대상 취소 정산 시퀀스 */
+
+function openCancelAmtModal(cancelStlmSeq) {
+  _currentCancelStlmSeq = cancelStlmSeq;
+  const modal = document.getElementById('modalCancelAmt');
+  if (!modal) return;
+
+  // [Java] AJAX로 cancelStlmSeq에 해당하는 데이터 로드 후 DOM 갱신
+  // 더미: 기존 금액이 있는 경우(행 4,5) 입력란에 채워서 표시
+  const existingAmounts = { 1004: '400000', 1005: '2000000' };
+  const inputEl = document.getElementById('cancelAmtInput');
+  if (existingAmounts[cancelStlmSeq]) {
+    inputEl.value = Number(existingAmounts[cancelStlmSeq]).toLocaleString('ko-KR');
+  } else {
+    inputEl.value = '';
+  }
+
+  modal.classList.add('open');
+  if (window.lucide) lucide.createIcons();
+  inputEl.focus();
+}
+
+function closeCancelAmtModal() {
+  const modal = document.getElementById('modalCancelAmt');
+  if (modal) modal.classList.remove('open');
+  _currentCancelStlmSeq = null;
+}
+
+/* backdrop 클릭 시 닫기 */
+document.getElementById('modalCancelAmt').addEventListener('click', function (e) {
+  if (e.target === this) closeCancelAmtModal();
+});
+
+/* ─── 3. 취소 금액 입력 — 천단위 콤마 포맷 ─────────────
+   숫자만 허용, 입력 즉시 천단위 콤마 적용
+──────────────────────────────────────────────────── */
+function formatCancelAmt(input) {
+  // 숫자 외 문자 제거
+  const raw = input.value.replace(/[^0-9]/g, '');
+  // 천단위 콤마 적용
+  input.value = raw ? Number(raw).toLocaleString('ko-KR') : '';
+}
+
+/* ─── 4. 저장 ────────────────────────────────────────
+   ④ 저장 버튼: 금액 입력 확인 → 경고창 → 예 → 저장 처리
+   [Java] POST /adm/cancel/save-amt
+          { cancelStlmSeq, cancelAmt }
+──────────────────────────────────────────────────── */
+function saveCancelAmt() {
+  const raw = document.getElementById('cancelAmtInput').value.replace(/[^0-9]/g, '');
+  if (!raw) {
+    alert('취소 금액을 입력해 주세요.');
+    document.getElementById('cancelAmtInput').focus();
+    return;
+  }
+  if (!confirm('저장하시겠습니까?\n\n취소 금액이 발주·차단업체에 적용됩니다.')) return;
+
+  // [Java] POST /adm/cancel/save-amt → { cancelStlmSeq: _currentCancelStlmSeq, cancelAmt: raw }
+  console.log('[M3-1] 취소 금액 저장:', _currentCancelStlmSeq, raw);
+
+  closeCancelAmtModal();
+  // [Java] 목록 새로고침 또는 해당 행 상태 업데이트 (완료 : 금액 표시)
+  alert('취소 금액이 저장되었습니다.\n목록에서 완료 금액으로 표시됩니다.');
+}
+
+/* ─── 5. ESC 키 모달 닫기 ───────────────────────────── */
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeCancelAmtModal();
+});
+</script>
+</body>
+</html>
