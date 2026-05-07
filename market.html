@@ -43,14 +43,25 @@
         gap: 6px;
         border-top: 1px solid var(--rss-border);
       }
-      /* 검색창: flex-grow로 남은 공간 채움 */
+      /* 검색창: flex-grow로 남은 공간 채움, rss-common.css 90px 오버라이드 */
       .rss-filter-toolbar-wrap .rss-board-toolbar .rss-search-wrap {
-        flex: 1;
+        flex: 1 1 0;
+        min-width: 0;
+      }
+      .rss-filter-toolbar-wrap .rss-board-toolbar .rss-search-wrap input {
+        width: 100% !important;   /* rss-common.css 90px 오버라이드 */
         min-width: 0;
       }
       /* 내글보기 버튼: 텍스트 숨기고 아이콘만 */
       .rss-filter-toolbar-wrap .rss-board-toolbar #myPostBtn .btn-text {
         display: none;
+      }
+      /* 등록하기 버튼: 텍스트 숨기고 아이콘만 (공간 절약) */
+      .rss-filter-toolbar-wrap .rss-board-toolbar a.rss-btn--amber .btn-text {
+        display: none;
+      }
+      .rss-filter-toolbar-wrap .rss-board-toolbar a.rss-btn--amber {
+        flex-shrink: 0;
       }
     }
   </style>
@@ -103,7 +114,7 @@
             </button>
             <!-- 등록하기 (스토리보드 §B5 ③) -->
             <a href="market-write.html" class="rss-btn rss-btn--amber">
-              <i data-lucide="plus" style="width:14px;height:14px;"></i>등록하기
+              <i data-lucide="plus" style="width:14px;height:14px;"></i><span class="btn-text">등록하기</span>
             </a>
           </div>
 
