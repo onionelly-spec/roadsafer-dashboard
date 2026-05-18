@@ -37,7 +37,7 @@
            [DB] 테이블: rs_construction
            [Java] model.addAttribute("construction", constructionVO)
       ══════════════════════════════════════════════════ -->
-      <div class="rss-card" style="padding:0;">
+      <div class="adm-detail-wrap">
         <!-- ── 탭 네비게이션 ── -->
         <div class="rss-tabs adm-tabs" role="tablist">
           <!-- [Java] th:classappend="${activeTab == 'tab-info'} ? 'active'" -->
@@ -52,7 +52,7 @@
              [Java] ${construction} — 공사 VO
         ══════════════════════════════════════════════════ -->
         <div id="tab-info" class="rss-tab-panel active">
-          <div style="padding:24px;">
+          <div class="adm-tab-panel-body">
             <!-- 상태 행 -->
             <div class="adm-detail-status-row">
               <span class="adm-detail-status-label">상태 :</span>
@@ -181,7 +181,7 @@
              [Java] ${blockReq} — 차단신청 VO
         ══════════════════════════════════════════════════ -->
         <div id="tab-block" class="rss-tab-panel">
-          <div style="padding:24px;">
+          <div class="adm-tab-panel-body">
             <!-- 관리자 전용: 차단업체 미지정 안내 + 강제 지정 버튼 -->
             <!-- [Java] th:if="${blockReq == null or blockReq.blockCorpSeq == null}" -->
             <div class="rss-notice adm-notice--flex" id="blockCorpAssignNotice">
@@ -276,7 +276,7 @@
 
             <!-- 파일 일괄 다운로드 -->
             <!-- [Java] th:if="${blockReq != null and blockReq.fileList.size() > 0}" -->
-            <div style="margin-top:12px; text-align:right;">
+            <div class="adm-action-row--right">
               <button type="button" class="rss-btn rss-btn--outline" onclick="downloadAllBlockFiles()">
                 <i data-lucide="download" style="width:14px;height:14px;margin-right:4px;"></i>
                 파일 일괄 다운로드
@@ -317,7 +317,7 @@
             <strong class="adm-prog-total__amount">7,900,000원</strong>
           </div>
 
-          <div style="padding:0 24px 24px;">
+          <div class="adm-tab-panel-body adm-tab-panel-body--status">
             <!-- 캘린더 테이블 (PC) -->
             <div class="rss-cal-table-wrap">
               <!--
@@ -510,7 +510,7 @@
             </div><!-- /rss-cal-list -->
 
             <!-- 하단 버튼: 좌측(공사 종료) + 우측(목록) -->
-            <div class="rss-page-actions rss-page-actions--split" style="margin-top:20px;">
+            <div class="rss-page-actions rss-page-actions--split">
               <div class="rss-page-actions__left">
                 <!-- [Java] th:if="${construction.status == 'IN_PROGRESS'}" -->
                 <button type="button" class="rss-btn rss-btn--outline-cancel" onclick="openConstCompleteModal()">
@@ -525,7 +525,7 @@
             </div>
           </div>
         </div><!-- /tab-status -->
-      </div><!-- /rss-card -->
+      </div><!-- /adm-detail-wrap -->
     </main>
     <div id="rss-footer-wrap"></div>
   </div><!-- /adm-main -->

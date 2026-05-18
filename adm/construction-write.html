@@ -628,21 +628,23 @@
         <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
              하단 버튼 영역
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-        <div class="rss-page-actions">
+        <div class="rss-page-actions rss-page-actions--split">
           <!-- [Java] 수정 모드에서만 표시: th:if="${mode == 'edit'}" -->
-          <div class="rss-page-actions--left">
+          <div class="rss-page-actions__left">
             <button type="button" class="rss-btn adm-btn--delete"
                     onclick="confirmDelete()">삭제
             </button>
           </div>
-          <button type="button" class="rss-btn adm-btn--cancel"
-                  onclick="location.href='construction-list.html'">취소
-          </button>
-          <button type="submit" class="rss-btn adm-btn--save"
-                  onclick="return submitConstructionForm(event)">
-            <!-- [Java] th:text="${mode == 'edit'} ? '수정 저장' : '저장'" -->
-            저장
-          </button>
+          <div class="rss-page-actions__right">
+            <button type="button" class="rss-btn adm-btn--cancel"
+                    onclick="location.href='construction-list.html'">취소
+            </button>
+            <button type="submit" class="rss-btn adm-btn--save"
+                    onclick="return submitConstructionForm(event)">
+              <!-- [Java] th:text="${mode == 'edit'} ? '수정 저장' : '저장'" -->
+              저장
+            </button>
+          </div>
         </div>
 
       </form><!-- /constructionWriteForm -->
