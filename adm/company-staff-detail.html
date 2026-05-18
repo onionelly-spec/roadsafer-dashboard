@@ -78,8 +78,8 @@
                 <tr>
                   <th>이름(부서명)</th>
                   <td>
-                    <!-- [Java] th:value="${staff.staffNm}" -->
-                    <input type="text" class="rss-input" id="staffNm" value="오수진" style="width:100%;" />
+                    <!-- [Java] th:value="${staff.empNm}" -->
+                    <input type="text" class="rss-input" id="empNm" value="오수진" style="width:100%;" />
                   </td>
                   <th>상호</th>
                   <td>
@@ -113,24 +113,24 @@
                   <th>휴대폰 번호</th>
                   <td colspan="3">
                     <div class="adm-inline-group">
-                      <!-- [Java] th:value="${staff.hpNo1}" -->
-                      <input type="text" class="rss-input" id="staffHpNo1" value="010"
+                      <!-- [Java] th:value="${staff.empTel1}" -->
+                      <input type="text" class="rss-input" id="empTel1" value="010"
                              style="width:70px;" maxlength="4" />
                       <span class="adm-inline-sep">-</span>
-                      <!-- [Java] th:value="${staff.hpNo2}" -->
-                      <input type="text" class="rss-input" id="staffHpNo2" value="0000"
+                      <!-- [Java] th:value="${staff.empTel2}" -->
+                      <input type="text" class="rss-input" id="empTel2" value="0000"
                              style="width:80px;" maxlength="4" />
                       <span class="adm-inline-sep">-</span>
-                      <!-- [Java] th:value="${staff.hpNo3}" -->
-                      <input type="text" class="rss-input" id="staffHpNo3" value="1111"
+                      <!-- [Java] th:value="${staff.empTel3}" -->
+                      <input type="text" class="rss-input" id="empTel3" value="1111"
                              style="width:80px;" maxlength="4" />
                       <span class="adm-field-note">* SMS 수신:</span>
                       <!-- [Java] th:checked="${staff.smsYn == 'Y'}" -->
                       <label class="adm-radio-label">
-                        <input type="radio" name="staffSmsYn" value="Y" checked /> 수신
+                        <input type="radio" name="smsYn" value="Y" checked /> 수신
                       </label>
                       <label class="adm-radio-label">
-                        <input type="radio" name="staffSmsYn" value="N" /> 거부
+                        <input type="radio" name="smsYn" value="N" /> 거부
                       </label>
                     </div>
                   </td>
@@ -141,15 +141,15 @@
                   <td colspan="3">
                     <div class="adm-inline-group">
                       <!-- [Java] th:value="${staff.emailId}" -->
-                      <input type="text" class="rss-input" id="staffEmailId" value="jalnan"
+                      <input type="text" class="rss-input" id="emailId" value="jalnan"
                              style="width:140px;" />
                       <span class="adm-inline-sep">@</span>
                       <!-- [Java] th:value="${staff.emailDomain}" -->
-                      <input type="text" class="rss-input" id="staffEmailDomain" value="naver.com"
+                      <input type="text" class="rss-input" id="emailDomain" value="naver.com"
                              style="width:140px;" />
-                      <!-- [Java] th:value="${staff.emailDomainSel}" -->
-                      <select class="rss-select" id="staffEmailDomainSel"
-                              onchange="setStaffEmailDomain(this)" style="width:140px;">
+                      <!-- [Java] th:value="${staff.emailDomainSelect}" -->
+                      <select class="rss-select" id="emailDomainSelect"
+                              onchange="setEmailDomain(this)" style="width:140px;">
                         <option value="">선택</option>
                         <option value="naver.com">naver.com</option>
                         <option value="gmail.com">gmail.com</option>
@@ -160,10 +160,10 @@
                       <span class="adm-field-note">* 이메일 수신:</span>
                       <!-- [Java] th:checked="${staff.emailYn == 'Y'}" -->
                       <label class="adm-radio-label">
-                        <input type="radio" name="staffEmailYn" value="Y" checked /> 수신
+                        <input type="radio" name="emailYn" value="Y" checked /> 수신
                       </label>
                       <label class="adm-radio-label">
-                        <input type="radio" name="staffEmailYn" value="N" /> 거부
+                        <input type="radio" name="emailYn" value="N" /> 거부
                       </label>
                     </div>
                   </td>
@@ -255,8 +255,8 @@
 lucide.createIcons();
 
 /* ── 이메일 도메인 선택 ──────────────────────────── */
-function setStaffEmailDomain(sel) {
-  var domain = document.getElementById('staffEmailDomain');
+function setEmailDomain(sel) {
+  var domain = document.getElementById('emailDomain');
   if (sel.value === 'direct') {
     domain.value = '';
     domain.readOnly = false;
