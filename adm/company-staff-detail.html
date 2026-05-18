@@ -254,6 +254,54 @@
 <script>
 lucide.createIcons();
 
+/* ── 상태별 버튼 토글 ────────────────────────────
+   대기 → 승인 + 반려 표시 / 승인취소 숨김
+   정상 → 승인취소 표시 / 승인 + 반려 숨김
+   [Java] th:if 로 서버사이드 렌더링 시 이 함수 불필요
+──────────────────────────────────────────────── */
+function initStaffButtons() {
+  /* URL 파라미터 status 우선 — 없으면 badge 텍스트 폴백
+     [Java] 서버사이드 렌더링 시 URL 파라미터 불필요 — th:if 로 버튼 직접 제어 */
+  var params = new URLSearchParams(window.location.search);
+  var statusParam = params.get('status') || '';
+  var badgeText   = (document.getElementById('staffStatusBadge').textContent || '').trim();
+
+  /* URL 파라미터 없으면 badge 텍스트로 판단 */
+  var isPending = (statusParam === 'pending') || (!statusParam && badgeText === '대기');
+  var isNormal  = (statusParam === 'normal')  || (!statusParam && badgeText === '정상');
+
+  /* badge 동기화 — URL 파라미터가 있으면 badge도 업데이트 */
+  if (statusParam === 'pending') {
+    document.getElementById('staffStatusBadge').textContent = '대기';
+    document.getElementById('staffStatusBadge').className   = 'adm-badge adm-badge--pending';
+    document.getElementById('staffStatusText').textContent  = '대기';
+  } else if (statusParam === 'normal') {
+    document.getElementById('staffStatusBadge').textContent = '정상';
+    document.getElementById('staffStatusBadge').className   = 'adm-badge adm-badge--normal';
+    document.getElementById('staffStatusText').textContent  = '정상';
+  }
+
+  var btnApprove       = document.getElementById('btnStaffApprove');
+  var btnReject        = document.getElementById('btnStaffReject');
+  var btnCancelApprove = document.getElementById('btnStaffApproveCancel');
+
+  if (isPending) {
+    btnApprove.style.display       = '';
+    btnReject.style.display        = '';
+    btnCancelApprove.style.display = 'none';
+  } else if (isNormal) {
+    btnApprove.style.display       = 'none';
+    btnReject.style.display        = 'none';
+    btnCancelApprove.style.display = '';
+  } else {
+    /* 사용정지 등 기타 — 모든 상태 버튼 숨김 */
+    btnApprove.style.display       = 'none';
+    btnReject.style.display        = 'none';
+    btnCancelApprove.style.display = 'none';
+  }
+}
+document.addEventListener('DOMContentLoaded', initStaffButtons);
+
 /* ── 이메일 도메인 선택 ──────────────────────────── */
 function setEmailDomain(sel) {
   var domain = document.getElementById('emailDomain');
