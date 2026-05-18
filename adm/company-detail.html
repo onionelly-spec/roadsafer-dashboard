@@ -119,13 +119,13 @@
                   <td>
                     <div class="adm-inline-group">
                       <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
-                              onclick="triggerFileInput('bankbookFile')">파일첨부</button>
-                      <!-- [Java] th:if="${company.bankbookFile != null}" -->
-                      <a href="#" class="rss-link" id="bankbookFileLink">tongjang.png</a>
-                      <button type="button" class="reg-file-item__remove" id="bankbookFileDel"
-                              onclick="removeFile('bankbookFile')" title="삭제"></button>
-                      <input type="file" id="bankbookFile" style="display:none;"
-                             onchange="handleFileChange(this,'bankbookFileLink','bankbookFileDel')" />
+                              onclick="triggerFileInput('bankFile')">파일첨부</button>
+                      <!-- [Java] th:if="${company.bankFile != null}" -->
+                      <a href="#" class="rss-link" id="bankFileLink">tongjang.png</a>
+                      <button type="button" class="reg-file-item__remove" id="bankFileDel"
+                              onclick="removeFile('bankFile')" title="삭제"></button>
+                      <input type="file" id="bankFile" style="display:none;"
+                             onchange="handleFileChange(this,'bankFileLink','bankFileDel')" />
                     </div>
                   </td>
                 </tr>
@@ -147,16 +147,16 @@
                   <th>대표 휴대폰 번호</th>
                   <td colspan="3">
                     <div class="adm-inline-group">
-                      <!-- [Java] th:value="${company.ceoHpNo1}" -->
-                      <input type="text" class="rss-input" id="ceoHpNo1" value="010"
+                      <!-- [Java] th:value="${company.ceoTel1}" -->
+                      <input type="text" class="rss-input" id="ceoTel1" name="ceoTel1" value="010"
                              style="width:70px;" maxlength="4" />
                       <span class="adm-inline-sep">-</span>
-                      <!-- [Java] th:value="${company.ceoHpNo2}" -->
-                      <input type="text" class="rss-input" id="ceoHpNo2" value="0000"
+                      <!-- [Java] th:value="${company.ceoTel2}" -->
+                      <input type="text" class="rss-input" id="ceoTel2" name="ceoTel2" value="0000"
                              style="width:80px;" maxlength="4" />
                       <span class="adm-inline-sep">-</span>
-                      <!-- [Java] th:value="${company.ceoHpNo3}" -->
-                      <input type="text" class="rss-input" id="ceoHpNo3" value="1111"
+                      <!-- [Java] th:value="${company.ceoTel3}" -->
+                      <input type="text" class="rss-input" id="ceoTel3" name="ceoTel3" value="1111"
                              style="width:80px;" maxlength="4" />
                       <span class="adm-field-note">* SMS 수신:</span>
                       <!-- [Java] th:checked="${company.smsYn == 'Y'}" -->
@@ -181,8 +181,8 @@
                       <!-- [Java] th:value="${company.emailDomain}" -->
                       <input type="text" class="rss-input" id="emailDomain" value="naver.com"
                              style="width:140px;" />
-                      <!-- [Java] th:value="${company.emailDomainSel}" -->
-                      <select class="rss-select" id="emailDomainSel" onchange="setEmailDomain(this)"
+                      <!-- [Java] th:value="${company.emailDomainSelect}" -->
+                      <select class="rss-select" id="emailDomainSelect" onchange="setEmailDomain(this)"
                               style="width:140px;">
                         <option value="">선택</option>
                         <option value="naver.com">naver.com</option>
@@ -207,15 +207,15 @@
                   <th>사업장 주소</th>
                   <td colspan="3">
                     <div class="adm-inline-group" style="margin-bottom:6px;">
-                      <!-- [Java] th:value="${company.bizZipCd}" -->
-                      <input type="text" class="rss-input" id="bizZipCd" value="13383"
+                      <!-- [Java] th:value="${company.bizPostCode}" -->
+                      <input type="text" class="rss-input" id="bizPostCode" name="bizPostCode" value="13383"
                              style="width:90px;" readonly />
                       <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
                               onclick="openAddrSearch()">주소 찾기</button>
                     </div>
                     <div class="adm-inline-group">
-                      <!-- [Java] th:value="${company.bizAddr}" -->
-                      <input type="text" class="rss-input" id="bizAddr"
+                      <!-- [Java] th:value="${company.bizAddrMain}" -->
+                      <input type="text" class="rss-input" id="bizAddrMain" name="bizAddrMain"
                              value="경기도 부천시 조마루로 111" style="flex:1;" readonly />
                       <!-- [Java] th:value="${company.bizAddrDetail}" -->
                       <input type="text" class="rss-input" id="bizAddrDetail"
