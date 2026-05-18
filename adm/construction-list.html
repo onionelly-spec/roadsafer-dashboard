@@ -38,8 +38,8 @@
       <div class="rss-card">
         <!-- ─── 검색 툴바 ──────────────────────────────────────
              스토리보드 ①: 상태 + 연도 + 월 + 도로 구분 + 검색조건 + 키워드 + 찾기
-             좌측: 상태/연도/월/도로 구분 필터
-             우측: 검색조건 + 키워드 + 찾기 + 전체보기 + 공사 등록 + 엑셀
+             좌측: 상태/연도/월 필터
+             우측: 검색조건 + 키워드 + 찾기 + 전체보기 + 공사 등록
         ──────────────────────────────────────────────────────── -->
         <div class="rss-board-toolbar">
           <div class="rss-board-toolbar__left">
@@ -80,13 +80,7 @@
               <option value="11">11월</option>
               <option value="12">12월</option>
             </select>
-            <!-- [Java] th:value="${roadClassFilter}" -->
-            <select id="constRoadClassFilter" class="rss-select" onchange="filterConstructionList()">
-              <option value="">도로 구분 전체</option>
-              <option value="HIGHWAY">고속도로</option>
-              <option value="NATIONAL">국도</option>
-              <option value="LOCAL">지방도</option>
-            </select>
+
           </div>
           <div class="rss-board-toolbar__right">
             <!-- [Java] th:value="${searchType}" -->
@@ -115,8 +109,7 @@
               <i data-lucide="plus" style="width:14px;height:14px;margin-right:4px;"></i>
               공사 등록
             </a>
-            <!-- ② 엑셀 다운로드 -->
-            <button type="button" class="rss-btn adm-btn--excel" onclick="downloadConstructionExcel()">엑셀 다운로드</button>
+
           </div>
         </div>
 
@@ -128,20 +121,19 @@
              [Java] th:each="const : ${constructionList}"
         ──────────────────────────────────────────────────────── -->
         <div class="rss-table-wrap">
-          <div style="overflow-x:auto;">
             <!-- [Java] th:if="${#lists.isEmpty(constructionList)}" -->
             <!-- <div class="rss-empty">검색 결과가 없습니다.</div> -->
             <!-- [Java] th:unless="${#lists.isEmpty(constructionList)}" -->
-            <table class="rss-table" id="constructionListTable" style="min-width:1100px;">
+            <table class="rss-table" id="constructionListTable">
               <colgroup>
-                <col style="width:60px;" />    <!-- 번호 -->
-                <col style="width:140px;" />   <!-- 발주업체명 -->
-                <col />                        <!-- 공사명 (나머지 공간) -->
-                <col style="width:130px;" />   <!-- 차단업체명 -->
-                <col style="width:200px;" />   <!-- 기간 -->
-                <col style="width:200px;" />   <!-- 품목별 수량 -->
-                <col style="width:60px;" />    <!-- 공개 -->
-                <col style="width:80px;" />    <!-- 상태 -->
+                <col class="rss-col-no" />     <!-- 번호: 5% -->
+                <col class="rss-col-owner" />  <!-- 발주업체명: 15% -->
+                <col />                        <!-- 공사명: auto (나머지 공간) -->
+                <col class="rss-col-owner" />  <!-- 차단업체명: 15% -->
+                <col class="rss-col-period" /> <!-- 기간: 20% -->
+                <col class="rss-col-equip" />  <!-- 품목별 수량: 20% -->
+                <col class="rss-col-status" /> <!-- 공개: 10% -->
+                <col class="rss-col-status" /> <!-- 상태: 10% -->
               </colgroup>
               <thead>
                 <tr>
@@ -265,7 +257,6 @@
                 <!-- [Java] /th:each -->
               </tbody>
             </table>
-          </div>
         </div><!-- /rss-table-wrap -->
 
         <!-- ─── 하단 영역: 페이지네이션(중) + 공사 등록(우) ── -->
