@@ -666,10 +666,11 @@
     <div class="adm-modal-box__search">
       <!-- [Java] GET /adm/construction/order-corp/search?keyword= -->
       <!-- 용어사전 §7 searchKeyword + §10-2 order_corp → orderCorpSearchKeyword -->
-      <input type="text" id="orderCorpSearchKeyword" class="rss-input" style="flex:1;"
+      <!-- flex:1 제거: .adm-modal-box__search .rss-input { flex:1; min-width:0; } 공통 CSS로 제어 -->
+      <input type="text" id="orderCorpSearchKeyword" class="rss-input"
              placeholder="업체명을 입력하세요"
              onkeydown="if(event.key==='Enter') searchOrderCorp()" />
-      <button type="button" class="rss-btn rss-btn--outline" onclick="searchOrderCorp()">
+      <button type="button" class="rss-btn rss-btn--amber" onclick="searchOrderCorp()">
         <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
         찾기
       </button>
@@ -698,32 +699,49 @@
             </tr>
           </thead>
           <tbody id="orderCorpResultBody">
-            <!-- [Java] th:each="corp : ${orderCorpList}" -->
-            <!-- 더미 데이터 (스토리보드 §M1-4-1 기준) -->
+            <!-- ══════════════════════════════════════════════
+                 [Java] th:each="corp : ${orderCorpList}"
+                 더미 데이터 (스토리보드 §M1-4-1 기준)
+            ══════════════════════════════════════════════ -->
             <tr>
-              <td class="rss-col-nm"><span class="rss-link" onclick="selectOrderCorpRow('1001','순희차단')">순희차단</span></td>
+              <td>순희차단</td>
               <td>000-00-00000</td>
               <td>경기도 부천시 조마루로111 1401호</td>
-              <td><button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="selectOrderCorpRow('1001','순희차단')">선택</button></td>
+              <td>
+                <button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;"
+                        onclick="selectOrderCorpRow('1001','순희차단')">선택</button>
+              </td>
             </tr>
             <tr>
-              <td class="rss-col-nm"><span class="rss-link" onclick="selectOrderCorpRow('1002','우리국도차단')">우리국도차단</span></td>
+              <td>우리국도차단</td>
               <td>111-11-11111</td>
-              <td>경기도 안성시 단원1길 111</td>
-              <td><button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="selectOrderCorpRow('1002','우리국도차단')">선택</button></td>
+              <td>경기도 안성시 단월1길 111</td>
+              <td>
+                <button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;"
+                        onclick="selectOrderCorpRow('1002','우리국도차단')">선택</button>
+              </td>
             </tr>
             <tr>
-              <td class="rss-col-nm"><span class="rss-link" onclick="selectOrderCorpRow('1003','프리마제일차단')">프리마제일차단</span></td>
+              <td>프리마제일차단</td>
               <td>222-22-22222</td>
               <td>경기도 의정부시 의정부대로 331</td>
-              <td><button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="selectOrderCorpRow('1003','프리마제일차단')">선택</button></td>
+              <td>
+                <button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;"
+                        onclick="selectOrderCorpRow('1003','프리마제일차단')">선택</button>
+              </td>
             </tr>
             <tr>
-              <td class="rss-col-nm"><span class="rss-link" onclick="selectOrderCorpRow('1004','한국도로차단')">한국도로차단</span></td>
+              <td>한국도로차단</td>
               <td>333-33-33333</td>
               <td>경기도 수원시 장안대로13번길 1</td>
-              <td><button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="selectOrderCorpRow('1004','한국도로차단')">선택</button></td>
+              <td>
+                <button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;"
+                        onclick="selectOrderCorpRow('1004','한국도로차단')">선택</button>
+              </td>
             </tr>
+            <!-- ══════════════════════════════════════════════
+                 [Java] /th:each 끝
+            ══════════════════════════════════════════════ -->
           </tbody>
         </table>
       </div>

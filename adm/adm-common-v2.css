@@ -726,7 +726,13 @@
   padding: 14px 20px;
   border-bottom: 1px solid var(--rss-border);
   display: flex;
+  flex-wrap: wrap;          /* 버튼이 2개 이상일 때 줄바꿼 허용 → 가로 스크롤 방지 */
   gap: 8px;
+  align-items: center;
+}
+.adm-modal-box__search .rss-input {
+  flex: 1;
+  min-width: 0;             /* flex 수충 시 입력창이 버튼 너비를 밀어내지 않도록 */
 }
 .adm-modal-box__body {
   flex: 1;
