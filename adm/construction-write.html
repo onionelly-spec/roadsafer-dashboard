@@ -684,15 +684,15 @@
         <!-- 용어사전 §15-2 orderCorpResultBody -->
         <table class="rss-table" id="orderCorpResultTable">
           <colgroup>
-            <col class="rss-col-nm" />      <!-- 업체명 -->
-            <col class="rss-col-bizno" />   <!-- 사업자 번호 -->
+            <col class="rss-col-nm" />      <!-- 발주업체명 -->
+            <col class="rss-col-bizno" />   <!-- 사업자번호 -->
             <col class="rss-col-addr" />    <!-- 사업장 주소 -->
-            <col class="rss-col-select" />  <!-- 선택 버튼 -->
+            <col class="rss-col-mgmt" />    <!-- 선택 버튼 10% -->
           </colgroup>
           <thead>
             <tr>
-              <th>업체명</th>
-              <th>사업자 등록번호</th>
+              <th>발주업체명</th>
+              <th>사업자번호</th>
               <th>사업장 주소</th>
               <th>선택</th>
             </tr>
@@ -704,25 +704,25 @@
               <td class="rss-col-nm"><span class="rss-link" onclick="selectOrderCorpRow('1001','순희차단')">순희차단</span></td>
               <td>000-00-00000</td>
               <td>경기도 부천시 조마루로111 1401호</td>
-              <td><button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;" onclick="selectOrderCorpRow('1001','순희차단')">선택</button></td>
+              <td><button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="selectOrderCorpRow('1001','순희차단')">선택</button></td>
             </tr>
             <tr>
               <td class="rss-col-nm"><span class="rss-link" onclick="selectOrderCorpRow('1002','우리국도차단')">우리국도차단</span></td>
               <td>111-11-11111</td>
               <td>경기도 안성시 단원1길 111</td>
-              <td><button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;" onclick="selectOrderCorpRow('1002','우리국도차단')">선택</button></td>
+              <td><button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="selectOrderCorpRow('1002','우리국도차단')">선택</button></td>
             </tr>
             <tr>
               <td class="rss-col-nm"><span class="rss-link" onclick="selectOrderCorpRow('1003','프리마제일차단')">프리마제일차단</span></td>
               <td>222-22-22222</td>
               <td>경기도 의정부시 의정부대로 331</td>
-              <td><button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;" onclick="selectOrderCorpRow('1003','프리마제일차단')">선택</button></td>
+              <td><button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="selectOrderCorpRow('1003','프리마제일차단')">선택</button></td>
             </tr>
             <tr>
               <td class="rss-col-nm"><span class="rss-link" onclick="selectOrderCorpRow('1004','한국도로차단')">한국도로차단</span></td>
               <td>333-33-33333</td>
               <td>경기도 수원시 장안대로13번길 1</td>
-              <td><button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;" onclick="selectOrderCorpRow('1004','한국도로차단')">선택</button></td>
+              <td><button type="button" class="rss-btn rss-btn--outline rss-btn--sm" onclick="selectOrderCorpRow('1004','한국도로차단')">선택</button></td>
             </tr>
           </tbody>
         </table>
