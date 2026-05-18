@@ -75,11 +75,14 @@ function setAdmActiveMenu() {
   const currentFile = location.pathname.split('/').pop().replace('.html', '');
   const links = document.querySelectorAll('#admSidebar .rss-nav__link[data-menu]');
 
+  // 1단계: 정확히 일치하는 링크 우선 탐색
+  let matched = false;
   links.forEach(link => {
     const menu = link.getAttribute('data-menu');
-    if (currentFile.startsWith(menu) || currentFile === menu) {
+    if (currentFile === menu) {
+      matched = true;
       link.classList.add('active');
-      // 아코디언 서브메뉴 내 항목이면 부모 아코디언 열기
+      // 서브메뉴 내 항목이면 부모 아코디언 열기
       const sub = link.closest('.adm-nav__sub');
       if (sub) {
         sub.style.display = 'block';
@@ -92,6 +95,28 @@ function setAdmActiveMenu() {
       }
     }
   });
+
+  // 2단계: 정확 일치가 없을 때만 startsWith 매칭 (단, 서브메뉴 항목 제외)
+  if (!matched) {
+    links.forEach(link => {
+      const menu = link.getAttribute('data-menu');
+      const isSubItem = !!link.closest('.adm-nav__sub');
+      if (!isSubItem && currentFile.startsWith(menu)) {
+        link.classList.add('active');
+        // 아코디언 버튼이면 서브메뉴 열기
+        const parentLi = link.closest('li');
+        if (parentLi) {
+          const sub = parentLi.querySelector('.adm-nav__sub');
+          if (sub) {
+            sub.style.display = 'block';
+            link.setAttribute('aria-expanded', 'true');
+            const arrow = link.querySelector('.adm-nav__accordion-arrow i');
+            if (arrow) arrow.style.transform = 'rotate(180deg)';
+          }
+        }
+      }
+    });
+  }
 }
 
 /* ─── 5. 모바일 사이드바 토글 ───────────────────────────── */
