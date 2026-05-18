@@ -461,14 +461,7 @@ img { max-width: 100%; display: block; }
 /* 테이블 하단 선 추가 (공통 규칙) */
 .rss-table tbody tr:last-child td { border-bottom: 1px solid var(--rss-border); }
 
-/* 테이블 컬럼 너비 및 정렬 */
-.rss-col-no { width: 60px; }
-.rss-col-status { width: 10%; }
-.rss-col-nm { text-align: left; }
-.rss-col-owner { width: 120px; }
-.rss-col-period { width: 180px; }
-.rss-col-price { width: 120px; text-align: right; }
-.rss-col-mgmt { width: 100px; }
+/* 테이블 컬럼 너비 및 정렬 → rss-common.css 하단 rss-col-* 블록에서 % 기반으로 통합 정의 */
 
 /* ─── 카드 ─────────────────────────────────────────────── */
 .rss-card {
