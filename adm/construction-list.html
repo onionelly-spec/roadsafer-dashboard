@@ -146,10 +146,45 @@
                 </tr>
               </thead>
               <tbody>
+                 <!--
+                  ══════════════════════════════════════════════════
+                  [M1] 공사 관리 목록 행 렌더링 규칙 (Java Thymeleaf 가이드)
+                  ──────────────────────────────────────────────────
+                  ① 행 클래스 분기
+                     th:classappend="${const.urgentYn == 'Y'} ? 'row-urgent'"
+                     → 긴급 공사인 경우 row-urgent 클래스 추가 (빨간 배경 + 공사명 강조)
+
+                  ② 공사명 링크 표시
+                     th:href="@{/adm/construction/detail/{seq}(seq=${const.constructionSeq})}"
+                     th:text="${const.urgentYn == 'Y'} ? '[\uae34\uae09] ' + ${const.constructionNm} : ${const.constructionNm}"
+                     th:classappend="${const.urgentYn == 'Y'} ? 'urgent'"
+                     → 긴급 여부에 따라 [\uae34\uae09] 접\ub450어 및 urgent 클\ub798\uc2a4 \ucd94\uac00
+
+                  ③ 차단업체명 열 표시
+                     th:text="${const.blockCorpNm != null} ? ${const.blockCorpNm} : '-'"
+                     → 매칭전(MATCHING) 상태에서는 blockCorpNm이 null이므로 '-' 표시
+
+                  ④ 상태 배지 클래스 분기
+                     th:class="'adm-badge ' + ${const.statusBadgeClass}"
+                     → 상태 코드별 배지 클래스 매핑:
+                        MATCHING  → adm-badge--matching  (매칭전)
+                        SCHEDULED → adm-badge--scheduled (예정)
+                        PROGRESS  → adm-badge--progress  (진행중)
+                        COMPLETE  → adm-badge--complete  (종료)
+                        CANCEL    → adm-badge--cancel    (취소)
+
+                  ⑤ 차단정보 탭 상태별 표시 (M1-2 상세보기 연동)
+                     상태가 MATCHING인 경우:
+                       → 상세보기 차단정보 탭에 '매칭 전입니다' 안내문 + '차단업체 강제지정' 버튼 표시
+                       → 차단 정보 테이블 미표시
+                     상태가 MATCHING이 아닌 경우:
+                       → 안내문/버튼 미표시, 차단 정보 테이블 표시
+                  ══════════════════════════════════════════════════
+                -->
                 <!-- ══ 더미 데이터 시작 ══
                      [Java] th:each="const : ${constructionList}"
                      [Java] th:classappend="${const.urgentYn == 'Y'} ? 'row-urgent'"
-                ══════════════════════════════════════════════ -->
+                ════════════════════════════════════════════ -->
 
                 <!-- 긴급 + 매칭전 -->
                 <tr class="row-urgent">

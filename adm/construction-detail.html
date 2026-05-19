@@ -170,22 +170,52 @@
              [DB] 테이블: rs_construction_block_req
              [Java] ${blockReq} — 차단신청 VO
         ══════════════════════════════════════════════════ -->
-          <div id="tab-block" class="rss-tab-panel" style="padding:24px;">
-            <!-- 관리자 전용: 차단업체 미지정 안내 + 강제 지정 버튼 -->
-            <!-- [Java] th:if="${blockReq == null or blockReq.blockCorpSeq == null}" -->
+          <!--
+            ══════════════════════════════════════════════════
+            [M1-2] 차단 정보 탭 — 상태별 표시 규칙
+            ──────────────────────────────────────────────────
+            상태 코드(construction.status) 기준:
+              MATCHING  : 매칭전 → 안내문 + 차단업체 강제지정 버튼 표시
+                          차단 정보 테이블은 미표시 (blockReq 없음)
+              SCHEDULED : 예정   → 안내문/버튼 미표시, 차단 정보 테이블 표시
+              PROGRESS  : 진행중 → 안내문/버튼 미표시, 차단 정보 테이블 표시
+              COMPLETE  : 종료   → 안내문/버튼 미표시, 차단 정보 테이블 표시
+              CANCEL    : 취소   → 안내문/버튼 미표시, 차단 정보 테이블 표시
+            ══════════════════════════════════════════════════
+          -->
+          <div id="tab-block" class="rss-tab-panel" style="padding:24px;"
+               data-status="MATCHING">
+            <!-- ──────────────────────────────────────────────
+                 [관리자 전용] 매칭전 안내문 + 차단업체 강제지정 버튼
+                 [Java] th:if="${construction.status == 'MATCHING'}"
+                        → 상태가 '매칭전'인 경우에만 표시
+                 차단업체 강제지정 버튼 클릭 시:
+                   openBlockCorpModal(constructionSeq, onBlockCorpAssigned) 호출
+                   → 차단업체 선택 모달(M2-1) 오픈 (adm-common.js 제공)
+                   → 선택 완료 시 onBlockCorpAssigned(blockCorpSeq, blockCorpNm) 콜백 실행
+                   → POST /adm/construction/assign-block-corp 후 상태 'SCHEDULED'로 변경
+                   → 발주·차단업체에 카카오 알림톡(P01) 발송
+            ─────────────────────────────────────────────── -->
+            <!-- [Java] th:if="${construction.status == 'MATCHING'}" -->
             <div class="rss-notice adm-notice--flex" id="blockCorpAssignNotice">
               <i data-lucide="alert-triangle" style="width:16px;height:16px;flex-shrink:0;"></i>
-              <span>차단업체가 아직 매칭되지 않았습니다. 관리자가 직접 지정할 수 있습니다.</span>
-              <button type="button" class="rss-btn rss-btn--amber"
+              <span>매칭 전입니다. 관리자가 차단업체를 직접 지정할 수 있습니다.</span>
+              <!-- [Java] th:onclick="'openBlockCorpModal(' + ${construction.constructionSeq} + ', onBlockCorpAssigned)'" -->
+              <button type="button" class="rss-btn rss-btn--primary"
                       style="margin-left:auto; white-space:nowrap;"
                       onclick="openBlockCorpModal(1001, onBlockCorpAssigned)">
                 <i data-lucide="link" style="width:14px;height:14px;margin-right:4px;"></i>
-                차단업체 지정
+                차단업체 강제지정
               </button>
             </div>
+            <!-- [Java] /th:if -->
 
-            <!-- 차단 정보 테이블 -->
-            <!-- [Java] th:if="${blockReq != null}" -->
+            <!-- ──────────────────────────────────────────────
+                 차단 정보 테이블
+                 [Java] th:if="${construction.status != 'MATCHING'}"
+                        → 매칭전이 아닌 경우에만 표시 (blockReq 존재)
+            ─────────────────────────────────────────────── -->
+            <!-- [Java] th:if="${construction.status != 'MATCHING'}" -->
             <div class="rss-table-wrap">
               <table class="rss-table rss-table--detail">
                 <tbody>
@@ -263,8 +293,10 @@
               </table>
             </div>
 
+            <!-- [Java] /th:if -->
+
             <!-- 파일 일괄 다운로드 -->
-            <!-- [Java] th:if="${blockReq != null and blockReq.fileList.size() > 0}" -->
+            <!-- [Java] th:if="${construction.status != 'MATCHING' and blockReq != null and blockReq.fileList.size() > 0}" -->
             <div style="margin-top:12px; text-align:right;">
               <button type="button" class="rss-btn rss-btn--outline" onclick="downloadAllBlockFiles()">
                 <i data-lucide="download" style="width:14px;height:14px;margin-right:4px;"></i>
@@ -913,7 +945,35 @@ document.querySelectorAll('.rss-tab').forEach(function(tab) {
   }
 })();
 
-/* ── 차단업체 지정 콜백 ─────────────────────────── */
+/* ── [M1-2] 차단 정보 탭 상태별 조건부 표시 ────────────────────────────── */
+/*
+  [Java] 실제 연동 시에는 th:if 조건으로 서버에서 제어하므로 이 JS 코드는 제거해도 됨.
+  더미 데이터 확인용으로만 사용.
+*/
+(function initBlockTabByStatus() {
+  var tabBlock = document.getElementById('tab-block');
+  if (!tabBlock) return;
+  /* [Java] th:data-status="${construction.status}" 로 주입 */
+  var status = tabBlock.getAttribute('data-status') || 'SCHEDULED';
+  var notice   = document.getElementById('blockCorpAssignNotice');
+  var tableWrap = tabBlock.querySelector('.rss-table-wrap');
+  var fileArea  = tabBlock.querySelector('[onclick="downloadAllBlockFiles()"]');
+  if (fileArea) fileArea = fileArea.closest('div');
+
+  if (status === 'MATCHING') {
+    /* 매칭전: 안내문+버튼 표시, 테이블 숨김 */
+    if (notice)    notice.style.display    = '';
+    if (tableWrap) tableWrap.style.display = 'none';
+    if (fileArea)  fileArea.style.display  = 'none';
+  } else {
+    /* 매칭전 외: 안내문+버튼 숨김, 테이블 표시 */
+    if (notice)    notice.style.display    = 'none';
+    if (tableWrap) tableWrap.style.display = '';
+    if (fileArea)  fileArea.style.display  = '';
+  }
+})();
+
+/* ── 차단업체 지정 콜백 ────────────────────────────────────────────── */
 function onBlockCorpAssigned(blockCorpSeq, blockCorpNm) {
   /* [Java] POST /adm/construction/assign-block-corp */
   console.log('[M1-2] 차단업체 강제 지정:', blockCorpSeq, blockCorpNm);
