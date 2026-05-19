@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>공사 상세 — 로드세이프티시스템 관리자</title>
+  <title>공사 관리 — 로드세이프티시스템 관리자</title>
   <!-- 공통 CSS -->
   <link rel="stylesheet" href="../rss-common.css?v=20260518" />
   <link rel="stylesheet" href="adm-common-v2.css?v=20260518" />
@@ -22,7 +22,7 @@
   <div class="adm-main">
     <!-- 브레드크럼 -->
     <div class="adm-breadcrumb">
-      <h1 class="adm-breadcrumb__title">공사 상세</h1>
+      <h1 class="adm-breadcrumb__title">공사 관리</h1>
       <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
         <a href="#">홈</a>
         <span class="adm-breadcrumb__sep">›</span>
@@ -42,13 +42,11 @@
            탭 네비게이션: write-section__head
            탭 내용:       write-section__body > rss-tab-panel
       ══════════════════════════════════════════════════ -->
-      <section class="write-section" aria-labelledby="constructionDetailTitle">
+      <section class="write-section">
         <!-- ── 탭 네비게이션 (소제목 영역) ── -->
         <div class="write-section__head">
-          <i data-lucide="hard-hat" style="width:16px;height:16px;color:var(--rss-amber);flex-shrink:0;"></i>
-          <h2 class="write-section__title" id="constructionDetailTitle">공사 상세</h2>
           <!-- 탭 네비게이션 -->
-          <div class="rss-tabs adm-tabs" role="tablist" style="border-bottom:none; margin-left:8px; padding:0;">
+          <div class="rss-tabs adm-tabs" role="tablist" style="border-bottom:none; padding:0;">
             <!-- [Java] th:classappend="${activeTab == 'tab-info'} ? 'active'" -->
             <button class="rss-tab active" role="tab" data-tab="tab-info"   aria-selected="true">공사 정보</button>
             <button class="rss-tab"        role="tab" data-tab="tab-block"  aria-selected="false">차단 정보</button>
@@ -65,8 +63,8 @@
         ══════════════════════════════════════════════════ -->
           <div id="tab-info" class="rss-tab-panel active" style="padding:24px;">
             <!-- 상태 행 -->
-            <div class="adm-detail-status-row">
-              <span class="adm-detail-status-label">상태 :</span>
+            <div class="rss-detail-status-row">
+              <span class="rss-detail-status-label">상태 :</span>
               <!-- [Java] th:text="${construction.statusNm}" / th:classappend 로 배지 클래스 분기 -->
               <span class="adm-badge adm-badge--progress">진행중</span>
               <!-- [Java] th:if="${construction.modifiedYn == 'Y'}" — 수정된 정보 배지 -->
