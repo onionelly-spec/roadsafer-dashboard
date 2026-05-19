@@ -982,7 +982,7 @@ document.querySelectorAll('.rss-tab').forEach(function(tab) {
   if (status === 'MATCHING') {
     /* 매칭전: 안내문+버튼 표시, 테이블 숨김 */
     if (notice)    notice.style.display    = '';
-    if (tableWrap) tableWrap.classList.remove('open');
+    if (tableWrap) tableWrap.style.display = 'none';
     if (fileArea)  fileArea.style.display  = 'none';
   } else {
     /* 매칭전 외: 안내문+버튼 숨김, 테이블 표시 */
