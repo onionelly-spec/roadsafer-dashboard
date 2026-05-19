@@ -47,7 +47,7 @@
         <div class="rss-board-toolbar">
           <div class="rss-board-toolbar__right">
             <!-- [Java] 검색 드롭다운 — th:value 바인딩 -->
-            <select id="nonPerfSearchType" class="rss-select" style="width:130px;">
+            <select id="nonPerfSearchType" class="rss-select">
               <!-- [Java] th:selected="${searchType == 'constructionNm'}" -->
               <option value="">선택</option>
               <option value="constructionNm">공사명</option>
@@ -64,7 +64,6 @@
             </button>
             <!-- 전체보기 버튼 — 검색 실행 후 .is-searched 클래스에 의해 표시됨 -->
             <button type="button" class="rss-btn rss-btn--view-all" id="nonPerfBtnViewAll" onclick="resetNonPerfSearch()">
-              <i data-lucide="list" style="width:14px;height:14px;"></i>
               전체보기
             </button>
           </div>
