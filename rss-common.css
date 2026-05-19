@@ -720,7 +720,7 @@ img { max-width: 100%; display: block; }
 /* 목록 — list 아이콘 (outline 스타일)
    사용법: <a href="..." class="rss-btn rss-btn--list">목록</a> */
 .rss-btn--list {
-  background: transparent;
+  background: #ffffff;
   border: 1.5px solid var(--rss-border);
   color: var(--rss-text);
   display: inline-flex;
@@ -747,7 +747,7 @@ img { max-width: 100%; display: block; }
 /* 수정 — pencil 아이콘 (outline 스타일)
    사용법: <button class="rss-btn rss-btn--edit">수정</button> */
 .rss-btn--edit {
-  background: transparent;
+  background: #ffffff;
   border: 1.5px solid var(--rss-border);
   color: var(--rss-text);
   display: inline-flex;
