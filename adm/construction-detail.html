@@ -486,53 +486,37 @@
         </div><!-- /write-section__body -->
       </section><!-- /write-section 공사 상세 -->
       <!-- 하단 버튼: 탭1 공사 정보 -->
-      <div class="rss-page-actions rss-page-actions--split" data-tab-actions="tab-info">
-        <div class="rss-page-actions__left">
+      <div class="rss-page-actions" style="justify-content:space-between;" data-tab-actions="tab-info">
+        <div style="display:flex;gap:8px;align-items:center;">
           <!-- [Java] 수정 버튼: construction-write.html?seq=${construction.constructionSeq} -->
-          <a href="construction-write.html?seq=1001" class="rss-btn rss-btn--outline">
-            <i data-lucide="pencil" style="width:14px;height:14px;"></i> 수정
-          </a>
+          <a href="construction-write.html?seq=1001" class="rss-btn adm-btn--cancel">수정</a>
           <!-- [Java] th:if="${construction.status != 'CANCELLED' and construction.status != 'COMPLETED'}" -->
-          <button type="button" class="rss-btn rss-btn--outline-cancel" onclick="openConstCancelModal()">
-            <i data-lucide="x-circle" style="width:14px;height:14px;"></i> 공사 취소
-          </button>
+          <button type="button" class="rss-btn adm-btn--delete" onclick="openConstCancelModal()">공사 취소</button>
         </div>
-        <div class="rss-page-actions__right">
-          <a href="construction-list.html" class="rss-btn rss-btn--outline">
-            <i data-lucide="list" style="width:14px;height:14px;"></i> 목록
-          </a>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <a href="construction-list.html" class="rss-btn adm-btn--cancel">목록</a>
         </div>
       </div><!-- /rss-page-actions tab-info -->
       <!-- 하단 버튼: 탭2 차단 정보 -->
-      <div class="rss-page-actions rss-page-actions--split" data-tab-actions="tab-block" style="display:none;">
-        <div class="rss-page-actions__left">
+      <div class="rss-page-actions" style="justify-content:space-between;display:none;" data-tab-actions="tab-block">
+        <div style="display:flex;gap:8px;align-items:center;">
           <!-- [Java] th:if="${blockReq != null}" -->
-          <button type="button" class="rss-btn rss-btn--outline" onclick="openBlockReqEditModal()">
-            <i data-lucide="pencil" style="width:14px;height:14px;"></i> 수정
-          </button>
+          <button type="button" class="rss-btn adm-btn--cancel" onclick="openBlockReqEditModal()">수정</button>
           <!-- [Java] th:if="${blockReq != null and blockReq.status == 'SCHEDULED'}" -->
-          <button type="button" class="rss-btn rss-btn--outline-cancel" onclick="openBlockReqCancelConfirm()">
-            <i data-lucide="x-circle" style="width:14px;height:14px;"></i> 차단신청 취소
-          </button>
+          <button type="button" class="rss-btn adm-btn--delete" onclick="openBlockReqCancelConfirm()">차단신청 취소</button>
         </div>
-        <div class="rss-page-actions__right">
-          <a href="construction-list.html" class="rss-btn rss-btn--outline">
-            <i data-lucide="list" style="width:14px;height:14px;"></i> 목록
-          </a>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <a href="construction-list.html" class="rss-btn adm-btn--cancel">목록</a>
         </div>
       </div><!-- /rss-page-actions tab-block -->
       <!-- 하단 버튼: 탭3 진행 상황 -->
-      <div class="rss-page-actions rss-page-actions--split" data-tab-actions="tab-status" style="display:none;">
-        <div class="rss-page-actions__left">
+      <div class="rss-page-actions" style="justify-content:space-between;display:none;" data-tab-actions="tab-status">
+        <div style="display:flex;gap:8px;align-items:center;">
           <!-- [Java] th:if="${construction.status == 'IN_PROGRESS'}" -->
-          <button type="button" class="rss-btn rss-btn--outline-cancel" onclick="openConstCompleteModal()">
-            <i data-lucide="check-circle" style="width:14px;height:14px;"></i> 공사 종료
-          </button>
+          <button type="button" class="rss-btn adm-btn--save" onclick="openConstCompleteModal()">공사 종료</button>
         </div>
-        <div class="rss-page-actions__right">
-          <a href="construction-list.html" class="rss-btn rss-btn--outline">
-            <i data-lucide="list" style="width:14px;height:14px;"></i> 목록
-          </a>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <a href="construction-list.html" class="rss-btn adm-btn--cancel">목록</a>
         </div>
       </div><!-- /rss-page-actions tab-status -->
     </main>
