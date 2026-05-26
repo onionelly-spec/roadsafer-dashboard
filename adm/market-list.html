@@ -327,42 +327,35 @@
              → 경고창: 삭제하시겠습니까? → 예 → 삭제 처리 후 새로고침
              → 체크 없을 때: 1개 이상을 선택하세요.
         ──────────────────────────────────────────────────── -->
-        <div class="rss-page-actions rss-page-actions--between">
-          <!-- 좌측: 삭제 버튼 -->
-          <div>
+        <!-- rss-page-actions--split : 좌(삭제) / 중앙(페이지네이션) / 우(빈 공간) -->
+        <div class="rss-page-actions rss-page-actions--split">
+          <!-- ③ 삭제 버튼 (좌측) -->
+          <div class="rss-page-actions__left">
             <button type="button" class="rss-btn adm-btn--delete"
                     onclick="deleteSelectedMarkets()">삭제</button>
           </div>
           <!-- 가운데: 페이지네이션 -->
           <!-- [Java] th:replace="~{fragments/pagination :: pagination(${marketPage})}" -->
           <!-- 스토리보드: 갤러리형 12개 기준, PC 10개 / 모바일 5개 표시 -->
-          <nav class="rss-pagination" aria-label="페이지 탐색">
-            <button class="rss-pagination__btn" aria-label="처음">
-              <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
-            </button>
-            <button class="rss-pagination__btn" aria-label="이전">
-              <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
-            </button>
+          <div class="rss-pagination" id="marketPagination">
+            <button class="rss-pagination__btn" aria-label="첫 페이지" disabled>&lt;&lt;</button>
+            <button class="rss-pagination__btn" aria-label="이전" disabled>&lt;</button>
             <!-- [Java] th:each="pageNum : ${#numbers.sequence(startPage, endPage)}" -->
-            <button class="rss-pagination__btn active" aria-current="page">1</button>
-            <button class="rss-pagination__btn">2</button>
-            <button class="rss-pagination__btn">3</button>
-            <button class="rss-pagination__btn">4</button>
-            <button class="rss-pagination__btn">5</button>
-            <button class="rss-pagination__btn rss-pagination__btn--page-extra">6</button>
-            <button class="rss-pagination__btn rss-pagination__btn--page-extra">7</button>
-            <button class="rss-pagination__btn rss-pagination__btn--page-extra">8</button>
-            <button class="rss-pagination__btn rss-pagination__btn--page-extra">9</button>
-            <button class="rss-pagination__btn rss-pagination__btn--page-extra">10</button>
-            <button class="rss-pagination__btn" aria-label="다음">
-              <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
-            </button>
-            <button class="rss-pagination__btn" aria-label="마지막">
-              <i data-lucide="chevrons-right" style="width:14px;height:14px;"></i>
-            </button>
-          </nav>
+            <button class="rss-pagination__btn active" data-page="1">1</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="2">2</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="3">3</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="4">4</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="5">5</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="6">6</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="7">7</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="8">8</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="9">9</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="10">10</button>
+            <button class="rss-pagination__btn" aria-label="다음">&gt;</button>
+            <button class="rss-pagination__btn" aria-label="마지막">&gt;&gt;</button>
+          </div>
           <!-- 우측: 빈 공간 (좌우 대칭 정렬용) -->
-          <div style="min-width:80px;"></div>
+          <div class="rss-page-actions__right"></div>
         </div><!-- /rss-page-actions -->
 
       </div><!-- /rss-card -->
