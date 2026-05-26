@@ -271,38 +271,37 @@
              [Java] Pageable pageable = PageRequest.of(page, 30);
              ■ 페이지 번호 표시: PC 10개 / 모바일 5개 (6번 이후 hidden)
         ══════════════════════════════════════════════════ -->
-        <div class="rss-pagination rss-pagination--sales" id="salesPagination">
-          <button class="rss-pagination__btn" aria-label="첫음">
-            <i data-lucide="chevrons-left" class="rss-icon-14"></i>
-          </button>
-          <button class="rss-pagination__btn" aria-label="이전">
-            <i data-lucide="chevron-left" class="rss-icon-14"></i>
-          </button>
-          <!-- [Java] th:each="i : ${#numbers.sequence(1, totalPages)}" -->
-          <button class="rss-pagination__btn active">1</button>
-          <button class="rss-pagination__btn">2</button>
-          <button class="rss-pagination__btn">3</button>
-          <button class="rss-pagination__btn">4</button>
-          <button class="rss-pagination__btn">5</button>
-          <!-- 모바일에서 숨김 (6번 이후): rss-pagination__btn--page-extra -->
-          <button class="rss-pagination__btn rss-pagination__btn--page-extra">6</button>
-          <button class="rss-pagination__btn rss-pagination__btn--page-extra">7</button>
-          <button class="rss-pagination__btn rss-pagination__btn--page-extra">8</button>
-          <button class="rss-pagination__btn rss-pagination__btn--page-extra">9</button>
-          <button class="rss-pagination__btn rss-pagination__btn--page-extra">10</button>
-          <button class="rss-pagination__btn" aria-label="다음">
-            <i data-lucide="chevron-right" class="rss-icon-14"></i>
-          </button>
-          <button class="rss-pagination__btn" aria-label="마지막">
-            <i data-lucide="chevrons-right" class="rss-icon-14"></i>
-          </button>
-        </div>
-
-        <!-- ③ 엑셀 다운로드 (하단) -->
-        <!-- [Java] /adm/sales/excel?year=&month=&searchType=&searchKeyword= -->
-        <div class="rss-page-actions rss-page-actions--right rss-page-actions--no-border rss-page-actions--excel-bottom">
+        <!-- 페이지네이션 + 엑셀 다운로드 동일 행 -->
+        <div class="sales-pagination-row">
+          <div class="rss-pagination rss-pagination--sales" id="salesPagination">
+            <button class="rss-pagination__btn" aria-label="첫음">
+              <i data-lucide="chevrons-left" class="rss-icon-14"></i>
+            </button>
+            <button class="rss-pagination__btn" aria-label="이전">
+              <i data-lucide="chevron-left" class="rss-icon-14"></i>
+            </button>
+            <!-- [Java] th:each="i : ${#numbers.sequence(1, totalPages)}" -->
+            <button class="rss-pagination__btn active">1</button>
+            <button class="rss-pagination__btn">2</button>
+            <button class="rss-pagination__btn">3</button>
+            <button class="rss-pagination__btn">4</button>
+            <button class="rss-pagination__btn">5</button>
+            <!-- 모바일에서 숨김 (6번 이후): rss-pagination__btn--page-extra -->
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">6</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">7</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">8</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">9</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">10</button>
+            <button class="rss-pagination__btn" aria-label="다음">
+              <i data-lucide="chevron-right" class="rss-icon-14"></i>
+            </button>
+            <button class="rss-pagination__btn" aria-label="마지막">
+              <i data-lucide="chevrons-right" class="rss-icon-14"></i>
+            </button>
+          </div>
+          <!-- [Java] /adm/sales/excel?year=&month=&searchType=&searchKeyword= -->
           <button type="button" class="rss-btn adm-btn--excel" onclick="downloadSalesExcel()">엑셀 다운로드</button>
-        </div>
+        </div><!-- /sales-pagination-row -->
 
       </div><!-- /rss-card -->
     </main>
