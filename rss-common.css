@@ -3195,3 +3195,25 @@ img.rss-img-error {
 .company-modal__close:hover::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E");
 }
+
+/* 진행상황 탭 전용 수정 버튼 — slate 채움 (소형) */
+.rss-cal-btn-modify {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--rss-radius);
+  border: none;
+  background: #64748b;
+  color: #fff;
+  font-size: var(--rss-font-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.rss-cal-btn-modify:hover {
+  background: #475569;
+  transform: translateY(-1px);
+}

@@ -402,8 +402,7 @@
                                 class="rss-cal-btn-done"
                                 onclick="openAdmDailyProgCompleteModal('2026-06-27')">완료</button>
                         <button type="button"
-                                class="rss-cal-btn-done"
-                                style="background:#64748b;"
+                                class="rss-cal-btn-modify"
                                 onclick="openAdmDailyProgModifyModal('2026-06-27')">수정</button>
                         <button type="button"
                                 class="rss-cal-btn-cancel"
@@ -501,8 +500,7 @@
                   <div class="rss-cal-list-btns">
                     <button type="button" class="rss-cal-btn-done"
                             onclick="openAdmDailyProgCompleteModal('2026-06-27')">완료</button>
-                    <button type="button" class="rss-cal-btn-done"
-                            style="background:#64748b;"
+                    <button type="button" class="rss-cal-btn-modify"
                             onclick="openAdmDailyProgModifyModal('2026-06-27')">수정</button>
                     <button type="button" class="rss-cal-btn-cancel"
                             onclick="openAdmDailyProgCancelModal('2026-06-27')">취소</button>
@@ -583,10 +581,27 @@
         </div>
       </div><!-- /rss-page-actions tab-block -->
       <!-- 하단 버튼: 탭3 진행 상황 -->
+      <!--
+        상태별 하단 버튼 규칙 (tab-status)
+        ──────────────────────────────────────────────────
+        MATCHING  : [목록] 버튼만 표시
+        SCHEDULED : [공사정보 수정] [공사 종료] [목록]
+        PROGRESS  : [공사정보 수정] [공사 종료] [목록]
+        COMPLETE  : [목록] 버튼만 표시
+        CANCEL    : [목록] 버튼만 표시
+        ──────────────────────────────────────────────────
+        [Java] th:if 로 상태별 분기 시:
+          공사정보 수정 버튼: th:if="${construction.status == 'SCHEDULED' or construction.status == 'PROGRESS'}"
+          공사 종료 버튼:    th:if="${construction.status == 'SCHEDULED' or construction.status == 'PROGRESS'}"
+      -->
       <div class="rss-page-actions" style="justify-content:space-between;display:none;" data-tab-actions="tab-status">
-        <div style="display:flex;gap:8px;align-items:center;">
-          <!-- [Java] th:if="${construction.status == 'IN_PROGRESS'}" -->
-          <button type="button" class="rss-btn adm-btn--save" onclick="openConstCompleteModal()">공사 종료</button>
+        <div style="display:flex;gap:8px;align-items:center;" id="statusTabBtns">
+          <!-- [Java] th:if="${construction.status == 'SCHEDULED' or construction.status == 'PROGRESS'}" -->
+          <!-- [Java] href: construction-write.html?seq=${construction.constructionSeq} -->
+          <a href="construction-write.html?seq=1001" class="rss-btn rss-btn--edit" id="btnStatusEdit">공사정보 수정</a>
+          <!-- [Java] th:if="${construction.status == 'SCHEDULED' or construction.status == 'PROGRESS'}" -->
+          <button type="button" class="rss-btn adm-btn--save" id="btnConstComplete"
+                  onclick="openConstCompleteModal()">공사 종료</button>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           <a href="construction-list.html" class="rss-btn rss-btn--list">목록</a>
@@ -1293,6 +1308,70 @@ document.querySelectorAll('.rss-tab').forEach(function(tab) {
   var btnConstCancel = document.getElementById('btnConstCancel');
   if (btnConstEdit)   btnConstEdit.style.display   = showInfoBtns ? '' : 'none';
   if (btnConstCancel) btnConstCancel.style.display = showInfoBtns ? '' : 'none';
+})();
+
+/* ── M1-3: 진행 상황 탭 상태별 UI 분기 ─────────────────────────────────
+   상태 코드(construction.status) 기준:
+   - MATCHING  : 매칭 전 → 모든 배지를 '예정'으로 표시, 완료/수정/취소 버튼 숨김,
+                           공사정보수정·공사종료 버튼 숨김
+   - SCHEDULED : 예정    → 현재 화면 그대로 (오늘 날짜 버튼 표시)
+   - PROGRESS  : 진행 중 → 현재 화면 그대로 (오늘 날짜 버튼 표시)
+   - COMPLETE  : 종료    → 날짜별 정보만 제시, 완료/수정/취소 버튼 숨김,
+                           공사정보수정·공사종료 버튼 숨김
+   - CANCEL    : 취소    → 날짜별 정보만 제시, 완료/수정/취소 버튼 숨김,
+                           공사정보수정·공사종료 버튼 숨김
+   [Java] th:data-status="${construction.status}" 로 주입 (tab-status 요소)
+──────────────────────────────────────────────────────────────────────── */
+(function initStatusTabByStatus() {
+  var tabStatus = document.getElementById('tab-status');
+  if (!tabStatus) return;
+
+  /* 더미 데이터: URL 파라미터 status 우선 적용 (Java 연동 후 제거) */
+  var urlStatus = new URLSearchParams(location.search).get('status');
+  var status = urlStatus || tabStatus.getAttribute('data-status') || 'SCHEDULED';
+
+  /* 완료/수정/취소 작동 버튼 표시 여부: SCHEDULED, PROGRESS 일 때만 */
+  var showActionBtns = (status === 'SCHEDULED' || status === 'PROGRESS');
+  /* 하단 공사정보수정·공사종료 버튼 표시 여부: COMPLETE, CANCEL 일 때만 숨김 */
+  var showStatusBtns  = (status !== 'COMPLETE' && status !== 'CANCEL');
+
+  /* ① 매칭 전: 모든 날짜 배지를 '예정'으로 교체, 금액 숨김 */
+  if (status === 'MATCHING') {
+    var badges = tabStatus.querySelectorAll(
+      '.rss-cal-badge--rehearsal, .rss-cal-badge--complete, .rss-cal-badge--cancel, .rss-cal-badge--none'
+    );
+    badges.forEach(function(badge) {
+      badge.className = 'rss-cal-badge rss-cal-badge--scheduled';
+      badge.textContent = '예정';
+      badge.removeAttribute('onclick');
+      badge.removeAttribute('title');
+      /* 금액 span 숨김 */
+      var amtEl = badge.nextElementSibling;
+      if (amtEl && amtEl.classList.contains('rss-cal-amount')) {
+        amtEl.style.display = 'none';
+      }
+    });
+    /* 금액 합계 행 숨김 */
+    var totalRow = tabStatus.querySelector('.adm-prog-total');
+    if (totalRow) totalRow.style.display = 'none';
+  }
+
+  /* ② 완료/수정/취소 버튼 영역 숨김 (MATCHING, COMPLETE, CANCEL)
+     [Java] th:if="${cell.isToday and (construction.status == 'SCHEDULED' or construction.status == 'PROGRESS')}" */
+  if (!showActionBtns) {
+    tabStatus.querySelectorAll('.rss-cal-today-btns, .rss-cal-list-btns').forEach(function(el) {
+      el.style.display = 'none';
+    });
+  }
+
+  /* ③ 하단 버튼: 공사정보 수정 / 공사 종료
+     MATCHING, SCHEDULED, PROGRESS 일 때 표시
+     COMPLETE, CANCEL 일 때만 숨김
+     [Java] th:if="${construction.status != 'COMPLETE' and construction.status != 'CANCEL'}" */
+  var btnStatusEdit    = document.getElementById('btnStatusEdit');
+  var btnConstComplete = document.getElementById('btnConstComplete');
+  if (btnStatusEdit)    btnStatusEdit.style.display    = showStatusBtns ? '' : 'none';
+  if (btnConstComplete) btnConstComplete.style.display = showStatusBtns ? '' : 'none';
 })();
 
 /* ── 차단업체 지정 콜백 ────────────────────────────────────────────── */
