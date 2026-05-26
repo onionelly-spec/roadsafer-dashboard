@@ -47,22 +47,33 @@
              [DB] rs_construction JOIN rs_company WHERE construction_seq=?
         ══════════════════════════════════════════════════ -->
         <div class="sales-section-top">
+          <!-- ① 공사 정보 테이블 (2단 분리형)
+               열 구조: [공사정보 th] [공사정보 td] [차단기업 th rowspan=5] [차단기업 항목 th] [차단기업 값 td]
+          -->
           <table class="sales-info-table" id="salesDetailTable">
+            <colgroup>
+              <col class="sales-info-col-label" />   <!-- 공사정보 항목명 -->
+              <col class="sales-info-col-value" />   <!-- 공사정보 값 -->
+              <col class="sales-info-col-group" />   <!-- 차단기업 그룹명 -->
+              <col class="sales-info-col-label" />   <!-- 차단기업 항목명 -->
+              <col class="sales-info-col-value" />   <!-- 차단기업 값 -->
+            </colgroup>
             <tbody>
-              <!-- 행 1: 공사종료일 / 아이디 -->
+              <!-- 행 1: 공사종료일 | 차단기업(rowspan=5) | 아이디 -->
               <tr>
                 <th>공사종료일</th>
                 <td>
                   <!-- [Java] ${#temporals.format(construction.endDt,'yyyy-MM-dd')} -->
                   2026-06-25
                 </td>
+                <th rowspan="5" class="sales-info__block-corp-th">차단기업</th>
                 <th>아이디</th>
                 <td>
                   <!-- [Java] ${blockCompany.loginId} -->
                   roadace
                 </td>
               </tr>
-              <!-- 행 2: 공사기간 / 상호 -->
+              <!-- 행 2: 공사기간 | 상호 -->
               <tr>
                 <th>공사기간</th>
                 <td>
@@ -70,16 +81,15 @@
                   2026-06-12 ~ 2026-06-16
                   <span class="sales-period-sub">(4일)</span>
                 </td>
-                <th rowspan="3" class="sales-info__block-corp-th">차단기업</th>
                 <th>상호</th>
                 <td>
                   <!-- [Java] th:href="@{/adm/company/block/detail/{id}(id=${blockCompany.companySeq})}" (M4-1-1) -->
-                  <a href="company-block-detail.html" class="rss-link">
+                  <a href="company-detail.html?seq=2&status=normal" class="rss-link">
                     잘한도로차단<!-- [Java] ${blockCompany.companyNm} -->
                   </a>
                 </td>
               </tr>
-              <!-- 행 3: 공사명 / 사업자번호 -->
+              <!-- 행 3: 공사명 | 사업자번호 -->
               <tr>
                 <th>공사명</th>
                 <td>
@@ -92,12 +102,12 @@
                   000-00-00000
                 </td>
               </tr>
-              <!-- 행 4: 발주업체명 / 대표자명 -->
+              <!-- 행 4: 발주업체명 | 대표자명 -->
               <tr>
                 <th>발주업체명</th>
                 <td>
                   <!-- [Java] th:href="@{/adm/company/order/detail/{id}(id=${orderCompany.companySeq})}" (M4-3-1) -->
-                  <a href="company-order-detail.html" class="rss-link">
+                  <a href="order-corp-write.html?seq=1001" class="rss-link">
                     웅진토건<!-- [Java] ${orderCompany.companyNm} -->
                   </a>
                 </td>
@@ -107,7 +117,7 @@
                   <a href="#" class="rss-link">나홍익</a>
                 </td>
               </tr>
-              <!-- 행 5: 총 금액 / 담당자 -->
+              <!-- 행 5: 총 금액 | 담당자 -->
               <tr>
                 <th>총 금액</th>
                 <td>

@@ -2325,6 +2325,11 @@
 }
 
 /* §M9-6. 매출 상세 — 공사 정보 테이블 (2단 분리형) */
+/* 공사정보 테이블 colgroup 열 너비 */
+.sales-info-col-label { width: 110px; }  /* 항목명 th */
+.sales-info-col-value { }               /* 값 td — 자동 */
+.sales-info-col-group { width: 80px; }  /* 차단기업 그룹명 th */
+
 .sales-info-table {
   width: 100%;
   border-collapse: collapse;
