@@ -149,7 +149,7 @@
                   <td>
                     <div class="admin-tel-wrap">
                       <!-- [Java] th:value="${admin.adminTel1}" -->
-                      <select id="adminTel1" name="adminTel1" class="rss-select admin-tel-wrap__rss-select--tel">
+                      <select id="adminTel1" name="adminTel1" class="rss-select rss-select--tel">
                         <option value="010" selected>010</option>
                         <option value="011">011</option>
                         <option value="016">016</option>
@@ -160,14 +160,14 @@
                       <span class="admin-tel-sep">-</span>
                       <!-- [Java] th:value="${admin.adminTel2}" -->
                       <input type="text" id="adminTel2" name="adminTel2"
-                             class="rss-input admin-tel-wrap__rss-input--tel"
+                             class="rss-input rss-input--tel"
                              maxlength="4" inputmode="numeric"
                              placeholder="0000"
                              value="" />
                       <span class="admin-tel-sep">-</span>
                       <!-- [Java] th:value="${admin.adminTel3}" -->
                       <input type="text" id="adminTel3" name="adminTel3"
-                             class="rss-input admin-tel-wrap__rss-input--tel"
+                             class="rss-input rss-input--tel"
                              maxlength="4" inputmode="numeric"
                              placeholder="0000"
                              value="" />
@@ -184,18 +184,18 @@
                     <div class="admin-email-wrap">
                       <!-- [Java] th:value="${admin.adminEmailId}" -->
                       <input type="text" id="adminEmailId" name="adminEmailId"
-                             class="rss-input admin-email-wrap__rss-input--email-id"
+                             class="rss-input rss-input--email-id"
                              placeholder="이메일 아이디"
                              maxlength="50"
                              value="" />
                       <span class="admin-email-at">@</span>
                       <!-- [Java] th:value="${admin.adminEmailDomain}" -->
                       <input type="text" id="adminEmailDomain" name="adminEmailDomain"
-                             class="rss-input admin-email-wrap__rss-input--email-domain"
+                             class="rss-input rss-input--email-domain"
                              placeholder="도메인"
                              maxlength="50"
                              value="" />
-                      <select id="adminEmailSelect" class="rss-select admin-email-wrap__rss-select--email"
+                      <select id="adminEmailSelect" class="rss-select rss-select--email"
                               onchange="applyAdminEmailDomain(this.value)">
                         <option value="">선택</option>
                         <option value="gmail.com">gmail.com</option>
@@ -218,14 +218,14 @@
                 <tr>
                   <th scope="row">권한</th>
                   <td>
-                    <div class="adm-inline-group">
+                    <div class="adm-radio-group">
                       <!-- [Java] th:checked="${admin.adminRole == 'SUPER'}" -->
-                      <label class="adm-radio-label">
+                      <label>
                         <input type="radio" name="adminRole" value="SUPER" />
                         최고관리자
                       </label>
                       <!-- [Java] th:checked="${admin.adminRole == 'CALLCTR'}" -->
-                      <label class="adm-radio-label">
+                      <label>
                         <input type="radio" name="adminRole" value="CALLCTR" checked />
                         콜센터
                       </label>
@@ -239,14 +239,14 @@
                 <tr>
                   <th scope="row">상태<span class="required">*</span></th>
                   <td>
-                    <div class="adm-inline-group">
+                    <div class="adm-radio-group">
                       <!-- [Java] th:checked="${admin.useYn == 'Y' or admin.useYn == null}" -->
-                      <label class="adm-radio-label">
+                      <label>
                         <input type="radio" name="adminUseYn" value="Y" checked />
                         공개
                       </label>
                       <!-- [Java] th:checked="${admin.useYn == 'N'}" -->
-                      <label class="adm-radio-label">
+                      <label>
                         <input type="radio" name="adminUseYn" value="N" />
                         비공개
                       </label>
