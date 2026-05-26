@@ -8,14 +8,12 @@
   <!-- 공통 CSS -->
   <link rel="stylesheet" href="../rss-common.css?v=20260526" />
   <link rel="stylesheet" href="adm-common-v2.css?v=20260526" />
-  <!-- Quill 리치 에디터 CSS -->
-  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide 아이콘 CDN -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <!-- Quill 리치 에디터 JS -->
-  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+  <!-- CKEditor 4 CDN (standard 빌드, 한국어 포함) -->
+  <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 </head>
 <body>
 <!-- ══════════════════════════════════════════════════
@@ -50,8 +48,6 @@
       <form id="noticeWriteForm" method="post" action="#" enctype="multipart/form-data" novalidate>
         <!-- [Java] CSRF: th:hidden th:name="${_csrf.parameterName}" th:value="${_csrf.token}" -->
         <!-- [Java] 수정 모드: <input type="hidden" name="noticeSeq" th:value="${notice.noticeSeq}"> -->
-        <!-- 에디터 내용 hidden 필드 (submit 시 채워짐) -->
-        <input type="hidden" id="noticeContentHidden" name="noticeContent" />
 
         <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
              섹션: 공지사항 정보
@@ -103,20 +99,21 @@
                   </td>
                 </tr>
 
-                <!-- ─── 행 3: 내용 (리치 에디터) ──────────────────────────
+                <!-- ─── 행 3: 내용 (CKEditor 4) ───────────────────────────
                      스토리보드: 에디터에서 내용 작성
-                     Quill.js Snow 테마 사용
+                     CKEditor 4 standard 빌드, 한국어 UI
                 ──────────────────────────────────────────────────────── -->
                 <tr>
                   <th scope="row" style="vertical-align:top;padding-top:12px;">
                     내용<span class="required">*</span>
                   </th>
                   <td>
-                    <!-- Quill 에디터 래퍼 -->
-                    <div class="notice-editor-wrap">
-                      <!-- [Java] 수정 모드: Quill.setContents(JSON.parse('${notice.noticeContent}')) -->
-                      <div id="noticeEditor"></div>
-                    </div>
+                    <!-- CKEditor 4: textarea를 에디터로 대체 -->
+                    <!-- [Java] 수정 모드: th:text="${notice.noticeContent}" -->
+                    <textarea id="noticeContent" name="noticeContent"
+                              class="notice-editor-wrap"
+                              style="width:100%;min-height:300px;"
+                              placeholder="공지 내용을 입력하세요."></textarea>
                   </td>
                 </tr>
 
@@ -201,8 +198,8 @@
           <button type="button" class="rss-btn adm-btn--cancel"
                   onclick="location.href='notice-list.html'">취소</button>
           <!-- ② 저장 -->
-          <button type="submit" class="rss-btn adm-btn--save"
-                  onclick="return submitNoticeForm(event)">저장</button>
+          <button type="button" class="rss-btn adm-btn--save"
+                  onclick="submitNoticeForm()">저장</button>
         </div>
       </form><!-- /noticeWriteForm -->
     </main>
@@ -215,31 +212,39 @@
 ══════════════════════════════════════════════════ -->
 <script src="adm-common.js?v=20260526"></script>
 <script>
-/* ─── 페이지 초기화 (직접 실행 — DOMContentLoaded 불필요) ─── */
-var noticeQuill = null;
-
-/* adm-common.js IIFE가 topbar/sidebar를 자동 삽입함 */
+/* ─── CKEditor 4 초기화 ──────────────────────────────
+   adm-common.js IIFE가 topbar/sidebar를 자동 삽입함
+   CKEditor는 스크립트 로드 후 바로 replace() 호출 가능
+──────────────────────────────────────────────────── */
 if (window.lucide) lucide.createIcons();
 
-/* Quill 에디터 초기화 */
-noticeQuill = new Quill('#noticeEditor', {
-  theme: 'snow',
-  placeholder: '공지 내용을 입력하세요.',
-  modules: {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'align': [] }],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      ['link', 'image'],
-      ['clean']
-    ]
-  }
+CKEDITOR.replace('noticeContent', {
+  language       : 'ko',          /* 한국어 UI */
+  height         : 300,
+  removePlugins  : 'elementspath', /* 하단 경로 표시 제거 */
+  toolbar: [
+    { name: 'styles',    items: ['Format', 'FontSize'] },
+    { name: 'basicstyles',
+      items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'] },
+    { name: 'colors',    items: ['TextColor', 'BGColor'] },
+    { name: 'paragraph',
+      items: ['NumberedList', 'BulletedList', '-',
+              'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+    { name: 'links',     items: ['Link', 'Unlink'] },
+    { name: 'insert',    items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+    { name: 'tools',     items: ['Maximize'] },
+    { name: 'document',  items: ['Source'] }
+  ],
+  /* [Java] 이미지 업로드 URL 설정 시 아래 주석 해제
+  filebrowserImageUploadUrl : '/adm/notice/upload/image',
+  filebrowserUploadUrl      : '/adm/notice/upload/file',
+  */
+  contentsCss: ['https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap',
+                'body { font-family: "Noto Sans KR", sans-serif; font-size: 14px; }']
 });
 
 /* [Java] 수정 모드: 기존 내용 로드
-   noticeQuill.root.innerHTML = /*[[${notice.noticeContent}]]*\/ '';
+   CKEDITOR.instances['noticeContent'].setData('${notice.noticeContent}');
 */
 
 /* 파일 input 재사용을 위해 값 초기화 */
@@ -252,10 +257,10 @@ function triggerNoticeFileInput() {
 
 /* ─── 첨부파일 추가 ─────────────────────────────────── */
 function addNoticeFiles(input) {
-  const fileList = document.getElementById('noticeFileList');
-  const existingCount = fileList.querySelectorAll('.notice-file-tag').length;
-  const files = Array.from(input.files);
-  const maxFiles = 10;
+  var fileList = document.getElementById('noticeFileList');
+  var existingCount = fileList.querySelectorAll('.notice-file-tag').length;
+  var files = Array.from(input.files);
+  var maxFiles = 10;
 
   if (existingCount + files.length > maxFiles) {
     alert('첨부파일은 최대 ' + maxFiles + '개까지 가능합니다.');
@@ -264,7 +269,7 @@ function addNoticeFiles(input) {
   }
 
   files.forEach(function(file) {
-    const tag = document.createElement('div');
+    var tag = document.createElement('div');
     tag.className = 'notice-file-tag';
     tag.dataset.newFile = 'true'; /* 신규 파일 구분 */
     tag.innerHTML =
@@ -282,11 +287,11 @@ function addNoticeFiles(input) {
 
 /* ─── 첨부파일 삭제 ─────────────────────────────────── */
 function removeNoticeFile(btn, attachSeq) {
-  const tag = btn.closest('.notice-file-tag');
+  var tag = btn.closest('.notice-file-tag');
   /* 기존 파일(수정 모드): deleteAttachSeqs에 seq 추가 */
   if (attachSeq) {
-    const seqInput = document.getElementById('noticeDeleteAttachSeqs');
-    const current = seqInput.value ? seqInput.value.split(',') : [];
+    var seqInput = document.getElementById('noticeDeleteAttachSeqs');
+    var current = seqInput.value ? seqInput.value.split(',') : [];
     current.push(String(attachSeq));
     seqInput.value = current.join(',');
   }
@@ -302,30 +307,31 @@ function escapeHtml(str) {
    필수 항목 확인 → 경고창 → 예 → 저장 후 목록(M5) 이동
    [Java] POST /adm/notice/reg  또는  PUT /adm/notice/mod/{seq}
 ──────────────────────────────────────────────────── */
-function submitNoticeForm(event) {
-  event.preventDefault();
-
-  /* 에디터 내용을 hidden 필드에 복사 */
-  const editorHtml = noticeQuill ? noticeQuill.root.innerHTML : '';
-  document.getElementById('noticeContentHidden').value = editorHtml;
-
-  /* 필수 항목 검증 */
-  const title   = document.getElementById('noticeTitle').value.trim();
-  const content = noticeQuill ? noticeQuill.getText().trim() : '';
-
+function submitNoticeForm() {
+  /* 제목 검증 */
+  var title = document.getElementById('noticeTitle').value.trim();
   if (!title) {
     alert('제목을 입력하세요.');
     document.getElementById('noticeTitle').focus();
-    return false;
+    return;
   }
-  if (!content) {
+
+  /* CKEditor 내용 검증 */
+  var editor  = CKEDITOR.instances['noticeContent'];
+  var content = editor ? editor.getData() : '';
+  /* 태그 제거 후 텍스트만 추출하여 공백 체크 */
+  var plainText = content.replace(/<[^>]*>/g, '').trim();
+  if (!plainText) {
     alert('내용을 입력하세요.');
-    noticeQuill && noticeQuill.focus();
-    return false;
+    if (editor) editor.focus();
+    return;
   }
 
   /* 저장 확인 */
-  if (!confirm('저장하시겠습니까?')) return false;
+  if (!confirm('저장하시겠습니까?')) return;
+
+  /* CKEditor 내용을 textarea에 동기화 (form submit 시 자동 처리되지만 명시적으로) */
+  if (editor) editor.updateElement();
 
   /* [Java] 서버 요청으로 교체:
      document.getElementById('noticeWriteForm').submit();
@@ -333,7 +339,6 @@ function submitNoticeForm(event) {
   console.log('[M5-1] 저장 요청 — title:', title);
   alert('저장 기능은 Java 연동 후 처리됩니다.');
   location.href = 'notice-list.html';
-  return false;
 }
 </script>
 </body>
