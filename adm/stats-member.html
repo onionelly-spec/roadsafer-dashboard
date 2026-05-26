@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>가입탈퇴현황 — 로드세이프티시스템 관리자</title>
+  <!-- 공통 CSS — Tailwind보다 먼저 로드 -->
+  <link rel="stylesheet" href="../rss-common.css?v=20260526" />
+  <link rel="stylesheet" href="adm-common-v2.css?v=20260526" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<!-- ══════════════════════════════════════════════════
+     M10-1. 가입탈퇴현황 — 관리자 페이지
+     코드: M10-1
+     경로: 로그인 > 통계 > 가입탈퇴현황
+     [Java] @GetMapping("/adm/stats/member")
+     [Java] 파라미터: year(int), month(int)
+     [Java] 기본값: 현재년 현재월
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+  <div class="adm-main">
+
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">가입탈퇴현황</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="#">로그인</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span>통계</span>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span class="adm-breadcrumb__current">가입탈퇴현황</span>
+      </nav>
+    </div>
+
+    <main class="rss-content">
+      <div class="rss-card">
+        <div class="stats-wrap">
+
+          <!-- ══════════════════════════════════════════════════
+               ① 기준일 + KPI 요약 카드
+               [Java] model.addAttribute("currentDt", "2026년 6월 5일")
+               [Java] model.addAttribute("blockCorpCnt", 1421)
+               [Java] model.addAttribute("blockEmpCnt", 558)
+               [Java] model.addAttribute("orderCorpCnt", 78)
+               ※ 접속일 기준 / 탈퇴·반려 회원 제외한 순수 회원 수
+          ══════════════════════════════════════════════════ -->
+          <!-- [Java] th:text="${currentDt}+' 현재'" -->
+          <p class="stats-current-date" id="statsCurrentDate">
+            2026년 6월 5일 현재<!-- [Java] ${currentDt} 현재 -->
+          </p>
+
+          <div class="stats-kpi-wrap" id="statsKpiWrap">
+            <!-- KPI 카드 1: 차단기업 회원 수 -->
+            <div class="stats-kpi-card" id="statsKpiBlockCorp">
+              <span class="stats-kpi-card__label">차단기업 회원 수</span>
+              <!-- [Java] th:text="${#numbers.formatInteger(blockCorpCnt, 0, 'COMMA')}" -->
+              <span class="stats-kpi-card__value">1,421</span>
+            </div>
+            <!-- KPI 카드 2: 차단기업 직원 회원 수 -->
+            <div class="stats-kpi-card" id="statsKpiBlockEmp">
+              <span class="stats-kpi-card__label">차단기업 직원 회원 수</span>
+              <!-- [Java] th:text="${#numbers.formatInteger(blockEmpCnt, 0, 'COMMA')}" -->
+              <span class="stats-kpi-card__value">558</span>
+            </div>
+            <!-- KPI 카드 3: 등록 발주업체 수 -->
+            <div class="stats-kpi-card" id="statsKpiOrderCorp">
+              <span class="stats-kpi-card__label">등록 발주업체 수</span>
+              <!-- [Java] th:text="${#numbers.formatInteger(orderCorpCnt, 0, 'COMMA')}" -->
+              <span class="stats-kpi-card__value">78</span>
+            </div>
+          </div><!-- /stats-kpi-wrap -->
+
+          <!-- ══════════════════════════════════════════════════
+               ② 년월 네비게이터 + ③ 엑셀 다운로드
+               [Java] model.addAttribute("currentYear", 2026)
+               [Java] model.addAttribute("currentMonth", 6)
+               [Java] model.addAttribute("prevYear", prevYear)
+               [Java] model.addAttribute("prevMonth", prevMonth)
+               [Java] model.addAttribute("nextYear", nextYear)
+               [Java] model.addAttribute("nextMonth", nextMonth)
+          ══════════════════════════════════════════════════ -->
+          <div class="stats-toolbar" id="statsMemberMonthNav">
+            <!-- 년월 네비게이터 (좌측) -->
+            <div class="stats-month-nav">
+              <!-- 이전 달 버튼 -->
+              <!-- [Java] th:href="@{/adm/stats/member?year=${prevYear}&month=${prevMonth}}" -->
+              <button type="button" class="stats-month-nav__btn"
+                      onclick="changeStatsMonth(-1)" aria-label="이전 달">
+                <i data-lucide="chevron-left" class="rss-icon-16"></i>
+              </button>
+
+              <!-- 년월 표시 (클릭 시 드롭다운) -->
+              <span class="stats-month-nav__label" id="statsMemberMonthLabel">
+                <span id="statsMemberYearDisplay"
+                      class="stats-month-nav__year-btn"
+                      onclick="toggleStatsYearDropdown(event)">
+                  2026년<!-- [Java] ${currentYear}년 -->
+                </span>
+                <span id="statsMemberMonthDisplay"
+                      class="stats-month-nav__month-btn"
+                      onclick="toggleStatsMonthDropdown(event)">
+                  6월<!-- [Java] ${currentMonth}월 -->
+                </span>
+
+                <!-- 년도 드롭다운 -->
+                <div class="sales-month-dropdown hidden" id="statsMemberYearDropdown">
+                  <!-- [Java] th:each="y : ${yearList}" -->
+                  <div class="sales-month-dropdown__item" onclick="selectStatsYear(2024)">2024년</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsYear(2025)">2025년</div>
+                  <div class="sales-month-dropdown__item active" onclick="selectStatsYear(2026)">2026년</div>
+                </div>
+
+                <!-- 월 드롭다운 -->
+                <div class="sales-month-dropdown hidden" id="statsMemberMonthDropdown">
+                  <!-- [Java] th:each="m : ${#numbers.sequence(1,12)}" -->
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(1)">1월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(2)">2월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(3)">3월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(4)">4월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(5)">5월</div>
+                  <div class="sales-month-dropdown__item active" onclick="selectStatsMonth(6)">6월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(7)">7월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(8)">8월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(9)">9월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(10)">10월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(11)">11월</div>
+                  <div class="sales-month-dropdown__item" onclick="selectStatsMonth(12)">12월</div>
+                </div>
+              </span>
+
+              <!-- 다음 달 버튼 -->
+              <!-- [Java] th:href="@{/adm/stats/member?year=${nextYear}&month=${nextMonth}}" -->
+              <button type="button" class="stats-month-nav__btn"
+                      onclick="changeStatsMonth(1)" aria-label="다음 달">
+                <i data-lucide="chevron-right" class="rss-icon-16"></i>
+              </button>
+            </div><!-- /stats-month-nav -->
+
+            <!-- ③ 엑셀 다운로드 (우측) -->
+            <!-- [Java] @{/adm/stats/member/excel?year=${currentYear}&month=${currentMonth}} -->
+            <button type="button" class="rss-btn adm-btn--excel"
+                    onclick="downloadStatsMemberExcel()">엑셀 다운로드</button>
+          </div><!-- /stats-toolbar -->
+
+          <!-- ══════════════════════════════════════════════════
+               ④ 가입탈퇴현황 테이블
+               매월 1일부터 말일까지 순서대로 통계 제시
+               [Java] model.addAttribute("statsList", statsList)
+               [Java] model.addAttribute("totalRow", totalRow)
+               컬럼: 날짜 / 가입(차단기업·차단기업직원·발주기업) /
+                     탈퇴(차단기업·차단기업직원) /
+                     반려(차단기업·차단기업직원)
+          ══════════════════════════════════════════════════ -->
+          <div class="rss-table-wrap">
+            <table class="stats-table" aria-label="가입탈퇴현황 테이블">
+              <colgroup>
+                <col class="stats-col-date" /><!-- 날짜 -->
+                <col class="stats-col-num" /><!-- 가입: 차단기업 -->
+                <col class="stats-col-num" /><!-- 가입: 차단기업 직원 -->
+                <col class="stats-col-num" /><!-- 가입: 발주기업 -->
+                <col class="stats-col-num" /><!-- 탈퇴: 차단기업 -->
+                <col class="stats-col-num" /><!-- 탈퇴: 차단기업 직원 -->
+                <col class="stats-col-num" /><!-- 반려: 차단기업 -->
+                <col class="stats-col-num" /><!-- 반려: 차단기업 직원 -->
+              </colgroup>
+              <thead>
+                <!-- 1행: 그룹 헤더 -->
+                <tr>
+                  <th rowspan="2" class="stats-col-date">날짜</th>
+                  <th colspan="3" class="stats-table__group-th">가입</th>
+                  <th colspan="2" class="stats-table__group-th">탈퇴</th>
+                  <th colspan="2" class="stats-table__group-th">반려</th>
+                </tr>
+                <!-- 2행: 세부 컬럼 헤더 -->
+                <tr>
+                  <th>차단기업</th>
+                  <th>차단기업 직원</th>
+                  <th>발주기업</th>
+                  <th>차단기업</th>
+                  <th>차단기업 직원</th>
+                  <th>차단기업</th>
+                  <th>차단기업 직원</th>
+                </tr>
+              </thead>
+              <tbody id="statsMemberTableBody">
+                <!-- ─── 합계 행 ─────────────────────────────────────
+                     [Java] th:with="t=${totalRow}"
+                ──────────────────────────────────────────────────── -->
+                <tr class="stats-table__total-row">
+                  <td>합계</td>
+                  <!-- [Java] th:text="${t.joinBlockCorp}" -->
+                  <td>16</td>
+                  <!-- [Java] th:text="${t.joinBlockEmp}" -->
+                  <td>9</td>
+                  <!-- [Java] th:text="${t.joinOrderCorp}" -->
+                  <td>18</td>
+                  <!-- [Java] th:text="${t.withdrawBlockCorp}" -->
+                  <td>7</td>
+                  <!-- [Java] th:text="${t.withdrawBlockEmp}" -->
+                  <td>8</td>
+                  <!-- [Java] th:text="${t.rejectBlockCorp}" -->
+                  <td>7</td>
+                  <!-- [Java] th:text="${t.rejectBlockEmp}" -->
+                  <td>8</td>
+                </tr>
+
+                <!-- ─── 날짜별 데이터 행 ────────────────────────────
+                     [Java] th:each="row : ${statsList}"
+                ──────────────────────────────────────────────────── -->
+                <!-- [Java] th:text="${row.statDt}" -->
+                <tr>
+                  <td>2026-06-01</td>
+                  <!-- [Java] th:text="${row.joinBlockCorp}" -->
+                  <td>4</td>
+                  <!-- [Java] th:text="${row.joinBlockEmp}" -->
+                  <td>1</td>
+                  <!-- [Java] th:text="${row.joinOrderCorp}" -->
+                  <td>2</td>
+                  <!-- [Java] th:text="${row.withdrawBlockCorp}" -->
+                  <td>0</td>
+                  <!-- [Java] th:text="${row.withdrawBlockEmp}" -->
+                  <td>0</td>
+                  <!-- [Java] th:text="${row.rejectBlockCorp}" -->
+                  <td>1</td>
+                  <!-- [Java] th:text="${row.rejectBlockEmp}" -->
+                  <td>4</td>
+                </tr>
+                <tr>
+                  <td>2026-06-02</td>
+                  <td>1</td>
+                  <td>0</td>
+                  <td>4</td>
+                  <td>3</td>
+                  <td>6</td>
+                  <td>2</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td>2026-06-03</td>
+                  <td>7</td>
+                  <td>4</td>
+                  <td>8</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>1</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td>2026-06-04</td>
+                  <td>1</td>
+                  <td>3</td>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>0</td>
+                  <td>1</td>
+                  <td>2</td>
+                </tr>
+                <tr>
+                  <td>2026-06-05</td>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>1</td>
+                  <td>3</td>
+                  <td>2</td>
+                  <td>2</td>
+                  <td>0</td>
+                </tr>
+                <!-- [Java] /th:each -->
+
+              </tbody>
+            </table>
+          </div><!-- /rss-table-wrap -->
+
+        </div><!-- /stats-wrap -->
+      </div><!-- /rss-card -->
+    </main>
+    <div id="rss-footer-wrap"></div>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- ══════════════════════════════════════════════════
+     공통 스크립트
+══════════════════════════════════════════════════ -->
+<script src="../rss-common.js?v=20260507"></script>
+<script src="adm-common.js?v=20260507"></script>
+<script>
+/* ─── M10-1. 가입탈퇴현황 스크립트 ─────────────────────────
+   [Java 전환 시] 이 스크립트 블록 전체를 제거하고
+   서버 사이드 렌더링(Thymeleaf)으로 교체하세요.
+──────────────────────────────────────────────────────────── */
+
+/** 현재 선택 년/월 (퍼블리싱 더미) */
+let statsYear  = 2026;
+let statsMonth = 6;
+
+/**
+ * 이전/다음 달 이동
+ * [Java] GET /adm/stats/member?year=&month= 로 교체
+ */
+function changeStatsMonth(delta) {
+  statsMonth += delta;
+  if (statsMonth < 1)  { statsYear--;  statsMonth = 12; }
+  if (statsMonth > 12) { statsYear++;  statsMonth = 1;  }
+  document.getElementById('statsMemberYearDisplay').textContent  = statsYear  + '년';
+  document.getElementById('statsMemberMonthDisplay').textContent = statsMonth + '월';
+  /* [Java] window.location.href = '/adm/stats/member?year=' + statsYear + '&month=' + statsMonth; */
+  console.log('[M10-1] 월 변경 → ' + statsYear + '년 ' + statsMonth + '월 (Java 연동 후 서버 요청)');
+}
+
+/**
+ * 년도 드롭다운 토글
+ */
+function toggleStatsYearDropdown(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('statsMemberYearDropdown');
+  document.getElementById('statsMemberMonthDropdown').classList.add('hidden');
+  dd.classList.toggle('hidden');
+}
+
+/**
+ * 월 드롭다운 토글
+ */
+function toggleStatsMonthDropdown(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('statsMemberMonthDropdown');
+  document.getElementById('statsMemberYearDropdown').classList.add('hidden');
+  dd.classList.toggle('hidden');
+}
+
+/**
+ * 년도 선택
+ * [Java] GET /adm/stats/member?year=&month= 로 교체
+ */
+function selectStatsYear(year) {
+  statsYear = year;
+  document.getElementById('statsMemberYearDisplay').textContent = year + '년';
+  document.getElementById('statsMemberYearDropdown').classList.add('hidden');
+  /* [Java] window.location.href = '/adm/stats/member?year=' + statsYear + '&month=' + statsMonth; */
+  console.log('[M10-1] 년도 선택 → ' + year + '년');
+}
+
+/**
+ * 월 선택
+ * [Java] GET /adm/stats/member?year=&month= 로 교체
+ */
+function selectStatsMonth(month) {
+  statsMonth = month;
+  document.getElementById('statsMemberMonthDisplay').textContent = month + '월';
+  document.getElementById('statsMemberMonthDropdown').classList.add('hidden');
+  /* [Java] window.location.href = '/adm/stats/member?year=' + statsYear + '&month=' + statsMonth; */
+  console.log('[M10-1] 월 선택 → ' + month + '월');
+}
+
+/**
+ * 엑셀 다운로드
+ * [Java] GET /adm/stats/member/excel?year=&month= 로 교체
+ */
+function downloadStatsMemberExcel() {
+  /* [Java] window.location.href = '/adm/stats/member/excel?year=' + statsYear + '&month=' + statsMonth; */
+  alert('엑셀 다운로드 기능은 Java 연동 후 처리됩니다.');
+}
+
+/** 드롭다운 외부 클릭 시 닫기 */
+document.addEventListener('click', function() {
+  document.getElementById('statsMemberYearDropdown').classList.add('hidden');
+  document.getElementById('statsMemberMonthDropdown').classList.add('hidden');
+});
+</script>
+</body>
+</html>

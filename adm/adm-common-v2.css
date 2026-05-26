@@ -2496,3 +2496,172 @@
     gap: 6px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   §M10. 통계 — 가입탈퇴현황 / 접속현황
+   ═══════════════════════════════════════════════════════════ */
+
+/* §M10-0. 통계 페이지 공통 래퍼 */
+.stats-wrap {
+  padding: 24px;
+}
+@media (max-width: 768px) {
+  .stats-wrap { padding: 16px; }
+}
+
+/* §M10-1. 기준일 표시 */
+.stats-current-date {
+  font-size: var(--rss-font-sm);
+  color: var(--rss-muted);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+/* §M10-2. KPI 요약 카드 3개 가로 배열
+   사용: <div class="stats-kpi-wrap">
+           <div class="stats-kpi-card"> ... </div>
+         </div>
+──────────────────────────────────────────────────────────── */
+.stats-kpi-wrap {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.stats-kpi-card {
+  flex: 1 1 160px;
+  min-width: 140px;
+  background: #f8fafc;
+  border: 1.5px solid var(--rss-border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.stats-kpi-card__label {
+  font-size: var(--rss-font-sm);
+  color: var(--rss-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.stats-kpi-card__value {
+  font-size: var(--rss-font-2xl);
+  font-weight: 700;
+  color: var(--rss-text);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 640px) {
+  .stats-kpi-wrap { gap: 10px; }
+  .stats-kpi-card { padding: 12px 14px; }
+  .stats-kpi-card__value { font-size: var(--rss-font-xl); }
+}
+
+/* §M10-3. 년월 네비게이터 — sales-month-nav 패턴 재사용
+   stats-month-nav 는 sales-month-nav 와 동일 구조·스타일 */
+.stats-month-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.stats-month-nav__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--rss-border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  color: var(--rss-muted);
+  transition: border-color 0.15s, color 0.15s;
+}
+.stats-month-nav__btn:hover {
+  border-color: var(--rss-amber);
+  color: var(--rss-amber);
+}
+.stats-month-nav__label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+  position: relative;
+}
+.stats-month-nav__year-btn,
+.stats-month-nav__month-btn {
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.stats-month-nav__year-btn:hover,
+.stats-month-nav__month-btn:hover {
+  background: var(--rss-amber-light);
+  color: var(--rss-amber-dark);
+}
+
+/* §M10-4. 통계 테이블
+   가입/탈퇴/반려 그룹 헤더 + 날짜별 행
+──────────────────────────────────────────────────────────── */
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--rss-font-base);
+}
+.stats-table th,
+.stats-table td {
+  border: 1px solid var(--rss-border);
+  padding: 10px 12px;
+  text-align: center;
+  vertical-align: middle;
+}
+.stats-table thead th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: var(--rss-muted);
+  white-space: nowrap;
+}
+/* 그룹 헤더 (가입 / 탈퇴 / 반려) */
+.stats-table__group-th {
+  background: #e8edf5;
+  font-weight: 700;
+  color: var(--rss-text);
+}
+/* 합계 행 */
+.stats-table__total-row td {
+  background: #374151;
+  color: #fff;
+  font-weight: 700;
+}
+/* 날짜 셀 */
+.stats-col-date {
+  width: 110px;
+  min-width: 90px;
+  white-space: nowrap;
+}
+/* 숫자 셀 */
+.stats-col-num {
+  width: 80px;
+  min-width: 60px;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 768px) {
+  .stats-table th,
+  .stats-table td { padding: 8px 8px; font-size: var(--rss-font-sm); }
+  .stats-col-date { width: 80px; min-width: 70px; }
+  .stats-col-num  { width: 52px; min-width: 44px; }
+}
+
+/* §M10-5. 엑셀 버튼 + 년월 네비게이터 동일 행 배치 */
+.stats-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
