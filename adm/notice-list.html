@@ -123,9 +123,9 @@
                 <!-- [Java] th:text="${#temporals.format(item.regDtm,'yyyy-MM-dd')}" -->
                 <td class="text-center rss-col-date">2026-07-02</td>
                 <!-- [Java] th:text="${item.useYn == 'Y' ? '공개' : '비공개'}" -->
-                <!-- [Java] th:class="${item.useYn == 'Y' ? 'notice-open-text' : 'notice-close-text'}" -->
+                <!-- [Java] th:class="${item.useYn == 'Y' ? 'rss-badge rss-badge--complete' : 'rss-badge rss-badge--cancel'}" -->
                 <td class="text-center">
-                  <span class="notice-open-text">공개</span>
+                  <span class="rss-badge rss-badge--complete">공개</span>
                 </td>
               </tr>
 
@@ -144,7 +144,7 @@
                 <td class="text-center">21</td>
                 <td class="text-center rss-col-date">2026-06-25</td>
                 <td class="text-center">
-                  <span class="notice-open-text">공개</span>
+                  <span class="rss-badge rss-badge--complete">공개</span>
                 </td>
               </tr>
 
@@ -163,7 +163,7 @@
                 <td class="text-center">0</td>
                 <td class="text-center rss-col-date">2026-06-15</td>
                 <td class="text-center">
-                  <span class="notice-close-text">비공개</span>
+                  <span class="rss-badge rss-badge--cancel">비공개</span>
                 </td>
               </tr>
 
@@ -182,7 +182,7 @@
                 <td class="text-center">0</td>
                 <td class="text-center rss-col-date">2026-06-16</td>
                 <td class="text-center">
-                  <span class="notice-open-text">공개</span>
+                  <span class="rss-badge rss-badge--complete">공개</span>
                 </td>
               </tr>
 
@@ -201,7 +201,7 @@
                 <td class="text-center">34</td>
                 <td class="text-center rss-col-date">2026-06-02</td>
                 <td class="text-center">
-                  <span class="notice-open-text">공개</span>
+                  <span class="rss-badge rss-badge--complete">공개</span>
                 </td>
               </tr>
 

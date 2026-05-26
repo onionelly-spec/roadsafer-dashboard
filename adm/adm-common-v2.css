@@ -1692,13 +1692,13 @@
 }
 .notice-title-link:hover { color: var(--rss-primary); }
 
-/* ─── §M5-3. 공개/비공개 텍스트 표시 ────────────────────────────────────
-   공개 → 기본 텍스트, 비공개 → 회색 muted
+/* ─── §M5-3. 공개/비공개 표시 ────────────────────────────────────────────────
+   rss-common.css의 rss-badge 공통 클래스 사용:
+   공개   → <span class="rss-badge rss-badge--complete">공개</span>
+   비공개 → <span class="rss-badge rss-badge--cancel">비공개</span>
 ──────────────────────────────────────────────────────────────────────────── */
-.notice-open-text  { color: var(--rss-text);  font-size: var(--rss-font-sm); }
-.notice-close-text { color: var(--rss-muted); font-size: var(--rss-font-sm); }
 
-/* ─── §M5-4. 등록/수정 폼 — 첨부파일 영역 ──────────────────────────────
+/* ─── §M5-4. 등록/수정 폼 — 첨부파일 영역 ───────────────────────────
    파일 찾기 버튼 + 최대 개수 안내 + 파일 태그 목록
 ──────────────────────────────────────────────────────────────────────────── */
 .notice-attach-area {
