@@ -114,22 +114,23 @@
         <!-- ─── 하단 버튼 영역 ─────────────────────────────────
              스토리보드 M7-1:
              ② 삭제 버튼 (좌측)
-             ③ 목록 버튼 (가운데)
+             ③ 목록 버튼 (우측)
+             rss-page-actions--split : 좌(삭제) / 중앙(빈 공간) / 우(목록)
         ──────────────────────────────────────────────────── -->
-        <div class="rss-page-actions">
-          <!-- ② 삭제 버튼 -->
+        <div class="rss-page-actions rss-page-actions--split">
+          <!-- ② 삭제 버튼 (좌측) -->
           <!-- [Java] @{/adm/market/delete(marketSeq=${market.marketSeq})} -->
-          <button type="button" class="rss-btn rss-btn--delete"
-                  onclick="deleteMarket()">
-            <i data-lucide="trash-2" style="width:14px;height:14px;margin-right:4px;"></i>
-            삭제
-          </button>
-          <!-- ③ 목록 버튼 -->
+          <div class="rss-page-actions__left">
+            <button type="button" class="rss-btn adm-btn--delete"
+                    onclick="deleteMarket()">삭제</button>
+          </div>
+          <!-- 가운데: 빈 공간 -->
+          <div></div>
+          <!-- ③ 목록 버튼 (우측) -->
           <!-- [Java] @{/adm/market/list} -->
-          <a href="market-list.html" class="rss-btn rss-btn--list">
-            <i data-lucide="list" style="width:14px;height:14px;margin-right:4px;"></i>
-            목록
-          </a>
+          <div class="rss-page-actions__right">
+            <a href="market-list.html" class="rss-btn rss-btn--list">목록</a>
+          </div>
         </div><!-- /rss-page-actions -->
 
       </div><!-- /rss-card -->
