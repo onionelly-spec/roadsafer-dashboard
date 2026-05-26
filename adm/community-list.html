@@ -244,21 +244,21 @@
           </div>
           <!-- 페이지네이션 — 10개 기준, PC 10개 / 모바일 5개 -->
           <!-- [Java] th:with="totalPages=${communityPage.totalPages}" -->
-          <div id="communityPagination">
-            <span class="rss-page-btn disabled">&lt;&lt;</span>
-            <span class="rss-page-btn disabled">&lt;</span>
-            <span class="rss-page-btn active">1</span>
-            <span class="rss-page-btn">2</span>
-            <span class="rss-page-btn">3</span>
-            <span class="rss-page-btn">4</span>
-            <span class="rss-page-btn">5</span>
-            <span class="rss-page-btn">6</span>
-            <span class="rss-page-btn">7</span>
-            <span class="rss-page-btn">8</span>
-            <span class="rss-page-btn">9</span>
-            <span class="rss-page-btn">10</span>
-            <span class="rss-page-btn">&gt;</span>
-            <span class="rss-page-btn">&gt;&gt;</span>
+          <div class="rss-pagination" id="communityPagination">
+            <button class="rss-pagination__btn" aria-label="첫 페이지" disabled>&lt;&lt;</button>
+            <button class="rss-pagination__btn" aria-label="이전" disabled>&lt;</button>
+            <button class="rss-pagination__btn active" data-page="1">1</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="2">2</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="3">3</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="4">4</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="5">5</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="6">6</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="7">7</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="8">8</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="9">9</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="10">10</button>
+            <button class="rss-pagination__btn" aria-label="다음">&gt;</button>
+            <button class="rss-pagination__btn" aria-label="마지막">&gt;&gt;</button>
           </div>
           <div class="rss-page-actions__right"></div>
         </div>
