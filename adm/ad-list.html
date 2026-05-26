@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- [Java] th:text="'광고 관리 — 로드세이프티시스템 관리자'" -->
+  <title>광고 관리 — 로드세이프티시스템 관리자</title>
+  <!-- 공통 CSS -->
+  <link rel="stylesheet" href="../rss-common.css?v=20260526" />
+  <link rel="stylesheet" href="adm-common-v2.css?v=20260526" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<!-- ══════════════════════════════════════════════════
+     관리자 레이아웃
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+  <div class="adm-main">
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">광고 관리</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="#">홈</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span class="adm-breadcrumb__current">광고 관리</span>
+      </nav>
+    </div>
+    <main class="rss-content">
+      <!-- ══════════════════════════════════════════════════
+           광고 관리 목록 카드 (M6)
+           [Java] GET /adm/ad/list?searchKeyword=&page=
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-card">
+        <!-- ─── 검색 툴바 ──────────────────────────────────────
+             스토리보드 ①: 키워드(제목 검색) + 찾기 / ② 등록 버튼
+             전체보기 버튼: 검색 실행 후 .is-searched 클래스에 의해 표시
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-board-toolbar">
+          <div class="rss-board-toolbar__right">
+            <!-- [Java] th:value="${searchKeyword}" -->
+            <input type="text" id="adSearchKeyword" class="rss-input" style="width:240px;"
+                   placeholder="광고 제목을 입력하세요"
+                   onkeydown="if(event.key==='Enter') searchAd()" />
+            <button type="button" class="rss-btn rss-btn--outline" onclick="searchAd()">
+              <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
+              찾기
+            </button>
+            <!-- 전체보기 버튼 — 검색 후 표시 -->
+            <button type="button" class="rss-btn rss-btn--view-all" id="adBtnViewAll"
+                    onclick="resetAdSearch()">전체보기</button>
+            <!-- ② 등록 버튼 (상단) -->
+            <!-- [Java] @{/adm/ad/write} -->
+            <button type="button" class="rss-btn adm-btn--register"
+                    onclick="location.href='ad-write.html'">등록</button>
+          </div>
+        </div><!-- /rss-board-toolbar -->
+
+        <!-- ─── 목록 테이블 ────────────────────────────────────
+             스토리보드 ③: 체크박스·번호·제목·업체명·광고기간·등록일·상태·공개
+             제목 클릭 → ad-write.html?seq=N (등록/수정 페이지)
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-table-wrap">
+          <!-- [Java] th:if="${#lists.isEmpty(adList)}" -->
+          <!-- <div class="rss-empty">검색 결과가 없습니다.</div> -->
+          <!-- [Java] th:unless="${#lists.isEmpty(adList)}" -->
+          <div style="overflow-x:auto;">
+          <table class="rss-table" id="adTable" style="min-width:900px;">
+            <colgroup>
+              <col class="rss-col-select" />     <!-- 체크박스 5% -->
+              <col class="rss-col-no" />          <!-- 번호 5% -->
+              <col />                             <!-- 제목 — 가변 -->
+              <col class="ad-col-corp" />         <!-- 업체명 12% -->
+              <col class="rss-col-period" />      <!-- 광고기간 20% -->
+              <col class="rss-col-date" />        <!-- 등록일 10% -->
+              <col class="rss-col-status" />      <!-- 상태 10% -->
+              <col class="rss-col-open" />        <!-- 공개 5% -->
+            </colgroup>
+            <thead>
+              <tr>
+                <!-- 전체 선택 체크박스 -->
+                <th>
+                  <input type="checkbox" id="adChkAll"
+                         onchange="toggleAllAdChk(this)"
+                         title="전체 선택" />
+                </th>
+                <th>번호</th>
+                <th>제목</th>
+                <th>업체명</th>
+                <th>광고기간</th>
+                <th>등록일</th>
+                <th>상태</th>
+                <th>공개</th>
+              </tr>
+            </thead>
+            <tbody id="adListBody">
+              <!-- ══════════════════════════════════════════════
+                   [Java] th:each="item : ${adList}"
+                   더미 데이터 — 스토리보드 §M6 기준 (최근 등록순, 10개/페이지)
+              ══════════════════════════════════════════════ -->
+              <!-- 행 1 -->
+              <!-- [Java] th:each="item : ${adList}" -->
+              <tr>
+                <!-- [Java] th:value="${item.adSeq}" -->
+                <td class="text-center">
+                  <input type="checkbox" class="ad-chk" value="2001" />
+                </td>
+                <!-- [Java] th:text="${adList.size() - itemStat.index}" -->
+                <td class="text-center">1</td>
+                <!-- [Java] th:href="@{/adm/ad/write/{seq}(seq=${item.adSeq})}" th:text="${item.adTitle}" -->
+                <td>
+                  <a href="ad-write.html?seq=2001" class="notice-title-link">
+                    2026년 여름 특별 안전장비 프로모션
+                  </a>
+                </td>
+                <!-- [Java] th:text="${item.adCorpNm}" -->
+                <td class="text-center">(주)한국안전장비</td>
+                <!-- [Java] th:text="${#temporals.format(item.adStartDt,'yyyy-MM-dd')} + ' ~ ' + ${#temporals.format(item.adEndDt,'yyyy-MM-dd')}" -->
+                <td class="text-center">2026-07-01 ~ 2026-07-31</td>
+                <!-- [Java] th:text="${#temporals.format(item.regDtm,'yyyy-MM-dd')}" -->
+                <td class="text-center">2026-06-20</td>
+                <!-- [Java] th:class="'adm-badge ' + (item.adStatus == 'SCHEDULED' ? 'adm-badge--scheduled' : item.adStatus == 'PROGRESS' ? 'adm-badge--progress' : 'adm-badge--complete')" -->
+                <!-- [Java] th:text="item.adStatus == 'SCHEDULED' ? '예정' : item.adStatus == 'PROGRESS' ? '진행중' : '종료'" -->
+                <td class="text-center">
+                  <span class="adm-badge adm-badge--progress">진행중</span>
+                </td>
+                <!-- [Java] th:class="${item.adUseYn == 'Y' ? 'rss-badge rss-badge--complete' : 'rss-badge rss-badge--cancel'}" -->
+                <!-- [Java] th:text="${item.adUseYn == 'Y' ? '공개' : '비공개'}" -->
+                <td class="text-center">
+                  <span class="rss-badge rss-badge--complete">공개</span>
+                </td>
+              </tr>
+              <!-- 행 2 -->
+              <tr>
+                <td class="text-center">
+                  <input type="checkbox" class="ad-chk" value="2002" />
+                </td>
+                <td class="text-center">2</td>
+                <td>
+                  <a href="ad-write.html?seq=2002" class="notice-title-link">
+                    도로공사 전문 장비 렌탈 서비스 안내
+                  </a>
+                </td>
+                <td class="text-center">(주)도로장비렌탈</td>
+                <td class="text-center">2026-06-01 ~ 2026-06-30</td>
+                <td class="text-center">2026-05-25</td>
+                <td class="text-center">
+                  <span class="adm-badge adm-badge--complete">종료</span>
+                </td>
+                <td class="text-center">
+                  <span class="rss-badge rss-badge--complete">공개</span>
+                </td>
+              </tr>
+              <!-- 행 3 -->
+              <tr>
+                <td class="text-center">
+                  <input type="checkbox" class="ad-chk" value="2003" />
+                </td>
+                <td class="text-center">3</td>
+                <td>
+                  <a href="ad-write.html?seq=2003" class="notice-title-link">
+                    신규 안전 교육 프로그램 홍보
+                  </a>
+                </td>
+                <td class="text-center">(주)안전교육원</td>
+                <td class="text-center">2026-08-01 ~ 2026-08-31</td>
+                <td class="text-center">2026-06-18</td>
+                <td class="text-center">
+                  <span class="adm-badge adm-badge--scheduled">예정</span>
+                </td>
+                <td class="text-center">
+                  <span class="rss-badge rss-badge--complete">공개</span>
+                </td>
+              </tr>
+              <!-- 행 4 -->
+              <tr>
+                <td class="text-center">
+                  <input type="checkbox" class="ad-chk" value="2004" />
+                </td>
+                <td class="text-center">4</td>
+                <td>
+                  <a href="ad-write.html?seq=2004" class="notice-title-link">
+                    공사현장 안전용품 특가 이벤트
+                  </a>
+                </td>
+                <td class="text-center">(주)현장안전마트</td>
+                <td class="text-center">2026-05-01 ~ 2026-05-31</td>
+                <td class="text-center">2026-04-28</td>
+                <td class="text-center">
+                  <span class="adm-badge adm-badge--complete">종료</span>
+                </td>
+                <td class="text-center">
+                  <span class="rss-badge rss-badge--cancel">비공개</span>
+                </td>
+              </tr>
+              <!-- 행 5 -->
+              <tr>
+                <td class="text-center">
+                  <input type="checkbox" class="ad-chk" value="2005" />
+                </td>
+                <td class="text-center">5</td>
+                <td>
+                  <a href="ad-write.html?seq=2005" class="notice-title-link">
+                    RSS 파트너사 신규 가입 혜택 안내
+                  </a>
+                </td>
+                <td class="text-center">(주)로드세이프티</td>
+                <td class="text-center">2026-07-15 ~ 2026-09-15</td>
+                <td class="text-center">2026-06-10</td>
+                <td class="text-center">
+                  <span class="adm-badge adm-badge--scheduled">예정</span>
+                </td>
+                <td class="text-center">
+                  <span class="rss-badge rss-badge--complete">공개</span>
+                </td>
+              </tr>
+              <!-- ══════════════════════════════════════════════
+                   [Java] /th:each 끝
+              ══════════════════════════════════════════════ -->
+            </tbody>
+          </table>
+          </div><!-- /overflow-x -->
+        </div><!-- /rss-table-wrap -->
+
+        <!-- ─── 하단 액션 영역 (삭제 ④ + 페이지네이션 + 등록 ②) ──────────────
+             rss-page-actions--split : 좌(삭제) / 중앙(페이지네이션) / 우(등록)
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-page-actions rss-page-actions--split">
+          <!-- ④ 삭제 버튼 (좌측) -->
+          <div class="rss-page-actions__left">
+            <button type="button" class="rss-btn adm-btn--delete"
+                    onclick="deleteSelectedAds()">삭제</button>
+          </div>
+          <!-- 페이지네이션 (중앙) -->
+          <!-- [Java] th:with="totalPages=${page.totalPages}, currentPage=${page.number}" -->
+          <div class="rss-pagination" id="adPagination">
+            <button class="rss-pagination__btn" aria-label="첫 페이지" disabled>&lt;&lt;</button>
+            <button class="rss-pagination__btn" aria-label="이전" disabled>&lt;</button>
+            <!-- [Java] th:each="i : ${#numbers.sequence(startPage, endPage)}" -->
+            <button class="rss-pagination__btn active" data-page="1">1</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="2">2</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="3">3</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="4">4</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="5">5</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="6">6</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="7">7</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="8">8</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="9">9</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="10">10</button>
+            <button class="rss-pagination__btn" aria-label="다음">&gt;</button>
+            <button class="rss-pagination__btn" aria-label="마지막">&gt;&gt;</button>
+          </div>
+          <!-- ② 등록 버튼 (우측) -->
+          <div class="rss-page-actions__right">
+            <!-- [Java] @{/adm/ad/write} -->
+            <button type="button" class="rss-btn adm-btn--register"
+                    onclick="location.href='ad-write.html'">등록</button>
+          </div>
+        </div><!-- /rss-page-actions -->
+      </div><!-- /rss-card -->
+    </main>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+<!-- ══════════════════════════════════════════════════
+     공통 JS
+══════════════════════════════════════════════════ -->
+<script src="adm-common.js?v=20260526"></script>
+<script>
+/* ─── 페이지 초기화 ─────────────────────────────────── */
+if (window.lucide) lucide.createIcons();
+
+/* ─── ① 검색 ────────────────────────────────────────
+   [Java] GET /adm/ad/list?searchKeyword=&page=
+──────────────────────────────────────────────────── */
+function searchAd() {
+  var keyword = document.getElementById('adSearchKeyword').value.trim();
+  if (!keyword) return;
+  document.querySelector('.rss-board-toolbar').classList.add('is-searched');
+  if (window.lucide) lucide.createIcons();
+  // [Java] 서버 요청으로 교체: location.href = '/adm/ad/list?searchKeyword=' + encodeURIComponent(keyword);
+  console.log('[M6] 검색:', keyword);
+}
+
+/* 전체보기 — 검색 초기화 */
+function resetAdSearch() {
+  document.getElementById('adSearchKeyword').value = '';
+  document.querySelector('.rss-board-toolbar').classList.remove('is-searched');
+  // [Java] 서버 요청으로 교체: location.href = '/adm/ad/list';
+  console.log('[M6] 전체보기 — 검색 초기화');
+}
+
+/* ─── 전체 선택 체크박스 ────────────────────────────── */
+function toggleAllAdChk(masterChk) {
+  document.querySelectorAll('.ad-chk').forEach(function(chk) {
+    chk.checked = masterChk.checked;
+  });
+}
+
+/* ─── ④ 삭제 ────────────────────────────────────────
+   체크된 항목 없을 때 경고창, 있을 때 확인 후 삭제
+   [Java] DELETE /adm/ad (body: {seqList: [...]})
+──────────────────────────────────────────────────── */
+function deleteSelectedAds() {
+  var checked = Array.from(document.querySelectorAll('.ad-chk:checked'));
+  if (checked.length === 0) {
+    alert('1개 이상을 선택하세요.');
+    return;
+  }
+  if (!confirm('삭제하시겠습니까?')) return;
+  var seqList = checked.map(function(chk) { return chk.value; });
+  console.log('[M6] 삭제 요청 — adSeq 목록:', seqList);
+  // [Java] 서버 요청으로 교체:
+  // fetch('/adm/ad', { method:'DELETE', headers:{'Content-Type':'application/json'}, body:JSON.stringify({seqList:seqList}) })
+  //   .then(function(r){ if(r.ok){ location.reload(); } });
+  alert('삭제 기능은 Java 연동 후 처리됩니다.');
+  // 더미: 체크된 행 제거
+  checked.forEach(function(chk) {
+    chk.closest('tr').remove();
+  });
+  document.getElementById('adChkAll').checked = false;
+}
+</script>
+</body>
+</html>

@@ -1827,3 +1827,33 @@
   color: var(--rss-danger);
   font-weight: 500;
 }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   §M6. 광고관리 (ad-list.html / ad-write.html)
+══════════════════════════════════════════════════════════════════════════ */
+
+/* §M6-1. 광고 목록 colgroup — 업체명 컬럼 */
+.ad-col-corp { width: 12%; }
+
+/* §M6-2. 광고 등록/수정 폼 — 대표이미지 영역 */
+.ad-img-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* §M6-3. 광고기간 날짜 입력 영역 */
+.ad-period-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ad-period-wrap .rss-input {
+  width: 160px;
+}
+.ad-period-sep {
+  color: var(--rss-text-muted);
+  font-size: var(--rss-font-base);
+}
