@@ -37,31 +37,38 @@
       ══════════════════════════════════════════════════ -->
       <div class="rss-card">
         <!-- ─── 검색 툴바 ──────────────────────────────────────
-             스토리보드 ①: 키워드(제목 검색) + 찾기 / ② 등록 버튼
-             전체보기 버튼: 검색 실행 후 .is-searched 클래스에 의해 표시
+             스토리보드 ①: 드롭다운(회사명/제목) + 키워드 + 찾기 / ② 등록 버튼
+             전체보기 버튼: 검색 실행 후 표시
         ──────────────────────────────────────────────────────── -->
         <div class="rss-board-toolbar">
           <div class="rss-board-toolbar__right">
+            <!-- [Java] th:value="${searchType}" — 선택된 검색 유형 유지 -->
+            <select id="adSearchType" class="rss-select">
+              <option value="">선택</option>
+              <!-- [Java] th:selected="${searchType == 'corpNm'}" -->
+              <option value="corpNm">회사명</option>
+              <!-- [Java] th:selected="${searchType == 'title'}" -->
+              <option value="title">제목</option>
+            </select>
             <!-- [Java] th:value="${searchKeyword}" -->
-            <input type="text" id="adSearchKeyword" class="rss-input" style="width:240px;"
-                   placeholder="광고 제목을 입력하세요"
+            <input type="text" id="adSearchKeyword" class="rss-input" style="width:200px;"
+                   placeholder=""
                    onkeydown="if(event.key==='Enter') searchAd()" />
             <button type="button" class="rss-btn rss-btn--outline" onclick="searchAd()">
               <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
               찾기
             </button>
-            <!-- 전체보기 버튼 — 검색 후 표시 -->
+            <!-- 전체보기 버튼 — 검색 후에만 표시 -->
             <button type="button" class="rss-btn rss-btn--view-all" id="adBtnViewAll"
-                    onclick="resetAdSearch()">전체보기</button>
+                    onclick="resetAdSearch()" style="display:none;">전체보기</button>
             <!-- ② 등록 버튼 (상단) -->
             <!-- [Java] @{/adm/ad/write} -->
             <button type="button" class="rss-btn adm-btn--register"
                     onclick="location.href='ad-write.html'">등록</button>
           </div>
         </div><!-- /rss-board-toolbar -->
-
         <!-- ─── 목록 테이블 ────────────────────────────────────
-             스토리보드 ③: 체크박스·번호·제목·업체명·광고기간·등록일·상태·공개
+             스토리보드 ③: 체크박스·번호·제목·회사명·광고기간·등록일·상태·공개
              제목 클릭 → ad-write.html?seq=N (등록/수정 페이지)
         ──────────────────────────────────────────────────────── -->
         <div class="rss-table-wrap">
@@ -74,7 +81,7 @@
               <col class="rss-col-select" />     <!-- 체크박스 5% -->
               <col class="rss-col-no" />          <!-- 번호 5% -->
               <col />                             <!-- 제목 — 가변 -->
-              <col class="ad-col-corp" />         <!-- 업체명 12% -->
+              <col class="ad-col-corp" />         <!-- 회사명 12% -->
               <col class="rss-col-period" />      <!-- 광고기간 20% -->
               <col class="rss-col-date" />        <!-- 등록일 10% -->
               <col class="rss-col-status" />      <!-- 상태 10% -->
@@ -90,7 +97,7 @@
                 </th>
                 <th>번호</th>
                 <th>제목</th>
-                <th>업체명</th>
+                <th>회사명</th>
                 <th>광고기간</th>
                 <th>등록일</th>
                 <th>상태</th>
@@ -274,21 +281,33 @@
 if (window.lucide) lucide.createIcons();
 
 /* ─── ① 검색 ────────────────────────────────────────
-   [Java] GET /adm/ad/list?searchKeyword=&page=
+   [Java] GET /adm/ad/list?searchType=&searchKeyword=&page=
 ──────────────────────────────────────────────────── */
 function searchAd() {
+  var type    = document.getElementById('adSearchType').value;
   var keyword = document.getElementById('adSearchKeyword').value.trim();
-  if (!keyword) return;
-  document.querySelector('.rss-board-toolbar').classList.add('is-searched');
+  if (!type) {
+    alert('검색 조건을 선택하세요.');
+    document.getElementById('adSearchType').focus();
+    return;
+  }
+  if (!keyword) {
+    alert('검색어를 입력하세요.');
+    document.getElementById('adSearchKeyword').focus();
+    return;
+  }
+  document.getElementById('adBtnViewAll').style.display = '';
   if (window.lucide) lucide.createIcons();
-  // [Java] 서버 요청으로 교체: location.href = '/adm/ad/list?searchKeyword=' + encodeURIComponent(keyword);
-  console.log('[M6] 검색:', keyword);
+  // [Java] 서버 요청으로 교체:
+  // location.href = '/adm/ad/list?searchType=' + encodeURIComponent(type) + '&searchKeyword=' + encodeURIComponent(keyword);
+  console.log('[M6] 검색 — type:', type, 'keyword:', keyword);
 }
 
 /* 전체보기 — 검색 초기화 */
 function resetAdSearch() {
+  document.getElementById('adSearchType').value = '';
   document.getElementById('adSearchKeyword').value = '';
-  document.querySelector('.rss-board-toolbar').classList.remove('is-searched');
+  document.getElementById('adBtnViewAll').style.display = 'none';
   // [Java] 서버 요청으로 교체: location.href = '/adm/ad/list';
   console.log('[M6] 전체보기 — 검색 초기화');
 }
