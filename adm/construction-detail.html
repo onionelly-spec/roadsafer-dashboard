@@ -734,15 +734,14 @@
       <button type="button" class="adm-modal-box__close" onclick="closeAdmDailyProgModal()" aria-label="닫기"></button>
     </div>
     <div class="adm-modal-box__body adm-modal-box__body--pad">
-      <!-- 날짜 표시 -->
-      <div class="adm-modal-date">
-        <i data-lucide="calendar"></i>
-        <span id="admDailyProgDate">2026년 6월 27일</span>
-      </div>
-      <!-- 시간대 선택 -->
-      <div class="rss-form-row">
-        <label class="rss-form-label" for="admDailyTimeSlot">시간대</label>
-        <select id="admDailyTimeSlot" class="rss-select rss-select--sm">
+      <!-- 날짜 + 시간대 한 줄 배치 -->
+      <div class="adm-modal-date-row">
+        <div class="adm-modal-date">
+          <i data-lucide="calendar"></i>
+          <span id="admDailyProgDate">2026년 6월 27일</span>
+        </div>
+        <!-- [Java] th:field="*{timeSlot}" -->
+        <select id="admDailyTimeSlot" class="rss-select rss-select--sm" aria-label="시간대">
           <option value="day">주간</option>
           <option value="night">야간</option>
         </select>
@@ -767,8 +766,11 @@
             <tr>
               <td>TMA1</td>
               <td>
-                <input type="number" name="tma1_qty" class="rss-input rss-input--sm" value="1"
-                       min="0" onchange="calcDailyProgTotal()">
+                <!-- [Java] th:value="${item.qty}" -->
+                <select name="tma1_qty" class="rss-select rss-select--sm" onchange="calcDailyProgTotal()">
+                  <!-- [Java] th:each="n : ${#numbers.sequence(0,20)}" th:selected="${n == item.qty}" -->
+                  <option value="0">0</option><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                </select>
               </td>
               <td>
                 <!-- [Java] th:text="${#numbers.formatInteger(item.unitPrice * item.qty, 3, 'COMMA')}" -->
@@ -778,24 +780,30 @@
             <tr>
               <td>TMA3</td>
               <td>
-                <input type="number" name="tma3_qty" class="rss-input rss-input--sm" value="2"
-                       min="0" onchange="calcDailyProgTotal()">
+                <!-- [Java] th:value="${item.qty}" -->
+                <select name="tma3_qty" class="rss-select rss-select--sm" onchange="calcDailyProgTotal()">
+                  <option value="0">0</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                </select>
               </td>
               <td><span id="admDailyTma3Amt">2,000,000</span></td>
             </tr>
             <tr>
               <td>PLCS</td>
               <td>
-                <input type="number" name="plcs_qty" class="rss-input rss-input--sm" value="2"
-                       min="0" onchange="calcDailyProgTotal()">
+                <!-- [Java] th:value="${item.qty}" -->
+                <select name="plcs_qty" class="rss-select rss-select--sm" onchange="calcDailyProgTotal()">
+                  <option value="0">0</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                </select>
               </td>
               <td><span id="admDailyPlcsAmt">1,800,000</span></td>
             </tr>
             <tr>
               <td>신호수</td>
               <td>
-                <input type="number" name="signaler_qty" class="rss-input rss-input--sm" value="0"
-                       min="0" onchange="calcDailyProgTotal()">
+                <!-- [Java] th:value="${item.qty}" -->
+                <select name="signaler_qty" class="rss-select rss-select--sm" onchange="calcDailyProgTotal()">
+                  <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                </select>
               </td>
               <td><span id="admDailySignalerAmt">0</span></td>
             </tr>
@@ -1419,11 +1427,12 @@ function closeAdmDailyProgModal() {
   document.getElementById('admDailyProgModalBackdrop').classList.remove('open');
 }
 function calcDailyProgTotal() {
-  /* [Java] 단가 × 수량 자동 계산 — 실제 단가는 서버에서 주입 */
+  /* [Java] 단가 xd7 수량 자동 계산 — 실제 단가는 서버에서 주입
+     select.value도 parseInt로 동일하게 처리 가능 */
   var unitPrices = { tma1: 600000, tma3: 1000000, plcs: 900000, signaler: 250000 };
-  var tma1  = parseInt(document.querySelector('[name="tma1_qty"]').value) || 0;
-  var tma3  = parseInt(document.querySelector('[name="tma3_qty"]').value) || 0;
-  var plcs  = parseInt(document.querySelector('[name="plcs_qty"]').value) || 0;
+  var tma1  = parseInt(document.querySelector('[name="tma1_qty"]').value)     || 0;
+  var tma3  = parseInt(document.querySelector('[name="tma3_qty"]').value)     || 0;
+  var plcs  = parseInt(document.querySelector('[name="plcs_qty"]').value)     || 0;
   var sig   = parseInt(document.querySelector('[name="signaler_qty"]').value) || 0;
   var total = tma1 * unitPrices.tma1 + tma3 * unitPrices.tma3
             + plcs * unitPrices.plcs + sig * unitPrices.signaler;

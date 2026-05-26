@@ -1644,3 +1644,22 @@
 .rss-select--sm {
   width: 160px;
 }
+
+/* ─── 수정 모달: 날짜 + 시간대 한 줄 배치 ──────────────────────────────
+   .adm-modal-date-row : flex row, 날짜(좌)와 시간대 select(우)를 한 줄에 배치
+   사용법: <div class="adm-modal-date-row"> 날짜 + select </div>
+──────────────────────────────────────────────────────────────────── */
+.adm-modal-date-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.adm-modal-date-row .adm-modal-date {
+  margin-bottom: 0;   /* 부모가 margin 담당 */
+  flex: 1;
+}
+.adm-modal-date-row .rss-select--sm {
+  flex-shrink: 0;
+}
