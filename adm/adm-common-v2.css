@@ -738,6 +738,25 @@
   flex: 1;
   overflow-y: auto;
 }
+/* 모달 본문 내부 패딩 (기본 __body에 패딩 없으므로 별도 클래스로 추가) */
+.adm-modal-box__body--pad {
+  padding: 20px;
+}
+/* 모달 내 날짜 헤더 (달력 아이콘 + 날짜 텍스트) */
+.adm-modal-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+  margin-bottom: 16px;
+}
+.adm-modal-date i {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
 .adm-modal-box__foot {
   padding: 12px 20px;
   border-top: 1px solid var(--rss-border);
@@ -1612,4 +1631,16 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/* ─── 소형 인풋 / 셀렉트 너비 변형 ──────────────────────────────────────────
+   테이블 내 수량 입력, 시간대 선택 등 좁은 공간에 사용
+   사용: <input class="rss-input rss-input--sm" />
+         <select class="rss-select rss-select--sm" />
+──────────────────────────────────────────────────────────────────────────── */
+.rss-input--sm {
+  width: 70px;
+}
+.rss-select--sm {
+  width: 160px;
 }

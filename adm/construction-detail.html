@@ -707,34 +707,33 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════
-     M1-3-1: 공사 정보 수정 모달 (날짜별 완료/수정/취소)
-     openAdmDailyProgModal(dt, mode) 호출 시 표시
-     mode: 'complete' | 'modify' | 'cancel'
+     M1-3-1: 공사 정보 수정 모달 (날짜별 수정)
+     openAdmDailyProgModifyModal(dt) 호출 시 표시
      [Java] 실제 데이터: GET /adm/construction/daily-prog?seq={seq}&dt={dt}
 ══════════════════════════════════════════════════ -->
 <div id="admDailyProgModalBackdrop" class="adm-modal-overlay" role="dialog" aria-modal="true"
      aria-labelledby="admDailyProgModalTitle">
-  <div class="adm-modal-box" style="max-width:520px;">
+  <div class="adm-modal-box">
     <div class="adm-modal-box__head">
       <h3 class="adm-modal-box__title" id="admDailyProgModalTitle">공사 정보 수정</h3>
       <button type="button" class="adm-modal-box__close" onclick="closeAdmDailyProgModal()" aria-label="닫기"></button>
     </div>
-    <div class="adm-modal-box__body" style="padding:20px;">
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
       <!-- 날짜 표시 -->
-      <div style="font-size:var(--rss-font-md); font-weight:700; color:#1e293b; margin-bottom:16px;">
-        <i data-lucide="calendar" style="width:16px;height:16px;margin-right:6px;vertical-align:middle;"></i>
+      <div class="adm-modal-date">
+        <i data-lucide="calendar"></i>
         <span id="admDailyProgDate">2026년 6월 27일</span>
       </div>
       <!-- 시간대 선택 -->
       <div class="rss-form-row">
         <label class="rss-form-label" for="admDailyTimeSlot">시간대</label>
-        <select id="admDailyTimeSlot" class="rss-select" style="width:160px;">
+        <select id="admDailyTimeSlot" class="rss-select rss-select--sm">
           <option value="day">주간</option>
           <option value="night">야간</option>
         </select>
       </div>
       <!-- 품목별 투입수량 + 금액 -->
-      <div class="rss-table-wrap" style="margin-top:12px;">
+      <div class="rss-table-wrap">
         <table class="rss-table" id="admDailyProgItemTable">
           <colgroup>
             <col style="width:80px;" />
@@ -754,7 +753,7 @@
               <td>TMA1</td>
               <td>
                 <input type="number" name="tma1_qty" class="rss-input rss-input--sm" value="1"
-                       min="0" style="width:70px;" onchange="calcDailyProgTotal()">
+                       min="0" onchange="calcDailyProgTotal()">
               </td>
               <td>
                 <!-- [Java] th:text="${#numbers.formatInteger(item.unitPrice * item.qty, 3, 'COMMA')}" -->
@@ -765,7 +764,7 @@
               <td>TMA3</td>
               <td>
                 <input type="number" name="tma3_qty" class="rss-input rss-input--sm" value="2"
-                       min="0" style="width:70px;" onchange="calcDailyProgTotal()">
+                       min="0" onchange="calcDailyProgTotal()">
               </td>
               <td><span id="admDailyTma3Amt">2,000,000</span></td>
             </tr>
@@ -773,7 +772,7 @@
               <td>PLCS</td>
               <td>
                 <input type="number" name="plcs_qty" class="rss-input rss-input--sm" value="2"
-                       min="0" style="width:70px;" onchange="calcDailyProgTotal()">
+                       min="0" onchange="calcDailyProgTotal()">
               </td>
               <td><span id="admDailyPlcsAmt">1,800,000</span></td>
             </tr>
@@ -781,7 +780,7 @@
               <td>신호수</td>
               <td>
                 <input type="number" name="signaler_qty" class="rss-input rss-input--sm" value="0"
-                       min="0" style="width:70px;" onchange="calcDailyProgTotal()">
+                       min="0" onchange="calcDailyProgTotal()">
               </td>
               <td><span id="admDailySignalerAmt">0</span></td>
             </tr>
@@ -799,79 +798,36 @@
       <button type="button" class="rss-btn rss-btn--cancel" onclick="closeAdmDailyProgModal()">취소</button>
       <button type="button" class="rss-btn adm-btn--save" onclick="submitAdmDailyProg()">저장</button>
     </div>
-
-<!-- ══════════════════════════════════════════════════
-     공사 완료 처리 모달
-     openAdmDailyProgCompleteModal(dt) 호출 시 표시
-══════════════════════════════════════════════════ -->
-<div id="admDailyProgCompleteModalBackdrop" class="adm-modal-overlay" role="dialog" aria-modal="true"
-     aria-labelledby="admDailyProgCompleteModalTitle">
-  <div class="adm-modal-box" style="max-width:520px;">
-    <div class="adm-modal-box__head">
-      <h3 class="adm-modal-box__title" id="admDailyProgCompleteModalTitle">공사 완료 처리</h3>
-      <button type="button" class="adm-modal-box__close" onclick="closeAdmDailyProgCompleteModal()" aria-label="닫기"></button>
-    </div>
-    <div class="adm-modal-box__body" style="padding:20px;">
-      <div style="font-size:var(--rss-font-md); font-weight:700; color:#1e293b; margin-bottom:16px;">
-        <i data-lucide="calendar" style="width:16px;height:16px;margin-right:6px;vertical-align:middle;"></i>
-        <span id="admDailyProgCompleteDate">2026년 6월 27일</span>
-      </div>
-      <div class="rss-form-row">
-        <label class="rss-form-label" for="admDailyCompleteTimeSlot">시간대</label>
-        <select id="admDailyCompleteTimeSlot" class="rss-select" style="width:160px;">
-          <option value="day">주간</option>
-          <option value="night">야간</option>
-        </select>
-      </div>
-      <div class="rss-table-wrap" style="margin-top:12px;">
-        <table class="rss-table">
-          <colgroup>
-            <col style="width:80px;" />
-            <col style="width:120px;" />
-            <col />
-          </colgroup>
-          <thead>
-            <tr><th>품목</th><th>투입수량</th><th>금액</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>TMA1</td><td><input type="number" class="rss-input rss-input--sm" value="1" min="0" style="width:70px;"></td><td>600,000</td></tr>
-            <tr><td>TMA3</td><td><input type="number" class="rss-input rss-input--sm" value="2" min="0" style="width:70px;"></td><td>2,000,000</td></tr>
-            <tr><td>PLCS</td><td><input type="number" class="rss-input rss-input--sm" value="2" min="0" style="width:70px;"></td><td>1,800,000</td></tr>
-            <tr><td>신호수</td><td><input type="number" class="rss-input rss-input--sm" value="0" min="0" style="width:70px;"></td><td>0</td></tr>
-          </tbody>
-          <tfoot>
-            <tr><td colspan="2">지급액</td><td><strong>4,400,000</strong></td></tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-    <div class="adm-modal-box__foot">
-      <button type="button" class="rss-btn rss-btn--cancel" onclick="closeAdmDailyProgCompleteModal()">취소</button>
-      <button type="button" class="rss-btn adm-btn--save" onclick="submitAdmDailyProgComplete()">저장</button>
-    </div>
   </div>
 </div>
 
 <!-- ══════════════════════════════════════════════════
+     공사 완료 처리: 스토리보드 기준 alert 방식
+     openAdmDailyProgCompleteModal(dt) → alert 안내 후 닫힘
+     별도 모달 불필요 — JS 함수만 사용
+══════════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════════════
      공사 취소 처리 모달
      openAdmDailyProgCancelModal(dt) 호출 시 표시
+     [Java] POST /adm/construction/daily-prog/cancel
 ══════════════════════════════════════════════════ -->
 <div id="admDailyProgCancelModalBackdrop" class="adm-modal-overlay" role="dialog" aria-modal="true"
      aria-labelledby="admDailyProgCancelModalTitle">
-  <div class="adm-modal-box" style="max-width:520px;">
+  <div class="adm-modal-box">
     <div class="adm-modal-box__head">
       <h3 class="adm-modal-box__title" id="admDailyProgCancelModalTitle">공사 취소 처리</h3>
       <button type="button" class="adm-modal-box__close" onclick="closeAdmDailyProgCancelModal()" aria-label="닫기"></button>
     </div>
-    <div class="adm-modal-box__body" style="padding:20px;">
-      <div style="font-size:var(--rss-font-md); font-weight:700; color:#1e293b; margin-bottom:16px;">
-        <i data-lucide="calendar" style="width:16px;height:16px;margin-right:6px;vertical-align:middle;"></i>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <div class="adm-modal-date">
+        <i data-lucide="calendar"></i>
         <span id="admDailyProgCancelDate">2026년 6월 27일</span>
       </div>
       <div class="rss-form-row">
         <label class="rss-form-label" for="admDailyProgCancelReason">취소 사유</label>
         <textarea id="admDailyProgCancelReason" class="rss-input rss-textarea"
-                  placeholder="취소 사유를 입력하세요." style="min-height:100px;"></textarea>
+                  placeholder="취소 사유를 입력하세요."></textarea>
       </div>
     </div>
     <div class="adm-modal-box__foot">
@@ -1274,23 +1230,13 @@ function submitConstComplete() {
   location.reload();
 }
 
-/* ── 공사 완료 처리 모달 ─────────────────────────────── */
+/* ── 공사 완료 처리 (스토리보드 기준: alert 방식) ──────────────────────────
+   완료 버튼 클릭 시 안내 메시지만 표시 → 별도 모달 없음
+   실제 완료 처리는 수정 모달에서 수량 조정 후 저장으로 처리
+   [Java] POST /adm/construction/daily-prog/complete (수정 모달 저장 시 처리)
+──────────────────────────────────────────────────────────────────────────── */
 function openAdmDailyProgCompleteModal(dt) {
-  _admDailyProgDate = dt;
-  var d = new Date(dt);
-  document.getElementById('admDailyProgCompleteDate').textContent =
-    d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일';
-  document.getElementById('admDailyProgCompleteModalBackdrop').classList.add('open');
-  lucide.createIcons();
-}
-function closeAdmDailyProgCompleteModal() {
-  document.getElementById('admDailyProgCompleteModalBackdrop').classList.remove('open');
-}
-function submitAdmDailyProgComplete() {
-  /* [Java] POST /adm/construction/complete */
-  alert('공사가 완료 처리되었습니다.');
-  closeAdmDailyProgCompleteModal();
-  location.reload();
+  alert("진행 상황에서 '수정'을 눌러 변경된 수량을 조정하면 완료됩니다.");
 }
 
 /* ── 공사 취소 처리 모달 ─────────────────────────────── */
@@ -1309,8 +1255,8 @@ function submitAdmDailyProgCancel() {
   var reason = document.getElementById('admDailyProgCancelReason').value.trim();
   if (!reason) { alert('취소 사유를 입력하세요.'); return; }
   /* [Java] POST /adm/construction/daily-prog/cancel */
-  alert('공사가 취소되었습니다.');
   closeAdmDailyProgCancelModal();
+  alert('공사 취소되었습니다. 차단 비용은 별도 협의 후 안내됩니다.');
   location.reload();
 }
 
