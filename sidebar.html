@@ -91,6 +91,13 @@
           <span class="rss-nav__label">광고</span>
         </a>
       </li>
+      <!-- M9. 매출현황 — 기업주 로그인 전용 [Java] th:if="${session.loginUsr.userType == 'OWNER'}" -->
+      <li id="navSalesList" data-role-only="owner">
+        <a href="sales-list.html" class="rss-nav__link" data-menu="sales-list">
+          <span class="rss-nav__icon"><i data-lucide="circle-dollar-sign"></i></span>
+          <span class="rss-nav__label">매출 현황</span>
+        </a>
+      </li>
     </ul>
   </nav>
 

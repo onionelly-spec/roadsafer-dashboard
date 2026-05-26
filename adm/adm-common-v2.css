@@ -2104,3 +2104,204 @@
   background: #fef2f2;
   border-color: #dc2626;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   §M9. 매출현황 (사용자) — sales-list.html / sales-detail.html
+   ■ 용어사전 §M9 참조
+   ■ 년월 네비게이터, 매출 합계 박스, 목록 컬럼, 상세 테이블 전용 클래스
+═══════════════════════════════════════════════════════════ */
+
+/* §M9-1. 년월 네비게이터 */
+.sales-month-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px 0;
+  position: relative;
+}
+.sales-month-nav__btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+.sales-month-nav__btn:hover {
+  border-color: var(--rss-amber);
+  background: rgba(59, 130, 246, 0.04);
+}
+.sales-month-nav__label {
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-text);
+  min-width: 90px;
+  text-align: center;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.15s;
+  position: relative;
+  display: inline-block;
+}
+.sales-month-nav__label:hover { background: rgba(59, 130, 246, 0.08); }
+
+/* §M9-2. 년/월 드롭다운 */
+.sales-month-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 120px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.sales-month-dropdown__item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: var(--rss-font-sm);
+  transition: background 0.15s;
+}
+.sales-month-dropdown__item:hover { background: rgba(59, 130, 246, 0.1); }
+.sales-month-dropdown__item.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--rss-amber-dark);
+  font-weight: 600;
+}
+.sales-month-dropdown.hidden { display: none; }
+
+/* §M9-3. 매출 합계 + 안내문 박스 */
+.sales-summary {
+  margin: 12px 24px 0;
+  padding: 14px 18px;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 10px;
+}
+.sales-summary__amount {
+  font-size: var(--rss-font-md);
+  font-weight: 700;
+  color: var(--rss-amber-dark);
+  margin-bottom: 6px;
+}
+.sales-summary__desc {
+  font-size: var(--rss-font-sm);
+  color: #6b7280;
+  line-height: 1.7;
+}
+.sales-summary__desc li {
+  list-style: disc;
+  margin-left: 16px;
+}
+
+/* §M9-4. 목록 테이블 컬럼 너비 */
+.sales-col-no    { width: 60px; }
+.sales-col-order { width: 120px; }
+.sales-col-block { width: 120px; }
+.sales-col-period{ width: 220px; }
+.sales-col-amount{ width: 130px; }
+
+/* §M9-5. 금액 셀 우측 정렬 */
+.sales-td-amount {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* §M9-6. 매출 상세 — 공사 정보 테이블 (2단 분리형) */
+.sales-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--rss-font-base);
+}
+.sales-info-table th,
+.sales-info-table td {
+  padding: 10px 14px;
+  border: 1px solid var(--rss-border);
+  vertical-align: middle;
+}
+.sales-info-table th {
+  background: #f9fafb;
+  color: var(--rss-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  width: 110px;
+  text-align: center;
+}
+.sales-info-table td a {
+  color: var(--rss-amber-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.sales-info-table td a:hover { color: var(--rss-amber); }
+.sales-info__construction-nm {
+  font-weight: 700;
+  color: var(--rss-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.sales-info__total-amt {
+  font-weight: 700;
+  color: var(--rss-amber-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* §M9-7. 매출 상세 — 날짜별 상세 테이블 */
+.sales-daily-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--rss-font-base);
+  margin-top: 20px;
+}
+.sales-daily-table th,
+.sales-daily-table td {
+  padding: 9px 12px;
+  border: 1px solid var(--rss-border);
+  vertical-align: middle;
+  text-align: center;
+}
+.sales-daily-table thead th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: var(--rss-muted);
+  white-space: nowrap;
+}
+.sales-daily__date-cell,
+.sales-daily__time-cell,
+.sales-daily__attr-cell,
+.sales-daily__div-cell { white-space: nowrap; }
+.sales-daily__item-cell { text-align: left; }
+.sales-daily__num-cell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.sales-daily__total-row {
+  background: #f9fafb;
+  font-weight: 700;
+}
+.sales-daily__total-row td {
+  border-top: 2px solid var(--rss-border);
+}
+
+/* §M9-8. 모바일 반응형 */
+@media (max-width: 768px) {
+  .sales-month-nav { padding: 12px 16px 0; }
+  .sales-summary { margin: 10px 16px 0; }
+  .sales-col-period { width: 160px; }
+  .sales-col-amount { width: 100px; }
+  .sales-info-table th { width: 90px; font-size: var(--rss-font-sm); }
+  .sales-info-table th,
+  .sales-info-table td { padding: 8px 10px; font-size: var(--rss-font-sm); }
+  .sales-daily-table th,
+  .sales-daily-table td { padding: 7px 8px; font-size: var(--rss-font-sm); }
+}
