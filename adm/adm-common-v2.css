@@ -1663,3 +1663,168 @@
 .adm-modal-date-row .rss-select--sm {
   flex-shrink: 0;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   §M5. 공지사항 관리 (notice-list.html / notice-write.html) 전용 스타일
+   ─────────────────────────────────────────────────────────────────────────
+   notice-list.html  : 목록 테이블 — 체크박스·번호·제목·카톡전송·조회수·등록일·공개
+   notice-write.html : 등록/수정 폼 — 제목·카톡전송·내용(에디터)·첨부파일·사용여부
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── §M5-1. 목록 테이블 컬럼 너비 ──────────────────────────────────────
+   rss-col-chk : 체크박스 열 (신규)
+   notice-col-kakao : 카톡 전송 Y/N
+   notice-col-view  : 조회수
+──────────────────────────────────────────────────────────────────────────── */
+.rss-col-chk       { width: 40px; }
+.notice-col-kakao  { width: 80px; }
+.notice-col-view   { width: 80px; }
+
+/* ─── §M5-2. 공지사항 목록 제목 링크 ────────────────────────────────────
+   클릭 시 notice-write.html?seq=N 으로 이동
+──────────────────────────────────────────────────────────────────────────── */
+.notice-title-link {
+  color: var(--rss-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-size: var(--rss-font-base);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.notice-title-link:hover { color: var(--rss-primary); }
+
+/* ─── §M5-3. 공개/비공개 텍스트 표시 ────────────────────────────────────
+   공개 → 기본 텍스트, 비공개 → 회색 muted
+──────────────────────────────────────────────────────────────────────────── */
+.notice-open-text  { color: var(--rss-text);  font-size: var(--rss-font-sm); }
+.notice-close-text { color: var(--rss-muted); font-size: var(--rss-font-sm); }
+
+/* ─── §M5-4. 등록/수정 폼 — 첨부파일 영역 ──────────────────────────────
+   파일 찾기 버튼 + 최대 개수 안내 + 파일 태그 목록
+──────────────────────────────────────────────────────────────────────────── */
+.notice-attach-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.notice-attach-hint {
+  font-size: var(--rss-font-sm);
+  color: var(--rss-muted);
+}
+.notice-file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.notice-file-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: #f1f5f9;
+  border: 1px solid var(--rss-border);
+  border-radius: 4px;
+  font-size: var(--rss-font-sm);
+  color: var(--rss-text);
+  max-width: 220px;
+}
+.notice-file-tag__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+.notice-file-tag__del {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--rss-muted);
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.notice-file-tag__del:hover { color: var(--rss-danger); }
+
+/* ─── §M5-5. 등록/수정 폼 — 리치 에디터 영역 ───────────────────────────
+   Java 연동 시 실제 에디터 라이브러리로 교체
+──────────────────────────────────────────────────────────────────────────── */
+.notice-editor-wrap {
+  border: 1px solid var(--rss-border);
+  border-radius: 6px;
+  overflow: hidden;
+  min-height: 260px;
+}
+.notice-editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--rss-border);
+  flex-wrap: wrap;
+}
+.notice-editor-toolbar select,
+.notice-editor-toolbar button {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--rss-border);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+  color: var(--rss-text);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.notice-editor-toolbar button:hover { background: #e2e8f0; }
+.notice-editor-toolbar .toolbar-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--rss-border);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+.notice-editor-body {
+  min-height: 200px;
+  padding: 14px 16px;
+  font-size: var(--rss-font-base);
+  color: var(--rss-text);
+  outline: none;
+  line-height: 1.7;
+}
+
+/* ─── §M5-6. 라디오 그룹 (카톡전송 / 사용여부) ──────────────────────────
+   <div class="notice-radio-group"> ... </div>
+──────────────────────────────────────────────────────────────────────────── */
+.notice-radio-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.notice-radio-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--rss-font-base);
+  color: var(--rss-text);
+  cursor: pointer;
+}
+.notice-radio-group input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--rss-primary);
+  cursor: pointer;
+}
+
+/* ─── §M5-7. adm-required-note (필수 안내 — *는 필수입니다) ─────────────
+   write-section__head 우측에 배치
+──────────────────────────────────────────────────────────────────────────── */
+.adm-required-note {
+  margin-left: auto;
+  font-size: var(--rss-font-sm);
+  color: var(--rss-danger);
+  font-weight: 500;
+}

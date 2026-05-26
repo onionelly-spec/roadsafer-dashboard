@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- [Java] th:text="${noticeSeq != null} ? '공지사항 수정 — 로드세이프티시스템 관리자' : '공지사항 등록 — 로드세이프티시스템 관리자'" -->
+  <title>공지사항 등록/수정 — 로드세이프티시스템 관리자</title>
+  <!-- 공통 CSS -->
+  <link rel="stylesheet" href="../rss-common.css?v=20260526" />
+  <link rel="stylesheet" href="adm-common-v2.css?v=20260526" />
+  <!-- Quill 리치 에디터 CSS -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- Quill 리치 에디터 JS -->
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+</head>
+<body>
+<!-- ══════════════════════════════════════════════════
+     관리자 레이아웃
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+  <div class="adm-main">
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">공지사항 관리</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="#">로그인</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <!-- [Java] th:href="@{/adm/notice/list}" -->
+        <a href="notice-list.html">공지사항 관리</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <!-- [Java] th:text="${noticeSeq != null} ? '수정' : '등록'" -->
+        <span class="adm-breadcrumb__current">등록/수정</span>
+      </nav>
+    </div>
+    <main class="rss-content">
+      <!-- ══════════════════════════════════════════════════
+           공지사항 등록/수정 폼 (M5-1)
+           [Java] th:action="${noticeSeq != null}
+                    ? @{/adm/notice/mod/{seq}(seq=${noticeSeq})}
+                    : @{/adm/notice/reg}"
+           [Java] th:method="post"
+           [Java] th:enctype="multipart/form-data"
+      ══════════════════════════════════════════════════ -->
+      <form id="noticeWriteForm" method="post" action="#" enctype="multipart/form-data" novalidate>
+        <!-- [Java] CSRF: th:hidden th:name="${_csrf.parameterName}" th:value="${_csrf.token}" -->
+        <!-- [Java] 수정 모드: <input type="hidden" name="noticeSeq" th:value="${notice.noticeSeq}"> -->
+        <!-- 에디터 내용 hidden 필드 (submit 시 채워짐) -->
+        <input type="hidden" id="noticeContentHidden" name="noticeContent" />
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             섹션: 공지사항 정보
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section class="write-section" aria-labelledby="secNoticeTitle">
+          <div class="write-section__head">
+            <i data-lucide="bell" style="width:16px;height:16px;color:var(--rss-primary);flex-shrink:0;"></i>
+            <h2 class="write-section__title" id="secNoticeTitle">공지사항 관리</h2>
+            <span class="adm-required-note">*는 필수입니다</span>
+          </div><!-- /write-section__head -->
+          <div class="write-section__body">
+            <table class="adm-form-table">
+              <tbody>
+                <!-- ─── 행 1: 제목 ────────────────────────────────────────
+                     스토리보드: 자율입력, 30자 제한
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">제목<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] th:value="${notice.noticeTitle}" -->
+                    <input type="text" id="noticeTitle" name="noticeTitle"
+                           class="rss-input" style="width:100%;"
+                           placeholder="제목을 입력하세요 (최대 30자)"
+                           maxlength="30"
+                           value="" />
+                    <!-- 더미 수정 모드 예시: value="시스템 정기 점검 예정입니다" -->
+                  </td>
+                </tr>
+
+                <!-- ─── 행 2: 카톡 전송 ──────────────────────────────────
+                     스토리보드: 예/아니오 라디오, 기본값 아니오
+                     → 예 선택 시 저장 누르면 카카오 알림 발송
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">카톡 전송<span class="required">*</span></th>
+                  <td>
+                    <div class="notice-radio-group">
+                      <!-- [Java] th:checked="${notice.kakaoSendYn == 'Y'}" -->
+                      <label>
+                        <input type="radio" id="kakaoSendYnY" name="kakaoSendYn" value="Y" />
+                        예
+                      </label>
+                      <!-- [Java] th:checked="${notice.kakaoSendYn == 'N' or notice.kakaoSendYn == null}" -->
+                      <label>
+                        <input type="radio" id="kakaoSendYnN" name="kakaoSendYn" value="N" checked />
+                        아니오
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- ─── 행 3: 내용 (리치 에디터) ──────────────────────────
+                     스토리보드: 에디터에서 내용 작성
+                     Quill.js Snow 테마 사용
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row" style="vertical-align:top;padding-top:12px;">
+                    내용<span class="required">*</span>
+                  </th>
+                  <td>
+                    <!-- Quill 에디터 래퍼 -->
+                    <div class="notice-editor-wrap">
+                      <!-- [Java] 수정 모드: Quill.setContents(JSON.parse('${notice.noticeContent}')) -->
+                      <div id="noticeEditor"></div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- ─── 행 4: 첨부파일 ────────────────────────────────────
+                     스토리보드: 파일 찾기 버튼, 최대 10개
+                     파일 추가 후 파일명 + × 버튼으로 표시
+                     × 클릭 시 파일 삭제
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row" style="vertical-align:top;padding-top:12px;">첨부파일</th>
+                  <td>
+                    <div class="notice-attach-area">
+                      <!-- 파일 찾기 버튼 -->
+                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <button type="button" class="rss-btn rss-btn--outline"
+                                onclick="triggerNoticeFileInput()">
+                          <i data-lucide="paperclip" style="width:14px;height:14px;margin-right:4px;vertical-align:middle;"></i>
+                          파일 찾기
+                        </button>
+                        <span class="notice-attach-hint">* 최대 10개까지 가능</span>
+                        <!-- 실제 파일 input (hidden) -->
+                        <input type="file" id="noticeFileInput" name="noticeAttach"
+                               multiple accept="*/*"
+                               style="display:none;"
+                               onchange="addNoticeFiles(this)" />
+                      </div>
+                      <!-- 첨부 파일 목록 -->
+                      <!-- [Java] th:each="attach : ${notice.attachList}" -->
+                      <div class="notice-file-list" id="noticeFileList">
+                        <!-- 더미 — 수정 모드 예시 -->
+                        <!-- [Java] th:if="${attach != null}" -->
+                        <div class="notice-file-tag" data-attach-seq="9001">
+                          <!-- [Java] th:text="${attach.attachFileNm}" -->
+                          <span class="notice-file-tag__name">첨부파일.pdf</span>
+                          <button type="button" class="notice-file-tag__del"
+                                  onclick="removeNoticeFile(this, 9001)"
+                                  aria-label="파일 삭제">×</button>
+                        </div>
+                        <!-- [Java] /th:each 끝 -->
+                      </div>
+                      <!-- 삭제 예정 파일 seq 목록 (수정 모드에서 Java로 전송) -->
+                      <input type="hidden" id="noticeDeleteAttachSeqs" name="deleteAttachSeqs" value="" />
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- ─── 행 5: 사용여부 ────────────────────────────────────
+                     스토리보드: 공개 / 비공개 라디오
+                     비공개 시 사용자 공지사항에 표시되지 않음
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">사용여부<span class="required">*</span></th>
+                  <td>
+                    <div class="notice-radio-group">
+                      <!-- [Java] th:checked="${notice.useYn == 'Y' or notice.useYn == null}" -->
+                      <label>
+                        <input type="radio" id="useYnY" name="useYn" value="Y" checked />
+                        공개
+                      </label>
+                      <!-- [Java] th:checked="${notice.useYn == 'N'}" -->
+                      <label>
+                        <input type="radio" id="useYnN" name="useYn" value="N" />
+                        비공개
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div><!-- /write-section__body -->
+        </section><!-- /write-section -->
+
+        <!-- ─── 하단 버튼 영역 ──────────────────────────────────
+             스토리보드 ②: 저장 / ③: 취소
+             저장: 필수 항목 확인 후 경고창 → 예 → 저장 후 목록(M5) 이동
+             취소: 목록(M5)으로 이동
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-page-actions">
+          <!-- ③ 취소 -->
+          <!-- [Java] @{/adm/notice/list} -->
+          <button type="button" class="rss-btn adm-btn--cancel"
+                  onclick="location.href='notice-list.html'">취소</button>
+          <!-- ② 저장 -->
+          <button type="submit" class="rss-btn adm-btn--save"
+                  onclick="return submitNoticeForm(event)">저장</button>
+        </div>
+      </form><!-- /noticeWriteForm -->
+    </main>
+    <div id="rss-footer-wrap"></div>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- ══════════════════════════════════════════════════
+     공통 스크립트
+══════════════════════════════════════════════════ -->
+<script src="adm-common.js?v=20260526"></script>
+<script>
+/* ─── 페이지 초기화 (직접 실행 — DOMContentLoaded 불필요) ─── */
+var noticeQuill = null;
+
+/* adm-common.js IIFE가 topbar/sidebar를 자동 삽입함 */
+if (window.lucide) lucide.createIcons();
+
+/* Quill 에디터 초기화 */
+noticeQuill = new Quill('#noticeEditor', {
+  theme: 'snow',
+  placeholder: '공지 내용을 입력하세요.',
+  modules: {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      ['link', 'image'],
+      ['clean']
+    ]
+  }
+});
+
+/* [Java] 수정 모드: 기존 내용 로드
+   noticeQuill.root.innerHTML = /*[[${notice.noticeContent}]]*\/ '';
+*/
+
+/* 파일 input 재사용을 위해 값 초기화 */
+document.getElementById('noticeFileInput').value = '';
+
+/* ─── 파일 찾기 버튼 트리거 ─────────────────────────── */
+function triggerNoticeFileInput() {
+  document.getElementById('noticeFileInput').click();
+}
+
+/* ─── 첨부파일 추가 ─────────────────────────────────── */
+function addNoticeFiles(input) {
+  const fileList = document.getElementById('noticeFileList');
+  const existingCount = fileList.querySelectorAll('.notice-file-tag').length;
+  const files = Array.from(input.files);
+  const maxFiles = 10;
+
+  if (existingCount + files.length > maxFiles) {
+    alert('첨부파일은 최대 ' + maxFiles + '개까지 가능합니다.');
+    input.value = '';
+    return;
+  }
+
+  files.forEach(function(file) {
+    const tag = document.createElement('div');
+    tag.className = 'notice-file-tag';
+    tag.dataset.newFile = 'true'; /* 신규 파일 구분 */
+    tag.innerHTML =
+      '<span class="notice-file-tag__name">' + escapeHtml(file.name) + '</span>' +
+      '<button type="button" class="notice-file-tag__del" ' +
+      'onclick="removeNoticeFile(this, null)" aria-label="파일 삭제">×</button>';
+    fileList.appendChild(tag);
+  });
+
+  /* 아이콘 재생성 */
+  if (window.lucide) lucide.createIcons();
+  /* input 초기화 (동일 파일 재선택 가능) */
+  input.value = '';
+}
+
+/* ─── 첨부파일 삭제 ─────────────────────────────────── */
+function removeNoticeFile(btn, attachSeq) {
+  const tag = btn.closest('.notice-file-tag');
+  /* 기존 파일(수정 모드): deleteAttachSeqs에 seq 추가 */
+  if (attachSeq) {
+    const seqInput = document.getElementById('noticeDeleteAttachSeqs');
+    const current = seqInput.value ? seqInput.value.split(',') : [];
+    current.push(String(attachSeq));
+    seqInput.value = current.join(',');
+  }
+  tag.remove();
+}
+
+/* ─── HTML 이스케이프 유틸 ──────────────────────────── */
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ─── ② 저장 ────────────────────────────────────────
+   필수 항목 확인 → 경고창 → 예 → 저장 후 목록(M5) 이동
+   [Java] POST /adm/notice/reg  또는  PUT /adm/notice/mod/{seq}
+──────────────────────────────────────────────────── */
+function submitNoticeForm(event) {
+  event.preventDefault();
+
+  /* 에디터 내용을 hidden 필드에 복사 */
+  const editorHtml = noticeQuill ? noticeQuill.root.innerHTML : '';
+  document.getElementById('noticeContentHidden').value = editorHtml;
+
+  /* 필수 항목 검증 */
+  const title   = document.getElementById('noticeTitle').value.trim();
+  const content = noticeQuill ? noticeQuill.getText().trim() : '';
+
+  if (!title) {
+    alert('제목을 입력하세요.');
+    document.getElementById('noticeTitle').focus();
+    return false;
+  }
+  if (!content) {
+    alert('내용을 입력하세요.');
+    noticeQuill && noticeQuill.focus();
+    return false;
+  }
+
+  /* 저장 확인 */
+  if (!confirm('저장하시겠습니까?')) return false;
+
+  /* [Java] 서버 요청으로 교체:
+     document.getElementById('noticeWriteForm').submit();
+  */
+  console.log('[M5-1] 저장 요청 — title:', title);
+  alert('저장 기능은 Java 연동 후 처리됩니다.');
+  location.href = 'notice-list.html';
+  return false;
+}
+</script>
+</body>
+</html>

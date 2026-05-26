@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- [Java] th:text="'공지사항 관리 — 로드세이프티시스템 관리자'" -->
+  <title>공지사항 관리 — 로드세이프티시스템 관리자</title>
+  <!-- 공통 CSS -->
+  <link rel="stylesheet" href="../rss-common.css?v=20260526" />
+  <link rel="stylesheet" href="adm-common-v2.css?v=20260526" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<!-- ══════════════════════════════════════════════════
+     관리자 레이아웃
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+  <div class="adm-main">
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">공지사항 관리</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="#">로그인</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span class="adm-breadcrumb__current">공지사항 관리</span>
+      </nav>
+    </div>
+    <main class="rss-content">
+      <!-- ══════════════════════════════════════════════════
+           공지사항 관리 목록 카드 (M5)
+           [Java] GET /adm/notice/list?searchKeyword=&page=
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-card">
+        <!-- ─── 검색 툴바 ──────────────────────────────────────
+             스토리보드 ①: 키워드(제목 검색) + 찾기 / ② 등록 버튼
+             전체보기 버튼: 검색 실행 후 .is-searched 클래스에 의해 표시
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-board-toolbar">
+          <div class="rss-board-toolbar__right">
+            <!-- [Java] th:value="${searchKeyword}" -->
+            <input type="text" id="noticeSearchKeyword" class="rss-input" style="width:240px;"
+                   placeholder="키워드를 입력하세요"
+                   onkeydown="if(event.key==='Enter') searchNotice()" />
+            <button type="button" class="rss-btn rss-btn--outline" onclick="searchNotice()">
+              <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
+              찾기
+            </button>
+            <!-- 전체보기 버튼 — 검색 후 표시 -->
+            <button type="button" class="rss-btn rss-btn--view-all" id="noticeBtnViewAll"
+                    onclick="resetNoticeSearch()">전체보기</button>
+            <!-- ② 등록 버튼 -->
+            <!-- [Java] @{/adm/notice/write} -->
+            <button type="button" class="rss-btn rss-btn--amber"
+                    onclick="location.href='notice-write.html'">
+              <i data-lucide="plus" style="width:14px;height:14px;margin-right:4px;vertical-align:middle;"></i>
+              등록
+            </button>
+          </div>
+        </div><!-- /rss-board-toolbar -->
+
+        <!-- ─── 목록 테이블 ────────────────────────────────────
+             스토리보드 ③: 체크박스·번호·제목·카톡전송·조회수·등록일·공개
+             제목 클릭 → notice-write.html?seq=N (등록/수정 페이지)
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-table-wrap">
+          <!-- [Java] th:if="${#lists.isEmpty(noticeList)}" -->
+          <!-- <div class="rss-empty">검색 결과가 없습니다.</div> -->
+          <!-- [Java] th:unless="${#lists.isEmpty(noticeList)}" -->
+          <div style="overflow-x:auto;">
+          <table class="rss-table" id="noticeTable" style="min-width:780px;">
+            <colgroup>
+              <col class="rss-col-chk" />        <!-- 체크박스 -->
+              <col class="rss-col-no" />          <!-- 번호 -->
+              <col />                             <!-- 제목 — 가변 -->
+              <col class="notice-col-kakao" />    <!-- 카톡 전송 -->
+              <col class="notice-col-view" />     <!-- 조회수 -->
+              <col class="rss-col-date" />        <!-- 등록일 -->
+              <col class="rss-col-open" />        <!-- 공개 -->
+            </colgroup>
+            <thead>
+              <tr>
+                <!-- 전체 선택 체크박스 -->
+                <th>
+                  <input type="checkbox" id="noticeChkAll"
+                         onchange="toggleAllNoticeChk(this)"
+                         title="전체 선택" />
+                </th>
+                <th>번호</th>
+                <th>제목</th>
+                <th>카톡 전송</th>
+                <th>조회수</th>
+                <th>등록일</th>
+                <th>공개</th>
+              </tr>
+            </thead>
+            <tbody id="noticeListBody">
+              <!-- ══════════════════════════════════════════════
+                   [Java] th:each="item : ${noticeList}"
+                   더미 데이터 — 스토리보드 §M5 기준 (최근 등록순, 10개/페이지)
+              ══════════════════════════════════════════════ -->
+
+              <!-- 행 1 -->
+              <!-- [Java] th:each="item : ${noticeList}" -->
+              <tr>
+                <!-- [Java] th:value="${item.noticeSeq}" -->
+                <td class="text-center">
+                  <input type="checkbox" class="notice-chk" value="1001" />
+                </td>
+                <!-- [Java] th:text="${noticeList.size() - itemStat.index}" -->
+                <td class="text-center">1</td>
+                <!-- [Java] th:href="@{/adm/notice/write/{seq}(seq=${item.noticeSeq})}" th:text="${item.noticeTitle}" -->
+                <td>
+                  <a href="notice-write.html?seq=1001" class="notice-title-link">
+                    시스템 정기 점검 예정입니다
+                  </a>
+                </td>
+                <!-- [Java] th:text="${item.kakaoSendYn}" -->
+                <td class="text-center">Y</td>
+                <!-- [Java] th:text="${item.viewCnt}" -->
+                <td class="text-center">0</td>
+                <!-- [Java] th:text="${#temporals.format(item.regDtm,'yyyy-MM-dd')}" -->
+                <td class="text-center rss-col-date">2026-07-02</td>
+                <!-- [Java] th:text="${item.useYn == 'Y' ? '공개' : '비공개'}" -->
+                <!-- [Java] th:class="${item.useYn == 'Y' ? 'notice-open-text' : 'notice-close-text'}" -->
+                <td class="text-center">
+                  <span class="notice-open-text">공개</span>
+                </td>
+              </tr>
+
+              <!-- 행 2 -->
+              <tr>
+                <td class="text-center">
+                  <input type="checkbox" class="notice-chk" value="1002" />
+                </td>
+                <td class="text-center">2</td>
+                <td>
+                  <a href="notice-write.html?seq=1002" class="notice-title-link">
+                    차단기업 추가 서류를 등록해주세요
+                  </a>
+                </td>
+                <td class="text-center">N</td>
+                <td class="text-center">21</td>
+                <td class="text-center rss-col-date">2026-06-25</td>
+                <td class="text-center">
+                  <span class="notice-open-text">공개</span>
+                </td>
+              </tr>
+
+              <!-- 행 3 -->
+              <tr>
+                <td class="text-center">
+                  <input type="checkbox" class="notice-chk" value="1003" />
+                </td>
+                <td class="text-center">3</td>
+                <td>
+                  <a href="notice-write.html?seq=1003" class="notice-title-link">
+                    발주기업 담당자 확인 안내
+                  </a>
+                </td>
+                <td class="text-center">N</td>
+                <td class="text-center">0</td>
+                <td class="text-center rss-col-date">2026-06-15</td>
+                <td class="text-center">
+                  <span class="notice-close-text">비공개</span>
+                </td>
+              </tr>
+
+              <!-- 행 4 -->
+              <tr>
+                <td class="text-center">
+                  <input type="checkbox" class="notice-chk" value="1004" />
+                </td>
+                <td class="text-center">4</td>
+                <td>
+                  <a href="notice-write.html?seq=1004" class="notice-title-link">
+                    시스템 임시 중지 안내
+                  </a>
+                </td>
+                <td class="text-center">N</td>
+                <td class="text-center">0</td>
+                <td class="text-center rss-col-date">2026-06-16</td>
+                <td class="text-center">
+                  <span class="notice-open-text">공개</span>
+                </td>
+              </tr>
+
+              <!-- 행 5 -->
+              <tr>
+                <td class="text-center">
+                  <input type="checkbox" class="notice-chk" value="1005" />
+                </td>
+                <td class="text-center">5</td>
+                <td>
+                  <a href="notice-write.html?seq=1005" class="notice-title-link">
+                    2026년 5월 정산 안내
+                  </a>
+                </td>
+                <td class="text-center">Y</td>
+                <td class="text-center">34</td>
+                <td class="text-center rss-col-date">2026-06-02</td>
+                <td class="text-center">
+                  <span class="notice-open-text">공개</span>
+                </td>
+              </tr>
+
+              <!-- ══════════════════════════════════════════════
+                   [Java] /th:each 끝
+              ══════════════════════════════════════════════ -->
+            </tbody>
+          </table>
+          </div><!-- /overflow-x -->
+        </div><!-- /rss-table-wrap -->
+
+        <!-- ─── 하단 액션 영역 (삭제 ④ + 페이지네이션 + 등록 ②) ──────────────
+             rss-page-actions--split : 좌(삭제) / 중앙(페이지네이션) / 우(등록)
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-page-actions rss-page-actions--split">
+          <!-- ④ 삭제 버튼 (좌측) -->
+          <div class="rss-page-actions__left">
+            <button type="button" class="rss-btn adm-btn--delete"
+                    onclick="deleteSelectedNotices()">삭제</button>
+          </div>
+          <!-- 페이지네이션 (중앙) -->
+          <!-- [Java] th:with="totalPages=${page.totalPages}, currentPage=${page.number}" -->
+          <div class="rss-pagination" id="noticePagination">
+            <button class="rss-pagination__btn" aria-label="첫 페이지" disabled>&lt;&lt;</button>
+            <button class="rss-pagination__btn" aria-label="이전" disabled>&lt;</button>
+            <!-- [Java] th:each="i : ${#numbers.sequence(startPage, endPage)}" -->
+            <button class="rss-pagination__btn active" data-page="1">1</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="2">2</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="3">3</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="4">4</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="5">5</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="6">6</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="7">7</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="8">8</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="9">9</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="10">10</button>
+            <button class="rss-pagination__btn" aria-label="다음">&gt;</button>
+            <button class="rss-pagination__btn" aria-label="마지막">&gt;&gt;</button>
+          </div>
+          <!-- ② 등록 버튼 (우측) -->
+          <div class="rss-page-actions__right">
+            <button type="button" class="rss-btn rss-btn--amber"
+                    onclick="location.href='notice-write.html'">등록</button>
+          </div>
+        </div><!-- /rss-page-actions -->
+
+      </div><!-- /rss-card -->
+    </main>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- ══════════════════════════════════════════════════
+     공통 JS
+══════════════════════════════════════════════════ -->
+<script src="adm-common.js?v=20260526"></script>
+<script>
+/* ─── 페이지 초기화 ─────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function () {
+  loadAdmTopbar();
+  loadAdmSidebar();
+  if (window.lucide) lucide.createIcons();
+});
+
+/* ─── ① 검색 ────────────────────────────────────────
+   [Java] GET /adm/notice/list?searchKeyword=&page=
+──────────────────────────────────────────────────── */
+function searchNotice() {
+  const keyword = document.getElementById('noticeSearchKeyword').value.trim();
+  if (!keyword) return;
+  document.querySelector('.rss-board-toolbar').classList.add('is-searched');
+  if (window.lucide) lucide.createIcons();
+  // [Java] 서버 요청으로 교체: location.href = '/adm/notice/list?searchKeyword=' + encodeURIComponent(keyword);
+  console.log('[M5] 검색:', keyword);
+}
+
+/* 전체보기 — 검색 초기화 */
+function resetNoticeSearch() {
+  document.getElementById('noticeSearchKeyword').value = '';
+  document.querySelector('.rss-board-toolbar').classList.remove('is-searched');
+  // [Java] 서버 요청으로 교체: location.href = '/adm/notice/list';
+  console.log('[M5] 전체보기 — 검색 초기화');
+}
+
+/* ─── 전체 선택 체크박스 ────────────────────────────── */
+function toggleAllNoticeChk(masterChk) {
+  document.querySelectorAll('.notice-chk').forEach(function(chk) {
+    chk.checked = masterChk.checked;
+  });
+}
+
+/* ─── ④ 삭제 ────────────────────────────────────────
+   체크된 항목 없을 때 경고창, 있을 때 확인 후 삭제
+   [Java] DELETE /adm/notice (body: {seqList: [...]})
+──────────────────────────────────────────────────── */
+function deleteSelectedNotices() {
+  const checked = Array.from(document.querySelectorAll('.notice-chk:checked'));
+  if (checked.length === 0) {
+    alert('1개 이상을 선택하세요.');
+    return;
+  }
+  if (!confirm('삭제하시겠습니까?')) return;
+  const seqList = checked.map(function(chk) { return chk.value; });
+  console.log('[M5] 삭제 요청 — noticeSeq 목록:', seqList);
+  // [Java] 서버 요청으로 교체:
+  // fetch('/adm/notice', { method:'DELETE', headers:{'Content-Type':'application/json'}, body:JSON.stringify({seqList}) })
+  //   .then(function(r){ if(r.ok){ location.reload(); } });
+  alert('삭제 기능은 Java 연동 후 처리됩니다.');
+  // 더미: 체크된 행 제거
+  checked.forEach(function(chk) {
+    chk.closest('tr').remove();
+  });
+  document.getElementById('noticeChkAll').checked = false;
+}
+</script>
+</body>
+</html>
