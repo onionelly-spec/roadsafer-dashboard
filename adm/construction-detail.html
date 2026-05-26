@@ -540,6 +540,19 @@
         [Java] th:if 로 상태별 분기 시:
           차단 정보 수정 버튼: th:if="${construction.status == 'SCHEDULED' or construction.status == 'PROGRESS'}"
           차단신청 취소 버튼: th:if="${construction.status == 'SCHEDULED' or construction.status == 'PROGRESS'}"
+        ──────────────────────────────────────────────────
+        [차단신청 취소] 버튼 처리 로직 (openBlockReqCancelConfirm)
+          경고창: "공사 진행 중 차단 취소하면 잔여 일정은 차단불이행 내역으로 이동됩니다. 차단 취소하시겠습니까?"
+          → 예 → 경고창: "처리되었습니다." → 확인 → 경고창 닫힘
+          → 아니오 → 경고창 닫힘
+
+          상태별 서버 처리 (Java 연동 시):
+          - SCHEDULED (예정) : 차단 취소 처리 후 '매칭전(MATCHING)' 상태로 변경. 카톡 전송(P06)
+            [Java] POST /adm/construction/block-req/cancel?constructionSeq={seq}
+                   → status: MATCHING, kakaoCode: P06
+          - PROGRESS (진행 중) : 해당 공사는 차단불이행내역(M2)에 등록되고 '종료(COMPLETE)' 상태로 변경. 카톡 전송(P10)
+            [Java] POST /adm/construction/block-req/cancel?constructionSeq={seq}
+                   → status: COMPLETE, 차단불이행내역 등록, kakaoCode: P10
       -->
       <div class="rss-page-actions" style="justify-content:space-between;display:none;" data-tab-actions="tab-block">
         <div style="display:flex;gap:8px;align-items:center;" id="blockTabBtns">
@@ -1107,9 +1120,16 @@ function submitBlockReqForm() {
 
 /* ── 차단신청 취소 확인 ─────────────────────────── */
 function openBlockReqCancelConfirm() {
-  if (confirm('차단신청을 취소하시겠습니까?')) {
+  /*
+   * 경고창 문구 (스토리보드 M1-2 기준)
+   * 상태별 처리:
+   *   SCHEDULED(예정)  → 차단 취소 처리, 상태: 매칭전(MATCHING), 카톡전송(P06)
+   *   PROGRESS(진행중) → 차단불이행내역(M2) 등록, 상태: 종료(COMPLETE), 카톡전송(P10)
+   * [Java] POST /adm/construction/block-req/cancel?constructionSeq={seq}
+   */
+  if (confirm('공사 진행 중 차단 취소하면 잔여 일정은 차단불이행 내역으로 이동됩니다.\n차단 취소하시겠습니까?')) {
     /* [Java] POST /adm/construction/block-req/cancel */
-    alert('차단신청이 취소되었습니다.');
+    alert('처리되었습니다.');
     location.reload();
   }
 }
