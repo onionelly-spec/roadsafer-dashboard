@@ -38,7 +38,8 @@
     </div>
 
     <main class="rss-content">
-      <div class="rss-card rss-card--no-pad">
+      <!-- ① 공사 정보 + ② 날짜별 상세 — write-section (흰 배경 라운딩) -->
+      <section class="write-section" aria-label="매출 상세 정보">
 
         <!-- ══════════════════════════════════════════════════
              ① 공사 정보 테이블 (2단 분리형)
@@ -290,9 +291,10 @@
           </table>
         </div><!-- /sales-section-daily -->
 
-      </div><!-- /rss-card -->
+      </section><!-- /write-section -->
 
-      <!-- ③ 하단 버튼 영역 — rss-card 밖, 회색 배경 위
+      <!-- ③ 하단 버튼 영역 — write-section 밖, 회색 배경 위
+           rss-page-actions 기본 border-top으로 구분선 자동 적용
            왼쪽: 엑셀 다운로드 / 오른쪽: 목록 (M9)
       -->
       <div class="rss-page-actions rss-page-actions--split">
