@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- [Java] th:text="'장터 관리 — 로드세이프티시스템 관리자'" -->
+  <title>장터 관리 — 로드세이프티시스템 관리자</title>
+  <!-- 공통 CSS -->
+  <link rel="stylesheet" href="../rss-common.css?v=20260526" />
+  <link rel="stylesheet" href="adm-common-v2.css?v=20260526" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<!-- ══════════════════════════════════════════════════
+     관리자 레이아웃
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+  <div class="adm-main">
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">장터 관리</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="#">홈</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span class="adm-breadcrumb__current">장터 관리</span>
+      </nav>
+    </div>
+    <main class="rss-content">
+      <!-- ══════════════════════════════════════════════════
+           장터 관리 목록 카드 (M7)
+           [Java] GET /adm/market/list?category=&searchType=&searchKeyword=&page=
+           스토리보드: 갤러리형 게시판 (4열 × 3행 = 12개/페이지)
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-card">
+
+        <!-- ─── ① 카테고리 체크박스 필터 바 ──────────────────
+             스토리보드 ①: 싸인카 / 간판시설물 / 안전시설물 / 싸인보드 / TMA
+             복수 선택 가능, 선택 시 해당 카테고리 게시글만 표시
+             [Java] th:checked="${#lists.contains(param.categoryList, 'sinca')}"
+        ──────────────────────────────────────────────────── -->
+        <div class="market-cat-filter">
+          <!-- [Java] th:each="cat : ${categoryList}" -->
+          <label class="market-cat-filter__item">
+            <input type="checkbox" id="catSinca"    value="sinca"    onchange="filterMarketCat()" />
+            싸인카
+          </label>
+          <label class="market-cat-filter__item">
+            <input type="checkbox" id="catSign"     value="sign"     onchange="filterMarketCat()" />
+            간판시설물
+          </label>
+          <label class="market-cat-filter__item">
+            <input type="checkbox" id="catSafety"   value="safety"   onchange="filterMarketCat()" />
+            안전시설물
+          </label>
+          <label class="market-cat-filter__item">
+            <input type="checkbox" id="catSinboard" value="sinboard" onchange="filterMarketCat()" />
+            싸인보드
+          </label>
+          <label class="market-cat-filter__item">
+            <input type="checkbox" id="catTma"      value="tma"      onchange="filterMarketCat()" />
+            TMA
+          </label>
+
+          <!-- 우측 검색 툴바 (드롭다운 + 키워드 + 찾기) -->
+          <!-- [Java] th:value="${searchType}" -->
+          <div class="rss-board-toolbar" style="margin-left:auto; border:none; padding:0;">
+            <div class="rss-board-toolbar__right">
+              <select id="marketSearchType" class="rss-select">
+                <option value="">선택</option>
+                <!-- [Java] th:selected="${searchType == 'usrId'}" -->
+                <option value="usrId">아이디</option>
+                <!-- [Java] th:selected="${searchType == 'marketContent'}" -->
+                <option value="marketContent">내용</option>
+              </select>
+              <!-- [Java] th:value="${searchKeyword}" -->
+              <input type="text" id="marketSearchKeyword" class="rss-input" style="width:200px;"
+                     placeholder=""
+                     onkeydown="if(event.key==='Enter') searchMarket()" />
+              <button type="button" class="rss-btn rss-btn--outline" onclick="searchMarket()">
+                <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
+                찾기
+              </button>
+              <!-- 전체보기 버튼 — 검색 후에만 표시 -->
+              <button type="button" class="rss-btn rss-btn--view-all" id="marketBtnViewAll"
+                      onclick="resetMarketSearch()" style="display:none;">전체보기</button>
+            </div>
+          </div>
+        </div><!-- /market-cat-filter -->
+
+        <!-- ─── ② 갤러리 그리드 ────────────────────────────────
+             스토리보드 ②: 최근 등록순, 한 페이지 12개 (4열 × 3행)
+             [Java] th:each="item : ${marketList}"
+             대표이미지: 첫 번째 이미지 (thumbImgUrl = marketImgUrl[0])
+             카테고리 옆 '판매' 고정 문구
+             아이디: 앞 4자리 + *** 마스킹
+        ──────────────────────────────────────────────────── -->
+        <!-- [Java] th:if="${#lists.isEmpty(marketList)}" -->
+        <!-- <div class="rss-empty">검색 결과가 없습니다.</div> -->
+
+        <!-- [Java] th:unless="${#lists.isEmpty(marketList)}" -->
+        <div class="adm-gallery-grid" id="marketGrid">
+
+          <!-- ── 카드 1 ── [Java] th:each="item : ${marketList}" -->
+          <!-- [Java] th:href="@{/adm/market/detail(marketSeq=${item.marketSeq})}" -->
+          <article class="adm-gallery-card" id="market-card-1">
+            <!-- 체크박스 오버레이 -->
+            <!-- [Java] th:value="${item.marketSeq}" -->
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="1"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <!-- 대표 이미지 (첫 번째 등록 이미지) -->
+            <!-- [Java] th:src="${item.thumbImgUrl}" th:alt="${item.marketTitle}" -->
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA"
+                 alt="TMA 판매" loading="lazy"
+                 onclick="goMarketDetail(1)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(1)">
+              <!-- [Java] th:text="${item.categoryLabel} + ' 판매'" -->
+              <h3 class="adm-gallery-card__title">TMA 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <!-- [Java] th:text="${item.regDt}" -->
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-21</span>
+                <!-- [Java] th:text="${#strings.substring(item.usrId,0,4)} + '***'" -->
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>hope***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 2 ── -->
+          <article class="adm-gallery-card" id="market-card-2">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="2"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물"
+                 alt="안전시설물 판매" loading="lazy"
+                 onclick="goMarketDetail(2)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(2)">
+              <h3 class="adm-gallery-card__title">안전시설물 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-20</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 3 ── -->
+          <article class="adm-gallery-card" id="market-card-3">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="3"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=간판시설물"
+                 alt="간판시설물 판매" loading="lazy"
+                 onclick="goMarketDetail(3)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(3)">
+              <h3 class="adm-gallery-card__title">간판시설물 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-19</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 4 ── -->
+          <article class="adm-gallery-card" id="market-card-4">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="4"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인카"
+                 alt="싸인카 판매" loading="lazy"
+                 onclick="goMarketDetail(4)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(4)">
+              <h3 class="adm-gallery-card__title">싸인카 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-18</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>dea0***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 5 ── -->
+          <article class="adm-gallery-card" id="market-card-5">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="5"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인보드"
+                 alt="싸인보드 판매" loading="lazy"
+                 onclick="goMarketDetail(5)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(5)">
+              <h3 class="adm-gallery-card__title">싸인보드 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-17</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>hope***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 6 ── -->
+          <article class="adm-gallery-card" id="market-card-6">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="6"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA"
+                 alt="TMA 판매" loading="lazy"
+                 onclick="goMarketDetail(6)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(6)">
+              <h3 class="adm-gallery-card__title">TMA 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-16</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 7 ── -->
+          <article class="adm-gallery-card" id="market-card-7">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="7"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인카"
+                 alt="싸인카 판매" loading="lazy"
+                 onclick="goMarketDetail(7)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(7)">
+              <h3 class="adm-gallery-card__title">싸인카 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-15</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>seho***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 8 ── -->
+          <article class="adm-gallery-card" id="market-card-8">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="8"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물"
+                 alt="안전시설물 판매" loading="lazy"
+                 onclick="goMarketDetail(8)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(8)">
+              <h3 class="adm-gallery-card__title">안전시설물 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-12</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>dea0***</span>
+              </div>
+            </div>
+          </article>
+
+        </div><!-- /adm-gallery-grid -->
+
+        <!-- ─── ③ 하단 액션 바 (삭제 + 페이지네이션) ──────────
+             스토리보드 ③: 체크박스 체크 후 삭제 버튼 클릭
+             → 경고창: 삭제하시겠습니까? → 예 → 삭제 처리 후 새로고침
+             → 체크 없을 때: 1개 이상을 선택하세요.
+        ──────────────────────────────────────────────────── -->
+        <div class="rss-page-actions rss-page-actions--between">
+          <!-- 좌측: 삭제 버튼 -->
+          <div>
+            <button type="button" class="rss-btn rss-btn--delete"
+                    onclick="deleteSelectedMarkets()">
+              <i data-lucide="trash-2" style="width:14px;height:14px;margin-right:4px;"></i>
+              삭제
+            </button>
+          </div>
+          <!-- 가운데: 페이지네이션 -->
+          <!-- [Java] th:replace="~{fragments/pagination :: pagination(${marketPage})}" -->
+          <!-- 스토리보드: 갤러리형 12개 기준, PC 10개 / 모바일 5개 표시 -->
+          <nav class="rss-pagination" aria-label="페이지 탐색">
+            <button class="rss-pagination__btn" aria-label="처음">
+              <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
+            </button>
+            <button class="rss-pagination__btn" aria-label="이전">
+              <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
+            </button>
+            <!-- [Java] th:each="pageNum : ${#numbers.sequence(startPage, endPage)}" -->
+            <button class="rss-pagination__btn active" aria-current="page">1</button>
+            <button class="rss-pagination__btn">2</button>
+            <button class="rss-pagination__btn">3</button>
+            <button class="rss-pagination__btn">4</button>
+            <button class="rss-pagination__btn">5</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">6</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">7</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">8</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">9</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra">10</button>
+            <button class="rss-pagination__btn" aria-label="다음">
+              <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+            </button>
+            <button class="rss-pagination__btn" aria-label="마지막">
+              <i data-lucide="chevrons-right" style="width:14px;height:14px;"></i>
+            </button>
+          </nav>
+          <!-- 우측: 빈 공간 (좌우 대칭 정렬용) -->
+          <div style="min-width:80px;"></div>
+        </div><!-- /rss-page-actions -->
+
+      </div><!-- /rss-card -->
+    </main>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+<!-- ══════════════════════════════════════════════════
+     공통 JS
+══════════════════════════════════════════════════ -->
+<script src="adm-common.js?v=20260526"></script>
+<script>
+/* ─── 페이지 초기화 ─────────────────────────────────── */
+if (window.lucide) lucide.createIcons();
+
+/* ─── ① 카테고리 체크박스 필터 ─────────────────────────
+   선택된 카테고리에 해당하는 카드만 표시
+   [Java] 서버 요청으로 교체:
+   GET /adm/market/list?category=sinca,sign,&page=1
+──────────────────────────────────────────────────── */
+function filterMarketCat() {
+  var checked = Array.from(document.querySelectorAll('.market-cat-filter__item input:checked'))
+                     .map(function(c) { return c.value; });
+  /* [Java] 서버 요청으로 교체:
+     var params = checked.length ? '?category=' + checked.join(',') : '';
+     location.href = '/adm/market/list' + params;
+  */
+  console.log('[M7] 카테고리 필터 — 선택:', checked);
+}
+
+/* ─── ① 검색 ────────────────────────────────────────
+   [Java] GET /adm/market/list?searchType=&searchKeyword=&page=
+──────────────────────────────────────────────────── */
+function searchMarket() {
+  var type    = document.getElementById('marketSearchType').value;
+  var keyword = document.getElementById('marketSearchKeyword').value.trim();
+  if (!type) {
+    alert('검색 조건을 선택하세요.');
+    document.getElementById('marketSearchType').focus();
+    return;
+  }
+  if (!keyword) {
+    alert('검색어를 입력하세요.');
+    document.getElementById('marketSearchKeyword').focus();
+    return;
+  }
+  document.getElementById('marketBtnViewAll').style.display = '';
+  if (window.lucide) lucide.createIcons();
+  /* [Java] 서버 요청으로 교체:
+     location.href = '/adm/market/list?searchType=' + encodeURIComponent(type)
+                   + '&searchKeyword=' + encodeURIComponent(keyword);
+  */
+  console.log('[M7] 검색 — type:', type, 'keyword:', keyword);
+}
+
+/* 전체보기 — 검색 초기화 */
+function resetMarketSearch() {
+  document.getElementById('marketSearchType').value = '';
+  document.getElementById('marketSearchKeyword').value = '';
+  document.getElementById('marketBtnViewAll').style.display = 'none';
+  /* [Java] 서버 요청으로 교체: location.href = '/adm/market/list'; */
+  console.log('[M7] 전체보기 — 검색 초기화');
+}
+
+/* ─── 카드 체크박스 선택 시 카드 테두리 강조 ────────── */
+function toggleCardSelect(chk) {
+  var card = chk.closest('.adm-gallery-card');
+  if (card) {
+    card.classList.toggle('is-selected', chk.checked);
+  }
+}
+
+/* ─── 상세보기 이동 ──────────────────────────────────
+   [Java] GET /adm/market/detail?marketSeq=N
+──────────────────────────────────────────────────── */
+function goMarketDetail(seq) {
+  /* [Java] 서버 요청으로 교체:
+     location.href = '/adm/market/detail?marketSeq=' + seq;
+  */
+  location.href = 'market-detail.html?marketSeq=' + seq;
+}
+
+/* ─── ③ 삭제 ────────────────────────────────────────
+   체크된 항목 없을 때 경고창, 있을 때 확인 후 삭제
+   [Java] DELETE /adm/market (body: {seqList: [...]})
+──────────────────────────────────────────────────── */
+function deleteSelectedMarkets() {
+  var checked = Array.from(document.querySelectorAll('.market-chk:checked'));
+  if (checked.length === 0) {
+    alert('1개 이상을 선택하세요.');
+    return;
+  }
+  if (!confirm('삭제하시겠습니까?')) return;
+  var seqList = checked.map(function(chk) { return chk.value; });
+  console.log('[M7] 삭제 요청 — marketSeq 목록:', seqList);
+  /* [Java] 서버 요청으로 교체:
+     fetch('/adm/market', {
+       method: 'DELETE',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({ seqList: seqList })
+     }).then(function(r) { if (r.ok) { location.reload(); } });
+  */
+  alert('삭제 기능은 Java 연동 후 처리됩니다.');
+  /* 더미: 체크된 카드 제거 */
+  checked.forEach(function(chk) {
+    var card = chk.closest('.adm-gallery-card');
+    if (card) card.remove();
+  });
+}
+</script>
+</body>
+</html>
