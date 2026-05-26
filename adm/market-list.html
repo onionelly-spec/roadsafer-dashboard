@@ -249,6 +249,77 @@
             </div>
           </article>
 
+          <!-- ── 카드 9 ── -->
+          <article class="adm-gallery-card" id="market-card-9">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="9"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=간판시설물"
+                 alt="간판시설물 판매" loading="lazy"
+                 onclick="goMarketDetail(9)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(9)">
+              <!-- [Java] th:text="${item.categoryLabel} + ' 판매'" -->
+              <h3 class="adm-gallery-card__title">간판시설물 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <!-- [Java] th:text="${item.regDt}" -->
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-11</span>
+                <!-- [Java] th:text="${#strings.substring(item.usrId,0,4)} + '***'" -->
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>park***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 10 ── -->
+          <article class="adm-gallery-card" id="market-card-10">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="10"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=싸인보드"
+                 alt="싸인보드 판매" loading="lazy"
+                 onclick="goMarketDetail(10)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(10)">
+              <h3 class="adm-gallery-card__title">싸인보드 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-10</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>kim0***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 11 ── -->
+          <article class="adm-gallery-card" id="market-card-11">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="11"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=TMA"
+                 alt="TMA 판매" loading="lazy"
+                 onclick="goMarketDetail(11)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(11)">
+              <h3 class="adm-gallery-card__title">TMA 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-09</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>choi***</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── 카드 12 ── -->
+          <article class="adm-gallery-card" id="market-card-12">
+            <input type="checkbox" class="adm-gallery-card__chk market-chk" value="12"
+                   aria-label="선택" onclick="event.stopPropagation(); toggleCardSelect(this)" />
+            <img class="adm-gallery-card__img"
+                 src="https://placehold.co/400x250/f3f4f6/9ca3af?text=안전시설물"
+                 alt="안전시설물 판매" loading="lazy"
+                 onclick="goMarketDetail(12)" />
+            <div class="adm-gallery-card__body" onclick="goMarketDetail(12)">
+              <h3 class="adm-gallery-card__title">안전시설물 판매</h3>
+              <div class="adm-gallery-card__meta">
+                <span><i data-lucide="calendar" style="width:11px;height:11px;"></i>2026-06-08</span>
+                <span><i data-lucide="user" style="width:11px;height:11px;"></i>lee1***</span>
+              </div>
+            </div>
+          </article>
+
         </div><!-- /adm-gallery-grid -->
 
         <!-- ─── ③ 하단 액션 바 (삭제 + 페이지네이션) ──────────
@@ -259,11 +330,8 @@
         <div class="rss-page-actions rss-page-actions--between">
           <!-- 좌측: 삭제 버튼 -->
           <div>
-            <button type="button" class="rss-btn rss-btn--delete"
-                    onclick="deleteSelectedMarkets()">
-              <i data-lucide="trash-2" style="width:14px;height:14px;margin-right:4px;"></i>
-              삭제
-            </button>
+            <button type="button" class="rss-btn adm-btn--delete"
+                    onclick="deleteSelectedMarkets()">삭제</button>
           </div>
           <!-- 가운데: 페이지네이션 -->
           <!-- [Java] th:replace="~{fragments/pagination :: pagination(${marketPage})}" -->
