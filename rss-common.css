@@ -748,6 +748,7 @@ img { max-width: 100%; display: block; }
   align-items: center;
   gap: 5px;
   min-width: 88px;
+  height: 38px;
 }
 .rss-btn--list:hover {
   border-color: var(--rss-muted);
@@ -775,6 +776,7 @@ img { max-width: 100%; display: block; }
   align-items: center;
   gap: 5px;
   min-width: 88px;
+  height: 38px;
 }
 .rss-btn--edit:hover {
   border-color: var(--rss-muted);
