@@ -516,12 +516,27 @@
         </div><!-- /write-section__body -->
       </section><!-- /write-section 공사 상세 -->
       <!-- 하단 버튼: 탭1 공사 정보 -->
+      <!--
+        상태별 하단 버튼 규칙 (tab-info)
+        ──────────────────────────────────────────────────
+        MATCHING  : [수정] [공사 취소] [목록]
+        SCHEDULED : [수정] [공사 취소] [목록]
+        PROGRESS  : [수정] [공사 취소] [목록]
+        COMPLETE  : [목록] 버튼만 표시  ← 수정/공사 취소 숨김
+        CANCEL    : [목록] 버튼만 표시  ← 수정/공사 취소 숨김
+        ──────────────────────────────────────────────────
+        [Java] th:if 로 상태별 분기 시:
+          수정 버튼:    th:if="${construction.status != 'COMPLETE' and construction.status != 'CANCEL'}"
+          공사 취소 버튼: th:if="${construction.status != 'COMPLETE' and construction.status != 'CANCEL'}"
+      -->
       <div class="rss-page-actions" style="justify-content:space-between;" data-tab-actions="tab-info">
-        <div style="display:flex;gap:8px;align-items:center;">
-          <!-- [Java] 수정 버튼: construction-write.html?seq=${construction.constructionSeq} -->
-          <a href="construction-write.html?seq=1001" class="rss-btn rss-btn--edit">수정</a>
-          <!-- [Java] th:if="${construction.status != 'CANCELLED' and construction.status != 'COMPLETED'}" -->
-          <button type="button" class="rss-btn adm-btn--delete" onclick="openConstCancelModal()">공사 취소</button>
+        <div style="display:flex;gap:8px;align-items:center;" id="infoTabBtns">
+          <!-- [Java] th:if="${construction.status != 'COMPLETE' and construction.status != 'CANCEL'}" -->
+          <!-- [Java] href: construction-write.html?seq=${construction.constructionSeq} -->
+          <a href="construction-write.html?seq=1001" class="rss-btn rss-btn--edit" id="btnConstEdit">수정</a>
+          <!-- [Java] th:if="${construction.status != 'COMPLETE' and construction.status != 'CANCEL'}" -->
+          <button type="button" class="rss-btn adm-btn--delete" id="btnConstCancel"
+                  onclick="openConstCancelModal()">공사 취소</button>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           <a href="construction-list.html" class="rss-btn rss-btn--list">목록</a>
@@ -1093,6 +1108,17 @@ document.querySelectorAll('.rss-tab').forEach(function(tab) {
   var btnCancel = document.getElementById('btnBlockReqCancel');
   if (btnEdit)   btnEdit.style.display   = showBtns ? '' : 'none';
   if (btnCancel) btnCancel.style.display = showBtns ? '' : 'none';
+
+  /* 하단 버튼: 공사 정보 탭 (tab-info)
+     수정 / 공사 취소 버튼:
+       MATCHING, SCHEDULED, PROGRESS 일 때 표시
+       COMPLETE, CANCEL 일 때 숨김
+     [Java] th:if="${construction.status != 'COMPLETE' and construction.status != 'CANCEL'}" */
+  var showInfoBtns = (status !== 'COMPLETE' && status !== 'CANCEL');
+  var btnConstEdit   = document.getElementById('btnConstEdit');
+  var btnConstCancel = document.getElementById('btnConstCancel');
+  if (btnConstEdit)   btnConstEdit.style.display   = showInfoBtns ? '' : 'none';
+  if (btnConstCancel) btnConstCancel.style.display = showInfoBtns ? '' : 'none';
 })();
 
 /* ── 차단업체 지정 콜백 ────────────────────────────────────────────── */
