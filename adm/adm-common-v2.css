@@ -1646,6 +1646,11 @@
   gap: 8px;
   flex-wrap: wrap;
 }
+/* rss-page-actions--split 안에 rss-pagination이 중첩될 때
+   rss-pagination의 자체 padding이 이중으로 쌓이지 않도록 리셋 */
+.rss-page-actions--split .rss-pagination {
+  padding: 0;
+}
 @media (max-width: 640px) {
   .rss-page-actions--split {
     flex-direction: column;
@@ -1655,6 +1660,9 @@
   .rss-page-actions--split .rss-page-actions__right {
     width: 100%;
     justify-content: center;
+  }
+  .rss-page-actions--split .rss-pagination {
+    padding: 0;
   }
 }
 
