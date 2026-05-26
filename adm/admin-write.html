@@ -273,15 +273,15 @@
             <button type="button" class="rss-btn adm-btn--delete" id="adminBtnDelete"
                     onclick="deleteAdmin()">삭제</button>
           </div>
-          <!-- 저장 + 취소 (중앙) -->
+          <!-- 취소 + 저장 (중앙) — 공통 표준: 취소 먼저, 저장 나중 -->
           <div class="rss-page-actions__center">
-            <!-- ⑥ 저장 -->
-            <button type="button" class="rss-btn adm-btn--save"
-                    onclick="submitAdminForm()">저장</button>
             <!-- ⑦ 취소 -->
             <!-- [Java] @{/adm/admin/list} -->
             <button type="button" class="rss-btn adm-btn--cancel"
                     onclick="location.href='admin-list.html'">취소</button>
+            <!-- ⑥ 저장 -->
+            <button type="button" class="rss-btn adm-btn--save"
+                    onclick="submitAdminForm()">저장</button>
           </div>
           <!-- 우측 빈 공간 (레이아웃 균형) -->
           <div class="rss-page-actions__right"></div>
