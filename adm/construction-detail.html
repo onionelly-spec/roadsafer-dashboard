@@ -534,7 +534,7 @@
           <a href="construction-write.html?seq=1001" class="rss-btn rss-btn--edit" id="btnConstEdit">수정</a>
           <!-- [Java] th:if="${construction.status != 'COMPLETE' and construction.status != 'CANCEL'}" -->
           <button type="button" class="rss-btn adm-btn--delete" id="btnConstCancel"
-                  onclick="openConstCancelModal()">공사 취소</button>
+                  onclick="confirmConstCancel()">공사 취소</button>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           <a href="construction-list.html" class="rss-btn rss-btn--list">목록</a>
@@ -1175,27 +1175,7 @@
   </article>
 </div>
 
-<!-- 공사 취소 확인 모달 (공통 confirm 패턴) -->
-<div id="constCancelModalBackdrop" class="adm-modal-overlay" role="dialog" aria-modal="true"
-     aria-labelledby="constCancelModalTitle">
-  <div class="adm-modal-box" style="max-width:400px;">
-    <div class="adm-modal-box__head">
-      <h3 class="adm-modal-box__title" id="constCancelModalTitle">공사 취소</h3>
-      <button type="button" class="adm-modal-box__close" onclick="closeConstCancelModal()" aria-label="닫기"></button>
-    </div>
-    <div class="adm-modal-box__body" style="padding:20px;">
-      <p style="margin-bottom:12px; color:#374151;">공사를 취소하시겠습니까?<br>취소 후에는 되돌릴 수 없습니다.</p>
-      <div class="rss-form-row">
-        <label class="rss-form-label" for="constCancelReason">취소 사유</label>
-        <textarea id="constCancelReason" class="rss-input rss-textarea" placeholder="취소 사유를 입력하세요."></textarea>
-      </div>
-    </div>
-    <div class="adm-modal-box__foot">
-      <button type="button" class="rss-btn rss-btn--cancel" onclick="closeConstCancelModal()">닫기</button>
-      <button type="button" class="rss-btn adm-btn--reject" onclick="submitConstCancel()">공사 취소</button>
-    </div>
-  </div>
-</div>
+<!-- [Java] constCancelModal 제거: 공사 취소는 confirm 경고창으로 처리 (스토리보드 M1-1 ⑤) -->
 
 <!-- 공사 종료 확인 모달 -->
 <div id="constCompleteModalBackdrop" class="adm-modal-overlay" role="dialog" aria-modal="true"
@@ -1494,21 +1474,17 @@ function navigateDailyProg(dir) {
   /* [Java] GET /api/construction/daily-prog/nav?seq={seq}&dt={dt}&dir={dir} */
   alert('날짜 이동은 Java 연동 후 처리됩니다.');
 }
-
-/* ── 공사 취소 모달 ─────────────────────────────── */
-function openConstCancelModal() {
-  document.getElementById('constCancelModalBackdrop').classList.add('open');
-  lucide.createIcons();
-}
-function closeConstCancelModal() {
-  document.getElementById('constCancelModalBackdrop').classList.remove('open');
-}
-function submitConstCancel() {
-  var reason = document.getElementById('constCancelReason').value.trim();
-  if (!reason) { alert('취소 사유를 입력하세요.'); return; }
+/* ── 공사 취소 (스토리보드 M1-1 ⑤) ─────────────────────────────────
+   경고창: "공사를 취소하시겠습니까?"
+   → 예 → 취소 처리 후 공사관리(M1) 목록으로 이동, 취소 상태로 변경
+   → 아니오 → 경고창 닫힘
+   [Java] POST /adm/construction/cancel
+──────────────────────────────────────────────────────────────────────── */
+function confirmConstCancel() {
+  var ok = confirm('공사를 취소하시겠습니까?');
+  if (!ok) return;
   /* [Java] POST /adm/construction/cancel */
-  alert('공사가 취소되었습니다.');
-  closeConstCancelModal();
+  alert('취소 처리되었습니다.');
   location.href = 'construction-list.html';
 }
 
