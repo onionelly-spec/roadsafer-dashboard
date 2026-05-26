@@ -24,7 +24,7 @@
   <div class="rss-main" id="rssMain">
     <div id="rss-header-wrap" data-title="매출 현황" data-icon="circle-dollar-sign"></div>
     <main class="rss-content">
-      <div class="rss-card" style="padding:0;">
+      <div class="rss-card rss-card--no-pad">
 
         <!-- ══════════════════════════════════════════════════
              ① 년월 네비게이터
@@ -38,19 +38,19 @@
           <!-- 이전 달 버튼 -->
           <!-- [Java] th:href="@{/sales/list?year=${prevYear}&month=${prevMonth}}" -->
           <button type="button" class="sales-month-nav__btn" onclick="changeMonth(-1)" aria-label="이전 달">
-            <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+            <i data-lucide="chevron-left" class="rss-icon-16"></i>
           </button>
 
           <!-- 년월 표시 (클릭 시 드롭다운) -->
           <!-- [Java] th:text="${currentYear}+'년 '+${currentMonth}+'월'" -->
           <span class="sales-month-nav__label" id="salesMonthLabel">
             <span id="salesYearDisplay"
-                  style="cursor:pointer;padding:2px 6px;border-radius:4px;transition:background 0.15s;"
+                  class="sales-month-nav__year-btn"
                   onclick="toggleYearDropdown(event)">
               2026년<!-- [Java] ${currentYear}년 -->
             </span>
             <span id="salesMonthDisplay"
-                  style="cursor:pointer;padding:2px 6px;border-radius:4px;transition:background 0.15s;"
+                  class="sales-month-nav__month-btn"
                   onclick="toggleMonthDropdown(event)">
               6월<!-- [Java] ${currentMonth}월 -->
             </span>
@@ -82,7 +82,7 @@
           <!-- 다음 달 버튼 -->
           <!-- [Java] th:href="@{/sales/list?year=${nextYear}&month=${nextMonth}}" -->
           <button type="button" class="sales-month-nav__btn" onclick="changeMonth(1)" aria-label="다음 달">
-            <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+            <i data-lucide="chevron-right" class="rss-icon-16"></i>
           </button>
         </div>
 
@@ -129,7 +129,7 @@
                      placeholder="검색어 입력"
                      onkeydown="if(event.key==='Enter') searchSales()" />
               <button type="button" onclick="searchSales()" aria-label="검색">
-                <i data-lucide="search" style="width:15px;height:15px;"></i>
+                <i data-lucide="search" class="rss-icon-15"></i>
               </button>
             </div>
             <!-- 찾기 버튼 -->
@@ -158,7 +158,7 @@
               <col class="rss-col-no" />      <!-- 번호: 5% -->
               <col class="rss-col-owner" />   <!-- 발주업체명: 15% -->
               <col />                          <!-- 공사명: 나머지 자동 -->
-              <col class="rss-col-block-corp" style="width:13%;"/> <!-- 차단업체명 -->
+              <col class="rss-col-block-corp" /><!-- 차단업체명: 나머지 자동 -->>
               <col class="rss-col-period" />  <!-- 기간: 20% -->
               <col class="rss-col-price" />   <!-- 금액: 10% -->
             </colgroup>
@@ -199,7 +199,7 @@
                 <td>
                   <!-- [Java] ${item.startDt} ~ ${item.endDt} (${item.durationDays}일) -->
                   2026-07-01 ~ 2026-07-03
-                  <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(3일)</span>
+                  <span class="sales-period-sub">(3일)</span>
                 </td>
                 <td class="sales-td-amount">
                   <!-- [Java] ${#numbers.formatInteger(item.totalAmt,1,'COMMA')} -->
@@ -213,7 +213,7 @@
                 <td><a href="company-detail.html" class="rss-link">소밍건설</a></td>
                 <td><a href="sales-detail.html" class="rss-link">국도 32번선 횡단보도 보수</a></td>
                 <td><a href="#" class="rss-link">한국도로차단</a></td>
-                <td>2026-06-25 ~ 2026-06-25 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(1일)</span></td>
+                <td>2026-06-25 ~ 2026-06-25 <span class="sales-period-sub">(1일)</span></td>
                 <td class="sales-td-amount">3,000,000</td>
               </tr>
 
@@ -223,7 +223,7 @@
                 <td><a href="company-detail.html" class="rss-link">오봉토건</a></td>
                 <td><a href="sales-detail.html" class="rss-link">도로바닥 재시공</a></td>
                 <td><a href="#" class="rss-link">스마트차단</a></td>
-                <td>2026-06-12 ~ 2026-06-18 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(7일)</span></td>
+                <td>2026-06-12 ~ 2026-06-18 <span class="sales-period-sub">(7일)</span></td>
                 <td class="sales-td-amount">55,000,000</td>
               </tr>
 
@@ -233,7 +233,7 @@
                 <td><a href="company-detail.html" class="rss-link">오봉토건</a></td>
                 <td><a href="sales-detail.html" class="rss-link">중앙분리대 시공</a></td>
                 <td><a href="#" class="rss-link">한길안전</a></td>
-                <td>2026-06-12 ~ 2026-06-18 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(7일)</span></td>
+                <td>2026-06-12 ~ 2026-06-18 <span class="sales-period-sub">(7일)</span></td>
                 <td class="sales-td-amount">40,000,000</td>
               </tr>
 
@@ -243,7 +243,7 @@
                 <td><a href="company-detail.html" class="rss-link">한국개발</a></td>
                 <td><a href="sales-detail.html" class="rss-link">호남선 서로방향 포장공사</a></td>
                 <td><a href="#" class="rss-link">순희사업</a></td>
-                <td>2026-06-01 ~ 2026-06-02 <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(2일)</span></td>
+                <td>2026-06-01 ~ 2026-06-02 <span class="sales-period-sub">(2일)</span></td>
                 <td class="sales-td-amount">15,000,000</td>
               </tr>
 
@@ -266,7 +266,7 @@
         ══════════════════════════════════════════════════ -->
         <div class="clist-mobile" id="salesMobileList">
           <!-- 모바일 카드 1 -->
-          <div class="clist-mobile-card" onclick="location.href='sales-detail.html'" style="cursor:pointer;">
+          <div class="clist-mobile-card" onclick="location.href='sales-detail.html'">
             <div class="clist-mobile-card__title">
               [긴급] 호남선 순천방향 포장공사<!-- [Java] ${item.constructionNm} -->
             </div>
@@ -289,7 +289,7 @@
           </div>
 
           <!-- 모바일 카드 2 -->
-          <div class="clist-mobile-card" onclick="location.href='sales-detail.html'" style="cursor:pointer;">
+          <div class="clist-mobile-card" onclick="location.href='sales-detail.html'">
             <div class="clist-mobile-card__title">국도 32번선 횡단보도 보수</div>
             <div class="clist-mobile-card__row">
               <span class="clist-mobile-card__label">발주사</span>
@@ -310,7 +310,7 @@
           </div>
 
           <!-- 모바일 카드 3 -->
-          <div class="clist-mobile-card" onclick="location.href='sales-detail.html'" style="cursor:pointer;">
+          <div class="clist-mobile-card" onclick="location.href='sales-detail.html'">
             <div class="clist-mobile-card__title">도로바닥 재시공</div>
             <div class="clist-mobile-card__row">
               <span class="clist-mobile-card__label">발주사</span>
@@ -338,12 +338,12 @@
              [Java] Pageable pageable = PageRequest.of(page, 30);
              ■ 페이지 번호 표시: PC 10개 / 모바일 5개 (6번 이후 hidden)
         ══════════════════════════════════════════════════ -->
-        <div class="rss-pagination" id="salesPagination" style="padding:16px 0 20px;">
-          <button class="rss-pagination__btn" aria-label="처음">
-            <i data-lucide="chevrons-left" style="width:14px;height:14px;"></i>
+        <div class="rss-pagination rss-pagination--sales" id="salesPagination">
+          <button class="rss-pagination__btn" aria-label="첫음">
+            <i data-lucide="chevrons-left" class="rss-icon-14"></i>
           </button>
           <button class="rss-pagination__btn" aria-label="이전">
-            <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
+            <i data-lucide="chevron-left" class="rss-icon-14"></i>
           </button>
           <!-- [Java] th:each="i : ${#numbers.sequence(1, totalPages)}" -->
           <button class="rss-pagination__btn active">1</button>
@@ -358,10 +358,10 @@
           <button class="rss-pagination__btn rss-pagination__btn--page-extra">9</button>
           <button class="rss-pagination__btn rss-pagination__btn--page-extra">10</button>
           <button class="rss-pagination__btn" aria-label="다음">
-            <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+            <i data-lucide="chevron-right" class="rss-icon-14"></i>
           </button>
           <button class="rss-pagination__btn" aria-label="마지막">
-            <i data-lucide="chevrons-right" style="width:14px;height:14px;"></i>
+            <i data-lucide="chevrons-right" class="rss-icon-14"></i>
           </button>
         </div>
 
@@ -369,8 +369,7 @@
              ③ 엑셀 다운로드 (하단)
              [Java] /sales/excel?year=&month=&searchType=&searchKeyword=
         ══════════════════════════════════════════════════ -->
-        <div class="rss-page-actions rss-page-actions--right rss-page-actions--no-border"
-             style="padding-top:0;padding-bottom:20px;">
+        <div class="rss-page-actions rss-page-actions--right rss-page-actions--no-border rss-page-actions--excel-bottom">
           <button type="button" class="rss-btn adm-btn--excel" onclick="downloadSalesExcel()">엑셀 다운로드</button>
         </div>
 

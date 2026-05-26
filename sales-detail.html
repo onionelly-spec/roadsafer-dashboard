@@ -24,7 +24,7 @@
   <div class="rss-main" id="rssMain">
     <div id="rss-header-wrap" data-title="매출 현황" data-icon="circle-dollar-sign"></div>
     <main class="rss-content">
-      <div class="rss-card" style="padding:0;">
+      <div class="rss-card rss-card--no-pad">
 
         <!-- ══════════════════════════════════════════════════
              ① 공사 정보 테이블 (2단 분리형)
@@ -32,7 +32,7 @@
              오른쪽(차단기업): 아이디 / 상호 / 사업자번호 / 대표자명 / 담당자
              [DB] rs_construction JOIN rs_company WHERE construction_seq=?
         ══════════════════════════════════════════════════ -->
-        <div style="padding:24px 24px 0;">
+        <div class="sales-section-top">
           <table class="sales-info-table" id="salesDetailTable">
             <tbody>
               <!-- 행 1: 공사종료일 / 아이디 -->
@@ -54,9 +54,9 @@
                 <td>
                   <!-- [Java] ${#temporals.format(construction.startDt,'yyyy-MM-dd')} ~ ${#temporals.format(construction.endDt,'yyyy-MM-dd')} (${construction.durationDays}일) -->
                   2026-06-12 ~ 2026-06-16
-                  <span style="color:var(--rss-muted);font-size:var(--rss-font-sm);">(4일)</span>
+                  <span class="sales-period-sub">(4일)</span>
                 </td>
-                <th rowspan="3" style="vertical-align:middle;">차단기업</th>
+                <th rowspan="3" class="sales-info__block-corp-th">차단기업</th>
                 <th>상호</th>
                 <td>
                   <!-- [Java] th:href="@{/company/block/detail/{id}(id=${blockCompany.companySeq})}" (M4-1-1) -->
@@ -121,18 +121,18 @@
              ■ 속성: 공수 / 반공수 (시연회 기준)
              ■ 취소 행은 품목/수량/단가 없이 금액만 표시
         ══════════════════════════════════════════════════ -->
-        <div style="padding:0 24px 24px;overflow-x:auto;">
+        <div class="sales-section-daily">
           <table class="sales-daily-table" id="salesDailyTable">
             <colgroup>
-              <col style="width:50px;" /><!-- 번호 -->
-              <col style="width:100px;" /><!-- 날짜 -->
-              <col style="width:70px;" /><!-- 시간대 -->
-              <col style="width:70px;" /><!-- 속성 -->
-              <col style="width:90px;" /><!-- 구분 -->
-              <col style="width:90px;" /><!-- 품목 -->
-              <col style="width:70px;" /><!-- 수량 -->
-              <col style="width:110px;" /><!-- 단가 -->
-              <col style="width:120px;" /><!-- 금액 -->
+              <col class="sales-daily-col-no" />   <!-- 번호: 50px -->
+              <col class="sales-daily-col-date" />  <!-- 날짜: 100px -->
+              <col class="sales-daily-col-time" />  <!-- 시간대: 70px -->
+              <col class="sales-daily-col-attr" />  <!-- 속성: 70px -->
+              <col class="sales-daily-col-div" />   <!-- 구분: 90px -->
+              <col class="sales-daily-col-item" />  <!-- 품목: 90px -->
+              <col class="sales-daily-col-qty" />   <!-- 수량: 70px -->
+              <col class="sales-daily-col-price" /> <!-- 단가: 110px -->
+              <col class="sales-daily-col-amt" />   <!-- 금액: 120px -->
             </colgroup>
             <thead>
               <tr>
@@ -258,7 +258,7 @@
               <!-- ══ 합계 행 ══ -->
               <!-- [Java] th:text="${#numbers.formatInteger(construction.totalAmt,1,'COMMA')}" -->
               <tr class="sales-daily__total-row">
-                <td colspan="8" style="text-align:center;">합계</td>
+                <td colspan="8" class="sales-daily__total-label">합계</td>
                 <td class="sales-daily__num-cell" id="salesDetailTotalAmt">
                   12,650,000<!-- [Java] ${#numbers.formatInteger(construction.totalAmt,1,'COMMA')} -->
                 </td>
