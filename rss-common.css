@@ -1277,6 +1277,10 @@ input[type="date"].rss-input:disabled {
   line-height: 38px;
   box-sizing: border-box;
 }
+/* 검색 키워드 입력상자 너비 고정 — 인라인 style="width:200px" 대체 */
+.rss-input--keyword {
+  width: 200px !important;
+}
 
 /* ═══════════════════════════════════════════════════════════
    ─── 필터 탭 버튼 공통 규칙 (.road-tab, .cat-tab) ──────────────────────────

@@ -28,7 +28,7 @@
 -->
 <aside class="adm-sidebar" id="admSidebar" role="navigation" aria-label="관리자 메뉴">
   <nav class="rss-nav" aria-label="관리자 주 메뉴">
-    <ul style="list-style:none;padding:0;margin:0;">
+    <ul class="adm-nav-list">
 
       <!-- M1. 공사 관리 -->
       <li>
@@ -58,45 +58,39 @@
       <li>
         <button type="button" class="rss-nav__link adm-nav__accordion-btn"
                 data-menu="company" aria-expanded="false"
-                onclick="toggleAdmAccordion(this)"
-                style="width:100%;text-align:left;border:none;background:transparent;cursor:pointer;">
+                onclick="toggleAdmAccordion(this)">
           <span class="rss-nav__icon"><i data-lucide="building-2"></i></span>
           <span class="rss-nav__label">기업 관리</span>
-          <span class="adm-nav__accordion-arrow" style="margin-left:auto;">
-            <i data-lucide="chevron-down" style="width:14px;height:14px;transition:transform 0.2s;"></i>
+          <span class="adm-nav__accordion-arrow">
+            <i data-lucide="chevron-down" class="rss-icon-14"></i>
           </span>
         </button>
         <!-- 2depth 서브메뉴 -->
-        <ul class="adm-nav__sub" id="companySubMenu"
-            style="list-style:none;padding:0;margin:0;display:none;overflow:hidden;">
+        <ul class="adm-nav__sub" id="companySubMenu">
           <!-- M4-1. 차단기업 관리 -->
           <li>
-            <a href="company-list.html" class="rss-nav__link" data-menu="company-list"
-               style="padding-left:36px;font-size:var(--rss-font-sm);">
+            <a href="company-list.html" class="rss-nav__link adm-nav__sub-link" data-menu="company-list">
               <span class="rss-nav__icon"><i data-lucide="shield-off"></i></span>
               <span class="rss-nav__label">차단기업 관리</span>
             </a>
           </li>
           <!-- M4-2. 차단기업 직원 -->
           <li>
-            <a href="company-staff-list.html" class="rss-nav__link" data-menu="company-staff"
-               style="padding-left:36px;font-size:var(--rss-font-sm);">
+            <a href="company-staff-list.html" class="rss-nav__link adm-nav__sub-link" data-menu="company-staff">
               <span class="rss-nav__icon"><i data-lucide="users"></i></span>
               <span class="rss-nav__label">차단기업 직원</span>
             </a>
           </li>
           <!-- M4-3. 발주기업 -->
           <li>
-            <a href="order-corp-list.html" class="rss-nav__link" data-menu="order-corp"
-               style="padding-left:36px;font-size:var(--rss-font-sm);">
+            <a href="order-corp-list.html" class="rss-nav__link adm-nav__sub-link" data-menu="order-corp">
               <span class="rss-nav__icon"><i data-lucide="briefcase"></i></span>
               <span class="rss-nav__label">발주기업</span>
             </a>
           </li>
           <!-- M4-4. 탈퇴/반려회원 -->
           <li>
-            <a href="withdraw-list.html" class="rss-nav__link" data-menu="withdraw"
-               style="padding-left:36px;font-size:var(--rss-font-sm);">
+            <a href="withdraw-list.html" class="rss-nav__link adm-nav__sub-link" data-menu="withdraw">
               <span class="rss-nav__icon"><i data-lucide="user-x"></i></span>
               <span class="rss-nav__label">탈퇴/반려회원</span>
             </a>
@@ -149,29 +143,25 @@
         <!-- 아코디언 토글 -->
         <button type="button" class="rss-nav__link adm-nav__accordion-btn"
                 data-menu="stats" aria-expanded="false"
-                onclick="toggleAdmAccordion(this)"
-                style="width:100%;text-align:left;border:none;background:transparent;cursor:pointer;">
+                onclick="toggleAdmAccordion(this)">
           <span class="rss-nav__icon"><i data-lucide="bar-chart-2"></i></span>
           <span class="rss-nav__label">통계</span>
-          <span class="adm-nav__accordion-arrow" style="margin-left:auto;">
-            <i data-lucide="chevron-down" style="width:14px;height:14px;transition:transform 0.2s;"></i>
+          <span class="adm-nav__accordion-arrow">
+            <i data-lucide="chevron-down" class="rss-icon-14"></i>
           </span>
         </button>
         <!-- 2depth 서브메뉴 -->
-        <ul class="adm-nav__sub" id="statsSubMenu"
-            style="list-style:none;padding:0;margin:0;display:none;overflow:hidden;">
+        <ul class="adm-nav__sub" id="statsSubMenu">
           <!-- M10-1. 가입탈퇴현황 -->
           <li>
-            <a href="stats-member.html" class="rss-nav__link" data-menu="stats-member"
-               style="padding-left:36px;font-size:var(--rss-font-sm);">
+            <a href="stats-member.html" class="rss-nav__link adm-nav__sub-link" data-menu="stats-member">
               <span class="rss-nav__icon"><i data-lucide="user-minus"></i></span>
               <span class="rss-nav__label">가입탈퇴현황</span>
             </a>
           </li>
           <!-- M10-2. 접속현황 -->
           <li>
-            <a href="stats-access.html" class="rss-nav__link" data-menu="stats-access"
-               style="padding-left:36px;font-size:var(--rss-font-sm);">
+            <a href="stats-access.html" class="rss-nav__link adm-nav__sub-link" data-menu="stats-access">
               <span class="rss-nav__icon"><i data-lucide="activity"></i></span>
               <span class="rss-nav__label">접속현황</span>
             </a>

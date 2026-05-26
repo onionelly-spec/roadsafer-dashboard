@@ -50,7 +50,7 @@
       <!-- ① 게시글 상세 — write-section 구조 (버튼은 바깥 회색 배경에 위치) -->
       <section class="write-section" aria-labelledby="secCommunityDetail">
         <div class="write-section__head">
-          <i data-lucide="users" style="width:16px;height:16px;color:var(--rss-primary);flex-shrink:0;"></i>
+          <i data-lucide="users" class="rss-icon-16"></i>
           <h2 class="write-section__title" id="secCommunityDetail">커뮤니티 자세히보기</h2>
         </div><!-- /write-section__head -->
         <div class="write-section__body">
@@ -139,7 +139,7 @@
         <!-- 댓글 섹션 헤더 -->
         <div class="adm-comm-reply-header">
           <div class="adm-comm-reply-header__title">
-            <i data-lucide="message-circle" style="width:15px;height:15px;color:var(--rss-primary);"></i>
+            <i data-lucide="message-circle" class="rss-icon-15"></i>
             댓글
             <!-- [Java] th:text="${commentList.size()}" -->
             <span class="adm-comm-reply-count" id="replyCount">3개</span>
@@ -209,7 +209,7 @@
                 <td>
                   <!-- [Java] th:if="${comment.parentCommentSeq != null}" -->
                   <span class="adm-reply-indent">
-                    <i data-lucide="corner-down-right" style="width:12px;height:12px;"></i>
+                    <i data-lucide="corner-down-right" class="rss-icon-12"></i>
                     대댓글
                   </span>
                   ↳ 실효성이 의문입니다.

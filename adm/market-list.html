@@ -78,11 +78,11 @@
                 <option value="marketContent">내용</option>
               </select>
               <!-- [Java] th:value="${searchKeyword}" -->
-              <input type="text" id="marketSearchKeyword" class="rss-input" style="width:200px;"
+              <input type="text" id="marketSearchKeyword" class="rss-input rss-input--keyword"
                      placeholder=""
                      onkeydown="if(event.key==='Enter') searchMarket()" />
               <button type="button" class="rss-btn rss-btn--outline" onclick="searchMarket()">
-                <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
+                <i data-lucide="search" class="rss-icon-14"></i>
                 찾기
               </button>
               <!-- 전체보기 버튼 — 검색 후에만 표시 -->
