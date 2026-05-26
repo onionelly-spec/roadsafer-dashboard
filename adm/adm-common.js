@@ -428,20 +428,218 @@ function searchBlockCorp() {
   console.log('[M2-1] 차단업체 검색:', keyword);
 }
 
-/* 선택 버튼 클릭 → 확인창 → 콜백 또는 기본 처리 */
+/* 선택 버튼 클릭 → 확인창 → 차단업체 모달 닫기 → 차단정보 등록/수정 모달 열기 */
 function selectBlockCorpRow(blockCorpSeq, blockCorpNm) {
   if (!confirm(blockCorpNm + '을(를) 선택하시겠습니까?')) return;
 
+  /* 콜백이 있는 경우 (construction-write 등): 태그 추가 등 페이지 고유 처리 먼저 실행 */
   if (typeof _blockCorpModalCallback === 'function') {
-    /* construction-write 등 콜백 방식 */
     _blockCorpModalCallback(blockCorpSeq, blockCorpNm);
   } else {
-    /* non-performance-list 기본 처리 */
+    /* non-performance-list 등 기본 처리 */
     /* [Java] POST /adm/non-perf/assign-block-corp */
     /* { constructionSeq: _blockCorpModalSeq, blockCorpSeq, blockCorpNm } */
     console.log('[M2-1] 차단업체 지정:', _blockCorpModalSeq, blockCorpSeq, blockCorpNm);
-    alert('차단업체가 지정되었습니다.\n발주·차단업체에 카카오 알림톡이 발송됩니다.');
   }
 
+  /* 차단업체 모달 닫기 후 차단정보 등록/수정 모달 열기 */
+  var constSeq = _blockCorpModalSeq; /* 닫기 전에 저장 */
   closeBlockCorpModal();
+  openBlockInfoModal(blockCorpSeq, blockCorpNm, constSeq);
+}
+
+/* ─── 11. 차단정보 등록/수정 모달 (M1-2-1 공통) ──────────────────────────────
+   공통 모달 — construction-write, non-performance-list 등 공유
+   [Java] GET  /adm/block-info?blockCorpSeq={blockCorpSeq}&constructionSeq={constructionSeq}
+          POST /adm/block-info/save
+   사용법:
+     openBlockInfoModal(blockCorpSeq, blockCorpNm, constructionSeq)
+       blockCorpSeq    : 차단업체 시퀀스
+       blockCorpNm     : 차단업체명 (더미 데이터 표시용)
+       constructionSeq : 공사 시퀀스 (nullable)
+──────────────────────────────────────────────────────────────────────────── */
+/* 현재 모달 컨텍스트 */
+var _blockInfoCorpSeq  = null;
+var _blockInfoCorpNm   = null;
+var _blockInfoConstSeq = null;
+
+(function injectBlockInfoModal() {
+  /* 이미 삽입된 경우 중복 방지 */
+  if (document.getElementById('modalBlockInfo')) return;
+
+  const html = `
+<!-- ══════════════════════════════════════════════════
+     M1-2-1. 차단정보 등록/수정 모달 (공통 — adm-common.js 자동 삽입)
+     용어사전 §22-4 modalBlockInfo
+══════════════════════════════════════════════════ -->
+<div class="adm-modal-overlay" id="modalBlockInfo" role="dialog"
+     aria-modal="true" aria-labelledby="modalBlockInfoTitle">
+  <div class="adm-modal-box" style="width:560px; max-height:90vh; overflow-y:auto;">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title" id="modalBlockInfoTitle">차단정보 등록/수정</h3>
+      <button type="button" class="adm-modal-box__close" onclick="closeBlockInfoModal()" aria-label="닫기"></button>
+    </div>
+    <div class="adm-modal-box__body" style="padding:20px;">
+      <form id="blockInfoForm">
+        <!-- [Java] <input type="hidden" name="block_corp_seq" th:value="\${blockCorpSeq}"> -->
+        <input type="hidden" id="blockInfoCorpSeq" name="block_corp_seq" value="">
+        <!-- [Java] <input type="hidden" name="construction_seq" th:value="\${constructionSeq}"> -->
+        <input type="hidden" id="blockInfoConstSeq" name="construction_seq" value="">
+
+        <!-- 차단 구간 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="blockInfoSection">차단 구간</label>
+          <!-- [Java] th:value="\${blockInfo.blockSection}" -->
+          <input type="text" name="block_section" id="blockInfoSection" class="rss-input"
+                 placeholder="차단 구간을 입력하세요 (예: 105.6km ~ 105.7km)">
+        </div>
+
+        <!-- TMA1 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label">TMA1</label>
+          <div class="adm-vehicle-list" id="blockInfoTma1List">
+            <!-- [Java] 보유 대수 배지: \${blockCorpTma1List.size()} -->
+            <span class="adm-item-count-badge" id="blockInfoTma1Badge">1대</span>
+            <!-- ══════════════════════════════════════════════
+                 [Java] th:each="v : \${blockCorpTma1List}"
+                 더미 데이터 — 스토리보드 §M1-2-1 기준
+            ══════════════════════════════════════════════ -->
+            <label class="adm-vehicle-item">
+              <input type="checkbox" name="tma1_vcl_no" value="11누1111">
+              <span>11누1111</span>
+            </label>
+            <!-- [Java] /th:each 끝 -->
+          </div>
+        </div>
+
+        <!-- TMA3 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label">TMA3</label>
+          <div class="adm-vehicle-list" id="blockInfoTma3List">
+            <!-- [Java] 보유 대수 배지: \${blockCorpTma3List.size()} -->
+            <span class="adm-item-count-badge" id="blockInfoTma3Badge">2대</span>
+            <!-- [Java] th:each="v : \${blockCorpTma3List}" -->
+            <label class="adm-vehicle-item">
+              <input type="checkbox" name="tma3_vcl_no" value="22마2222">
+              <span>22마2222</span>
+            </label>
+            <label class="adm-vehicle-item">
+              <input type="checkbox" name="tma3_vcl_no" value="33다3333">
+              <span>33다3333</span>
+            </label>
+            <!-- [Java] /th:each 끝 -->
+            <label class="adm-vehicle-item" style="color:var(--rss-amber);font-weight:600;">
+              <input type="checkbox" name="tma3_sep_yn" value="Y">
+              <span>별도 제출</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- PLCS -->
+        <div class="rss-form-row">
+          <label class="rss-form-label">PLCS</label>
+          <div class="adm-vehicle-list" id="blockInfoPlcsList">
+            <!-- [Java] 보유 대수 배지: \${blockCorpPlcsList.size()} -->
+            <span class="adm-item-count-badge" id="blockInfoPlcsBadge">2대</span>
+            <!-- [Java] th:each="v : \${blockCorpPlcsList}" -->
+            <label class="adm-vehicle-item">
+              <input type="checkbox" name="plcs_vcl_no" value="11소6767">
+              <span>11소6767</span>
+            </label>
+            <label class="adm-vehicle-item">
+              <input type="checkbox" name="plcs_vcl_no" value="32파0090">
+              <span>32파0090</span>
+            </label>
+            <!-- [Java] /th:each 끝 -->
+            <label class="adm-vehicle-item" style="color:var(--rss-amber);font-weight:600;">
+              <input type="checkbox" name="plcs_sep_yn" value="Y">
+              <span>별도 제출</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 신호수 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label">신호수</label>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <!-- [Java] 보유 신호수 수: \${blockCorpSignalerCnt} -->
+            <span class="adm-item-count-badge" id="blockInfoSignalerBadge">0명</span>
+            <select name="signaler_cnt" id="blockInfoSignalerCnt" class="rss-select rss-select--sm">
+              <option value="0">0명</option>
+              <option value="1">1명</option>
+              <option value="2">2명</option>
+              <option value="3">3명</option>
+              <option value="4">4명</option>
+              <option value="5">5명</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 의견 -->
+        <div class="rss-form-row">
+          <label class="rss-form-label" for="blockInfoOpinion">의견</label>
+          <!-- [Java] th:text="\${blockInfo.opinion}" -->
+          <textarea name="opinion" id="blockInfoOpinion" class="rss-input rss-textarea"
+                    placeholder="차단방법, 일정에 대해 자유로운 의견을 남겨주세요."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn rss-btn--cancel" onclick="closeBlockInfoModal()">취소</button>
+      <button type="button" class="rss-btn adm-btn--save" onclick="submitBlockInfo()">저장</button>
+    </div>
+  </div>
+</div>`;
+
+  document.body.insertAdjacentHTML('beforeend', html);
+
+  /* backdrop 클릭 시 닫기 */
+  document.getElementById('modalBlockInfo').addEventListener('click', function(e) {
+    if (e.target === this) closeBlockInfoModal();
+  });
+})();
+
+function openBlockInfoModal(blockCorpSeq, blockCorpNm, constructionSeq) {
+  _blockInfoCorpSeq  = blockCorpSeq  || null;
+  _blockInfoCorpNm   = blockCorpNm   || '';
+  _blockInfoConstSeq = constructionSeq || null;
+
+  const modal = document.getElementById('modalBlockInfo');
+  if (!modal) return;
+
+  /* hidden 값 세팅 */
+  var corpSeqInput  = document.getElementById('blockInfoCorpSeq');
+  var constSeqInput = document.getElementById('blockInfoConstSeq');
+  if (corpSeqInput)  corpSeqInput.value  = _blockInfoCorpSeq  || '';
+  if (constSeqInput) constSeqInput.value = _blockInfoConstSeq || '';
+
+  /* 폼 초기화 */
+  var form = document.getElementById('blockInfoForm');
+  if (form) form.reset();
+  /* hidden 필드는 reset 후 재설정 */
+  if (corpSeqInput)  corpSeqInput.value  = _blockInfoCorpSeq  || '';
+  if (constSeqInput) constSeqInput.value = _blockInfoConstSeq || '';
+
+  /* [Java] 실제 구현 시 GET /adm/block-info?blockCorpSeq=&constructionSeq= 로 기존 데이터 조회 후 폼 채움 */
+  console.log('[M1-2-1] 차단정보 모달 열기:', blockCorpSeq, blockCorpNm, constructionSeq);
+
+  modal.classList.add('open');
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeBlockInfoModal() {
+  var modal = document.getElementById('modalBlockInfo');
+  if (modal) modal.classList.remove('open');
+  _blockInfoCorpSeq  = null;
+  _blockInfoCorpNm   = null;
+  _blockInfoConstSeq = null;
+}
+
+/* [Java] POST /adm/block-info/save */
+function submitBlockInfo() {
+  /* [Java] 실제 구현 시 blockInfoForm 데이터를 POST 요청으로 전송 */
+  /* { blockCorpSeq, constructionSeq, blockSection, tma1VclNos[], tma3VclNos[], tma3SepYn, plcsVclNos[], plcsSepYn, signalerCnt, opinion } */
+  console.log('[M1-2-1] 차단정보 저장:', _blockInfoCorpSeq, _blockInfoConstSeq);
+  alert('차단정보가 저장되었습니다.');
+  closeBlockInfoModal();
 }
