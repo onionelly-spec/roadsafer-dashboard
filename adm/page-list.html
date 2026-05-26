@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>전체 페이지 목록 — 로드세이프티시스템 관리자</title>
+<link href="../assets/images/favicon.ico" rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --rss-primary: #1e3a5f;
+    --rss-primary-dark: #152c47;
+    --rss-bg: #f0f2f5;
+    --rss-card: #ffffff;
+    --rss-border: #e5e7eb;
+    --rss-text: #111827;
+    --rss-muted: #6b7280;
+    --rss-font-xs: 11px;
+    --rss-font-sm: 12px;
+    --rss-font-base: 13px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    background: var(--rss-bg);
+    color: var(--rss-text);
+    font-size: var(--rss-font-base);
+    line-height: 1.6;
+  }
+
+  /* ── 헤더 ── */
+  .pl-header {
+    background: var(--rss-primary);
+    border-bottom: 1px solid var(--rss-primary-dark);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  }
+  .pl-header__logo {
+    width: 36px; height: 36px;
+    object-fit: contain; border-radius: 6px;
+    background: #fff; padding: 3px;
+  }
+  .pl-header__title {
+    font-size: 16px; font-weight: 700; color: #ffffff;
+  }
+  .pl-header__sub {
+    font-size: var(--rss-font-sm); color: rgba(255,255,255,.65); margin-top: 1px;
+  }
+  .pl-header__badge {
+    margin-left: auto;
+    background: rgba(255,255,255,.15); color: #fff;
+    font-size: var(--rss-font-xs); font-weight: 600;
+    padding: 3px 10px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.25);
+  }
+  .pl-header__link {
+    margin-left: 12px;
+    background: rgba(255,255,255,.12); color: #fff;
+    font-size: var(--rss-font-xs); font-weight: 600;
+    padding: 4px 12px; border-radius: 6px;
+    border: 1px solid rgba(255,255,255,.2);
+    text-decoration: none;
+    transition: background .15s;
+  }
+  .pl-header__link:hover { background: rgba(255,255,255,.22); }
+
+  /* ── 본문 ── */
+  .pl-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+
+  /* ── 요약 카드 ── */
+  .pl-summary {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .pl-summary__card {
+    background: var(--rss-card);
+    border: 1px solid var(--rss-border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    flex: 1; min-width: 130px;
+    text-align: center;
+  }
+  .pl-summary__num {
+    font-size: 26px; font-weight: 800; color: var(--rss-primary);
+    line-height: 1.2;
+  }
+  .pl-summary__label {
+    font-size: var(--rss-font-xs); color: var(--rss-muted); margin-top: 2px;
+  }
+
+  /* ── 섹션 타이틀 ── */
+  .pl-section-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--rss-muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin: 28px 0 10px;
+    padding-left: 10px;
+    border-left: 3px solid var(--rss-primary);
+  }
+
+  /* ── 테이블 카드 ── */
+  .pl-card {
+    background: var(--rss-card);
+    border: 1px solid var(--rss-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .pl-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--rss-font-sm);
+  }
+  .pl-table thead tr {
+    background: #f9fafb;
+    border-bottom: 1px solid var(--rss-border);
+  }
+  .pl-table thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: var(--rss-font-xs);
+    font-weight: 700;
+    color: var(--rss-muted);
+    white-space: nowrap;
+  }
+  .pl-table thead th:first-child { text-align: center; width: 44px; }
+  .pl-table thead th.col-code    { width: 80px; }
+  .pl-table thead th.col-depth   { width: 90px; }
+  .pl-table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background .12s;
+  }
+  .pl-table tbody tr:last-child { border-bottom: none; }
+  .pl-table tbody tr:hover { background: #f0f4ff; }
+  .pl-table td {
+    padding: 10px 14px;
+    vertical-align: middle;
+  }
+  .pl-table td:first-child {
+    text-align: center;
+    font-size: var(--rss-font-xs);
+    color: var(--rss-muted);
+    font-weight: 600;
+  }
+
+  /* ── 코드 배지 ── */
+  .pl-code {
+    display: inline-block;
+    background: #eff6ff; color: #1d4ed8;
+    font-size: 10px; font-weight: 700;
+    font-family: 'Consolas', 'Menlo', monospace;
+    padding: 2px 7px; border-radius: 4px;
+    border: 1px solid #bfdbfe;
+    white-space: nowrap;
+  }
+  .pl-code--comp {
+    background: #f3f4f6; color: #374151;
+    border-color: #e5e7eb;
+  }
+
+  /* ── 링크 ── */
+  .pl-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: #2563eb;
+    font-size: var(--rss-font-xs);
+    text-decoration: none;
+    background: #eff6ff;
+    padding: 3px 9px;
+    border-radius: 5px;
+    border: 1px solid #bfdbfe;
+    transition: background .12s;
+    white-space: nowrap;
+  }
+  .pl-link:hover { background: #dbeafe; }
+  .pl-link svg { flex-shrink: 0; }
+
+  /* ── 뎁스 배지 ── */
+  .pl-depth { font-size: var(--rss-font-xs); color: var(--rss-muted); }
+  .pl-depth--dash { color: #d1d5db; }
+
+  /* ── 비고 태그 ── */
+  .pl-tag {
+    display: inline-block;
+    background: #f3f4f6; color: #374151;
+    font-size: 10px;
+    padding: 2px 7px; border-radius: 4px;
+    border: 1px solid #e5e7eb;
+    margin: 2px 2px 2px 0;
+    white-space: nowrap;
+  }
+  .pl-tag--none { color: #d1d5db; font-size: var(--rss-font-xs); }
+
+  /* ── 안내 박스 ── */
+  .pl-note {
+    background: #f0f4ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: var(--rss-font-sm);
+    color: #1e3a5f;
+    line-height: 1.8;
+  }
+  .pl-note strong { color: #1d4ed8; }
+  .pl-note ul { padding-left: 18px; }
+  .pl-note li { margin-bottom: 4px; }
+
+  /* ── 반응형 ── */
+  @media (max-width: 768px) {
+    .pl-header { padding: 14px 16px; }
+    .pl-wrap { padding: 16px 12px 48px; }
+    .pl-table { font-size: 11px; }
+    .pl-table td, .pl-table th { padding: 8px 10px; }
+    .pl-summary__num { font-size: 22px; }
+  }
+  @media (max-width: 540px) {
+    .col-note { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── 헤더 ── -->
+<header class="pl-header">
+  <img alt="로드세이프티시스템 로고" class="pl-header__logo" src="../assets/images/logo-rss-new.png"/>
+  <div>
+    <div class="pl-header__title">로드세이프티시스템 관리자 — 전체 페이지 목록</div>
+    <div class="pl-header__sub">Road Safety System Admin · 퍼블리싱 산출물</div>
+  </div>
+  <span class="pl-header__badge">main 브랜치 기준</span>
+  <a class="pl-header__link" href="https://onioncomm.github.io/roadsafer-dashboard/page-list.html" target="_blank">사용자 목록 →</a>
+</header>
+
+<main class="pl-wrap">
+
+  <!-- ── 요약 카드 ── -->
+  <div class="pl-summary">
+    <div class="pl-summary__card">
+      <div class="pl-summary__num">25</div>
+      <div class="pl-summary__label">전체 페이지</div>
+    </div>
+    <div class="pl-summary__card">
+      <div class="pl-summary__num">11</div>
+      <div class="pl-summary__label">목록 페이지</div>
+    </div>
+    <div class="pl-summary__card">
+      <div class="pl-summary__num">8</div>
+      <div class="pl-summary__label">상세/등록/수정</div>
+    </div>
+    <div class="pl-summary__card">
+      <div class="pl-summary__num">4</div>
+      <div class="pl-summary__label">기업 관리 하위</div>
+    </div>
+    <div class="pl-summary__card">
+      <div class="pl-summary__num">2</div>
+      <div class="pl-summary__label">통계 페이지</div>
+    </div>
+    <div class="pl-summary__card">
+      <div class="pl-summary__num">2</div>
+      <div class="pl-summary__label">공통 컴포넌트</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       섹션 1: 공통 컴포넌트 (include용)
+  ══════════════════════════════════════ -->
+  <div class="pl-section-title">공통 컴포넌트 (include용)</div>
+  <div class="pl-card">
+    <table class="pl-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>구분</th>
+          <th class="col-depth">설명</th>
+          <th>링크</th>
+          <th class="col-note">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>—</td>
+          <td><strong>상단 바</strong> <span class="pl-code pl-code--comp">COMP</span></td>
+          <td class="pl-depth">공통 헤더 (로고·사용자·로그아웃)</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/adm-topbar.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              adm-topbar.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">모든 페이지 include</span></td>
+        </tr>
+        <tr>
+          <td>—</td>
+          <td><strong>사이드바</strong> <span class="pl-code pl-code--comp">COMP</span></td>
+          <td class="pl-depth">좌측 네비게이션 (M1~M11)</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/adm-sidebar.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              adm-sidebar.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">모든 페이지 include</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       섹션 2: M1 공사 관리
+  ══════════════════════════════════════ -->
+  <div class="pl-section-title">M1 · 공사 관리</div>
+  <div class="pl-card">
+    <table class="pl-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>메인메뉴</th>
+          <th class="col-code">코드</th>
+          <th class="col-depth">뎁스</th>
+          <th>링크</th>
+          <th class="col-note">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>공사 관리</strong></td>
+          <td><span class="pl-code">M1</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/construction-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              construction-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">검색·필터·페이지네이션</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>공사 관리</strong></td>
+          <td><span class="pl-code">M1-1</span></td>
+          <td class="pl-depth">상세</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/construction-detail.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              construction-detail.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">승인·반려·취소</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>공사 관리</strong></td>
+          <td><span class="pl-code">M1-4</span></td>
+          <td class="pl-depth">등록/수정</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/construction-write.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              construction-write.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">등록·수정 겸용</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       섹션 3: M2 차단불이행내역 / M3 취소 내역
+  ══════════════════════════════════════ -->
+  <div class="pl-section-title">M2 · 차단불이행내역 &nbsp;/&nbsp; M3 · 취소 내역</div>
+  <div class="pl-card">
+    <table class="pl-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>메인메뉴</th>
+          <th class="col-code">코드</th>
+          <th class="col-depth">뎁스</th>
+          <th>링크</th>
+          <th class="col-note">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>4</td>
+          <td><strong>차단불이행내역</strong></td>
+          <td><span class="pl-code">M2</span></td>
+          <td class="pl-depth pl-depth--dash">—</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/non-performance-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              non-performance-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">목록 전용</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong>취소 내역</strong></td>
+          <td><span class="pl-code">M3-1</span></td>
+          <td class="pl-depth pl-depth--dash">—</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/cancel-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              cancel-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">목록 전용</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       섹션 4: M4 기업 관리
+  ══════════════════════════════════════ -->
+  <div class="pl-section-title">M4 · 기업 관리</div>
+  <div class="pl-card">
+    <table class="pl-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>서브메뉴</th>
+          <th class="col-code">코드</th>
+          <th class="col-depth">뎁스</th>
+          <th>링크</th>
+          <th class="col-note">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>6</td>
+          <td><strong>차단기업 관리</strong></td>
+          <td><span class="pl-code">M4-1</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/company-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              company-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">승인·반려 버튼</span></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td><strong>차단기업 관리</strong></td>
+          <td><span class="pl-code">M4-1</span></td>
+          <td class="pl-depth">상세</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/company-detail.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              company-detail.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">기업 상세정보</span></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td><strong>차단기업 직원</strong></td>
+          <td><span class="pl-code">M4-2</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/company-staff-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              company-staff-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">직원 목록</span></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td><strong>차단기업 직원</strong></td>
+          <td><span class="pl-code">M4-2</span></td>
+          <td class="pl-depth">상세</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/company-staff-detail.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              company-staff-detail.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">직원 상세정보</span></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td><strong>발주기업 관리</strong></td>
+          <td><span class="pl-code">M4-3</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/order-corp-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              order-corp-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">발주기업 목록</span></td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td><strong>발주기업 관리</strong></td>
+          <td><span class="pl-code">M4-3</span></td>
+          <td class="pl-depth">등록/수정</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/order-corp-write.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              order-corp-write.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">등록·수정 겸용</span></td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td><strong>탈퇴/반려회원</strong></td>
+          <td><span class="pl-code">M4-4</span></td>
+          <td class="pl-depth pl-depth--dash">—</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/withdraw-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              withdraw-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">탈퇴·반려 목록</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       섹션 5: M5 공지사항 관리 / M6 광고 관리 / M7 장터 관리 / M8 커뮤니티 관리
+  ══════════════════════════════════════ -->
+  <div class="pl-section-title">M5 · 공지사항 &nbsp;/&nbsp; M6 · 광고 &nbsp;/&nbsp; M7 · 장터 &nbsp;/&nbsp; M8 · 커뮤니티</div>
+  <div class="pl-card">
+    <table class="pl-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>메인메뉴</th>
+          <th class="col-code">코드</th>
+          <th class="col-depth">뎁스</th>
+          <th>링크</th>
+          <th class="col-note">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>13</td>
+          <td><strong>공지사항 관리</strong></td>
+          <td><span class="pl-code">M5</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/notice-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              notice-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">삭제·등록 버튼</span></td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td><strong>공지사항 관리</strong></td>
+          <td><span class="pl-code">M5-1</span></td>
+          <td class="pl-depth">등록/수정</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/notice-write.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              notice-write.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">에디터·파일첨부</span></td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td><strong>광고 관리</strong></td>
+          <td><span class="pl-code">M6</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/ad-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              ad-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">썸네일 목록</span></td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td><strong>광고 관리</strong></td>
+          <td><span class="pl-code">M6-1</span></td>
+          <td class="pl-depth">등록/수정</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/ad-write.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              ad-write.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">이미지 업로드</span></td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td><strong>장터 관리</strong></td>
+          <td><span class="pl-code">M7</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/market-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              market-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">썸네일 목록</span></td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td><strong>장터 관리</strong></td>
+          <td><span class="pl-code">M7-1</span></td>
+          <td class="pl-depth">상세</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/market-detail.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              market-detail.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">상세 + 삭제</span></td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td><strong>커뮤니티 관리</strong></td>
+          <td><span class="pl-code">M8</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/community-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              community-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">삭제 버튼</span></td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td><strong>커뮤니티 관리</strong></td>
+          <td><span class="pl-code">M8-1</span></td>
+          <td class="pl-depth">상세</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/community-detail.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              community-detail.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">댓글 포함</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       섹션 6: M9 매출 현황
+  ══════════════════════════════════════ -->
+  <div class="pl-section-title">M9 · 매출 현황</div>
+  <div class="pl-card">
+    <table class="pl-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>메인메뉴</th>
+          <th class="col-code">코드</th>
+          <th class="col-depth">뎁스</th>
+          <th>링크</th>
+          <th class="col-note">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>21</td>
+          <td><strong>매출 현황</strong></td>
+          <td><span class="pl-code">M9</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/sales-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              sales-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">월별 네비게이터·엑셀</span></td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td><strong>매출 현황</strong></td>
+          <td><span class="pl-code">M9-1</span></td>
+          <td class="pl-depth">상세</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/sales-detail.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              sales-detail.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">공사별 매출 상세</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       섹션 7: M10 통계
+  ══════════════════════════════════════ -->
+  <div class="pl-section-title">M10 · 통계</div>
+  <div class="pl-card">
+    <table class="pl-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>서브메뉴</th>
+          <th class="col-code">코드</th>
+          <th class="col-depth">뎁스</th>
+          <th>링크</th>
+          <th class="col-note">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>23</td>
+          <td><strong>가입탈퇴현황</strong></td>
+          <td><span class="pl-code">M10-1</span></td>
+          <td class="pl-depth pl-depth--dash">—</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/stats-member.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              stats-member.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">KPI 카드·월별 테이블·엑셀</span></td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td><strong>접속현황</strong></td>
+          <td><span class="pl-code">M10-2</span></td>
+          <td class="pl-depth pl-depth--dash">—</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/stats-access.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              stats-access.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">월별 접속 테이블·엑셀</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       섹션 8: M11 관리자 관리
+  ══════════════════════════════════════ -->
+  <div class="pl-section-title">M11 · 관리자 관리</div>
+  <div class="pl-card">
+    <table class="pl-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>메인메뉴</th>
+          <th class="col-code">코드</th>
+          <th class="col-depth">뎁스</th>
+          <th>링크</th>
+          <th class="col-note">비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>25</td>
+          <td><strong>관리자 관리</strong></td>
+          <td><span class="pl-code">M11</span></td>
+          <td class="pl-depth">목록</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/admin-list.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              admin-list.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">삭제·등록 버튼</span></td>
+        </tr>
+        <tr>
+          <td>26</td>
+          <td><strong>관리자 관리</strong></td>
+          <td><span class="pl-code">M11-1</span></td>
+          <td class="pl-depth">등록/수정</td>
+          <td>
+            <a class="pl-link" href="https://onioncomm.github.io/roadsafer-dashboard/adm/admin-write.html" target="_blank">
+              <svg fill="none" height="11" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>
+              admin-write.html
+            </a>
+          </td>
+          <td class="col-note"><span class="pl-tag">중복확인·권한·상태</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 안내 박스 ── -->
+  <div class="pl-note">
+    <strong>공통 CSS 파일 구조</strong>
+    <ul>
+      <li><strong>rss-common.css</strong> — 디자인 시스템 기본 변수 (Color Palette, Typography, Spacing, 공통 컴포넌트)</li>
+      <li><strong>adm/adm-common-v2.css</strong> — 관리자 전용 확장 스타일 (§M1~§M12 섹션별 관리)</li>
+      <li>모든 페이지는 <code>adm-topbar.html</code> + <code>adm-sidebar.html</code>을 <strong>include</strong> 방식으로 삽입</li>
+      <li>페이지 내 <code>&lt;style&gt;</code> 태그 사용 금지 — 신규 클래스는 반드시 <code>adm-common-v2.css</code>에 추가 후 인용</li>
+    </ul>
+  </div>
+
+</main>
+</body>
+</html>
