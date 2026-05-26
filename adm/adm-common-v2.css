@@ -1357,6 +1357,7 @@
 .adm-badge--normal     { background: #f0fdf4; color: #16a34a; }   /* 정상 */
 .adm-badge--suspend    { background: #f1f5f9; color: #64748b; }   /* 사용 정지 */
 .adm-badge--reject     { background: #fef2f2; color: #dc2626; }   /* 반려 */
+.adm-badge--withdraw   { background: #f1f5f9; color: #374151; }   /* 탈퇴 (M4-4) */
 /* 공사 상태 배지 (용어사전 §13-3) */
 .adm-badge--matching   { background: #ede9fe; color: #7c3aed; }   /* 매칭전 */
 .adm-badge--scheduled  { background: #eff6ff; color: #2563eb; }   /* 예정 */

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>탈퇴/반려회원 — 로드세이프티시스템 관리자</title>
+  <!-- 공통 CSS — Tailwind보다 먼저 로드 -->
+  <link rel="stylesheet" href="../rss-common.css?v=20260526" />
+  <link rel="stylesheet" href="adm-common-v2.css?v=20260526" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     M4-4. 탈퇴/반려회원 — 관리자 페이지
+     코드: M4-4
+     경로: 로그인 > 기업 관리 > 탈퇴/반려회원
+     [Java] @GetMapping("/adm/member/withdraw")
+     [Java] 파라미터: searchType(String), keyword(String), page(int)
+     ──────────────────────────────────────────────────
+     [집계 기준]
+     ① 검색: 드롭다운(아이디/이름(상호)) + 키워드 입력
+        - 검색 결과 없을 경우 "검색 결과가 없습니다." 표시
+        - 검색 후 '전체보기' 버튼 표시
+     ② 최근 탈퇴순으로 한 페이지에 30개씩 제시
+        - 구분: 탈퇴 / 반려
+        - 이름(상호): 기업회원 → 상호 / 기업직원 → 이름
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+  <div class="adm-main">
+
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">탈퇴/반려회원</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="#">로그인</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <a href="#">기업 관리</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span class="adm-breadcrumb__current">탈퇴/반려회원</span>
+      </nav>
+    </div>
+
+    <main class="rss-content">
+      <!-- ══════════════════════════════════════════════════
+           탈퇴/반려회원 목록 카드 (M4-4)
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-card">
+
+        <!-- ─── 검색 툴바 ──────────────────────────────────────
+             스토리보드 ①: 검색조건 드롭다운(아이디/이름(상호)) + 키워드 + 찾기
+             오른쪽: 검색 UI (좌측 필터 없음)
+             [Java] th:value="${searchType}" — 선택된 검색조건 유지
+             [Java] th:value="${keyword}" — 입력된 키워드 유지
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-board-toolbar">
+          <div class="rss-board-toolbar__left">
+            <!-- 탈퇴/반려회원 목록은 좌측 상태 필터 없음 -->
+          </div>
+          <div class="rss-board-toolbar__right">
+            <!-- [Java] th:value="${searchType}" -->
+            <select id="withdrawSearchType" class="rss-select">
+              <option value="">선택</option>
+              <!-- [Java] th:selected="${searchType == 'loginId'}" -->
+              <option value="loginId">아이디</option>
+              <!-- [Java] th:selected="${searchType == 'mberNm'}" -->
+              <option value="mberNm">이름(상호)</option>
+            </select>
+            <!-- [Java] th:value="${keyword}" -->
+            <input type="text" id="withdrawSearchKeyword" class="rss-input rss-input--keyword"
+                   placeholder=""
+                   onkeydown="if(event.key==='Enter') searchWithdrawList()" />
+            <button type="button" class="rss-btn rss-btn--outline" onclick="searchWithdrawList()">
+              <i data-lucide="search" class="rss-icon-14"></i>
+              찾기
+            </button>
+            <!-- 전체보기 버튼 — 검색 후에만 표시 -->
+            <!-- [Java] th:if="${keyword != null and keyword != ''}" -->
+            <button type="button" class="rss-btn rss-btn--view-all" id="withdrawViewAllBtn"
+                    onclick="resetWithdrawSearch()" style="display:none;">
+              전체보기
+            </button>
+          </div>
+        </div>
+
+        <!-- ─── 목록 테이블 ────────────────────────────────────
+             스토리보드 ②: 번호·구분·아이디·이름(상호)·가입일·탈퇴(반려)일
+             - 이름(상호) 클릭 → 해당 회원 상세 (기업: company-detail, 직원: company-staff-detail)
+             - 구분: 탈퇴 / 반려
+             - 이름(상호): 기업회원 → 상호 / 기업직원 → 이름
+             colgroup % (§M11-3 용어사전 기준):
+               번호(rss-col-no 5%) / 구분(rss-col-status 8%) /
+               아이디(rss-col-id 15%) / 이름(상호)(rss-col-block-corp auto) /
+               가입일(rss-col-date 12%) / 탈퇴(반려)일(rss-col-date 12%)
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-table-wrap">
+          <div style="overflow-x:auto;">
+            <!-- [Java] th:if="${#lists.isEmpty(withdrawList)}" -->
+            <!-- <div class="rss-empty">검색 결과가 없습니다.</div> -->
+            <!-- [Java] th:unless="${#lists.isEmpty(withdrawList)}" -->
+            <table class="rss-table" id="withdrawListTable" style="min-width:700px;">
+              <colgroup>
+                <col class="rss-col-no" />          <!-- 번호 5% -->
+                <col class="rss-col-status" />       <!-- 구분 8% (탈퇴/반려) -->
+                <col class="rss-col-id" />           <!-- 아이디 15% -->
+                <col class="rss-col-block-corp" />   <!-- 이름(상호) auto -->
+                <col class="rss-col-date" />         <!-- 가입일 12% -->
+                <col class="rss-col-date" />         <!-- 탈퇴(반려)일 12% -->
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col">번호</th>
+                  <th scope="col">구분</th>
+                  <th scope="col">아이디</th>
+                  <th scope="col">이름(상호)</th>
+                  <th scope="col">가입일</th>
+                  <th scope="col">탈퇴(반려)일</th>
+                </tr>
+              </thead>
+              <tbody id="withdrawListBody">
+                <!-- ══════════════════════════════════════════════════
+                     [Java] th:each="member : ${withdrawList}"
+                     더미 데이터 — 실제 데이터로 교체 필요
+                     구분: member.mberType == 'withdraw' → '탈퇴'
+                           member.mberType == 'reject'   → '반려'
+                     이름(상호): member.mberType == 'corp' → member.corpNm
+                                 member.mberType == 'staff' → member.staffNm
+                ══════════════════════════════════════════════════ -->
+
+                <!-- 행 1 — 탈퇴 -->
+                <tr>
+                  <!-- [Java] th:text="${memberStat.count}" -->
+                  <td class="text-center">1</td>
+                  <!-- [Java] th:text="${member.mberType == 'withdraw'} ? '탈퇴' : '반려'" -->
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--withdraw">탈퇴</span>
+                  </td>
+                  <!-- [Java] th:text="${member.loginId}" -->
+                  <td class="text-center">BTS1004</td>
+                  <!-- [Java] th:text="${member.mberNm}" — 기업: 상호 / 직원: 이름 -->
+                  <td class="text-center">
+                    <!-- [Java] th:href="@{/adm/company/detail(seq=${member.corpSeq})}" (기업) -->
+                    <!-- [Java] th:href="@{/adm/company/staff/detail(seq=${member.staffSeq})}" (직원) -->
+                    <a href="company-detail.html?seq=1" class="rss-link">김남준</a>
+                  </td>
+                  <!-- [Java] th:text="${#temporals.format(member.joinDt,'yyyy-MM-dd')}" -->
+                  <td class="text-center nowrap">2026-07-02</td>
+                  <!-- [Java] th:text="${#temporals.format(member.withdrawDt,'yyyy-MM-dd')}" -->
+                  <td class="text-center nowrap">2026-11-12</td>
+                </tr>
+
+                <!-- 행 2 — 반려 -->
+                <tr>
+                  <td class="text-center">2</td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--reject">반려</span>
+                  </td>
+                  <td class="text-center">koreapower</td>
+                  <td class="text-center">
+                    <a href="company-detail.html?seq=2" class="rss-link">오지로타이퍼</a>
+                  </td>
+                  <td class="text-center nowrap">2026-10-25</td>
+                  <td class="text-center nowrap">2026-10-25</td>
+                </tr>
+
+                <!-- 행 3 — 탈퇴 -->
+                <tr>
+                  <td class="text-center">3</td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--withdraw">탈퇴</span>
+                  </td>
+                  <td class="text-center">smart001</td>
+                  <td class="text-center">
+                    <a href="company-staff-list.html?staffSeq=3" class="rss-link">김수창</a>
+                  </td>
+                  <td class="text-center nowrap">2026-06-15</td>
+                  <td class="text-center nowrap">2026-10-15</td>
+                </tr>
+
+                <!-- 행 4 — 반려 -->
+                <tr>
+                  <td class="text-center">4</td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--reject">반려</span>
+                  </td>
+                  <td class="text-center">hangil</td>
+                  <td class="text-center">
+                    <a href="company-detail.html?seq=4" class="rss-link">오한길</a>
+                  </td>
+                  <td class="text-center nowrap">2026-09-16</td>
+                  <td class="text-center nowrap">2026-09-16</td>
+                </tr>
+
+                <!-- 행 5 — 탈퇴 -->
+                <tr>
+                  <td class="text-center">5</td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--withdraw">탈퇴</span>
+                  </td>
+                  <td class="text-center">soonhee</td>
+                  <td class="text-center">
+                    <a href="company-detail.html?seq=5" class="rss-link">대한스마트도로차단</a>
+                  </td>
+                  <td class="text-center nowrap">2026-06-02</td>
+                  <td class="text-center nowrap">2026-09-02</td>
+                </tr>
+
+                <!-- [Java] /th:each -->
+
+              </tbody>
+            </table>
+          </div>
+        </div><!-- /rss-table-wrap -->
+
+        <!-- ─── 하단 페이지네이션 ──────────────────────────────
+             스토리보드 ②: 최근 탈퇴순 30개/페이지
+             [Java] th:replace="fragments/pagination :: pagination(${pageInfo})"
+             페이지네이션 규칙: 목록형 → PC 10개씩 / 모바일 5개씩
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-pagination" id="withdrawPagination">
+          <button class="rss-pagination__btn" aria-label="첫 페이지" disabled>&lt;&lt;</button>
+          <button class="rss-pagination__btn" aria-label="이전" disabled>&lt;</button>
+          <!-- [Java] th:each="pageNum : ${pageInfo.pageRange}" -->
+          <button class="rss-pagination__btn active" data-page="1">1</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="2">2</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="3">3</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="4">4</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="5">5</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="6">6</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="7">7</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="8">8</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="9">9</button>
+          <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="10">10</button>
+          <!-- [Java] /th:each -->
+          <button class="rss-pagination__btn" aria-label="다음">&gt;</button>
+          <button class="rss-pagination__btn" aria-label="마지막">&gt;&gt;</button>
+        </div>
+
+      </div><!-- /rss-card -->
+    </main>
+
+    <div id="rss-footer-wrap"></div>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- ══════════════════════════════════════════════════
+     공통 스크립트
+══════════════════════════════════════════════════ -->
+<script src="../rss-common.js?v=20260507"></script>
+<script src="adm-common.js?v=20260507"></script>
+<script>
+lucide.createIcons();
+
+/* ─── M4-4. 탈퇴/반려회원 스크립트 ──────────────────────────
+   [Java 전환 시] form submit 또는 서버 사이드 렌더링으로 교체
+──────────────────────────────────────────────────────────── */
+
+/**
+ * 검색 실행
+ * [Java] GET /adm/member/withdraw?searchType=&keyword=&page=1 로 교체
+ */
+function searchWithdrawList() {
+  var keyword = document.getElementById('withdrawSearchKeyword').value.trim();
+  if (keyword) {
+    document.getElementById('withdrawViewAllBtn').style.display = 'inline-flex';
+  }
+  /* [Java] document.getElementById('withdrawSearchForm').submit(); */
+  alert('검색 기능은 Java 연동 후 처리됩니다.');
+}
+
+/**
+ * 전체보기 (검색 초기화)
+ * [Java] GET /adm/member/withdraw 로 교체
+ */
+function resetWithdrawSearch() {
+  document.getElementById('withdrawSearchKeyword').value = '';
+  document.getElementById('withdrawSearchType').value = '';
+  document.getElementById('withdrawViewAllBtn').style.display = 'none';
+  /* [Java] window.location.href = '/adm/member/withdraw'; */
+}
+</script>
+</body>
+</html>
