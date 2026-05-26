@@ -2330,9 +2330,9 @@
    왼쪽 2열 : 오른쪽 3열 = 1:1 비율
    왼쪽 value = 50% - 110px
    오른쪽 value = 50% - 60px - 110px */
-.sales-info-col-label { width: 110px; }           /* 항목명 th */
-.sales-info-col-value { width: calc(50% - 110px); } /* 값 td — 왼쪽 자동 */
-.sales-info-col-group { width: 60px; }            /* 차단기업 그룹명 th */
+.sales-info-col-label { width: 10%; }  /* 항목명 th */
+.sales-info-col-value { width: 35%; }  /* 값 td */
+.sales-info-col-group { width: 10%; }  /* 차단기업 그룹명 th */
 
 .sales-info-table {
   width: 100%;
