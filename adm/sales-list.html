@@ -133,26 +133,21 @@
               <option value="blockCorpNm">차단업체명</option>
             </select>
             <!-- 키워드 입력 -->
-            <div class="rss-search-wrap">
-              <!-- [Java] th:value="${searchKeyword}" -->
-              <input type="text" id="salesSearchKeyword" name="searchKeyword"
-                     placeholder="검색어 입력"
-                     onkeydown="if(event.key==='Enter') searchSales()" />
-              <button type="button" onclick="searchSales()" aria-label="검색">
-                <i data-lucide="search" class="rss-icon-15"></i>
-              </button>
-            </div>
+            <!-- [Java] th:value="${searchKeyword}" -->
+            <input type="text" id="salesSearchKeyword" name="searchKeyword"
+                   class="rss-input" placeholder=""
+                   onkeydown="if(event.key==='Enter') searchSales()" />
             <!-- 찾기 버튼 -->
-            <button type="button" class="rss-btn rss-btn--outline" onclick="searchSales()">찾기</button>
+            <button type="button" class="rss-btn rss-btn--outline" onclick="searchSales()">
+              <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
+              찾기
+            </button>
             <!-- 전체보기 버튼 — 검색 실행 후 .is-searched 클래스에 의해 표시 -->
             <button type="button" class="rss-btn rss-btn--view-all" id="salesBtnViewAll"
                     onclick="resetSalesSearch()">전체보기</button>
             <!-- ③ 엑셀 다운로드 (상단) -->
             <!-- [Java] /adm/sales/excel?year=&month=&searchType=&searchKeyword= -->
-            <button type="button" class="rss-btn adm-btn--excel" onclick="downloadSalesExcel()">
-              <i data-lucide="download" class="rss-icon-14"></i>
-              엑셀 다운로드
-            </button>
+            <button type="button" class="rss-btn adm-btn--excel" onclick="downloadSalesExcel()">엑셀 다운로드</button>
           </div>
         </div>
 
@@ -306,10 +301,7 @@
         <!-- ③ 엑셀 다운로드 (하단) -->
         <!-- [Java] /adm/sales/excel?year=&month=&searchType=&searchKeyword= -->
         <div class="rss-page-actions rss-page-actions--right rss-page-actions--no-border rss-page-actions--excel-bottom">
-          <button type="button" class="rss-btn adm-btn--excel" onclick="downloadSalesExcel()">
-            <i data-lucide="download" class="rss-icon-14"></i>
-            엑셀 다운로드
-          </button>
+          <button type="button" class="rss-btn adm-btn--excel" onclick="downloadSalesExcel()">엑셀 다운로드</button>
         </div>
 
       </div><!-- /rss-card -->
