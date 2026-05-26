@@ -2203,12 +2203,11 @@
   margin-left: 16px;
 }
 
-/* §M9-4. 목록 테이블 컬럼 너비 */
-.sales-col-no    { width: 60px; }
-.sales-col-order { width: 120px; }
-.sales-col-block { width: 120px; }
-.sales-col-period{ width: 220px; }
-.sales-col-amount{ width: 130px; }
+/* §M9-4. 목록 테이블 컬럼 너비
+   rss-common.css의 rss-col-* 공통 클래스를 사용합니다.
+   rss-col-no(5%), rss-col-owner(15%), rss-col-period(20%), rss-col-price(10%)
+   차단업체명: rss-col-block-corp (auto → width:13% 인라인 지정)
+   공사명: auto (나머지 너비 자동) */
 
 /* §M9-5. 금액 셀 우측 정렬 */
 .sales-td-amount {
@@ -2297,8 +2296,6 @@
 @media (max-width: 768px) {
   .sales-month-nav { padding: 12px 16px 0; }
   .sales-summary { margin: 10px 16px 0; }
-  .sales-col-period { width: 160px; }
-  .sales-col-amount { width: 100px; }
   .sales-info-table th { width: 90px; font-size: var(--rss-font-sm); }
   .sales-info-table th,
   .sales-info-table td { padding: 8px 10px; font-size: var(--rss-font-sm); }
