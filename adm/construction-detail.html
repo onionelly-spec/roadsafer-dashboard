@@ -802,10 +802,209 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════
-     공사 완료 처리: 스토리보드 기준 alert 방식
-     openAdmDailyProgCompleteModal(dt) → alert 안내 후 닫힘
-     별도 모달 불필요 — JS 함수만 사용
+     공사 완료 처리 모달 (스토리보드 기준 다단계 플로우)
+     openAdmDailyProgCompleteModal(dt) 호출 시 표시
+     ─────────────────────────────────────────────
+     Step1: admModalComplete1 → 수량 바뀌었나요? [아니오][예]
+       [예]  → admModalCompleteEditGuide (관리자 전용: 수정 안내)
+       [아니오] → 다음 일정 있음: admModalComplete2
+                  마지막 날: admModalCompleteLastDay
+     Step2: admModalComplete2 → 협의 되었습니까? [아니오][예]
+       [예]  → admModalComplete2YesDone → admModalCompleteFinal → reload
+       [아니오] → admModalComplete2NoPenalty
+         [예]  → admModalCompleteNoPenaltyDone (관리자 전용: 차단불이행 안내)
+         [아니오] → admModalCompleteNoPenaltyNoMsg
+     LastDay: admModalCompleteLastDay → admModalCompleteFinal → reload
+     [Java] POST /adm/construction/complete-today { seq, dt }
+     [Java] POST /adm/construction/complete-final { seq }
 ══════════════════════════════════════════════════ -->
+
+<!-- Step 1: 수량 변경 확인 -->
+<div id="admModalComplete1" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">오늘 완료</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        투입된 싸인카 수량이 바뀌었다면 콜센터<br>
+        <strong>(1566-0000)</strong>으로 연락해주세요.<br><br>
+        수량이 바뀌었나요?
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn rss-btn--cancel"
+              onclick="admCompleteStep1No()">아니오</button>
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admCompleteStep1Yes()">예</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 1-예: 수정 안내 (관리자 전용 — 연두색 동그라미)
+     [스토리보드] 진행 상황에서 '수정'을 눌러 변경된 수량을 조정하면 완료됩니다.
+     이후 단계는 운영시스템에서 공사 금액 수정하면 완료로 처리 -->
+<div id="admModalCompleteEditGuide" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">수정 안내</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        진행 상황에서 <strong>'수정'</strong>을 눌러<br>
+        변경된 수량을 조정하면 완료됩니다.
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admCloseModal('admModalCompleteEditGuide')">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 2: 다음 공사 일정 협의 확인 -->
+<div id="admModalComplete2" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">다음 공사 일정 확인</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        다음 공사 일정에 대해<br>
+        <strong>상호 차단 협의</strong>가 되었습니까?
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn rss-btn--cancel"
+              onclick="admCompleteStep2No()">아니오</button>
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admCompleteStep2Yes()">예</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 2-예: 다음 일정 알림 후 완료
+     [Java] POST /adm/construction/complete-today { seq, dt }
+     [Java] 발주업체, 차단업체에 카톡 알림 (코드: P09)
+     확인 클릭 시: admModalCompleteFinal 표시 -->
+<div id="admModalComplete2YesDone" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">진행 완료</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        <!-- [Java] th:text="'다음 공사는 '+${nextSchedule.startDt}+' '+${nextSchedule.startTime}+'에 차단 시작입니다.'" -->
+        다음 공사는 <strong id="admNextScheduleText">**월 **일 **시</strong>에 차단 시작입니다.
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admShowCompleteFinal()">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 2-아니오: 추가 진행 불가 확인 (패널티 경고) -->
+<div id="admModalComplete2NoPenalty" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">추가 진행 불가</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        추가 진행이 불가능합니까?<br>
+        추가불진행시 공사는 종료되고 <strong>패널티가 발생</strong>합니다.
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn rss-btn--cancel"
+              onclick="admCompleteNoPenaltyNo()">아니오</button>
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admCompleteNoPenaltyYes()">예</button>
+    </div>
+  </div>
+</div>
+
+<!-- 패널티 동의: 차단불이행 등록 안내 (관리자 전용 — 연두색 동그라미)
+     [스토리보드] 차단불이행내역에 등록됩니다. 추가 불진행시 패널티가 발생합니다.
+     [Java] 운영관리시스템 차단불이행 내역 등록 + 발주업체 카톡알림 (코드: P10)
+     [Java] 상태: 종료로 변경. 더 이상 차단 공사를 할 수 없음 -->
+<div id="admModalCompleteNoPenaltyDone" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">차단불이행 등록</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        차단불이행내역에 등록됩니다.<br>
+        추가 불진행시 <strong>패널티가 발생</strong>합니다.
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admCompleteNoPenaltyDoneConfirm()">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 패널티 거부: 협의 후 진행완료 안내 -->
+<div id="admModalCompleteNoPenaltyNoMsg" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">협의 후 처리</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        다음 공사 일정을 협의한 후 '진행완료' 해주십시오.
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admCloseModal('admModalCompleteNoPenaltyNoMsg')">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 마지막 날 분기: 모든 공사 종료
+     [Java] ${item.hasNextSchedule} == false 일 때 이 모달로 분기
+     확인 클릭 시: admModalCompleteFinal 표시 -->
+<div id="admModalCompleteLastDay" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">공사 종료</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        금일로 모든 공사가 종료됩니다.
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admCompleteLastDayConfirm()">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 최종 완료
+     [Java] POST /adm/construction/complete-final { seq } 완료 후 표시
+     확인 클릭 시: 페이지 새로고침 (상태: 종료로 변경) -->
+<div id="admModalCompleteFinal" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">진행 완료</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        진행 완료되었습니다.
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admReloadToProgressTab()">확인</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════════════
      공사 취소 처리 모달
@@ -837,10 +1036,29 @@
   </div>
 </div>
 
+<!-- 취소 완료 결과 모달
+     [Java] 운영관리시스템: 취소 내역에 등록되고 차단됨
+     [Java] POST /adm/construction/daily-prog/cancel { seq, dt, reason } 완료 후 표시
+     확인 클릭 시: 페이지 새로고침 (상태: 취소로 변경) -->
+<div id="admModalCancelDone" class="adm-modal-overlay" role="dialog" aria-modal="true">
+  <div class="adm-modal-box">
+    <div class="adm-modal-box__head">
+      <h3 class="adm-modal-box__title">처리 완료</h3>
+    </div>
+    <div class="adm-modal-box__body adm-modal-box__body--pad">
+      <p class="rss-form-label" style="font-weight:normal; color:#4b5563; line-height:1.7;">
+        공사 취소되었습니다.<br>
+        차단 비용은 별도 협의 후 안내됩니다.
+      </p>
+    </div>
+    <div class="adm-modal-box__foot">
+      <button type="button" class="rss-btn adm-btn--save"
+              onclick="admReloadToProgressTab()">확인</button>
+    </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════════════
      M1-3-2: 금액 정보 모달 (날짜 클릭 시 읽기 전용)
      openDailyProgModal(dt, progCd, amount) 호출 시 표시
      [Java] 실제 데이터: GET /api/construction/daily-prog?seq={seq}&dt={dt}
@@ -1230,13 +1448,116 @@ function submitConstComplete() {
   location.reload();
 }
 
-/* ── 공사 완료 처리 (스토리보드 기준: alert 방식) ──────────────────────────
-   완료 버튼 클릭 시 안내 메시지만 표시 → 별도 모달 없음
-   실제 완료 처리는 수정 모달에서 수량 조정 후 저장으로 처리
-   [Java] POST /adm/construction/daily-prog/complete (수정 모달 저장 시 처리)
+/* ── 공사 완료 처리 (스토리보드 기준 다단계 모달 플로우) ─────────────────
+   Step1: admModalComplete1 → 수량 바뀌었나요?
+     [예]  → admModalCompleteEditGuide (관리자 전용: 수정 안내)
+     [아니오] → hasNextSchedule 여부에 따라 admModalComplete2 또는 admModalCompleteLastDay
+   Step2: admModalComplete2 → 협의 되었습니까?
+     [예]  → admModalComplete2YesDone → admModalCompleteFinal → reload
+     [아니오] → admModalComplete2NoPenalty
+       [예]  → admModalCompleteNoPenaltyDone → reload (상태: 종료)
+       [아니오] → admModalCompleteNoPenaltyNoMsg
+   LastDay: admModalCompleteLastDay → admModalCompleteFinal → reload
+   [Java] POST /adm/construction/complete-today { seq, dt }
+   [Java] POST /adm/construction/complete-final { seq }
 ──────────────────────────────────────────────────────────────────────────── */
+
+/* 내부 유틸: 관리자 완료 모달 열기/닫기 */
+function admOpenModal(id) {
+  var el = document.getElementById(id);
+  if (el) { el.classList.add('open'); lucide.createIcons(); }
+}
+function admCloseModal(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+function admCloseAllCompleteModals() {
+  var ids = [
+    'admModalComplete1','admModalCompleteEditGuide','admModalComplete2',
+    'admModalComplete2YesDone','admModalComplete2NoPenalty',
+    'admModalCompleteNoPenaltyDone','admModalCompleteNoPenaltyNoMsg',
+    'admModalCompleteLastDay','admModalCompleteFinal'
+  ];
+  ids.forEach(function(id) { admCloseModal(id); });
+}
+
 function openAdmDailyProgCompleteModal(dt) {
-  alert("진행 상황에서 '수정'을 눌러 변경된 수량을 조정하면 완료됩니다.");
+  _admDailyProgDate = dt;
+  admCloseAllCompleteModals();
+  admOpenModal('admModalComplete1');
+}
+
+/* Step1: 수량 바뀜 → 수정 안내 */
+function admCompleteStep1Yes() {
+  admCloseModal('admModalComplete1');
+  admOpenModal('admModalCompleteEditGuide');
+}
+
+/* Step1: 수량 안 바뀜 → 다음 일정 확인 */
+function admCompleteStep1No() {
+  admCloseModal('admModalComplete1');
+  /* [Java] ${item.hasNextSchedule} 로 분기
+     더미: 다음 일정 있음 시나리오 */
+  var hasNextSchedule = true;
+  if (hasNextSchedule) {
+    admOpenModal('admModalComplete2');
+  } else {
+    admOpenModal('admModalCompleteLastDay');
+  }
+}
+
+/* Step2: 협의 완료 → 다음 일정 알림 */
+function admCompleteStep2Yes() {
+  admCloseModal('admModalComplete2');
+  /* [Java] POST /adm/construction/complete-today { seq, dt } */
+  admOpenModal('admModalComplete2YesDone');
+}
+
+/* Step2: 협의 미완료 → 추가 진행 불가 확인 */
+function admCompleteStep2No() {
+  admCloseModal('admModalComplete2');
+  admOpenModal('admModalComplete2NoPenalty');
+}
+
+/* Step2-예 확인 → 최종 완료 */
+function admShowCompleteFinal() {
+  admCloseAllCompleteModals();
+  admOpenModal('admModalCompleteFinal');
+}
+
+/* 패널티 동의: 차단불이행 등록 */
+function admCompleteNoPenaltyYes() {
+  admCloseModal('admModalComplete2NoPenalty');
+  /* [Java] 운영관리시스템 차단불이행 내역 등록
+     [Java] POST /adm/construction/penalty-register { seq, dt }
+     [Java] 발주업체 카톡알림 (코드: P10)
+     [Java] 상태: 종료로 변경 */
+  admOpenModal('admModalCompleteNoPenaltyDone');
+}
+
+/* 패널티 거부: 협의 후 처리 */
+function admCompleteNoPenaltyNo() {
+  admCloseModal('admModalComplete2NoPenalty');
+  admOpenModal('admModalCompleteNoPenaltyNoMsg');
+}
+
+/* 패널티 동의 확인 → reload (상태: 종료) */
+function admCompleteNoPenaltyDoneConfirm() {
+  admCloseModal('admModalCompleteNoPenaltyDone');
+  location.reload();
+}
+
+/* 마지막 날 확인 → 최종 완료 */
+function admCompleteLastDayConfirm() {
+  admCloseModal('admModalCompleteLastDay');
+  /* [Java] POST /adm/construction/complete-final { seq } */
+  admOpenModal('admModalCompleteFinal');
+}
+
+/* 최종 완료 후 페이지 새로고침 (진행상황 탭 복원) */
+function admReloadToProgressTab() {
+  sessionStorage.setItem('adm_restore_tab', 'tab-status');
+  location.reload();
 }
 
 /* ── 공사 취소 처리 모달 ─────────────────────────────── */
@@ -1245,6 +1566,7 @@ function openAdmDailyProgCancelModal(dt) {
   var d = new Date(dt);
   document.getElementById('admDailyProgCancelDate').textContent =
     d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일';
+  document.getElementById('admDailyProgCancelReason').value = '';
   document.getElementById('admDailyProgCancelModalBackdrop').classList.add('open');
   lucide.createIcons();
 }
@@ -1254,10 +1576,9 @@ function closeAdmDailyProgCancelModal() {
 function submitAdmDailyProgCancel() {
   var reason = document.getElementById('admDailyProgCancelReason').value.trim();
   if (!reason) { alert('취소 사유를 입력하세요.'); return; }
-  /* [Java] POST /adm/construction/daily-prog/cancel */
+  /* [Java] POST /adm/construction/daily-prog/cancel { seq, dt, reason } */
   closeAdmDailyProgCancelModal();
-  alert('공사 취소되었습니다. 차단 비용은 별도 협의 후 안내됩니다.');
-  location.reload();
+  admOpenModal('admModalCancelDone');
 }
 
 </script>
