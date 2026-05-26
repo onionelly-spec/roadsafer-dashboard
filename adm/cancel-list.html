@@ -110,11 +110,11 @@
                 <!-- [Java] th:text="${cancelList.size() - itemStat.index}" -->
                 <td>1</td>
                 <!-- [Java] th:text="${item.orderCorpNm}" -->
-                <!-- [Java] th:href="@{/adm/company/detail/{seq}(seq=${item.orderCorpSeq})}" -->
-                <td><a href="company-detail.html?seq=2001" class="rss-link">한국개발</a></td>
+                <!-- [Java] th:href="@{/adm/order-corp/write/{seq}(seq=${item.orderCorpSeq})}" -->
+                <td><a href="order-corp-write.html?seq=2001" class="rss-link">한국개발</a></td>
                 <!-- [Java] th:text="${item.constructionNm}" -->
-                <!-- [Java] th:href="@{/adm/construction/detail/{seq}(seq=${item.constructionSeq})}" -->
-                <td><a href="construction-write.html?seq=1001" class="rss-link">호남선 순천방향 포장공사</a></td>
+                <!-- [Java] th:href="@{/adm/construction/detail/{seq}(seq=${item.constructionSeq},status='PROGRESS')}" -->
+                <td><a href="construction-detail.html?seq=1001&status=PROGRESS" class="rss-link">호남선 순천방향 포장공사</a></td>
                 <!-- [Java] th:text="${item.blockCorpNm}" -->
                 <!-- [Java] th:href="@{/adm/company/detail/{seq}(seq=${item.blockCorpSeq})}" -->
                 <td><a href="company-detail.html?seq=3001" class="rss-link">BTS</a></td>
@@ -136,8 +136,10 @@
               <!-- 행 2: 취소 금액 미지정 -->
               <tr>
                 <td>2</td>
-                <td><a href="company-detail.html?seq=2002" class="rss-link">소민건설</a></td>
-                <td><a href="construction-write.html?seq=1002" class="rss-link">국도 32번선 횡단보도 보수</a></td>
+                <!-- [Java] th:href="@{/adm/order-corp/write/{seq}(seq=${item.orderCorpSeq})}" -->
+                <td><a href="order-corp-write.html?seq=2002" class="rss-link">소민건설</a></td>
+                <!-- [Java] th:href="@{/adm/construction/detail/{seq}(seq=${item.constructionSeq},status='PROGRESS')}" -->
+                <td><a href="construction-detail.html?seq=1002&status=PROGRESS" class="rss-link">국도 32번선 횡단보도 보수</a></td>
                 <td><a href="company-detail.html?seq=3002" class="rss-link">한국도로차단</a></td>
                 <td>2026-06-25</td>
                 <td>발주업체 집적</td>
@@ -152,8 +154,10 @@
               <!-- 행 3: 취소 금액 미지정 -->
               <tr>
                 <td>3</td>
-                <td><a href="company-detail.html?seq=2003" class="rss-link">오봉토건</a></td>
-                <td><a href="construction-write.html?seq=1003" class="rss-link">도로바닥 제시공</a></td>
+                <!-- [Java] th:href="@{/adm/order-corp/write/{seq}(seq=${item.orderCorpSeq})}" -->
+                <td><a href="order-corp-write.html?seq=2003" class="rss-link">오봉토건</a></td>
+                <!-- [Java] th:href="@{/adm/construction/detail/{seq}(seq=${item.constructionSeq},status='PROGRESS')}" -->
+                <td><a href="construction-detail.html?seq=1003&status=PROGRESS" class="rss-link">도로바닥 제시공</a></td>
                 <td><a href="company-detail.html?seq=3003" class="rss-link">스마트차단</a></td>
                 <td>2026-06-15</td>
                 <td>한국도로공사 취소 요청</td>
@@ -169,8 +173,10 @@
               <!-- [Java] th:unless="${item.cancelAmt == null}" -->
               <tr>
                 <td>4</td>
-                <td><a href="company-detail.html?seq=2004" class="rss-link">오봉토건</a></td>
-                <td><a href="construction-write.html?seq=1004" class="rss-link">중앙분리대 시공</a></td>
+                <!-- [Java] th:href="@{/adm/order-corp/write/{seq}(seq=${item.orderCorpSeq})}" -->
+                <td><a href="order-corp-write.html?seq=2004" class="rss-link">오봉토건</a></td>
+                <!-- [Java] th:href="@{/adm/construction/detail/{seq}(seq=${item.constructionSeq},status='PROGRESS')}" -->
+                <td><a href="construction-detail.html?seq=1004&status=PROGRESS" class="rss-link">중앙분리대 시공</a></td>
                 <td><a href="company-detail.html?seq=3004" class="rss-link">한길안전</a></td>
                 <td>2026-06-16</td>
                 <td>고속도로 사고 발생</td>
@@ -189,8 +195,10 @@
               <!-- 행 5: 취소 금액 지정 완료 -->
               <tr>
                 <td>5</td>
-                <td><a href="company-detail.html?seq=2005" class="rss-link">한국개발</a></td>
-                <td><a href="construction-write.html?seq=1005" class="rss-link">호남선 서울방향 포장공사</a></td>
+                <!-- [Java] th:href="@{/adm/order-corp/write/{seq}(seq=${item.orderCorpSeq})}" -->
+                <td><a href="order-corp-write.html?seq=2005" class="rss-link">한국개발</a></td>
+                <!-- [Java] th:href="@{/adm/construction/detail/{seq}(seq=${item.constructionSeq},status='PROGRESS')}" -->
+                <td><a href="construction-detail.html?seq=1005&status=PROGRESS" class="rss-link">호남선 서울방향 포장공사</a></td>
                 <td><a href="company-detail.html?seq=3005" class="rss-link">순희산업</a></td>
                 <td>2026-06-02</td>
                 <td>강풍 취소</td>
