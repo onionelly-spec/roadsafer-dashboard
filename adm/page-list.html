@@ -72,7 +72,7 @@
 
   /* ── 본문 ── */
   .pl-wrap {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 28px 24px 60px;
   }
@@ -137,6 +137,7 @@
   .pl-table thead th:first-child { text-align: center; width: 44px; }
   .pl-table thead th.col-code    { width: 80px; }
   .pl-table thead th.col-depth   { width: 90px; }
+  .pl-table thead th.col-modal   { min-width: 200px; }
   .pl-table tbody tr {
     border-bottom: 1px solid #f3f4f6;
     transition: background .12s;
@@ -189,6 +190,19 @@
   .pl-depth { font-size: var(--rss-font-xs); color: var(--rss-muted); }
   .pl-depth--dash { color: #d1d5db; }
 
+  /* ── 모달 태그 ── */
+  .pl-modal-tag {
+    display: inline-block;
+    background: #f0fdf4; color: #166534;
+    font-size: 10px; font-weight: 600;
+    font-family: 'Consolas', 'Menlo', monospace;
+    padding: 2px 7px; border-radius: 4px;
+    border: 1px solid #bbf7d0;
+    margin: 2px 2px 2px 0;
+    white-space: nowrap;
+  }
+  .pl-modal-none { color: #d1d5db; font-size: var(--rss-font-xs); }
+
   /* ── 비고 태그 ── */
   .pl-tag {
     display: inline-block;
@@ -199,7 +213,6 @@
     margin: 2px 2px 2px 0;
     white-space: nowrap;
   }
-  .pl-tag--none { color: #d1d5db; font-size: var(--rss-font-xs); }
 
   /* ── 안내 박스 ── */
   .pl-note {
@@ -223,8 +236,8 @@
     .pl-table td, .pl-table th { padding: 8px 10px; }
     .pl-summary__num { font-size: 22px; }
   }
-  @media (max-width: 540px) {
-    .col-note { display: none; }
+  @media (max-width: 640px) {
+    .col-modal { display: none; }
   }
 </style>
 </head>
@@ -283,7 +296,7 @@
           <th>구분</th>
           <th class="col-depth">설명</th>
           <th>링크</th>
-          <th class="col-note">비고</th>
+          <th class="col-modal">삽입된 모달</th>
         </tr>
       </thead>
       <tbody>
@@ -297,7 +310,7 @@
               adm-topbar.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">모든 페이지 include</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>—</td>
@@ -309,7 +322,7 @@
               adm-sidebar.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">모든 페이지 include</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
       </tbody>
     </table>
@@ -328,7 +341,7 @@
           <th class="col-code">코드</th>
           <th class="col-depth">뎁스</th>
           <th>링크</th>
-          <th class="col-note">비고</th>
+          <th class="col-modal">삽입된 모달</th>
         </tr>
       </thead>
       <tbody>
@@ -343,7 +356,7 @@
               construction-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">검색·필터·페이지네이션</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>2</td>
@@ -356,7 +369,16 @@
               construction-detail.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">승인·반려·취소</span></td>
+          <td class="col-modal">
+            <span class="pl-modal-tag">dailyProgModalBackdrop</span>
+            <span class="pl-modal-tag">admDailyProgModalBackdrop</span>
+            <span class="pl-modal-tag">admDailyProgCancelModalBackdrop</span>
+            <span class="pl-modal-tag">blockReqModalBackdrop</span>
+            <span class="pl-modal-tag">constCompleteModalBackdrop</span>
+            <span class="pl-modal-tag">admModalComplete1</span>
+            <span class="pl-modal-tag">admModalComplete2</span>
+            <span class="pl-modal-tag">admModalCompleteFinal</span>
+          </td>
         </tr>
         <tr>
           <td>3</td>
@@ -369,7 +391,7 @@
               construction-write.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">등록·수정 겸용</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
       </tbody>
     </table>
@@ -388,7 +410,7 @@
           <th class="col-code">코드</th>
           <th class="col-depth">뎁스</th>
           <th>링크</th>
-          <th class="col-note">비고</th>
+          <th class="col-modal">삽입된 모달</th>
         </tr>
       </thead>
       <tbody>
@@ -403,7 +425,7 @@
               non-performance-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">목록 전용</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>5</td>
@@ -416,7 +438,9 @@
               cancel-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">목록 전용</span></td>
+          <td class="col-modal">
+            <span class="pl-modal-tag">modalCancelAmt</span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -435,7 +459,7 @@
           <th class="col-code">코드</th>
           <th class="col-depth">뎁스</th>
           <th>링크</th>
-          <th class="col-note">비고</th>
+          <th class="col-modal">삽입된 모달</th>
         </tr>
       </thead>
       <tbody>
@@ -450,7 +474,7 @@
               company-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">승인·반려 버튼</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>7</td>
@@ -463,7 +487,9 @@
               company-detail.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">기업 상세정보</span></td>
+          <td class="col-modal">
+            <span class="pl-modal-tag">suspendModal</span>
+          </td>
         </tr>
         <tr>
           <td>8</td>
@@ -476,7 +502,7 @@
               company-staff-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">직원 목록</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>9</td>
@@ -489,7 +515,9 @@
               company-staff-detail.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">직원 상세정보</span></td>
+          <td class="col-modal">
+            <span class="pl-modal-tag">staffPwModal</span>
+          </td>
         </tr>
         <tr>
           <td>10</td>
@@ -502,7 +530,7 @@
               order-corp-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">발주기업 목록</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>11</td>
@@ -515,7 +543,7 @@
               order-corp-write.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">등록·수정 겸용</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>12</td>
@@ -528,14 +556,14 @@
               withdraw-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">탈퇴·반려 목록</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <!-- ══════════════════════════════════════
-       섹션 5: M5 공지사항 관리 / M6 광고 관리 / M7 장터 관리 / M8 커뮤니티 관리
+       섹션 5: M5~M8
   ══════════════════════════════════════ -->
   <div class="pl-section-title">M5 · 공지사항 &nbsp;/&nbsp; M6 · 광고 &nbsp;/&nbsp; M7 · 장터 &nbsp;/&nbsp; M8 · 커뮤니티</div>
   <div class="pl-card">
@@ -547,7 +575,7 @@
           <th class="col-code">코드</th>
           <th class="col-depth">뎁스</th>
           <th>링크</th>
-          <th class="col-note">비고</th>
+          <th class="col-modal">삽입된 모달</th>
         </tr>
       </thead>
       <tbody>
@@ -562,7 +590,7 @@
               notice-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">삭제·등록 버튼</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>14</td>
@@ -575,7 +603,7 @@
               notice-write.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">에디터·파일첨부</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>15</td>
@@ -588,7 +616,7 @@
               ad-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">썸네일 목록</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>16</td>
@@ -601,7 +629,7 @@
               ad-write.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">이미지 업로드</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>17</td>
@@ -614,7 +642,7 @@
               market-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">썸네일 목록</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>18</td>
@@ -627,7 +655,7 @@
               market-detail.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">상세 + 삭제</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>19</td>
@@ -640,7 +668,7 @@
               community-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">삭제 버튼</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>20</td>
@@ -653,7 +681,9 @@
               community-detail.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">댓글 포함</span></td>
+          <td class="col-modal">
+            <span class="pl-modal-tag">admOverlay</span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -672,7 +702,7 @@
           <th class="col-code">코드</th>
           <th class="col-depth">뎁스</th>
           <th>링크</th>
-          <th class="col-note">비고</th>
+          <th class="col-modal">삽입된 모달</th>
         </tr>
       </thead>
       <tbody>
@@ -687,7 +717,7 @@
               sales-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">월별 네비게이터·엑셀</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>22</td>
@@ -700,7 +730,7 @@
               sales-detail.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">공사별 매출 상세</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
       </tbody>
     </table>
@@ -719,7 +749,7 @@
           <th class="col-code">코드</th>
           <th class="col-depth">뎁스</th>
           <th>링크</th>
-          <th class="col-note">비고</th>
+          <th class="col-modal">삽입된 모달</th>
         </tr>
       </thead>
       <tbody>
@@ -734,7 +764,7 @@
               stats-member.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">KPI 카드·월별 테이블·엑셀</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>24</td>
@@ -747,7 +777,7 @@
               stats-access.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">월별 접속 테이블·엑셀</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
       </tbody>
     </table>
@@ -766,7 +796,7 @@
           <th class="col-code">코드</th>
           <th class="col-depth">뎁스</th>
           <th>링크</th>
-          <th class="col-note">비고</th>
+          <th class="col-modal">삽입된 모달</th>
         </tr>
       </thead>
       <tbody>
@@ -781,7 +811,7 @@
               admin-list.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">삭제·등록 버튼</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
         <tr>
           <td>26</td>
@@ -794,7 +824,7 @@
               admin-write.html
             </a>
           </td>
-          <td class="col-note"><span class="pl-tag">중복확인·권한·상태</span></td>
+          <td class="col-modal"><span class="pl-modal-none">—</span></td>
         </tr>
       </tbody>
     </table>
