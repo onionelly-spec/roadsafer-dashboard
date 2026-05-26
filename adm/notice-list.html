@@ -55,11 +55,8 @@
                     onclick="resetNoticeSearch()">전체보기</button>
             <!-- ② 등록 버튼 -->
             <!-- [Java] @{/adm/notice/write} -->
-            <button type="button" class="rss-btn rss-btn--amber"
-                    onclick="location.href='notice-write.html'">
-              <i data-lucide="plus" style="width:14px;height:14px;margin-right:4px;vertical-align:middle;"></i>
-              등록
-            </button>
+            <button type="button" class="rss-btn adm-btn--register"
+                    onclick="location.href='notice-write.html'">등록</button>
           </div>
         </div><!-- /rss-board-toolbar -->
 
@@ -246,7 +243,8 @@
           </div>
           <!-- ② 등록 버튼 (우측) -->
           <div class="rss-page-actions__right">
-            <button type="button" class="rss-btn rss-btn--amber"
+            <!-- [Java] @{/adm/notice/write} -->
+            <button type="button" class="rss-btn adm-btn--register"
                     onclick="location.href='notice-write.html'">등록</button>
           </div>
         </div><!-- /rss-page-actions -->
