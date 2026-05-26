@@ -190,8 +190,8 @@
                 <tr class="row-urgent">
                   <!-- [Java] th:text="${constStat.count}" -->
                   <td class="text-center">1</td>
-                  <!-- [Java] th:text="${const.orderCorpNm}" -->
-                  <td>한국개발</td>
+                  <!-- [Java] th:href="@{/adm/order-corp/write/{seq}(seq=${const.orderCorpSeq})}" th:text="${const.orderCorpNm}" -->
+                  <td><a href="order-corp-write.html?seq=1001" class="rss-link">한국개발</a></td>
                   <!-- [Java] th:href="@{/adm/construction/detail/{seq}(seq=${const.constructionSeq})}" -->
                   <!-- [Java] th:text="${const.constructionNm}" -->
                   <td class="rss-col-nm">
@@ -199,7 +199,7 @@
                       [긴급] 호남선 순청방향 포장공사
                     </a>
                   </td>
-                  <!-- [Java] th:text="${const.blockCorpNm}" — 매칭 전이면 '-' -->
+                  <!-- [Java] th:href="${const.blockCorpSeq != null} ? @{/adm/company/detail/{seq}(seq=${const.blockCorpSeq})} : '#'" th:text="${const.blockCorpNm != null} ? ${const.blockCorpNm} : '-'" -->
                   <td class="text-center">-</td>
                   <!-- [Java] th:text="${const.startDt} + ' ~ ' + ${const.endDt}" -->
                   <td class="nowrap">2026-07-01 ~ 2026-07-03</td>
@@ -218,11 +218,13 @@
                 <!-- 예정 -->
                 <tr>
                   <td class="text-center">2</td>
-                  <td>소망건설</td>
+                  <!-- [Java] th:href th:text orderCorpNm -->
+                  <td><a href="order-corp-write.html?seq=1002" class="rss-link">소망건설</a></td>
                   <td class="rss-col-nm">
                     <a href="construction-detail.html?seq=1002&status=SCHEDULED" class="rss-link">국도 32번선 횟단보도 보수</a>
                   </td>
-                  <td>대한안전</td>
+                  <!-- [Java] th:href th:text blockCorpNm -->
+                  <td><a href="company-detail.html?seq=2&status=normal" class="rss-link">대한안전</a></td>
                   <td class="nowrap">2026-06-25 ~ 2026-06-25</td>
                   <td class="rss-col-equip">TMA1 : 2대, TMA3 : 1대</td>
                   <td class="text-center">
@@ -236,11 +238,13 @@
                 <!-- 진행중 -->
                 <tr>
                   <td class="text-center">3</td>
-                  <td>오봉토건</td>
+                  <!-- [Java] th:href th:text orderCorpNm -->
+                  <td><a href="order-corp-write.html?seq=1003" class="rss-link">오봉토건</a></td>
                   <td class="rss-col-nm">
                     <a href="construction-detail.html?seq=1003&status=PROGRESS" class="rss-link">중앙분리대 시공</a>
                   </td>
-                  <td>안전제일</td>
+                  <!-- [Java] th:href th:text blockCorpNm -->
+                  <td><a href="company-detail.html?seq=3&status=normal" class="rss-link">안전제일</a></td>
                   <td class="nowrap">2026-06-12 ~ 2026-06-18</td>
                   <td class="rss-col-equip">TMA3 : 2대, PLCS : 2대</td>
                   <td class="text-center">
@@ -254,11 +258,13 @@
                 <!-- 종료 -->
                 <tr>
                   <td class="text-center">4</td>
-                  <td>한국개발</td>
+                  <!-- [Java] th:href th:text orderCorpNm -->
+                  <td><a href="order-corp-write.html?seq=1001" class="rss-link">한국개발</a></td>
                   <td class="rss-col-nm">
                     <a href="construction-detail.html?seq=1004&status=COMPLETE" class="rss-link">호남선 서울방향 포장공사</a>
                   </td>
-                  <td>대한안전</td>
+                  <!-- [Java] th:href th:text blockCorpNm -->
+                  <td><a href="company-detail.html?seq=2&status=normal" class="rss-link">대한안전</a></td>
                   <td class="nowrap">2026-06-01 ~ 2026-06-02</td>
                   <td class="rss-col-equip">TMA1 : 1대, TMA3 : 2대, PLCS : 1대</td>
                   <td class="text-center">
@@ -272,11 +278,13 @@
                 <!-- 취소 -->
                 <tr>
                   <td class="text-center">5</td>
-                  <td>웅진토건</td>
+                  <!-- [Java] th:href th:text orderCorpNm -->
+                  <td><a href="order-corp-write.html?seq=1004" class="rss-link">웅진토건</a></td>
                   <td class="rss-col-nm">
                     <a href="construction-detail.html?seq=1005&status=CANCEL" class="rss-link">경부고속도로 갑길 보수</a>
                   </td>
-                  <td>-</td>
+                  <!-- [Java] th:text blockCorpNm — 매칭전/취소로 차단업체 없음 -->
+                  <td class="text-center">-</td>
                   <td class="nowrap">2026-05-20 ~ 2026-05-22</td>
                   <td class="rss-col-equip">TMA1 : 1대, 신호수 : 2명</td>
                   <td class="text-center">
