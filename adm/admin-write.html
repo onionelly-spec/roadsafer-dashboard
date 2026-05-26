@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 등록/수정 — 로드세이프티시스템 관리자</title>
+  <!-- 공통 CSS -->
+  <link rel="stylesheet" href="../rss-common.css?v=20260526" />
+  <link rel="stylesheet" href="adm-common-v2.css?v=20260526" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     M11-1. 관리자 관리 — 등록/수정
+     코드: M11-1
+     경로: 시스템 > 관리자관리 > 등록/수정
+     [Java] 등록: @GetMapping("/adm/admin/write")
+     [Java] 수정: @GetMapping("/adm/admin/write/{adminSeq}")
+     [Java] 저장: @PostMapping("/adm/admin/reg") / @PostMapping("/adm/admin/mod/{adminSeq}")
+     ──────────────────────────────────────────────────
+     [동작 규칙]
+     ① 아이디: 입력 후 '중복확인' 클릭 → 중복이면 "중복입니다. 경고창, inputbox 초기화"
+               중복 아닐 경우 "사용할 수 있습니다. 경고창"
+               수정 시: 불가, 아이디만 보여줌 (admin-id-readonly)
+     ② 이름, 비밀번호, 휴대폰 번호, 이메일: 자율입력
+     ③ 권한: 최고관리자(SUPER) / 콜센터(CALLCTR) 라디오
+     ④ 상태: 공개(Y) / 비공개(N) 라디오
+     ⑤ 삭제 버튼: 수정 시에만 표시 → 경고창 → 예 → 삭제 후 목록(M11) 이동
+     ⑥ 저장: 경고창 → 예 → 저장 후 목록(M11) 이동
+     ⑦ 취소: 목록(M11)으로 이동
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+  <div class="adm-main">
+
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">관리자 관리</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="#">로그인</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <!-- [Java] @{/adm/admin/list} -->
+        <a href="admin-list.html">관리자 관리</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <!-- [Java] th:text="${adminSeq != null} ? '수정' : '등록'" -->
+        <span class="adm-breadcrumb__current">등록/수정</span>
+      </nav>
+    </div>
+
+    <main class="rss-content">
+      <!-- ══════════════════════════════════════════════════
+           관리자 등록/수정 폼 (M11-1)
+           [Java] th:action="${adminSeq != null}
+                    ? @{/adm/admin/mod/{seq}(seq=${adminSeq})}
+                    : @{/adm/admin/reg}"
+           [Java] method="post"
+      ══════════════════════════════════════════════════ -->
+      <form id="adminWriteForm" method="post" action="#" novalidate>
+        <!-- [Java] CSRF 토큰 -->
+        <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> -->
+        <!-- [Java] 수정 모드: <input type="hidden" name="adminSeq" th:value="${admin.adminSeq}"> -->
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             섹션: 관리자 정보
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <section class="write-section" aria-labelledby="secAdminTitle">
+          <div class="write-section__head">
+            <i data-lucide="shield-check" class="rss-icon-16"></i>
+            <h2 class="write-section__title" id="secAdminTitle">관리자 관리</h2>
+            <span class="adm-required-note">*는 필수입니다</span>
+          </div><!-- /write-section__head -->
+
+          <div class="write-section__body">
+            <table class="adm-form-table">
+              <tbody>
+
+                <!-- ─── 행 1: 아이디 ──────────────────────────────────────
+                     스토리보드 ①:
+                     - 등록 모드: 입력 + 중복확인 버튼
+                     - 수정 모드: 읽기전용 텍스트만 표시 (admin-id-readonly)
+                     [Java] th:if="${adminSeq == null}" — 등록 모드
+                     [Java] th:unless="${adminSeq == null}" — 수정 모드
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">아이디<span class="required">*</span></th>
+                  <td>
+                    <!-- 등록 모드 -->
+                    <!-- [Java] th:if="${adminSeq == null}" -->
+                    <div class="admin-id-wrap">
+                      <!-- [Java] th:value="${admin.loginId}" -->
+                      <input type="text" id="adminLoginId" name="loginId"
+                             class="rss-input"
+                             placeholder="아이디를 입력하세요"
+                             maxlength="20"
+                             value="" />
+                      <button type="button" class="rss-btn rss-btn--outline"
+                              onclick="checkAdminIdDuplicate()">중복확인</button>
+                      <!-- 중복확인 결과 메시지 -->
+                      <!-- [Java] 개발 규칙: 중복 → "중복입니다." (admin-id-msg--dup), 사용가능 → "사용할 수 있습니다." (admin-id-msg--ok) -->
+                      <span id="adminIdMsg" class="admin-id-msg" aria-live="polite"></span>
+                    </div>
+                    <!-- 수정 모드 (아이디 읽기전용) -->
+                    <!-- [Java] th:unless="${adminSeq == null}" -->
+                    <!-- <span class="admin-id-readonly" th:text="${admin.loginId}">yuttro</span> -->
+                  </td>
+                </tr>
+
+                <!-- ─── 행 2: 이름 ────────────────────────────────────────
+                     스토리보드 ②: 자율입력
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">이름<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] th:value="${admin.adminNm}" -->
+                    <input type="text" id="adminNm" name="adminNm"
+                           class="rss-input"
+                           placeholder="이름을 입력하세요"
+                           maxlength="30"
+                           value="" />
+                  </td>
+                </tr>
+
+                <!-- ─── 행 3: 비밀번호 ────────────────────────────────────
+                     스토리보드 ②: 자율입력
+                     수정 모드: 입력 시에만 변경 (빈 값이면 기존 비밀번호 유지)
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">비밀번호<span class="required">*</span></th>
+                  <td>
+                    <!-- [Java] 수정 모드: placeholder="변경 시에만 입력하세요" -->
+                    <input type="password" id="adminPw" name="adminPw"
+                           class="rss-input"
+                           placeholder="비밀번호를 입력하세요"
+                           maxlength="100"
+                           autocomplete="new-password" />
+                  </td>
+                </tr>
+
+                <!-- ─── 행 4: 휴대폰 번호 ────────────────────────────────
+                     스토리보드 ②: 자율입력 (앞자리 드롭다운 + 중간 + 뒷자리)
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">휴대폰 번호</th>
+                  <td>
+                    <div class="admin-tel-wrap">
+                      <!-- [Java] th:value="${admin.adminTel1}" -->
+                      <select id="adminTel1" name="adminTel1" class="rss-select admin-tel-wrap__rss-select--tel">
+                        <option value="010" selected>010</option>
+                        <option value="011">011</option>
+                        <option value="016">016</option>
+                        <option value="017">017</option>
+                        <option value="018">018</option>
+                        <option value="019">019</option>
+                      </select>
+                      <span class="admin-tel-sep">-</span>
+                      <!-- [Java] th:value="${admin.adminTel2}" -->
+                      <input type="text" id="adminTel2" name="adminTel2"
+                             class="rss-input admin-tel-wrap__rss-input--tel"
+                             maxlength="4" inputmode="numeric"
+                             placeholder="0000"
+                             value="" />
+                      <span class="admin-tel-sep">-</span>
+                      <!-- [Java] th:value="${admin.adminTel3}" -->
+                      <input type="text" id="adminTel3" name="adminTel3"
+                             class="rss-input admin-tel-wrap__rss-input--tel"
+                             maxlength="4" inputmode="numeric"
+                             placeholder="0000"
+                             value="" />
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- ─── 행 5: 이메일 ──────────────────────────────────────
+                     스토리보드 ②: 자율입력 (아이디 @ 도메인 + 도메인 선택)
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">이메일<span class="required">*</span></th>
+                  <td>
+                    <div class="admin-email-wrap">
+                      <!-- [Java] th:value="${admin.adminEmailId}" -->
+                      <input type="text" id="adminEmailId" name="adminEmailId"
+                             class="rss-input admin-email-wrap__rss-input--email-id"
+                             placeholder="이메일 아이디"
+                             maxlength="50"
+                             value="" />
+                      <span class="admin-email-at">@</span>
+                      <!-- [Java] th:value="${admin.adminEmailDomain}" -->
+                      <input type="text" id="adminEmailDomain" name="adminEmailDomain"
+                             class="rss-input admin-email-wrap__rss-input--email-domain"
+                             placeholder="도메인"
+                             maxlength="50"
+                             value="" />
+                      <select id="adminEmailSelect" class="rss-select admin-email-wrap__rss-select--email"
+                              onchange="applyAdminEmailDomain(this.value)">
+                        <option value="">선택</option>
+                        <option value="gmail.com">gmail.com</option>
+                        <option value="naver.com">naver.com</option>
+                        <option value="daum.net">daum.net</option>
+                        <option value="kakao.com">kakao.com</option>
+                        <option value="nate.com">nate.com</option>
+                        <option value="hotmail.com">hotmail.com</option>
+                        <option value="">직접입력</option>
+                      </select>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- ─── 행 6: 권한 ────────────────────────────────────────
+                     스토리보드 ③: 최고관리자(SUPER) / 콜센터(CALLCTR) 라디오
+                     - 최고관리자: 모든 메뉴 제한없이 이용
+                     - 콜센터: 공사관리, 차단불이행내역, 취소내역, 기업관리
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">권한</th>
+                  <td>
+                    <div class="adm-inline-group">
+                      <!-- [Java] th:checked="${admin.adminRole == 'SUPER'}" -->
+                      <label class="adm-radio-label">
+                        <input type="radio" name="adminRole" value="SUPER" />
+                        최고관리자
+                      </label>
+                      <!-- [Java] th:checked="${admin.adminRole == 'CALLCTR'}" -->
+                      <label class="adm-radio-label">
+                        <input type="radio" name="adminRole" value="CALLCTR" checked />
+                        콜센터
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- ─── 행 7: 상태 ────────────────────────────────────────
+                     스토리보드 ④: 공개(Y) / 비공개(N) 라디오
+                ──────────────────────────────────────────────────────── -->
+                <tr>
+                  <th scope="row">상태<span class="required">*</span></th>
+                  <td>
+                    <div class="adm-inline-group">
+                      <!-- [Java] th:checked="${admin.useYn == 'Y' or admin.useYn == null}" -->
+                      <label class="adm-radio-label">
+                        <input type="radio" name="adminUseYn" value="Y" checked />
+                        공개
+                      </label>
+                      <!-- [Java] th:checked="${admin.useYn == 'N'}" -->
+                      <label class="adm-radio-label">
+                        <input type="radio" name="adminUseYn" value="N" />
+                        비공개
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div><!-- /write-section__body -->
+        </section><!-- /write-section -->
+
+        <!-- ─── 하단 버튼 영역 ──────────────────────────────────
+             스토리보드:
+             ⑤ 삭제 (수정 모드에만 표시, 좌측)
+             ⑥ 저장 (중앙)
+             ⑦ 취소 (중앙)
+             [Java] th:if="${adminSeq != null}" — 삭제 버튼 수정 모드에만 표시
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-page-actions rss-page-actions--split">
+          <!-- ⑤ 삭제 버튼 (수정 모드에만 표시) -->
+          <div class="rss-page-actions__left">
+            <!-- [Java] th:if="${adminSeq != null}" -->
+            <button type="button" class="rss-btn adm-btn--delete" id="adminBtnDelete"
+                    onclick="deleteAdmin()">삭제</button>
+          </div>
+          <!-- 저장 + 취소 (중앙) -->
+          <div class="rss-page-actions__center">
+            <!-- ⑥ 저장 -->
+            <button type="button" class="rss-btn adm-btn--save"
+                    onclick="submitAdminForm()">저장</button>
+            <!-- ⑦ 취소 -->
+            <!-- [Java] @{/adm/admin/list} -->
+            <button type="button" class="rss-btn adm-btn--cancel"
+                    onclick="location.href='admin-list.html'">취소</button>
+          </div>
+          <!-- 우측 빈 공간 (레이아웃 균형) -->
+          <div class="rss-page-actions__right"></div>
+        </div><!-- /rss-page-actions -->
+
+      </form><!-- /adminWriteForm -->
+    </main>
+
+    <div id="rss-footer-wrap"></div>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- ══════════════════════════════════════════════════
+     공통 스크립트
+══════════════════════════════════════════════════ -->
+<script src="../rss-common.js?v=20260507"></script>
+<script src="adm-common.js?v=20260507"></script>
+<script>
+lucide.createIcons();
+
+/* ─── M11-1. 관리자 등록/수정 스크립트 ─────────────────────────
+   [Java 전환 시] form submit 또는 서버 사이드 렌더링으로 교체
+──────────────────────────────────────────────────────────── */
+
+/** 아이디 중복 확인 완료 여부 플래그 */
+var adminIdChecked = false;
+
+/**
+ * ① 아이디 중복 확인
+ * [Java] GET /adm/admin/check-id?loginId= → { "available": true/false }
+ */
+function checkAdminIdDuplicate() {
+  var loginId = document.getElementById('adminLoginId').value.trim();
+  var msgEl = document.getElementById('adminIdMsg');
+
+  if (!loginId) {
+    alert('아이디를 입력해주세요.');
+    return;
+  }
+
+  /* [Java] fetch('/adm/admin/check-id?loginId=' + encodeURIComponent(loginId))
+       .then(res => res.json())
+       .then(data => {
+         if (data.available) {
+           msgEl.textContent = '사용할 수 있습니다.';
+           msgEl.className = 'admin-id-msg admin-id-msg--ok';
+           adminIdChecked = true;
+         } else {
+           msgEl.textContent = '중복입니다.';
+           msgEl.className = 'admin-id-msg admin-id-msg--dup';
+           document.getElementById('adminLoginId').value = '';
+           adminIdChecked = false;
+         }
+       }); */
+
+  /* 더미 처리 — Java 연동 전 */
+  alert('중복확인 기능은 Java 연동 후 처리됩니다.');
+  msgEl.textContent = '사용할 수 있습니다.';
+  msgEl.className = 'admin-id-msg admin-id-msg--ok';
+  adminIdChecked = true;
+}
+
+/**
+ * 이메일 도메인 선택 적용
+ */
+function applyAdminEmailDomain(val) {
+  if (val) {
+    document.getElementById('adminEmailDomain').value = val;
+  } else {
+    document.getElementById('adminEmailDomain').value = '';
+    document.getElementById('adminEmailDomain').focus();
+  }
+}
+
+/**
+ * ⑥ 저장 처리
+ * [Java] POST /adm/admin/reg 또는 /adm/admin/mod/{adminSeq}
+ */
+function submitAdminForm() {
+  var loginId  = document.getElementById('adminLoginId');
+  var adminNm  = document.getElementById('adminNm').value.trim();
+  var adminPw  = document.getElementById('adminPw').value.trim();
+  var emailId  = document.getElementById('adminEmailId').value.trim();
+  var emailDom = document.getElementById('adminEmailDomain').value.trim();
+
+  /* 필수 항목 확인 */
+  /* [Java] 수정 모드: loginId 입력 필드 없으므로 null 체크 */
+  if (loginId && !loginId.value.trim()) {
+    alert('아이디를 입력해주세요.');
+    loginId.focus();
+    return;
+  }
+  if (loginId && !adminIdChecked) {
+    alert('아이디 중복확인을 해주세요.');
+    return;
+  }
+  if (!adminNm) {
+    alert('이름을 입력해주세요.');
+    document.getElementById('adminNm').focus();
+    return;
+  }
+  if (!adminPw) {
+    alert('비밀번호를 입력해주세요.');
+    document.getElementById('adminPw').focus();
+    return;
+  }
+  if (!emailId || !emailDom) {
+    alert('이메일을 입력해주세요.');
+    document.getElementById('adminEmailId').focus();
+    return;
+  }
+
+  if (!confirm('저장하시겠습니까?')) return;
+
+  /* [Java] document.getElementById('adminWriteForm').submit(); */
+  alert('저장 기능은 Java 연동 후 처리됩니다.');
+  /* [Java] 저장 완료 후 → location.href = '/adm/admin/list'; */
+}
+
+/**
+ * ⑤ 삭제 처리 (수정 모드에만 호출)
+ * [Java] POST /adm/admin/del
+ */
+function deleteAdmin() {
+  if (!confirm('삭제하시겠습니까?')) return;
+  /* [Java] fetch('/adm/admin/del', { method:'POST', body: ... }).then(() => location.href='/adm/admin/list'); */
+  alert('삭제 기능은 Java 연동 후 처리됩니다.');
+  /* [Java] 삭제 완료 후 → location.href = '/adm/admin/list'; */
+}
+</script>
+</body>
+</html>

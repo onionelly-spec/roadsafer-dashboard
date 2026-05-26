@@ -2666,3 +2666,75 @@
   gap: 8px;
   margin-bottom: 16px;
 }
+
+
+/* ══════════════════════════════════════════════════════════════════
+   §M12. 관리자 관리 (admin-list.html / admin-write.html)
+   M11 목록 / M11-1 등록·수정
+   ──────────────────────────────────────────────────────────────────
+   colgroup 클래스 (admin-list.html):
+     rss-col-select(5%) / rss-col-no(5%) / rss-col-id(10%) /
+     rss-col-nm(20%) / admin-col-role(auto) /
+     rss-col-date(12%) / rss-col-open(5%)
+   ──────────────────────────────────────────────────────────────────
+   ※ rss-col-select, rss-col-no, rss-col-id, rss-col-nm,
+     rss-col-date, rss-col-open 은 rss-common.css에 이미 정의됨.
+     admin-col-role 만 신규 추가.
+══════════════════════════════════════════════════════════════════ */
+
+/* §M12-1. 목록 테이블 전용 컬럼 */
+.admin-col-role {
+  /* 권한 열 — 나머지 너비 자동 차지 (auto) */
+}
+
+/* §M12-2. 권한 배지 */
+.adm-badge--super   { background: #eff6ff; color: #1d4ed8; }   /* 최고관리자 */
+.adm-badge--callctr { background: #f0fdf4; color: #15803d; }   /* 콜센터 */
+
+/* §M12-3. 등록/수정 폼 — 아이디 중복확인 행 */
+.admin-id-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.admin-id-wrap .rss-input {
+  flex: 1;
+  min-width: 160px;
+  max-width: 320px;
+}
+
+/* §M12-4. 등록/수정 폼 — 이메일 행 */
+.admin-email-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.admin-email-wrap .rss-input--email-id  { width: 160px; }
+.admin-email-wrap .admin-email-at       { color: var(--rss-muted); font-size: var(--rss-font-sm); padding: 0 2px; }
+.admin-email-wrap .rss-input--email-domain { width: 160px; }
+.admin-email-wrap .rss-select--email    { width: 120px; }
+
+/* §M12-5. 등록/수정 폼 — 전화번호 행 */
+.admin-tel-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.admin-tel-wrap .rss-select--tel { width: 90px; }
+.admin-tel-wrap .rss-input--tel  { width: 100px; }
+.admin-tel-wrap .admin-tel-sep   { color: var(--rss-muted); }
+
+/* §M12-6. 중복확인 결과 안내 텍스트 */
+.admin-id-msg          { font-size: var(--rss-font-sm); }
+.admin-id-msg--ok      { color: var(--rss-success, #16a34a); }
+.admin-id-msg--dup     { color: var(--rss-danger); }
+
+/* §M12-7. 수정 모드 아이디 표시 (읽기전용) */
+.admin-id-readonly {
+  font-size: var(--rss-font-base);
+  color: var(--rss-text);
+  font-weight: 600;
+}

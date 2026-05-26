@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 관리 — 로드세이프티시스템 관리자</title>
+  <!-- 공통 CSS — Tailwind보다 먼저 로드 -->
+  <link rel="stylesheet" href="../rss-common.css?v=20260526" />
+  <link rel="stylesheet" href="adm-common-v2.css?v=20260526" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     M11. 관리자 관리 — 목록
+     코드: M11
+     경로: 로그인 > 관리자 관리
+     [Java] @GetMapping("/adm/admin/list")
+     [Java] 파라미터: searchType(String), keyword(String), page(int)
+     ──────────────────────────────────────────────────
+     [집계 기준]
+     ① 아이디, 이름 검색 (드롭다운: 전체/아이디/이름)
+     ② 최근 등록순, 30개/페이지
+        - 아이디·이름 클릭 → admin-write.html?seq=N (상세/수정)
+        - 구분: 최고관리자 / 콜센터
+     ③ 체크박스 선택 후 삭제
+     ④ 등록 버튼 → admin-write.html (신규 등록)
+══════════════════════════════════════════════════ -->
+<div id="adm-topbar-wrap"></div>
+<div class="adm-layout">
+  <div id="adm-sidebar-wrap"></div>
+  <div class="adm-main">
+
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">관리자 관리</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="#">로그인</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span class="adm-breadcrumb__current">관리자 관리</span>
+      </nav>
+    </div>
+
+    <main class="rss-content">
+      <!-- ══════════════════════════════════════════════════
+           관리자 관리 목록 카드 (M11)
+      ══════════════════════════════════════════════════ -->
+      <div class="rss-card">
+
+        <!-- ─── 검색 툴바 ──────────────────────────────────────
+             스토리보드 ①: 검색조건 드롭다운(전체/아이디/이름) + 키워드 + 검색
+             [Java] th:value="${searchType}" — 선택된 검색조건 유지
+             [Java] th:value="${keyword}" — 입력된 키워드 유지
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-board-toolbar">
+          <div class="rss-board-toolbar__left">
+            <!-- 좌측 필터 없음 -->
+          </div>
+          <div class="rss-board-toolbar__right">
+            <!-- [Java] th:value="${searchType}" -->
+            <select id="adminSearchType" class="rss-select">
+              <option value="">전체</option>
+              <!-- [Java] th:selected="${searchType == 'loginId'}" -->
+              <option value="loginId">아이디</option>
+              <!-- [Java] th:selected="${searchType == 'adminNm'}" -->
+              <option value="adminNm">이름</option>
+            </select>
+            <!-- [Java] th:value="${keyword}" -->
+            <input type="text" id="adminSearchKeyword" class="rss-input rss-input--keyword"
+                   placeholder=""
+                   onkeydown="if(event.key==='Enter') searchAdminList()" />
+            <button type="button" class="rss-btn rss-btn--outline" onclick="searchAdminList()">
+              <i data-lucide="search" class="rss-icon-14"></i>
+              검색
+            </button>
+            <!-- 전체보기 버튼 — 검색 후에만 표시 -->
+            <!-- [Java] th:if="${keyword != null and keyword != ''}" -->
+            <button type="button" class="rss-btn rss-btn--view-all" id="adminBtnViewAll"
+                    onclick="resetAdminSearch()" style="display:none;">
+              전체보기
+            </button>
+          </div>
+        </div><!-- /rss-board-toolbar -->
+
+        <!-- ─── 목록 테이블 ────────────────────────────────────
+             스토리보드 ②: 체크박스·번호·아이디·이름·권한·등록일·상태
+             - 아이디 클릭 → admin-write.html?seq=N (상세/수정)
+             - 이름 클릭 → admin-write.html?seq=N (상세/수정)
+             colgroup % (§M12-3 용어사전 기준):
+               체크박스(rss-col-select 5%) / 번호(rss-col-no 5%) /
+               아이디(rss-col-id 10%) / 이름(rss-col-nm 20%) /
+               권한(admin-col-role auto) /
+               등록일(rss-col-date 12%) / 상태(rss-col-open 5%)
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-table-wrap">
+          <div style="overflow-x:auto;">
+            <!-- [Java] th:if="${#lists.isEmpty(adminList)}" -->
+            <!-- <div class="rss-empty">검색 결과가 없습니다.</div> -->
+            <!-- [Java] th:unless="${#lists.isEmpty(adminList)}" -->
+            <table class="rss-table" id="adminListTable" style="min-width:780px;">
+              <colgroup>
+                <col class="rss-col-select" />   <!-- 체크박스 5% -->
+                <col class="rss-col-no" />        <!-- 번호 5% -->
+                <col class="rss-col-id" />        <!-- 아이디 10% -->
+                <col class="rss-col-nm" />        <!-- 이름 20% -->
+                <col class="admin-col-role" />    <!-- 권한 auto -->
+                <col class="rss-col-date" />      <!-- 등록일 12% -->
+                <col class="rss-col-open" />      <!-- 상태 5% -->
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col">
+                    <input type="checkbox" id="adminChkAll"
+                           onchange="toggleAllAdminChk(this)"
+                           title="전체 선택" />
+                  </th>
+                  <th scope="col">번호</th>
+                  <th scope="col">아이디</th>
+                  <th scope="col">이름</th>
+                  <th scope="col">권한</th>
+                  <th scope="col">등록일</th>
+                  <th scope="col">상태</th>
+                </tr>
+              </thead>
+              <tbody id="adminListBody">
+                <!-- ══════════════════════════════════════════════════
+                     [Java] th:each="admin : ${adminList}"
+                     더미 데이터 — 스토리보드 §M12 기준 (최근 등록순, 30개/페이지)
+                     권한: admin.adminRole == 'SUPER' → '최고관리자'
+                           admin.adminRole == 'CALLCTR' → '콜센터'
+                     상태: admin.useYn == 'Y' → '공개' / 'N' → '비공개'
+                ══════════════════════════════════════════════════ -->
+
+                <!-- 행 1 -->
+                <tr>
+                  <!-- [Java] th:value="${admin.adminSeq}" -->
+                  <td class="text-center">
+                    <input type="checkbox" class="adminChk" value="33" />
+                  </td>
+                  <!-- [Java] th:text="${adminStat.count}" -->
+                  <td class="text-center">33</td>
+                  <!-- [Java] th:href="@{/adm/admin/write/{seq}(seq=${admin.adminSeq})}" th:text="${admin.loginId}" -->
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=33" class="rss-link">yuttro</a>
+                  </td>
+                  <!-- [Java] th:href="@{/adm/admin/write/{seq}(seq=${admin.adminSeq})}" th:text="${admin.adminNm}" -->
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=33" class="rss-link">김성근</a>
+                  </td>
+                  <!-- [Java] th:text="${admin.adminRole == 'SUPER'} ? '최고관리자' : '콜센터'" -->
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--super">최고관리자</span>
+                  </td>
+                  <!-- [Java] th:text="${#temporals.format(admin.regDtm,'yyyy-MM-dd HH:mm:ss')}" -->
+                  <td class="text-center nowrap">2026-05-11 14:54:00</td>
+                  <!-- [Java] th:text="${admin.useYn == 'Y'} ? '공개' : '비공개'" -->
+                  <td class="text-center">
+                    <span class="rss-badge rss-badge--complete">공개</span>
+                  </td>
+                </tr>
+
+                <!-- 행 2 -->
+                <tr>
+                  <td class="text-center">
+                    <input type="checkbox" class="adminChk" value="32" />
+                  </td>
+                  <td class="text-center">32</td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=32" class="rss-link">yskim6224</a>
+                  </td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=32" class="rss-link">성유리</a>
+                  </td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--callctr">콜센터</span>
+                  </td>
+                  <td class="text-center nowrap">2026-05-10 12:00:12</td>
+                  <td class="text-center">
+                    <span class="rss-badge rss-badge--cancel">비공개</span>
+                  </td>
+                </tr>
+
+                <!-- 행 3 -->
+                <tr>
+                  <td class="text-center">
+                    <input type="checkbox" class="adminChk" value="31" />
+                  </td>
+                  <td class="text-center">31</td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=31" class="rss-link">ymypooh</a>
+                  </td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=31" class="rss-link">정성훈</a>
+                  </td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--callctr">콜센터</span>
+                  </td>
+                  <td class="text-center nowrap">2026-05-09 16:01:09</td>
+                  <td class="text-center">
+                    <span class="rss-badge rss-badge--complete">공개</span>
+                  </td>
+                </tr>
+
+                <!-- 행 4 -->
+                <tr>
+                  <td class="text-center">
+                    <input type="checkbox" class="adminChk" value="30" />
+                  </td>
+                  <td class="text-center">30</td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=30" class="rss-link">ymjang99</a>
+                  </td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=30" class="rss-link">이효리</a>
+                  </td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--callctr">콜센터</span>
+                  </td>
+                  <td class="text-center nowrap">2026-05-08 11:11:18</td>
+                  <td class="text-center">
+                    <span class="rss-badge rss-badge--cancel">비공개</span>
+                  </td>
+                </tr>
+
+                <!-- 행 5 -->
+                <tr>
+                  <td class="text-center">
+                    <input type="checkbox" class="adminChk" value="29" />
+                  </td>
+                  <td class="text-center">29</td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=29" class="rss-link">yjjh97</a>
+                  </td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=29" class="rss-link">이태근</a>
+                  </td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--super">최고관리자</span>
+                  </td>
+                  <td class="text-center nowrap">2026-05-07 09:12:09</td>
+                  <td class="text-center">
+                    <span class="rss-badge rss-badge--complete">공개</span>
+                  </td>
+                </tr>
+
+                <!-- 행 6 -->
+                <tr>
+                  <td class="text-center">
+                    <input type="checkbox" class="adminChk" value="28" />
+                  </td>
+                  <td class="text-center">2/8</td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=28" class="rss-link">yeoujinmam</a>
+                  </td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=28" class="rss-link">이진</a>
+                  </td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--callctr">콜센터</span>
+                  </td>
+                  <td class="text-center nowrap">2026-05-06 18:00:01</td>
+                  <td class="text-center">
+                    <span class="rss-badge rss-badge--complete">공개</span>
+                  </td>
+                </tr>
+
+                <!-- 행 7 -->
+                <tr>
+                  <td class="text-center">
+                    <input type="checkbox" class="adminChk" value="27" />
+                  </td>
+                  <td class="text-center">27</td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=27" class="rss-link">yeonjoo712</a>
+                  </td>
+                  <td class="text-center">
+                    <a href="admin-write.html?seq=27" class="rss-link">옥주현</a>
+                  </td>
+                  <td class="text-center">
+                    <span class="adm-badge adm-badge--callctr">콜센터</span>
+                  </td>
+                  <td class="text-center nowrap">2026-05-05 13:11:45</td>
+                  <td class="text-center">
+                    <span class="rss-badge rss-badge--complete">공개</span>
+                  </td>
+                </tr>
+
+                <!-- [Java] /th:each -->
+
+              </tbody>
+            </table>
+          </div>
+        </div><!-- /rss-table-wrap -->
+
+        <!-- ─── 하단 액션 영역 (삭제 ③ + 페이지네이션 + 등록 ④) ──────────────
+             rss-page-actions--split : 좌(삭제) / 중앙(페이지네이션) / 우(등록)
+             [Java] th:replace="fragments/pagination :: pagination(${pageInfo})"
+             페이지네이션 규칙: 목록형 → PC 10개씩 / 모바일 5개씩
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-page-actions rss-page-actions--split">
+          <!-- ③ 삭제 버튼 (좌측) -->
+          <div class="rss-page-actions__left">
+            <button type="button" class="rss-btn adm-btn--delete"
+                    onclick="deleteSelectedAdmins()">삭제</button>
+          </div>
+          <!-- 페이지네이션 (중앙) -->
+          <div class="rss-pagination" id="adminPagination">
+            <button class="rss-pagination__btn" aria-label="첫 페이지" disabled>&lt;&lt;</button>
+            <button class="rss-pagination__btn" aria-label="이전" disabled>&lt;</button>
+            <!-- [Java] th:each="i : ${#numbers.sequence(startPage, endPage)}" -->
+            <button class="rss-pagination__btn active" data-page="1">1</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="2">2</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="3">3</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="4">4</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="5">5</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="6">6</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="7">7</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="8">8</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="9">9</button>
+            <button class="rss-pagination__btn rss-pagination__btn--page-extra" data-page="10">10</button>
+            <!-- [Java] /th:each -->
+            <button class="rss-pagination__btn" aria-label="다음">&gt;</button>
+            <button class="rss-pagination__btn" aria-label="마지막">&gt;&gt;</button>
+          </div>
+          <!-- ④ 등록 버튼 (우측) -->
+          <div class="rss-page-actions__right">
+            <!-- [Java] @{/adm/admin/write} -->
+            <button type="button" class="rss-btn adm-btn--register"
+                    onclick="location.href='admin-write.html'">등록</button>
+          </div>
+        </div><!-- /rss-page-actions -->
+
+      </div><!-- /rss-card -->
+    </main>
+
+    <div id="rss-footer-wrap"></div>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- ══════════════════════════════════════════════════
+     공통 스크립트
+══════════════════════════════════════════════════ -->
+<script src="../rss-common.js?v=20260507"></script>
+<script src="adm-common.js?v=20260507"></script>
+<script>
+lucide.createIcons();
+
+/* ─── M11. 관리자 관리 목록 스크립트 ──────────────────────────
+   [Java 전환 시] form submit 또는 서버 사이드 렌더링으로 교체
+──────────────────────────────────────────────────────────── */
+
+/**
+ * 검색 실행
+ * [Java] GET /adm/admin/list?searchType=&keyword=&page=1 로 교체
+ */
+function searchAdminList() {
+  var keyword = document.getElementById('adminSearchKeyword').value.trim();
+  if (keyword) {
+    document.getElementById('adminBtnViewAll').style.display = 'inline-flex';
+  }
+  /* [Java] document.getElementById('adminSearchForm').submit(); */
+  alert('검색 기능은 Java 연동 후 처리됩니다.');
+}
+
+/**
+ * 전체보기 (검색 초기화)
+ * [Java] GET /adm/admin/list 로 교체
+ */
+function resetAdminSearch() {
+  document.getElementById('adminSearchKeyword').value = '';
+  document.getElementById('adminSearchType').value = '';
+  document.getElementById('adminBtnViewAll').style.display = 'none';
+  /* [Java] window.location.href = '/adm/admin/list'; */
+}
+
+/**
+ * 전체 선택 체크박스 토글
+ */
+function toggleAllAdminChk(el) {
+  document.querySelectorAll('.adminChk').forEach(function(chk) {
+    chk.checked = el.checked;
+  });
+}
+
+/**
+ * 선택 항목 삭제
+ * [Java] POST /adm/admin/del 로 교체
+ */
+function deleteSelectedAdmins() {
+  var checked = document.querySelectorAll('.adminChk:checked');
+  if (checked.length === 0) {
+    alert('삭제할 항목을 선택해주세요.');
+    return;
+  }
+  if (!confirm('선택한 관리자 ' + checked.length + '명을 삭제하시겠습니까?')) return;
+  /* [Java] 선택된 seq 목록 수집 후 POST /adm/admin/del 처리 */
+  alert('삭제 기능은 Java 연동 후 처리됩니다.');
+}
+</script>
+</body>
+</html>
