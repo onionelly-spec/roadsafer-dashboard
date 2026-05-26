@@ -272,12 +272,12 @@
                   onclick="rejectCompany()" style="display:none;">반려</button>
         </div>
 
-        <!-- ■ 가운데: 저장 / 취소 -->
+        <!-- ■ 가운데: 취소 → 저장 (규칙: 취소 먼저, 저장 나중) -->
         <div style="display:flex;gap:8px;align-items:center;">
-          <!-- ③ 저장 -->
-          <button type="button" class="rss-btn adm-btn--save" onclick="saveCompany()">저장</button>
           <!-- ④ 취소 -->
-          <button type="button" class="rss-btn adm-btn--cancel" onclick="goBack()">× 취소</button>
+          <button type="button" class="rss-btn adm-btn--cancel" onclick="goBack()">취소</button>
+          <!-- ⑤ 저장 -->
+          <button type="button" class="rss-btn adm-btn--save" onclick="saveCompany()">저장</button>
         </div>
 
         <!-- ■ 오른쪽: 비밀번호 변경 -->
@@ -518,8 +518,9 @@
     </div>
 
     <div class="adm-suspend-modal__footer">
-      <button type="button" class="rss-btn adm-btn--save" onclick="confirmSuspend()">확인</button>
+      <!-- 규칙: 취소 먼저, 확인(저장) 나중 -->
       <button type="button" class="rss-btn adm-btn--cancel" onclick="closeSuspendModal()">취소</button>
+      <button type="button" class="rss-btn adm-btn--save" onclick="confirmSuspend()">확인</button>
     </div>
   </div>
 </div>

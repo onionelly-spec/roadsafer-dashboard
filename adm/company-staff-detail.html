@@ -194,12 +194,12 @@
                   onclick="cancelApproveStaff()" style="display:none;">승인취소</button>
         </div>
 
-        <!-- ■ 가운데: 저장 + 취소 -->
+        <!-- ■ 가운데: 취소 → 저장 (규칙: 취소 먼저, 저장 나중) -->
         <div style="display:flex;gap:8px;align-items:center;">
-          <!-- ③ 저장 — [Java] POST /adm/staff/save -->
-          <button type="button" class="rss-btn adm-btn--save" onclick="saveStaff()">저장</button>
           <!-- ④ 취소 — 목록으로 이동 -->
           <button type="button" class="rss-btn adm-btn--cancel" onclick="goBack()">취소</button>
+          <!-- ⑤ 저장 — [Java] POST /adm/staff/save -->
+          <button type="button" class="rss-btn adm-btn--save" onclick="saveStaff()">저장</button>
         </div>
 
         <!-- ■ 오른쪽: 비밀번호 변경 -->
@@ -251,8 +251,9 @@
       </table>
     </div>
     <div class="adm-modal-box__foot">
-      <button type="button" class="rss-btn adm-btn--save" onclick="saveStaffPw()">변경</button>
+      <!-- 규칙: 취소 먼저, 저장(변경) 나중 -->
       <button type="button" class="rss-btn adm-btn--cancel" onclick="closeStaffPwModal()">취소</button>
+      <button type="button" class="rss-btn adm-btn--save" onclick="saveStaffPw()">변경</button>
     </div>
   </div>
 </div>
