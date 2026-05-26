@@ -112,17 +112,17 @@
               <tr>
                 <!-- [Java] th:text="${nonPerfList.size() - itemStat.index}" -->
                 <td>1</td>
-                <!-- [Java] th:text="${item.orderCorpNm}" -->
+                <!-- [Java] th:href="@{/adm/order-corp/write/{seq}(seq=${item.orderCorpSeq})}" th:text="${item.orderCorpNm}" -->
                 <td>
-                  <a href="company-detail.html?seq=2001" class="rss-link">한국개발</a>
+                  <a href="order-corp-write.html?seq=1001" class="rss-link">한국개발</a>
                 </td>
                 <!-- [Java] th:text="${item.constructionNm}" -->
                 <!-- [Java] th:href="@{/adm/construction/detail/{seq}(seq=${item.constructionSeq})}" -->
                 <td>
                   <a href="construction-write.html?seq=1001" class="rss-link">호남선 순천방향 포장공사</a>
                 </td>
-                <!-- [Java] th:text="${item.blockCorpNm}" — 미지정 시 빈칸 -->
-                <td>BTS</td>
+                <!-- [Java] th:href="@{/adm/company/detail/{seq}(seq=${item.blockCorpSeq})}" th:text="${item.blockCorpNm}" -->
+                <td><a href="company-detail.html?seq=2&status=normal" class="rss-link">BTS</a></td>
                 <!-- [Java] th:text="${item.startDt} + ' ~ ' + ${item.endDt} + '(' + ${item.totalDays} + '일)')" -->
                 <td>2026-07-01 ~ 2026-07-03(3일)</td>
                 <!-- [Java] th:text="${item.violationStartDt} + ' ~ ' + ${item.violationEndDt} + '(' + ${item.violationDays} + '일)')" -->
@@ -144,9 +144,11 @@
               <!-- 행 2: 차단업체 지정 전 -->
               <tr>
                 <td>2</td>
-                <td><a href="company-detail.html?seq=2002" class="rss-link">소민건설</a></td>
+                <!-- [Java] th:href orderCorpSeq -->
+                <td><a href="order-corp-write.html?seq=1002" class="rss-link">소민건설</a></td>
                 <td><a href="construction-write.html?seq=1002" class="rss-link">국도 32번선 횡단보도 보수</a></td>
-                <td>한국도로차단</td>
+                <!-- [Java] th:href blockCorpSeq -->
+                <td><a href="company-detail.html?seq=2&status=normal" class="rss-link">한국도로차단</a></td>
                 <td>2026-06-21 ~ 2026-06-25(5일)</td>
                 <td>2026-06-25 ~ 2026-06-25(1일)</td>
                 <td>
@@ -162,9 +164,11 @@
               <!-- 행 3: 차단업체 지정 전 -->
               <tr>
                 <td>3</td>
-                <td><a href="company-detail.html?seq=2003" class="rss-link">오봉토건</a></td>
+                <!-- [Java] th:href orderCorpSeq -->
+                <td><a href="order-corp-write.html?seq=1003" class="rss-link">오봉토건</a></td>
                 <td><a href="construction-write.html?seq=1003" class="rss-link">도로바닥 제시공</a></td>
-                <td>스마트차단</td>
+                <!-- [Java] th:href blockCorpSeq -->
+                <td><a href="company-detail.html?seq=2&status=normal" class="rss-link">스마트차단</a></td>
                 <td>2026-06-12 ~ 2026-06-18(7일)</td>
                 <td>2026-06-15 ~ 2026-06-18(3일)</td>
                 <td>
@@ -181,9 +185,11 @@
               <!-- [Java] th:unless="${item.blockCorpSeq == null}" -->
               <tr>
                 <td>4</td>
-                <td><a href="company-detail.html?seq=2003" class="rss-link">오봉토건</a></td>
+                <!-- [Java] th:href orderCorpSeq -->
+                <td><a href="order-corp-write.html?seq=1003" class="rss-link">오봉토건</a></td>
                 <td><a href="construction-write.html?seq=1004" class="rss-link">중앙분리대 시공</a></td>
-                <td>한길안전</td>
+                <!-- [Java] th:href blockCorpSeq -->
+                <td><a href="company-detail.html?seq=2&status=normal" class="rss-link">한길안전</a></td>
                 <td>2026-06-12 ~ 2026-06-18(7일)</td>
                 <td>2026-06-16 ~ 2026-06-18(2일)</td>
                 <!-- 관리: 차단업체 지정 완료 상태 -->
@@ -198,9 +204,11 @@
               <!-- 행 5: 차단업체 지정 완료 -->
               <tr>
                 <td>5</td>
-                <td><a href="company-detail.html?seq=2001" class="rss-link">한국개발</a></td>
+                <!-- [Java] th:href orderCorpSeq -->
+                <td><a href="order-corp-write.html?seq=1001" class="rss-link">한국개발</a></td>
                 <td><a href="construction-write.html?seq=1005" class="rss-link">호남선 서울방향 포장공사</a></td>
-                <td>순희산업</td>
+                <!-- [Java] th:href blockCorpSeq -->
+                <td><a href="company-detail.html?seq=2&status=normal" class="rss-link">순희산업</a></td>
                 <td>2026-06-01 ~ 2026-06-02(2일)</td>
                 <td>2026-06-02 ~ 2026-06-02(1일)</td>
                 <td>
