@@ -2007,3 +2007,94 @@
   line-height: 1.75;
   white-space: pre-line;
 }
+
+
+/* ════════════════════════════════════════════════════════════
+   §M8. 커뮤니티 관리 전용 클래스
+   ════════════════════════════════════════════════════════════ */
+
+/* §M8-1. 목록 — 댓글 수 뱃지 */
+.adm-comm-cmt-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--rss-font-xs);
+  color: var(--rss-blue);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+/* §M8-2. 상세 — 댓글 섹션 래퍼 (write-section 아래 별도 카드) */
+.adm-comm-reply-section {
+  background: #fff;
+  border: 1px solid var(--rss-border);
+  border-radius: 10px;
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+/* §M8-3. 댓글 섹션 헤더 */
+.adm-comm-reply-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-bottom: 1.5px solid var(--rss-border);
+  background: #f9fafb;
+}
+.adm-comm-reply-header__title {
+  font-size: var(--rss-font-base);
+  font-weight: 700;
+  color: var(--rss-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.adm-comm-reply-count {
+  font-size: var(--rss-font-sm);
+  color: var(--rss-blue);
+  font-weight: 700;
+}
+
+/* §M8-4. 댓글 테이블 — colgroup 전용 너비 */
+.adm-col-reply-author  { width: 12%; }
+.adm-col-reply-id      { width: 12%; }
+.adm-col-reply-date    { width: 12%; }
+.adm-col-reply-del     { width: 8%; }
+
+/* §M8-5. 댓글 테이블 — 대댓글 들여쓰기 표시 */
+.adm-reply-indent {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #9ca3af;
+  font-size: var(--rss-font-xs);
+  margin-right: 4px;
+}
+
+/* §M8-6. 댓글 테이블 — 삭제된 댓글 표시 */
+.adm-reply-deleted {
+  color: #9ca3af;
+  font-style: italic;
+  font-size: var(--rss-font-sm);
+}
+
+/* §M8-7. 댓글 테이블 — 개별 삭제 버튼 (인라인 소형) */
+.adm-btn--reply-del {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  font-size: var(--rss-font-xs);
+  font-weight: 600;
+  color: #dc2626;
+  background: #fff;
+  border: 1.5px solid #fca5a5;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.adm-btn--reply-del:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+}

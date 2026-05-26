@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>커뮤니티 관리 — 로드세이프티시스템 관리자</title>
+  <link rel="stylesheet" href="../rss-common.css" />
+  <link rel="stylesheet" href="adm-common-v2.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script>document.addEventListener('DOMContentLoaded', () => lucide.createIcons());</script>
+</head>
+<body>
+<div class="adm-layout">
+  <!-- 상단 바 -->
+  <div id="adm-topbar-wrap"></div>
+  <!-- 사이드바 -->
+  <div id="adm-sidebar-wrap"></div>
+  <!-- 모바일 오버레이 -->
+  <div class="adm-overlay" id="admOverlay"></div>
+
+  <!-- 메인 콘텐츠 -->
+  <div class="adm-main">
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">커뮤니티 관리</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="dashboard.html">홈</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span class="adm-breadcrumb__current">커뮤니티 관리</span>
+      </nav>
+    </div>
+
+    <!-- 콘텐츠 영역 -->
+    <main class="rss-content">
+      <div class="rss-card">
+        <!-- ─── 검색 툴바 ──────────────────────────────────────
+             스토리보드 ①: 드롭다운(제목/내용) + 키워드 + 찾기
+             전체보기 버튼: 검색 실행 후 표시
+             [Java] GET /adm/community/list?searchType=&searchKeyword=&page=
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-board-toolbar">
+          <div class="rss-board-toolbar__right">
+            <!-- [Java] th:value="${searchType}" — 선택된 검색 유형 유지 -->
+            <select id="communityAdmSearchType" class="rss-select">
+              <option value="">선택</option>
+              <!-- [Java] th:selected="${searchType == 'title'}" -->
+              <option value="title">제목</option>
+              <!-- [Java] th:selected="${searchType == 'content'}" -->
+              <option value="content">내용</option>
+            </select>
+            <!-- [Java] th:value="${searchKeyword}" -->
+            <input type="text" id="communityAdmSearchKeyword" class="rss-input" style="width:200px;"
+                   placeholder=""
+                   onkeydown="if(event.key==='Enter') searchCommunity()" />
+            <button type="button" class="rss-btn rss-btn--outline" onclick="searchCommunity()">
+              <i data-lucide="search" style="width:14px;height:14px;margin-right:4px;"></i>
+              찾기
+            </button>
+            <!-- 전체보기 버튼 — 검색 후에만 표시 -->
+            <button type="button" class="rss-btn rss-btn--view-all" id="communityAdmBtnViewAll"
+                    onclick="resetCommunitySearch()" style="display:none;">전체보기</button>
+          </div>
+        </div><!-- /rss-board-toolbar -->
+
+        <!-- ─── 목록 테이블 ────────────────────────────────────
+             스토리보드 ②: 체크박스·번호·제목(댓글수)·작성자·작성일
+             제목 클릭 → community-detail.html?communitySeq=N
+             [Java] th:each="post : ${communityList}" ORDER BY reg_dtm DESC
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-table-wrap">
+          <!-- [Java] th:if="${#lists.isEmpty(communityList)}" -->
+          <!-- <div class="rss-empty">검색 결과가 없습니다.</div> -->
+          <!-- [Java] th:unless="${#lists.isEmpty(communityList)}" -->
+          <table class="rss-table" id="communityTable">
+            <colgroup>
+              <col class="rss-col-select" />  <!-- 5%: 체크박스 -->
+              <col class="rss-col-no" />       <!-- 5%: 번호 -->
+              <col />                           <!-- auto: 제목 -->
+              <col class="rss-col-author" />   <!-- 10%: 작성자 -->
+              <col class="rss-col-date" />     <!-- 10%: 작성일 -->
+            </colgroup>
+            <thead>
+              <tr>
+                <th>
+                  <input type="checkbox" id="communityChkAll" onchange="toggleAllCheck(this)" />
+                </th>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+              </tr>
+            </thead>
+            <tbody id="communityTbody">
+              <!-- ══════════════════════════════════════════════
+                   [Java] th:each="post : ${communityList}"
+                   th:text="${post.rowNum}" / th:text="${post.title}"
+                   th:text="${post.commentCnt}" / th:text="${post.authorNm}"
+                   th:text="${post.authorId}" / th:text="${post.regDt}"
+                   href="community-detail.html?communitySeq=${post.communitySeq}"
+              ══════════════════════════════════════════════ -->
+              <!-- 더미 1 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="1" /></td>
+                <td>10</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=1" class="rss-link">
+                    도로 차단 설계 방법에 따라 싸인카 수량이 달라지는 노하우를 알려드려요
+                    <!-- [Java] th:if="${post.commentCnt > 0}" -->
+                    <span class="adm-comm-cmt-badge">[3]</span>
+                  </a>
+                </td>
+                <td>Sol6879</td>
+                <td>2026-06-13</td>
+              </tr>
+              <!-- 더미 2 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="2" /></td>
+                <td>9</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=2" class="rss-link">
+                    이제 도로차단 중에 식겁한 일이 있었어요. 모두 조심하
+                    <span class="adm-comm-cmt-badge">[1]</span>
+                  </a>
+                </td>
+                <td>I878ui</td>
+                <td>2026-06-12</td>
+              </tr>
+              <!-- 더미 3 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="3" /></td>
+                <td>8</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=3" class="rss-link">
+                    고속도로 TMA 차량 배치 시 주의사항 총정리
+                    <span class="adm-comm-cmt-badge">[12]</span>
+                  </a>
+                </td>
+                <td>나잘난</td>
+                <td>2026-06-10</td>
+              </tr>
+              <!-- 더미 4 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="4" /></td>
+                <td>7</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=4" class="rss-link">
+                    싸인카 수량 변경 시 발주사 재승인이 꼭 필요한가요?
+                    <span class="adm-comm-cmt-badge">[8]</span>
+                  </a>
+                </td>
+                <td>도로맨</td>
+                <td>2026-06-09</td>
+              </tr>
+              <!-- 더미 5 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="5" /></td>
+                <td>6</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=5" class="rss-link">
+                    올 여름 공사 시즌 준비 어떻게 하고 계신가요?
+                    <span class="adm-comm-cmt-badge">[24]</span>
+                  </a>
+                </td>
+                <td>공사왕</td>
+                <td>2026-06-08</td>
+              </tr>
+              <!-- 더미 6 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="6" /></td>
+                <td>5</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=6" class="rss-link">
+                    야간 공사 시 반사 조끼 착용 의무화 법령 정리
+                    <span class="adm-comm-cmt-badge">[5]</span>
+                  </a>
+                </td>
+                <td>안전제일</td>
+                <td>2026-06-07</td>
+              </tr>
+              <!-- 더미 7 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="7" /></td>
+                <td>4</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=7" class="rss-link">
+                    TMA 카드 만료 후 갱신 절차가 어떻게 되나요?
+                    <span class="adm-comm-cmt-badge">[3]</span>
+                  </a>
+                </td>
+                <td>hope800</td>
+                <td>2026-06-06</td>
+              </tr>
+              <!-- 더미 8 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="8" /></td>
+                <td>3</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=8" class="rss-link">
+                    간판시설물 설치 기준 최신 개정안 공유합니다
+                  </a>
+                </td>
+                <td>seho7521</td>
+                <td>2026-06-05</td>
+              </tr>
+              <!-- 더미 9 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="9" /></td>
+                <td>2</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=9" class="rss-link">
+                    안전시설물 점검 체크리스트 공유
+                    <span class="adm-comm-cmt-badge">[2]</span>
+                  </a>
+                </td>
+                <td>dea017n</td>
+                <td>2026-06-04</td>
+              </tr>
+              <!-- 더미 10 -->
+              <tr>
+                <td><input type="checkbox" class="community-chk" value="10" /></td>
+                <td>1</td>
+                <td>
+                  <a href="community-detail.html?communitySeq=10" class="rss-link">
+                    로드세이프티 시스템 이용 후기입니다
+                    <span class="adm-comm-cmt-badge">[7]</span>
+                  </a>
+                </td>
+                <td>smart001</td>
+                <td>2026-06-02</td>
+              </tr>
+              <!-- ══════════════════════════════════════════════ -->
+            </tbody>
+          </table>
+        </div><!-- /rss-table-wrap -->
+
+        <!-- ─── 하단 액션 바 ───────────────────────────────────
+             스토리보드 ③: 삭제(좌) / 페이지네이션(가운데)
+             [Java] GET /adm/community/delete (POST, communitySeqList)
+        ──────────────────────────────────────────────────────── -->
+        <div class="rss-page-actions rss-page-actions--split">
+          <div class="rss-page-actions__left">
+            <!-- [Java] POST /adm/community/delete -->
+            <button type="button" class="rss-btn adm-btn--delete" onclick="deleteCommunity()">삭제</button>
+          </div>
+          <!-- 페이지네이션 — 10개 기준, PC 10개 / 모바일 5개 -->
+          <!-- [Java] th:with="totalPages=${communityPage.totalPages}" -->
+          <div id="communityPagination">
+            <span class="rss-page-btn disabled">&lt;&lt;</span>
+            <span class="rss-page-btn disabled">&lt;</span>
+            <span class="rss-page-btn active">1</span>
+            <span class="rss-page-btn">2</span>
+            <span class="rss-page-btn">3</span>
+            <span class="rss-page-btn">4</span>
+            <span class="rss-page-btn">5</span>
+            <span class="rss-page-btn">6</span>
+            <span class="rss-page-btn">7</span>
+            <span class="rss-page-btn">8</span>
+            <span class="rss-page-btn">9</span>
+            <span class="rss-page-btn">10</span>
+            <span class="rss-page-btn">&gt;</span>
+            <span class="rss-page-btn">&gt;&gt;</span>
+          </div>
+          <div class="rss-page-actions__right"></div>
+        </div>
+      </div><!-- /rss-card -->
+    </main>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- 사이드바/상단바 공통 컴포넌트 로드 -->
+<script>
+  (function() {
+    function loadComponent(id, file) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      fetch(file).then(function(r){ return r.text(); }).then(function(html){
+        el.outerHTML = html;
+        if (window.lucide) lucide.createIcons();
+      });
+    }
+    loadComponent('adm-topbar-wrap', 'adm-topbar.html');
+    loadComponent('adm-sidebar-wrap', 'adm-sidebar.html');
+  })();
+</script>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   M8. 커뮤니티 관리 — 목록 JS
+   ════════════════════════════════════════════════════════════ */
+
+/** 전체 체크박스 토글 */
+function toggleAllCheck(masterChk) {
+  document.querySelectorAll('.community-chk').forEach(function(chk) {
+    chk.checked = masterChk.checked;
+  });
+}
+
+/** 검색 실행
+ *  [Java] GET /adm/community/list?searchType=&searchKeyword=&page=1
+ */
+function searchCommunity() {
+  var type    = document.getElementById('communityAdmSearchType').value;
+  var keyword = document.getElementById('communityAdmSearchKeyword').value.trim();
+  if (!type) {
+    alert('검색 조건을 선택하세요.');
+    return;
+  }
+  if (!keyword) {
+    alert('검색어를 입력하세요.');
+    document.getElementById('communityAdmSearchKeyword').focus();
+    return;
+  }
+  document.getElementById('communityAdmBtnViewAll').style.display = 'inline-flex';
+  /* [Java] location.href = '/adm/community/list?searchType=' + type + '&searchKeyword=' + encodeURIComponent(keyword) + '&page=1'; */
+  console.log('search:', type, keyword);
+}
+
+/** 검색 초기화 (전체보기) */
+function resetCommunitySearch() {
+  document.getElementById('communityAdmSearchType').value = '';
+  document.getElementById('communityAdmSearchKeyword').value = '';
+  document.getElementById('communityAdmBtnViewAll').style.display = 'none';
+  /* [Java] location.href = '/adm/community/list'; */
+}
+
+/** 선택 항목 삭제
+ *  [Java] POST /adm/community/delete {communitySeqList: [...]}
+ */
+function deleteCommunity() {
+  var checked = document.querySelectorAll('.community-chk:checked');
+  if (checked.length === 0) {
+    alert('1개 이상을 선택하세요.');
+    return;
+  }
+  if (!confirm('삭제하시겠습니까?')) return;
+  var seqList = Array.from(checked).map(function(c){ return c.value; });
+  /* [Java] fetch('/adm/community/delete', {method:'POST', body: JSON.stringify({communitySeqList: seqList})}) */
+  console.log('delete:', seqList);
+  location.reload();
+}
+</script>
+</body>
+</html>

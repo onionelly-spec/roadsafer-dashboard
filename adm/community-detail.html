@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>커뮤니티 관리 — 로드세이프티시스템 관리자</title>
+  <link rel="stylesheet" href="../rss-common.css" />
+  <link rel="stylesheet" href="adm-common-v2.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script>document.addEventListener('DOMContentLoaded', () => lucide.createIcons());</script>
+</head>
+<body>
+<div class="adm-layout">
+  <!-- 상단 바 -->
+  <div id="adm-topbar-wrap"></div>
+  <!-- 사이드바 -->
+  <div id="adm-sidebar-wrap"></div>
+  <!-- 모바일 오버레이 -->
+  <div class="adm-overlay" id="admOverlay"></div>
+
+  <!-- 메인 콘텐츠 -->
+  <div class="adm-main">
+    <!-- 브레드크럼 -->
+    <div class="adm-breadcrumb">
+      <h1 class="adm-breadcrumb__title">커뮤니티 관리</h1>
+      <nav class="adm-breadcrumb__nav" aria-label="breadcrumb">
+        <a href="dashboard.html">홈</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <a href="community-list.html">커뮤니티 관리</a>
+        <span class="adm-breadcrumb__sep">›</span>
+        <span class="adm-breadcrumb__current">자세히보기</span>
+      </nav>
+    </div>
+
+    <!-- 콘텐츠 영역 -->
+    <main class="rss-content">
+      <!-- ══════════════════════════════════════════════════════
+           M8-1. 커뮤니티 자세히보기
+           [Java] GET /adm/community/detail?communitySeq=N
+           [DB] 테이블: community WHERE community_seq = #{communitySeq}
+           [Java] Model: post (CommunityDto), commentList (List<CommunityCommentDto>)
+           ① 등록 정보: 작성자(이름+아이디), 등록일, 제목, 내용(본문+이미지)
+           ② 삭제: 경고창 → 예 → 삭제 처리 → 목록(M8)으로 이동
+           ③ 목록: community-list.html 으로 이동
+           ④ 댓글 목록: 최근 등록순, 작성자/아이디/댓글내용/작성일/삭제 버튼
+           ⑤ 댓글 개별 삭제: 경고창 → 예 → 삭제 처리 → 페이지 새로고침
+           ⑥ 댓글 전체 선택 삭제
+      ══════════════════════════════════════════════════ -->
+
+      <!-- ① 게시글 상세 — write-section 구조 (버튼은 바깥 회색 배경에 위치) -->
+      <section class="write-section" aria-labelledby="secCommunityDetail">
+        <div class="write-section__head">
+          <i data-lucide="users" style="width:16px;height:16px;color:var(--rss-primary);flex-shrink:0;"></i>
+          <h2 class="write-section__title" id="secCommunityDetail">커뮤니티 자세히보기</h2>
+        </div><!-- /write-section__head -->
+        <div class="write-section__body">
+          <!-- ── 게시글 정보 테이블 ───────────────────────────────────
+               [DB] community: community_seq, title, content, thumb_url,
+                    mber_seq, reg_dtm
+               [DB] member: mbr_nm, mbr_id
+          ──────────────────────────────────────────────────────── -->
+          <table class="rss-table rss-table--detail">
+            <tbody>
+              <tr>
+                <th scope="row">작성자</th>
+                <!-- [Java] th:text="${post.authorNm} + '(' + ${post.authorId} + ')'" -->
+                <!-- [DB] community.mber_seq → member.mbr_nm, member.mbr_id -->
+                <td>스마트차단(smart001)</td>
+              </tr>
+              <tr>
+                <th scope="row">등록일</th>
+                <!-- [Java] th:text="${#temporals.format(post.regDtm,'yyyy-MM-dd')}" -->
+                <!-- [DB] community.reg_dtm -->
+                <td>2026-06-22</td>
+              </tr>
+              <tr>
+                <th scope="row">제목</th>
+                <!-- [Java] th:text="${post.title}" -->
+                <!-- [DB] community.title -->
+                <td>싸인카 투입 방법 계산식을 알려드려요.</td>
+              </tr>
+              <tr>
+                <th scope="row">내용</th>
+                <td>
+                  <!-- [Java] th:utext="${post.content}" -->
+                  <!-- [DB] community.content (TEXT) -->
+                  <div class="market-info__content">
+                    <p>여기에 내용이 들어갑니다. ~</p>
+                    <p>텍스트로 작성한 내용이 쫙쫙 들어가지요.</p>
+                    <p>자유롭게 작성하여 보여줍니다.</p>
+                  </div>
+                  <!-- 본문 이미지 — 등록된 이미지 순차 표시 -->
+                  <!-- [Java] th:if="${post.thumbUrl != null}" -->
+                  <div class="market-photo-list" style="margin-top:16px;">
+                    <!-- [Java] th:each="img : ${post.imageList}" -->
+                    <!-- 사진 1 -->
+                    <div class="market-photo-item">
+                      <img src="https://placehold.co/800x360/e5e7eb/9ca3af?text=사진1"
+                           alt="사진 1" />
+                    </div>
+                    <!-- 사진 2 -->
+                    <div class="market-photo-item">
+                      <img src="https://placehold.co/800x360/e5e7eb/9ca3af?text=사진2"
+                           alt="사진 2" />
+                    </div>
+                    <!-- [Java] /th:each -->
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div><!-- /write-section__body -->
+      </section><!-- /write-section -->
+
+      <!-- ② 하단 액션 바 — write-section 바깥 회색 배경 위 -->
+      <!-- [Java] POST /adm/community/delete {communitySeq: N} -->
+      <div class="rss-page-actions rss-page-actions--split">
+        <div class="rss-page-actions__left">
+          <button type="button" class="rss-btn adm-btn--delete"
+                  onclick="deleteCommunityPost()">삭제</button>
+        </div>
+        <div class="rss-page-actions__right">
+          <!-- ③ 목록 -->
+          <a href="community-list.html" class="rss-btn rss-btn--list">목록</a>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════
+           ④ 댓글 목록 섹션
+           [DB] community_comment: comment_seq, community_seq,
+                parent_comment_seq, mber_seq, content, reg_dtm, del_yn
+           [Java] Model: commentList (List<CommunityCommentDto>)
+                  ORDER BY reg_dtm ASC
+           스토리보드: 작성자/아이디/댓글내용/작성일/삭제 버튼
+           ⑤ 개별 삭제: 경고창 → 예 → 삭제 처리 → 새로고침
+           ⑥ 전체 선택 삭제
+      ══════════════════════════════════════════════════ -->
+      <div class="adm-comm-reply-section">
+        <!-- 댓글 섹션 헤더 -->
+        <div class="adm-comm-reply-header">
+          <div class="adm-comm-reply-header__title">
+            <i data-lucide="message-circle" style="width:15px;height:15px;color:var(--rss-primary);"></i>
+            댓글
+            <!-- [Java] th:text="${commentList.size()}" -->
+            <span class="adm-comm-reply-count" id="replyCount">3개</span>
+          </div>
+        </div>
+
+        <!-- 댓글 테이블 -->
+        <div class="rss-table-wrap">
+          <!-- [Java] th:if="${#lists.isEmpty(commentList)}" -->
+          <!-- <div class="rss-empty">등록된 댓글이 없습니다.</div> -->
+          <!-- [Java] th:unless="${#lists.isEmpty(commentList)}" -->
+          <table class="rss-table" id="replyTable">
+            <colgroup>
+              <col class="rss-col-select" />          <!-- 5%: 체크박스 -->
+              <col class="adm-col-reply-author" />    <!-- 12%: 작성자 -->
+              <col class="adm-col-reply-id" />        <!-- 12%: 아이디 -->
+              <col />                                  <!-- auto: 댓글내용 -->
+              <col class="adm-col-reply-date" />      <!-- 12%: 작성일 -->
+              <col class="adm-col-reply-del" />       <!-- 8%: 삭제 -->
+            </colgroup>
+            <thead>
+              <tr>
+                <th>
+                  <input type="checkbox" id="replyChkAll" onchange="toggleAllReplyCheck(this)" />
+                </th>
+                <th>작성자</th>
+                <th>아이디</th>
+                <th>댓글</th>
+                <th>작성일</th>
+                <th>삭제</th>
+              </tr>
+            </thead>
+            <tbody id="replyTbody">
+              <!-- ══════════════════════════════════════════════
+                   [Java] th:each="comment : ${commentList}"
+                   comment.commentSeq / comment.authorNm / comment.authorId
+                   comment.content / comment.regDt / comment.parentCommentSeq
+                   comment.delYn
+              ══════════════════════════════════════════════ -->
+              <!-- 더미 1 — 일반 댓글 -->
+              <tr id="reply-row-1">
+                <td><input type="checkbox" class="reply-chk" value="1" /></td>
+                <!-- [Java] th:text="${comment.authorNm}" -->
+                <!-- [DB] member.mbr_nm (기업: 상호, 기업회원: 이름) -->
+                <td>김길우</td>
+                <!-- [Java] th:text="${comment.authorId}" -->
+                <!-- [DB] community_comment.mber_seq → member.mbr_id -->
+                <td>kim888</td>
+                <!-- [Java] th:text="${comment.content}" -->
+                <!-- [DB] community_comment.content -->
+                <td>너무 좋은 아이디어에요</td>
+                <!-- [Java] th:text="${comment.regDt}" -->
+                <!-- [DB] community_comment.reg_dtm -->
+                <td>2026-06-22</td>
+                <td>
+                  <!-- ⑤ 개별 삭제 버튼 -->
+                  <!-- [Java] POST /adm/community/comment/delete {commentSeq: 1} -->
+                  <button type="button" class="adm-btn--reply-del"
+                          onclick="deleteReply(1)">삭제</button>
+                </td>
+              </tr>
+              <!-- 더미 2 — 대댓글 (들여쓰기 표시) -->
+              <tr id="reply-row-2">
+                <td><input type="checkbox" class="reply-chk" value="2" /></td>
+                <td>송솔안전</td>
+                <td>songsong</td>
+                <td>
+                  <!-- [Java] th:if="${comment.parentCommentSeq != null}" -->
+                  <span class="adm-reply-indent">
+                    <i data-lucide="corner-down-right" style="width:12px;height:12px;"></i>
+                    대댓글
+                  </span>
+                  ↳ 실효성이 의문입니다.
+                </td>
+                <td>2026-06-27</td>
+                <td>
+                  <button type="button" class="adm-btn--reply-del"
+                          onclick="deleteReply(2)">삭제</button>
+                </td>
+              </tr>
+              <!-- 더미 3 — 일반 댓글 -->
+              <tr id="reply-row-3">
+                <td><input type="checkbox" class="reply-chk" value="3" /></td>
+                <td>구기동세이프티</td>
+                <td>safty090</td>
+                <td>이런거 기다렸어요</td>
+                <td>2026-06-25</td>
+                <td>
+                  <button type="button" class="adm-btn--reply-del"
+                          onclick="deleteReply(3)">삭제</button>
+                </td>
+              </tr>
+              <!-- ══════════════════════════════════════════════ -->
+            </tbody>
+          </table>
+        </div><!-- /rss-table-wrap -->
+
+        <!-- ⑥ 댓글 하단 액션 바 — 전체 선택 삭제 -->
+        <!-- [Java] POST /adm/community/comment/deleteList {commentSeqList: [...]} -->
+        <div class="rss-page-actions rss-page-actions--split">
+          <div class="rss-page-actions__left">
+            <button type="button" class="rss-btn adm-btn--delete"
+                    onclick="deleteSelectedReplies()">삭제</button>
+          </div>
+          <!-- 페이지네이션 — 10개 기준 -->
+          <!-- [Java] th:if="${replyPage.totalPages > 1}" -->
+          <div id="replyPagination">
+            <span class="rss-page-btn disabled">&lt;&lt;</span>
+            <span class="rss-page-btn disabled">&lt;</span>
+            <span class="rss-page-btn active">1</span>
+            <span class="rss-page-btn">2</span>
+            <span class="rss-page-btn">3</span>
+            <span class="rss-page-btn">4</span>
+            <span class="rss-page-btn">5</span>
+            <span class="rss-page-btn">6</span>
+            <span class="rss-page-btn">7</span>
+            <span class="rss-page-btn">8</span>
+            <span class="rss-page-btn">9</span>
+            <span class="rss-page-btn">10</span>
+            <span class="rss-page-btn">&gt;</span>
+            <span class="rss-page-btn">&gt;&gt;</span>
+          </div>
+          <div class="rss-page-actions__right"></div>
+        </div>
+      </div><!-- /adm-comm-reply-section -->
+
+    </main>
+  </div><!-- /adm-main -->
+</div><!-- /adm-layout -->
+
+<!-- 사이드바/상단바 공통 컴포넌트 로드 -->
+<script>
+  (function() {
+    function loadComponent(id, file) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      fetch(file).then(function(r){ return r.text(); }).then(function(html){
+        el.outerHTML = html;
+        if (window.lucide) lucide.createIcons();
+      });
+    }
+    loadComponent('adm-topbar-wrap', 'adm-topbar.html');
+    loadComponent('adm-sidebar-wrap', 'adm-sidebar.html');
+  })();
+</script>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   M8-1. 커뮤니티 자세히보기 — JS
+   ════════════════════════════════════════════════════════════ */
+
+/** ② 게시글 삭제
+ *  [Java] POST /adm/community/delete {communitySeq: N}
+ *  삭제 후 → community-list.html 으로 이동
+ */
+function deleteCommunityPost() {
+  if (!confirm('삭제하시겠습니까?')) return;
+  /* [Java] fetch('/adm/community/delete', {method:'POST', body: JSON.stringify({communitySeq: communitySeq})}) */
+  console.log('게시글 삭제');
+  location.href = 'community-list.html';
+}
+
+/** 댓글 전체 체크박스 토글 */
+function toggleAllReplyCheck(masterChk) {
+  document.querySelectorAll('.reply-chk').forEach(function(chk) {
+    chk.checked = masterChk.checked;
+  });
+}
+
+/** ⑤ 댓글 개별 삭제
+ *  [Java] POST /adm/community/comment/delete {commentSeq: N}
+ *  삭제 후 → 페이지 새로고침
+ */
+function deleteReply(commentSeq) {
+  if (!confirm('삭제하시겠습니까?')) return;
+  /* [Java] fetch('/adm/community/comment/delete', {method:'POST', body: JSON.stringify({commentSeq: commentSeq})}) */
+  console.log('댓글 삭제:', commentSeq);
+  var row = document.getElementById('reply-row-' + commentSeq);
+  if (row) row.remove();
+  /* 댓글 수 업데이트 */
+  var countEl = document.getElementById('replyCount');
+  if (countEl) {
+    var cur = parseInt(countEl.textContent) || 0;
+    if (cur > 0) countEl.textContent = (cur - 1) + '개';
+  }
+}
+
+/** ⑥ 댓글 선택 삭제
+ *  [Java] POST /adm/community/comment/deleteList {commentSeqList: [...]}
+ */
+function deleteSelectedReplies() {
+  var checked = document.querySelectorAll('.reply-chk:checked');
+  if (checked.length === 0) {
+    alert('1개 이상을 선택하세요.');
+    return;
+  }
+  if (!confirm('삭제하시겠습니까?')) return;
+  var seqList = Array.from(checked).map(function(c){ return c.value; });
+  /* [Java] fetch('/adm/community/comment/deleteList', {method:'POST', body: JSON.stringify({commentSeqList: seqList})}) */
+  console.log('댓글 선택 삭제:', seqList);
+  location.reload();
+}
+</script>
+</body>
+</html>
