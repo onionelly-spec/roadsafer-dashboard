@@ -55,7 +55,7 @@
               <option value="blockCorpNm">차단업체명</option>
             </select>
             <!-- [Java] th:value="${searchKeyword}" -->
-            <input type="text" id="nonPerfSearchKeyword" class="rss-input" style="width:220px;"
+            <input type="text" id="nonPerfSearchKeyword" class="rss-input rss-input--keyword"
                    placeholder="검색어를 입력하세요"
                    onkeydown="if(event.key==='Enter') searchNonPerf()" />
             <button type="button" class="rss-btn rss-btn--outline" onclick="searchNonPerf()">
