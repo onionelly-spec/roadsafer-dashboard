@@ -1202,7 +1202,8 @@
 .cal-nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 12px;
   padding: 8px 0 12px;
 }
 .cal-nav__btn {
@@ -1247,8 +1248,15 @@
   color: var(--rss-card) !important;
   font-weight: 700;
   border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
 }
-.cal-hint { font-size: 12px; color: var(--rss-muted); margin-top: 8px; line-height: 1.5; }
+.cal-hint { font-size: 12px; color: var(--rss-muted); margin-top: 8px; line-height: 1.5; padding: 0 4px; }
 
 /* 선택된 날짜 태그 */
 .work-date-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
