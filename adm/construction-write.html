@@ -91,7 +91,7 @@
                   <td>
                     <!-- [Java] th:value="${construction.orderContactNm}" -->
                     <input type="text" id="orderContactNm" name="orderContactNm"
-                           class="rss-input" style="width:220px;"
+                           class="rss-input rss-input--md"
                            placeholder="담당자명"
                            value="홍길동" />
                   </td>
@@ -105,19 +105,19 @@
                     <!-- [Java] th:value="${construction.orderContactTel1}" 등 -->
                     <div class="tel-split-wrap">
                       <input type="text" id="orderContactTel1" name="orderContactTel1"
-                             class="rss-input" style="width:72px;text-align:center;"
+                             class="rss-input rss-input--sm"
                              value="010"
                              maxlength="4" inputmode="numeric" aria-label="연락처 앞자리"
                              oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
                       <span class="tel-split-sep">-</span>
                       <input type="text" id="orderContactTel2" name="orderContactTel2"
-                             class="rss-input" style="width:72px;text-align:center;"
+                             class="rss-input rss-input--sm"
                              value="1234"
                              maxlength="4" inputmode="numeric" aria-label="연락처 가운데"
                              oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
                       <span class="tel-split-sep">-</span>
                       <input type="text" id="orderContactTel3" name="orderContactTel3"
-                             class="rss-input" style="width:72px;text-align:center;"
+                             class="rss-input rss-input--sm"
                              value="5678"
                              maxlength="4" inputmode="numeric" aria-label="연락처 끝자리"
                              oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
@@ -146,7 +146,7 @@
                       <i data-lucide="calendar" class="rss-icon-14"></i>
                       날짜 선택
                     </button>
-                    <p class="adm-hint" style="margin-top:6px;">
+                    <p class="adm-hint adm-inline-group--mb">
                       * 공사가 진행되는 날짜를 캘린더에서 선택해 주세요. 공사가 없는 날은 선택하지 마세요.
                     </p>
                     <!-- 선택된 날짜 태그 -->
@@ -157,7 +157,7 @@
                     <!-- [Java] <input type="hidden" name="workDates" th:each="d : ${construction.workDates}" th:value="${d}"> -->
                     <div id="workDateHiddenInputs"></div>
                     <!-- 요약 정보: 시작일 / 종료일 / 총 공사일수 -->
-                    <p class="adm-hint" id="workDateSummary" style="display:none;color:#1d4ed8;font-weight:600;"></p>
+                    <p class="adm-hint" id="workDateSummary" style="display:none;"></p>
                   </td>
                 </tr>
 
@@ -183,7 +183,7 @@
                       <span class="adm-inline-sep">차단 시작 시간</span>
                       <!-- [Java] th:value="${construction.blockStartTime}" -->
                       <!-- 용어사전 §10 block_start_time → blockStartTime; 드롭다운 00:00~24:00 -->
-                      <select id="blockStartTime" name="blockStartTime" class="rss-select" style="width:120px;">
+                      <select id="blockStartTime" name="blockStartTime" class="rss-select rss-input--md">
                         <!-- JS로 옵션 생성 -->
                       </select>
                     </div>
@@ -290,10 +290,10 @@
 
             <!-- 공사 구분 (일반/긴급) — 스토리보드 §1 기준
                  용어사전 §22 constructionTypeCd (normal/urgent) -->
-            <table class="adm-form-table" style="border-bottom:none;">
+            <table class="adm-form-table">
               <tbody>
                 <tr>
-                  <th scope="row" style="width:160px;">공사 구분<span class="required">*</span></th>
+                  <th scope="row">공사 구분<span class="required">*</span></th>
                   <td>
                     <!-- [Java] th:field="*{constructionTypeCd}" -->
                     <div class="adm-radio-group">
@@ -323,7 +323,7 @@
             <div id="priceRowWrap" class="price-row price-row--auto">
               <span class="price-row__label">
                 단가
-                <span id="priceSubLabel" style="font-size:12px;font-weight:400;color:#16a34a;">(일반)</span>
+                <span id="priceSubLabel" class="adm-price-sub-label">(일반)</span>
               </span>
               <div class="price-row__items">
                 <!-- TMA1 -->
@@ -370,7 +370,7 @@
               <!-- 시간 선택 상태 표시 -->
               <span class="price-row__sub" id="priceShiftLabel">주간 단가</span>
             </div>
-            <p class="adm-hint" style="padding:4px 16px 10px;">
+            <p class="adm-hint">
               - 반공수 시연회 : 단가의 50% / 공수 시연회 : 단가의 100% 적용
             </p>
 
@@ -408,7 +408,7 @@
               <div class="equip-row__item">
                 <span class="equip-row__label">TMA1</span>
                 <!-- [Java] th:value="${construction.tma1Qty}" -->
-                <select id="tma1Qty" name="tma1Qty" class="rss-select" style="width:72px;">
+                <select id="tma1Qty" name="tma1Qty" class="rss-select rss-input--sm">
                   <!-- JS로 0~20 옵션 생성 -->
                 </select>
                 <span class="equip-row__unit">대</span>
@@ -417,7 +417,7 @@
               <div class="equip-row__item">
                 <span class="equip-row__label">TMA3</span>
                 <!-- [Java] th:value="${construction.tma3Qty}" -->
-                <select id="tma3Qty" name="tma3Qty" class="rss-select" style="width:72px;">
+                <select id="tma3Qty" name="tma3Qty" class="rss-select rss-input--sm">
                 </select>
                 <span class="equip-row__unit">대</span>
               </div>
@@ -425,7 +425,7 @@
               <div class="equip-row__item">
                 <span class="equip-row__label">PLCS</span>
                 <!-- [Java] th:value="${construction.plcsQty}" -->
-                <select id="plcsQty" name="plcsQty" class="rss-select" style="width:72px;">
+                <select id="plcsQty" name="plcsQty" class="rss-select rss-input--sm">
                 </select>
                 <span class="equip-row__unit">대</span>
               </div>
@@ -433,7 +433,7 @@
               <div class="equip-row__item">
                 <span class="equip-row__label">신호수</span>
                 <!-- [Java] th:value="${construction.signalerQty}" -->
-                <select id="signalerQty" name="signalerQty" class="rss-select" style="width:72px;">
+                <select id="signalerQty" name="signalerQty" class="rss-select rss-input--sm">
                 </select>
                 <span class="equip-row__unit">명</span>
               </div>
@@ -477,20 +477,20 @@
                       <div class="rehearsal-detail field-disabled" id="rehearsalDetail">
                         <!-- 날짜 — 용어사전 §10-2 rehearsal + §1 dt → rehearsalDt
                                     캘린더 모달 연동 -->
-                        <button type="button" class="btn-cal-open" onclick="openRehearsalDateModal()" style="padding:4px 10px;font-size:12px;">
+                        <button type="button" class="btn-cal-open adm-btn--xs" onclick="openRehearsalDateModal()">
                           <i data-lucide="calendar" class="rss-icon-12"></i>
                           날짜 선택
                         </button>
                         <!-- [Java] th:value="${construction.rehearsalDt}" -->
                         <input type="hidden" id="rehearsalDt" name="rehearsalDt" value="" />
-                        <span id="rehearsalDtDisplay" style="color:#374151;min-width:80px;">
+                        <span id="rehearsalDtDisplay" class="adm-label-strong" style="min-width:80px;">
                           날짜 미선택
                         </span>
 
                         <span class="rehearsal-detail__sep">|</span>
 
                         <!-- 시간대 — 용어사전 §10-2 rehearsal + §8-4 Cd → rehearsalTimeCd -->
-                        <span style="font-weight:600;color:#374151;">시간대:</span>
+                        <span class="adm-label-strong">시간대:</span>
                         <div class="adm-radio-group">
                           <!-- [Java] th:field="*{rehearsalTimeCd}" -->
                           <label><input type="radio" name="rehearsalTimeCd" value="day" checked /> 주간</label>
@@ -501,7 +501,7 @@
 
                         <!-- 시연대금 — 용어사전 §22 rehearsalFeeType (공수/반공수)
                                        스토리보드: 공수 / 반공수 선택 -->
-                        <span style="font-weight:600;color:#374151;">시연대금:</span>
+                        <span class="adm-label-strong">시연대금:</span>
                         <div class="adm-radio-group">
                           <!-- [Java] th:field="*{rehearsalFeeType}" -->
                           <label><input type="radio" name="rehearsalFeeType" value="full" checked /> 공수</label>
@@ -608,7 +608,7 @@
                         <input type="hidden" name="blockCorpSeqs" value="2001" />
                       </span>
                     </div>
-                    <div style="margin-top:8px;">
+                    <div class="adm-inline-group--mb">
                       <!-- [Java] M2-1 차단업체 선택 팝업 연동 -->
                       <!-- openBlockCorpModal(null, callback) — adm-common.js 제공 -->
                       <button type="button" class="rss-btn rss-btn--outline"
@@ -683,7 +683,7 @@
       </button>
     </div>
     <div class="adm-modal-box__body">
-      <div class="rss-table-wrap" style="margin:0;">
+      <div class="rss-table-wrap">
         <!-- 용어사전 §15-2 orderCorpResultBody -->
         <table class="rss-table" id="orderCorpResultTable">
           <colgroup>
@@ -710,7 +710,7 @@
               <td>000-00-00000</td>
               <td>경기도 부천시 조마루로111 1401호</td>
               <td>
-                <button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;"
+                <button type="button" class="rss-btn rss-btn--outline adm-btn--xs"
                         onclick="selectOrderCorpRow('1001','순희차단')">선택</button>
               </td>
             </tr>
@@ -719,7 +719,7 @@
               <td>111-11-11111</td>
               <td>경기도 안성시 단월1길 111</td>
               <td>
-                <button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;"
+                <button type="button" class="rss-btn rss-btn--outline adm-btn--xs"
                         onclick="selectOrderCorpRow('1002','우리국도차단')">선택</button>
               </td>
             </tr>
@@ -728,7 +728,7 @@
               <td>222-22-22222</td>
               <td>경기도 의정부시 의정부대로 331</td>
               <td>
-                <button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;"
+                <button type="button" class="rss-btn rss-btn--outline adm-btn--xs"
                         onclick="selectOrderCorpRow('1003','프리마제일차단')">선택</button>
               </td>
             </tr>
@@ -737,7 +737,7 @@
               <td>333-33-33333</td>
               <td>경기도 수원시 장안대로13번길 1</td>
               <td>
-                <button type="button" class="rss-btn rss-btn--outline" style="padding:3px 10px;font-size:12px;"
+                <button type="button" class="rss-btn rss-btn--outline adm-btn--xs"
                         onclick="selectOrderCorpRow('1004','한국도로차단')">선택</button>
               </td>
             </tr>
@@ -748,7 +748,7 @@
         </table>
       </div>
       <!-- 페이지네이션 -->
-      <div class="rss-pagination" style="margin-top:12px;">
+      <div class="rss-pagination">
         <button class="rss-pagination__btn" disabled>&lt;&lt;</button>
         <button class="rss-pagination__btn" disabled>&lt;</button>
         <button class="rss-pagination__btn rss-pagination__btn--active">1</button>

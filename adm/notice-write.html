@@ -69,7 +69,7 @@
                   <td>
                     <!-- [Java] th:value="${notice.noticeTitle}" -->
                     <input type="text" id="noticeTitle" name="noticeTitle"
-                           class="rss-input" style="width:100%;"
+                           class="rss-input"
                            placeholder="제목을 입력하세요 (최대 30자)"
                            maxlength="30"
                            value="" />
@@ -104,7 +104,7 @@
                      CKEditor 4 standard 빌드, 한국어 UI
                 ──────────────────────────────────────────────────────── -->
                 <tr>
-                  <th scope="row" style="vertical-align:top;padding-top:12px;">
+                  <th scope="row" class="adm-th--top">
                     내용<span class="required">*</span>
                   </th>
                   <td>
@@ -112,7 +112,6 @@
                     <!-- [Java] 수정 모드: th:text="${notice.noticeContent}" -->
                     <textarea id="noticeContent" name="noticeContent"
                               class="notice-editor-wrap"
-                              style="width:100%;min-height:300px;"
                               placeholder="공지 내용을 입력하세요."></textarea>
                   </td>
                 </tr>
@@ -123,11 +122,11 @@
                      × 클릭 시 파일 삭제
                 ──────────────────────────────────────────────────────── -->
                 <tr>
-                  <th scope="row" style="vertical-align:top;padding-top:12px;">첨부파일</th>
+                  <th scope="row" class="adm-th--top">체부파일</th>
                   <td>
                     <div class="notice-attach-area">
                       <!-- 파일 찾기 버튼 -->
-                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                      <div class="adm-inline-group">
                         <button type="button" class="rss-btn rss-btn--outline"
                                 onclick="triggerNoticeFileInput()">
                           <i data-lucide="paperclip" class="rss-icon-14"></i>

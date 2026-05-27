@@ -2738,3 +2738,113 @@
   color: var(--rss-text);
   font-weight: 600;
 }
+
+
+/* ============================================================
+   §M13. 공통 보완 — 마무리 점검 시 미정의 클래스 일괄 추가
+   (2026-05-27 CSS 전수 감사 결과 반영)
+   ============================================================ */
+
+/* §M13-1. 빈 목록 표시 (rss-empty / rss-table__empty 통일) */
+.rss-empty,
+.rss-table__empty {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--rss-muted);
+  font-size: var(--rss-font-base);
+}
+
+/* §M13-2. Primary 버튼 (construction-detail 등) */
+.rss-btn--primary {
+  background: var(--rss-primary, #1e3a5f);
+  color: #fff;
+  border: 1px solid var(--rss-primary, #1e3a5f);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: var(--rss-font-base);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.rss-btn--primary:hover { opacity: 0.88; }
+
+/* §M13-3. 폼 액션 버튼 가운데 배치 (admin-write 저장/취소 버튼) */
+.rss-page-actions__center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* §M13-4. 소형 버튼 (construction-write 캘린더·TMA 수량 버튼 등) */
+.adm-btn--xs {
+  padding: 3px 10px;
+  font-size: var(--rss-font-sm);
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+/* §M13-5. 폼 테이블 th 상단 정렬 (notice-write 첨부파일·내용 행) */
+.adm-th--top {
+  vertical-align: top !important;
+  padding-top: 12px !important;
+}
+
+/* §M13-6. 가격 보조 레이블 (construction-write 단가 구분 표시) */
+.adm-price-sub-label {
+  font-size: var(--rss-font-sm);
+  font-weight: 400;
+  color: #16a34a;
+}
+
+/* §M13-7. 강조 레이블 (construction-write 시간대·시연대금 레이블) */
+.adm-label-strong {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* §M13-8. 대기 상태 행 강조 (company-list, company-staff-list) */
+.row-pending {
+  background: #fffbeb;
+}
+.row-pending:hover {
+  background: #fef3c7;
+}
+
+/* §M13-9. 단위 가격 박스 (construction-detail 단가 영역) */
+.unit-price-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: var(--rss-font-base);
+}
+
+/* §M13-10. 커뮤니티 상세 사진 아이템 (community-detail 갤러리) */
+.market-photo-item {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+}
+
+/* §M13-11. 소형 입력 필드 (order-corp-write 수량·코드 입력 등) */
+.rss-input--sm { width: 72px; text-align: center; }
+.rss-input--md { width: 140px; }
+
+/* §M13-12. adm-inline-group 하단 여백 수정자 */
+.adm-inline-group--mb { margin-bottom: 6px; }
+
+/* §M13-13. rss-table 하단 여백 수정자 (market-detail 등) */
+.rss-table--mb { margin-bottom: 20px; }

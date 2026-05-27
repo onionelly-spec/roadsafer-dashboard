@@ -1740,6 +1740,8 @@ input[type="date"].rss-input:disabled {
 .rss-col-mgmt--wide { width: 18%; }
 /* 공개 여부 열 — 공개/비공개 배지 표시용 */
 .rss-col-open { width: 5%; }
+.rss-col-biz  { width: 15%; }  /* 발주기업 구분 열 (order-corp-list) */
+.rss-col-corp { /* width: auto */ }  /* 기업명 열 (order-corp-list, 나머지 공간) */
 
 /* 긴급 행 강조 */
 .rss-table tr.row-urgent td           { background: #fff7f7; }

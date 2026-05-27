@@ -74,7 +74,7 @@
                     <td>
                       <!-- [Java] th:value="${corp.orderCorpNm}" -->
                       <input type="text" id="orderCorpNm" name="orderCorpNm"
-                             class="rss-input" style="width:100%;"
+                             class="rss-input"
                              placeholder="상호를 입력하세요"
                              value="KM코리아" />
                     </td>
@@ -82,7 +82,7 @@
                     <td>
                       <!-- [Java] th:value="${corp.ceoNm}" -->
                       <input type="text" id="ceoNm" name="ceoNm"
-                             class="rss-input" style="width:100%;"
+                             class="rss-input"
                              placeholder="대표자명"
                              value="나잘난" />
                     </td>
@@ -95,19 +95,19 @@
                       <div class="adm-inline-group">
                         <!-- [Java] th:value="${corp.bizNo1}" -->
                         <input type="text" id="bizNo1" name="bizNo1"
-                               class="rss-input" style="width:72px;text-align:center;"
+                               class="rss-input rss-input--sm"
                                value="000" maxlength="3" inputmode="numeric"
                                oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
                         <span class="adm-inline-sep">-</span>
                         <!-- [Java] th:value="${corp.bizNo2}" -->
                         <input type="text" id="bizNo2" name="bizNo2"
-                               class="rss-input" style="width:56px;text-align:center;"
+                               class="rss-input rss-input--sm"
                                value="00" maxlength="2" inputmode="numeric"
                                oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
                         <span class="adm-inline-sep">-</span>
                         <!-- [Java] th:value="${corp.bizNo3}" -->
                         <input type="text" id="bizNo3" name="bizNo3"
-                               class="rss-input" style="width:80px;text-align:center;"
+                               class="rss-input rss-input--sm"
                                value="00000" maxlength="5" inputmode="numeric"
                                oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
                         <!-- ① 중복확인 — 스토리보드: 이미 등록된 사업자번호는 재등록 불가 -->
@@ -144,19 +144,19 @@
                       <div class="adm-inline-group">
                         <!-- [Java] th:value="${corp.ceoTel1}" -->
                         <input type="text" id="ceoTel1" name="ceoTel1"
-                               class="rss-input" style="width:70px;text-align:center;"
+                               class="rss-input rss-input--sm"
                                value="010" maxlength="4" inputmode="numeric"
                                oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
                         <span class="adm-inline-sep">-</span>
                         <!-- [Java] th:value="${corp.ceoTel2}" -->
                         <input type="text" id="ceoTel2" name="ceoTel2"
-                               class="rss-input" style="width:80px;text-align:center;"
+                               class="rss-input rss-input--sm"
                                value="0000" maxlength="4" inputmode="numeric"
                                oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
                         <span class="adm-inline-sep">-</span>
                         <!-- [Java] th:value="${corp.ceoTel3}" -->
                         <input type="text" id="ceoTel3" name="ceoTel3"
-                               class="rss-input" style="width:80px;text-align:center;"
+                               class="rss-input rss-input--sm"
                                value="1111" maxlength="4" inputmode="numeric"
                                oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
                       </div>
@@ -170,16 +170,16 @@
                       <div class="adm-inline-group">
                         <!-- [Java] th:value="${corp.emailId}" -->
                         <input type="text" id="emailId" name="emailId"
-                               class="rss-input" style="width:140px;"
+                               class="rss-input rss-input--md"
                                value="jalnan" />
                         <span class="adm-inline-sep">@</span>
                         <!-- [Java] th:value="${corp.emailDomain}" -->
                         <input type="text" id="emailDomain" name="emailDomain"
-                               class="rss-input" style="width:140px;"
+                               class="rss-input rss-input--md"
                                value="naver.com" />
                         <!-- [Java] th:value="${corp.emailDomainSelect}" -->
-                        <select class="rss-select" id="emailDomainSelect"
-                                onchange="setEmailDomain(this)" style="width:140px;">
+                        <select class="rss-select rss-input--md" id="emailDomainSelect"
+                                onchange="setEmailDomain(this)">
                           <option value="">선택</option>
                           <option value="naver.com">naver.com</option>
                           <option value="gmail.com">gmail.com</option>
@@ -195,10 +195,10 @@
                   <tr>
                     <th scope="row">사업장 주소</th>
                     <td colspan="3">
-                      <div class="adm-inline-group" style="margin-bottom:6px;">
+                      <div class="adm-inline-group adm-inline-group--mb">
                         <!-- [Java] th:value="${corp.bizPostCode}" -->
                         <input type="text" id="bizPostCode" name="bizPostCode"
-                               class="rss-input" style="width:90px;"
+                               class="rss-input rss-input--sm"
                                value="13383" readonly />
                         <button type="button" class="rss-btn rss-btn--outline rss-btn--sm"
                                 onclick="openAddrSearch()">주소 찾기</button>
@@ -206,11 +206,11 @@
                       <div class="adm-inline-group">
                         <!-- [Java] th:value="${corp.bizAddrMain}" -->
                         <input type="text" id="bizAddrMain" name="bizAddrMain"
-                               class="rss-input" style="flex:1;"
+                               class="rss-input"
                                value="경기도 부천시 조마루로 111" readonly />
                         <!-- [Java] th:value="${corp.bizAddrDetail}" -->
                         <input type="text" id="bizAddrDetail" name="bizAddrDetail"
-                               class="rss-input" style="flex:1;"
+                               class="rss-input"
                                value="1401호(부천나나빌딩)" />
                       </div>
                     </td>
